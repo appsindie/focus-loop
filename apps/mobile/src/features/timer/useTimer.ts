@@ -1,4 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  cancelTimerNotification,
+  scheduleTimerCompletionNotification,
+} from "../notifications/NotificationScheduler";
 
 export type TimerState = "idle" | "running" | "paused" | "completed";
 
@@ -6,9 +10,10 @@ export type TimerHook = {
   durationSeconds: number;
   remainingSeconds: number;
   state: TimerState;
-  start: (durationSeconds: number) => void;
+  startedAt: Date | null;
+  start: (durationSeconds: number) => Promise<void>;
   pause: () => void;
-  resume: () => void;
+  resume: () => Promise<void>;
   cancel: () => void;
   complete: () => void;
 };
@@ -17,6 +22,7 @@ export function useTimer(): TimerHook {
   const [durationSeconds, setDurationSeconds] = useState(0);
   const [remainingSeconds, setRemainingSeconds] = useState(0);
   const [state, setState] = useState<TimerState>("idle");
+  const [startedAt, setStartedAt] = useState<Date | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const clearTimerInterval = useCallback(() => {
@@ -27,11 +33,13 @@ export function useTimer(): TimerHook {
   }, []);
 
   const start = useCallback(
-    (nextDurationSeconds: number) => {
+    async (nextDurationSeconds: number) => {
       clearTimerInterval();
       setDurationSeconds(nextDurationSeconds);
       setRemainingSeconds(nextDurationSeconds);
+      setStartedAt(new Date());
       setState("running");
+      await scheduleTimerCompletionNotification(nextDurationSeconds);
     },
     [clearTimerInterval],
   );
@@ -39,26 +47,31 @@ export function useTimer(): TimerHook {
   const pause = useCallback(() => {
     clearTimerInterval();
     setState("paused");
+    void cancelTimerNotification();
   }, [clearTimerInterval]);
 
-  const resume = useCallback(() => {
+  const resume = useCallback(async () => {
     if (state !== "paused" || remainingSeconds <= 0) {
       return;
     }
     setState("running");
+    await scheduleTimerCompletionNotification(remainingSeconds);
   }, [state, remainingSeconds]);
 
   const cancel = useCallback(() => {
     clearTimerInterval();
     setDurationSeconds(0);
     setRemainingSeconds(0);
+    setStartedAt(null);
     setState("idle");
+    void cancelTimerNotification();
   }, [clearTimerInterval]);
 
   const complete = useCallback(() => {
     clearTimerInterval();
     setRemainingSeconds(0);
     setState("completed");
+    void cancelTimerNotification();
   }, [clearTimerInterval]);
 
   useEffect(() => {
@@ -82,6 +95,7 @@ export function useTimer(): TimerHook {
     durationSeconds,
     remainingSeconds,
     state,
+    startedAt,
     start,
     pause,
     resume,

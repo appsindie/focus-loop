@@ -7,9 +7,17 @@ type HomeScreenProps = {
   selectedMinutes: number;
   onSelectMinutes: (minutes: number) => void;
   onStart: () => void;
+  sessionsToday: number;
+  streakDays: number;
 };
 
-export function HomeScreen({ selectedMinutes, onSelectMinutes, onStart }: HomeScreenProps) {
+export function HomeScreen({
+  selectedMinutes,
+  onSelectMinutes,
+  onStart,
+  sessionsToday,
+  streakDays,
+}: HomeScreenProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Focus Loop</Text>
@@ -48,6 +56,25 @@ export function HomeScreen({ selectedMinutes, onSelectMinutes, onStart }: HomeSc
           Start Focus
         </Text>
       </Pressable>
+
+      <View style={styles.stats}>
+        <View style={styles.statPill}>
+          <Text style={styles.statValue} allowFontScaling>
+            {sessionsToday}
+          </Text>
+          <Text style={styles.statLabel} allowFontScaling>
+            today
+          </Text>
+        </View>
+        <View style={styles.statPill}>
+          <Text style={styles.statValue} allowFontScaling>
+            {streakDays}
+          </Text>
+          <Text style={styles.statLabel} allowFontScaling>
+            day streak
+          </Text>
+        </View>
+      </View>
     </View>
   );
 }
@@ -108,9 +135,32 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: spacing.xl,
   },
   startButtonText: {
     ...typography.headline,
     color: colors.primaryText,
+  },
+  stats: {
+    flexDirection: "row",
+    justifyContent: "center",
+    gap: spacing.md,
+  },
+  statPill: {
+    backgroundColor: colors.surface,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    alignItems: "center",
+  },
+  statValue: {
+    ...typography.headline,
+    color: colors.text,
+  },
+  statLabel: {
+    ...typography.caption,
+    color: colors.textMuted,
   },
 });
