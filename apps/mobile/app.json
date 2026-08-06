@@ -1,0 +1,28 @@
+{
+  "expo": {
+    "name": "Focus Loop",
+    "slug": "focus-loop",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "scheme": "focusloop",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.appsindie.focusloop"
+    },
+    "android": {
+      "package": "com.appsindie.focusloop",
+      "adaptiveIcon": {
+        "backgroundColor": "#2D5A27",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
