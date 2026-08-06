@@ -1,0 +1,57 @@
+[
+  {
+    "name": "devin",
+    "color": "1D76DB",
+    "description": "Created by Devin"
+  },
+  {
+    "name": "ai-product-research",
+    "color": "5319E7",
+    "description": "Portfolio opportunity research (Stage 1A/1B/2/3)"
+  },
+  {
+    "name": "ai-product-shaping",
+    "color": "C5DEF5",
+    "description": "Concept, spec, design, high-level architecture"
+  },
+  {
+    "name": "ai-product-build",
+    "color": "BFDADC",
+    "description": "Implementation, CI/CD, tests, migrations"
+  },
+  {
+    "name": "ai-product-release",
+    "color": "F9D0C4",
+    "description": "Production infra, deployment, monitoring, release management"
+  },
+  {
+    "name": "ai-product-growth",
+    "color": "FEF2C0",
+    "description": "ASO, listing, post-release north-star review"
+  },
+  {
+    "name": "ai-review-pass",
+    "color": "0E8A16",
+    "description": "Reviewer routine verdict: pass (applied by the routine, not a human)"
+  },
+  {
+    "name": "ai-review-rework",
+    "color": "D93F0B",
+    "description": "Reviewer routine requires changes"
+  },
+  {
+    "name": "gate-signed",
+    "color": "006B75",
+    "description": "A human signed the factory gate this PR is at (human only)"
+  },
+  {
+    "name": "human-hold",
+    "color": "B60205",
+    "description": "A human has taken control; agents stop and report (human only)"
+  },
+  {
+    "name": "human-decision",
+    "color": "FBCA04",
+    "description": "An open exception is waiting on a human decision"
+  }
+]

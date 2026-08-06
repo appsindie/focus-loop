@@ -1,0 +1,17 @@
+# Ownership for this repository. Update team handles before enabling required reviews.
+
+# Global fallback
+* @appsindie/engineering
+
+# Product and architecture docs
+docs/product/** @appsindie/product @appsindie/tech-leads
+docs/architecture/** @appsindie/tech-leads
+
+# Change artifacts and quality evidence
+docs/changes/** @appsindie/engineering @appsindie/qa
+
+# App and backend ownership examples
+apps/web/** @appsindie/frontend
+apps/mobile/** @appsindie/mobile
+backend/** @appsindie/backend
+infra/** @appsindie/devops

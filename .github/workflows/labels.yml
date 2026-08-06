@@ -1,0 +1,86 @@
+name: pr-policy
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled, unlabeled, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  policy:
+    name: label and gate policy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Enforce the label rules
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          labels="$(gh pr view "$PR" --repo "$REPO" --json labels --jq '.labels[].name' | sort)"
+          echo "Labels: $(echo "$labels" | tr '\n' ' ')"
+
+          fail=0
+          has() { echo "$labels" | grep -qx "$1"; }
+
+          # A human took control. Nothing else matters, and nothing should merge.
+          if has human-hold; then
+            echo "::error::human-hold is set: a human has taken control of this PR."
+            exit 1
+          fi
+
+          if ! echo "$labels" | grep -qE '^ai-product-(research|shaping|build|release|growth)$'; then
+            echo "::error::missing an ai-product-* taxonomy label"
+            fail=1
+          fi
+
+          count="$(echo "$labels" | grep -cE '^ai-product-(research|shaping|build|release|growth)$' || true)"
+          if [ "$count" -gt 1 ]; then
+            echo "::error::$count ai-product-* labels; exactly one applies at a time"
+            fail=1
+          fi
+
+          if has ai-review-pass && has ai-review-rework; then
+            echo "::error::ai-review-pass and ai-review-rework are both set"
+            fail=1
+          fi
+
+          # A gate signature without a reviewer verdict means the review was skipped.
+          if has gate-signed && ! has ai-review-pass; then
+            echo "::error::gate-signed without ai-review-pass: a gate cannot be signed on an unreviewed PR"
+            fail=1
+          fi
+
+          # An open exception is a decision the human still owes.
+          if has human-decision && has gate-signed; then
+            echo "::error::human-decision is still open on a gate-signed PR"
+            fail=1
+          fi
+
+          exit $fail
+
+      - name: Verify gate-signed was applied by a human
+        if: contains(github.event.pull_request.labels.*.name, 'gate-signed')
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          # gate-signed is the one label no agent may apply. Devin and the reviewer
+          # routines are the actors we can name; anything else is treated as human.
+          actor="$(gh api "repos/$REPO/issues/$PR/timeline" --paginate \
+            --jq '[.[] | select(.event=="labeled" and .label.name=="gate-signed")] | last | .actor.login' \
+            2>/dev/null || echo "")"
+          echo "gate-signed applied by: ${actor:-unknown}"
+          case "$actor" in
+            devin-ai-integration*|*"[bot]"|claude*)
+              echo "::error::gate-signed was applied by '$actor'. Only a human may sign a gate."
+              exit 1
+              ;;
+          esac

@@ -1,0 +1,215 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+  schedule:
+    # Dependency advisories move even when the repository does not. This is the
+    # only run that finds a vulnerability in code nobody touched.
+    - cron: "0 6 * * 1"
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  # Dependency CVEs are deliberately a SEPARATE job from `verify`. Their result
+  # changes when the advisory database moves, not when the code does, so a red
+  # audit must not read as "this diff broke something". An unfixable transitive
+  # CVE is a risk-acceptance exception under the Security Trigger Policy, never
+  # a rework loop. See AppsIndie Static Analysis Convention.
+  audit:
+    name: dependency-audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect Node project
+        id: node
+        run: |
+          if [ -f package.json ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+            if node -e 'process.exit(require("./package.json").scripts?.audit ? 0 : 1)'; then
+              echo "audit_script=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "audit_script=false" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+            echo "audit_script=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Node
+        if: steps.node.outputs.present == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      # A repo's own audit script almost always runs a tool installed as a
+      # devDependency, so that path needs the install. The built-in `npm audit`
+      # fallback reads the lockfile directly and does not.
+      - name: Install dependencies
+        if: steps.node.outputs.audit_script == 'true'
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.APPSINDIE_PACKAGES_TOKEN || secrets.GITHUB_TOKEN }}
+
+      # Calls the repo's own `audit` entry point where it has one (osv-scanner,
+      # Trivy, whatever it wired up), and falls back to the built-in floor
+      # otherwise. There is no silent-skip path: the fallback is a real check.
+      - name: Dependency audit — Node
+        if: steps.node.outputs.present == 'true'
+        run: |
+          if [ "${{ steps.node.outputs.audit_script }}" = "true" ]; then
+            npm run audit
+          else
+            echo "No \"audit\" script; running the built-in floor."
+            npm audit --audit-level=high
+          fi
+
+      - name: Setup Java
+        if: hashFiles('gradlew') != ''
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Dependency audit — Gradle
+        run: |
+          if [ ! -f gradlew ]; then exit 0; fi
+          if ./gradlew -q tasks --all 2>/dev/null | grep -qE '^audit\b'; then
+            ./gradlew audit --no-daemon
+          else
+            echo "No 'audit' task defined. Wire OWASP Dependency-Check, osv-scanner"
+            echo "or Trivy into an 'audit' task — see AppsIndie Static Analysis Convention."
+            exit 1
+          fi
+
+  checks:
+    name: governance-checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect Node project
+        id: node
+        run: |
+          if [ -f package.json ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Node
+        if: steps.node.outputs.present == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.node.outputs.present == 'true'
+        run: npm ci
+        env:
+          # Required for @appsindie/* installs from GitHub Packages.
+          # GITHUB_TOKEN only reads packages owned by this repository, so cross-repo
+          # @appsindie dependencies need the org-level APPSINDIE_PACKAGES_TOKEN.
+          NODE_AUTH_TOKEN: ${{ secrets.APPSINDIE_PACKAGES_TOKEN || secrets.GITHUB_TOKEN }}
+
+      # `--if-present` was the hole: a repo with no lint script passed silently green
+      # while claiming "lint green". The entry point is required, not optional.
+      # See AppsIndie Static Analysis Convention.
+      - name: Verify the static analysis entry point exists
+        if: steps.node.outputs.present == 'true'
+        run: |
+          if ! node -e 'process.exit(require("./package.json").scripts?.verify ? 0 : 1)'; then
+            echo "package.json defines no \"verify\" script."
+            echo "Every AppsIndie code repository exposes one entry point running"
+            echo "typecheck, lint, format and dead-code checks. See AppsIndie Static"
+            echo "Analysis Convention."
+            exit 1
+          fi
+
+      - name: Static analysis
+        if: steps.node.outputs.present == 'true'
+        run: npm run verify
+
+      - name: Test
+        if: steps.node.outputs.present == 'true'
+        run: npm test --if-present
+
+      - name: Detect Gradle project
+        id: gradle
+        run: |
+          if [ -f gradlew ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Java
+        if: steps.gradle.outputs.present == 'true'
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      # `check` carries Spotless, Error Prone/NullAway, SpotBugs, the Modulith
+      # boundary test and the unit tests. One entry point, same as Node.
+      - name: Static analysis and tests
+        if: steps.gradle.outputs.present == 'true'
+        run: ./gradlew check --no-daemon
+
+      - name: Verify skill asset templates exist
+        run: |
+          test -f .agents/skills/product-shaping/assets/spec.md || (echo "spec template missing" && exit 1)
+          test -f .agents/skills/architecture/assets/lld.md || (echo "LLD template missing" && exit 1)
+          test -f .agents/skills/qa/assets/qa-plan.md || (echo "QA plan template missing" && exit 1)
+      - name: Verify the governance tree
+        run: |
+          # .agents/ is the only governance tree. A governance/ directory is a
+          # second one, and two trees mean agents read contradictory rules.
+          test -d .agents/skills || (echo ".agents/skills missing" && exit 1)
+          test -d .agents/knowledge || (echo ".agents/knowledge missing" && exit 1)
+          if [ -d governance ]; then
+            echo "governance/ is a second governance tree; remove it"
+            exit 1
+          fi
+      - name: Verify no traceability matrix
+        run: |
+          matches=$(find docs -iname '*traceability*' 2>/dev/null || true)
+          if [ -n "$matches" ]; then
+            echo "$matches"
+            echo "Traceability matrices are not used; living documents carry the truth."
+            exit 1
+          fi
+      - name: Validate factory state
+        run: |
+          if [ -f FACTORY_STATE.json ]; then
+            python3 scripts/factory_state.py validate FACTORY_STATE.json
+          else
+            echo "No FACTORY_STATE.json yet; skipping."
+          fi
+      - name: Verify AGENTS Core Policy is intact
+        run: |
+          test -f AGENTS.md || (echo "AGENTS.md missing" && exit 1)
+          grep -q "## Core Policy (do not remove)" AGENTS.md || (echo "AGENTS.md Core Policy heading missing" && exit 1)
+      - name: Verify package config resolves @appsindie from GitHub Packages
+        run: |
+          matches=$(find . -path ./node_modules -prune -o \
+            \( -name .npmrc -o -name package-lock.json -o -name yarn.lock -o -name pnpm-lock.yaml \) \
+            -exec grep -In -e "pkgs\.dev\.azure\.com" -e "pkgs\.visualstudio\.com" {} + || true)
+          if [ -n "$matches" ]; then
+            echo "$matches"
+            echo "Azure Artifacts reference found in package config; @appsindie must resolve from npm.pkg.github.com"
+            exit 1
+          fi

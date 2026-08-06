@@ -1,0 +1,11 @@
+# Copy to `.npmrc` at the root of every @appsindie library repo (commit it).
+# Same consumer config as apps, plus the publish target lives in package.json:
+#
+#   "publishConfig": { "registry": "https://npm.pkg.github.com" }
+#
+@appsindie:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+always-auth=true
+
+# Publishing never uses a personal token: `.github/workflows/publish.yml` runs with
+# `permissions: packages: write` and passes secrets.GITHUB_TOKEN as NODE_AUTH_TOKEN.

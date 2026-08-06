@@ -1,0 +1,128 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/appsindie/devin-skills/.agents/state/factory-state.schema.json",
+  "title": "AppsIndie Factory State",
+  "description": "Machine-readable position of one product or one Squad 0 idea in the AI software factory. See AppsIndie Factory State Contract.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "phase",
+    "gates",
+    "hold",
+    "next_action",
+    "owner",
+    "updated_at"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1" },
+    "product": {
+      "type": "string",
+      "description": "Product slug. Required once a product repo exists."
+    },
+    "idea_id": {
+      "type": "string",
+      "description": "Squad 0 idea id (e.g. I01). Required for research/<idea-id>/ state files."
+    },
+    "repo": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$"
+    },
+    "phase": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4,
+      "description": "0 research, 1 shape, 2 build, 3 release, 4 grow."
+    },
+    "gates": {
+      "type": "object",
+      "required": ["0", "1", "2", "3", "4"],
+      "additionalProperties": false,
+      "patternProperties": {
+        "^[0-4]$": { "$ref": "#/definitions/gate" }
+      }
+    },
+    "active_branch": { "type": "string" },
+    "open_pr": { "type": ["string", "null"] },
+    "last_review": {
+      "type": ["object", "null"],
+      "required": ["verdict", "routine", "session_url", "round_count", "fired_at"],
+      "additionalProperties": false,
+      "properties": {
+        "verdict": {
+          "enum": [
+            "pass",
+            "rework",
+            "APPROVE",
+            "APPROVE WITH CORRECTIONS",
+            "RESEARCH REQUIRED",
+            "REJECT",
+            "pending",
+            "no-verdict"
+          ]
+        },
+        "routine": {
+          "enum": ["research", "shaping", "code-review", "release", "growth"]
+        },
+        "session_url": { "type": ["string", "null"] },
+        "round_count": { "type": "integer", "minimum": 0 },
+        "fired_at": { "$ref": "#/definitions/timestamp" }
+      }
+    },
+    "open_exceptions": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/exception" }
+    },
+    "hold": { "type": "boolean" },
+    "next_action": { "type": "string", "minLength": 1 },
+    "owner": { "type": "string", "minLength": 1 },
+    "updated_at": { "$ref": "#/definitions/timestamp" }
+  },
+  "definitions": {
+    "timestamp": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}Z$"
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "gate": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "enum": ["open", "passed", "blocked"] },
+        "signed_by": {
+          "type": "string",
+          "description": "Human identity. A reviewer routine never signs a gate."
+        },
+        "signed_at": { "$ref": "#/definitions/date" },
+        "evidence": {
+          "type": "string",
+          "description": "Path or URL to the artifact the decision was made on."
+        },
+        "note": { "type": "string" }
+      }
+    },
+    "exception": {
+      "type": "object",
+      "required": ["id", "title", "severity", "blocking", "default_if_silent", "owner"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "severity": { "enum": ["low", "medium", "high", "critical"] },
+        "blocking": { "type": "boolean" },
+        "default_if_silent": {
+          "enum": ["proceed", "block"],
+          "description": "What happens if the human says nothing. Never 'proceed' on gates 0 and 3."
+        },
+        "gate": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "deadline": { "$ref": "#/definitions/date" },
+        "owner": { "type": "string", "minLength": 1 },
+        "url": { "type": "string" }
+      }
+    }
+  }
+}

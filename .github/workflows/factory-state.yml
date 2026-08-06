@@ -1,0 +1,46 @@
+name: factory-state
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: validate FACTORY_STATE.json
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate every factory state file
+        run: |
+          mapfile -t files < <(find . -name FACTORY_STATE.json -not -path './.git/*' | sort)
+          if [ ${#files[@]} -eq 0 ]; then
+            echo "No FACTORY_STATE.json found; nothing to validate."
+            exit 0
+          fi
+          printf 'Validating %d file(s)\n' "${#files[@]}"
+          python scripts/factory_state.py validate "${files[@]}"
+
+      - name: Validator selftest
+        run: python scripts/factory_state.py --selftest
+
+      - name: Verify state files are byte-stable
+        run: |
+          # A state file a rewrite would change is a defect: reviewers diff these.
+          mapfile -t files < <(find . -name FACTORY_STATE.json -not -path './.git/*' | sort)
+          [ ${#files[@]} -eq 0 ] && exit 0
+          python scripts/factory_state.py fmt "${files[@]}" >/dev/null
+          if ! git diff --quiet -- "${files[@]}"; then
+            echo "FACTORY_STATE.json is not byte-stable. Run:"
+            echo "  python scripts/factory_state.py fmt <file>"
+            git --no-pager diff -- "${files[@]}"
+            exit 1
+          fi

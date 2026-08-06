@@ -1,0 +1,11 @@
+# Copy to `.npmrc` at the root of every consumer app / library repo (commit it).
+# Only the @appsindie scope is redirected; everything else stays on the public registry.
+@appsindie:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+always-auth=true
+
+# NODE_AUTH_TOKEN is supplied by the environment, never committed:
+#   - CI (GitHub Actions): secrets.GITHUB_TOKEN with `permissions: packages: read`
+#   - Local dev:           a classic PAT with `read:packages` only, exported from
+#                          the developer's shell profile (see docs/operations/DEVELOPER_SETUP.md)
+#   - Devin sessions:      the GITHUB_PACKAGES_READ_TOKEN session/org secret

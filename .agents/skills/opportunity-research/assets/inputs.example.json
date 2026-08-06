@@ -1,0 +1,59 @@
+{
+  "ideas": [
+    {
+      "idea_id": "I01",
+      "scores": {
+        "search_intent": 8,
+        "usage_frequency": 7,
+        "ad_inventory_quality": 7,
+        "ads_monetizability": 7,
+        "expansion_optionality": 6,
+        "competitive_winnability": 7,
+        "non_aso_distribution": 5,
+        "tier1_market_opportunity": 7,
+        "b2b_b2b2c_expansion": 4,
+        "hub_reusable_assets": 6,
+        "ai_leverage": 5
+      },
+      "execution_feasibility": 8,
+      "acquisition_plausibility": 7,
+      "risk_level": 4
+    }
+  ],
+  "economics": {
+    "monthly_installs": [800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700, 1800, 1900],
+    "retention_by_age_months": [1.0, 0.55, 0.4, 0.32, 0.28, 0.25, 0.22, 0.2, 0.18, 0.17, 0.16, 0.15],
+    "active_days_per_user_per_month": 10,
+    "sessions_per_active_day": 1.4,
+    "formats": [
+      {
+        "name": "interstitial",
+        "eligible_impressions_per_session": 1.0,
+        "fill_rate": 0.85,
+        "ecpm": 8.0
+      },
+      {
+        "name": "banner",
+        "eligible_impressions_per_session": 3.0,
+        "fill_rate": 0.9,
+        "ecpm": 1.2
+      }
+    ],
+    "subscription_per_mau": 0.0,
+    "iap_per_mau": 0.0,
+    "ai_cost_per_mau": 0.02,
+    "variable_infra_per_mau": 0.01,
+    "variable_support_per_mau": 0.0,
+    "monthly_fixed_cash_operating_cost": 450,
+    "build_weeks": 6,
+    "validation_weeks": 2,
+    "report_month_index": 11,
+    "geo_mix": { "tier1": 35, "tier2": 40, "tier3": 25 },
+    "developer_weekly_shadow_cost": [500, 1000, 2000],
+    "scenarios": {
+      "conservative": { "mau_multiplier": 0.7 },
+      "base": { "mau_multiplier": 1.0 },
+      "optimistic": { "mau_multiplier": 1.3 }
+    }
+  }
+}

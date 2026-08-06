@@ -1,0 +1,35 @@
+{
+  "active_branch": "release/v1",
+  "gates": {
+    "0": {
+      "evidence": "docs/research/OPPORTUNITY_DECISION.json",
+      "signed_at": "2026-08-06",
+      "signed_by": "justin.nguyen@appsindie.com",
+      "status": "passed"
+    },
+    "1": {
+      "evidence": "docs/product/PRODUCT_CONCEPT.md",
+      "status": "open"
+    },
+    "2": {
+      "status": "open"
+    },
+    "3": {
+      "status": "open"
+    },
+    "4": {
+      "status": "open"
+    }
+  },
+  "hold": false,
+  "last_review": null,
+  "next_action": "Draft PRODUCT_CONCEPT.md and PRODUCT_SPEC_LIVE.md for Gate 1; open release/v1 -> main draft PR; fire shaping reviewer.",
+  "open_exceptions": [],
+  "open_pr": null,
+  "owner": "justin.nguyen@appsindie.com",
+  "phase": 1,
+  "product": "focus-loop",
+  "repo": "appsindie/focus-loop",
+  "schema_version": "1",
+  "updated_at": "2026-08-06T16:05:00Z"
+}

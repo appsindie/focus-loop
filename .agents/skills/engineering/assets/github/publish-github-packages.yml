@@ -1,0 +1,113 @@
+# Library publish workflow -> copy to `.github/workflows/publish.yml` in each @appsindie library repo.
+#
+# Trigger: a semver tag (`v1.4.2`). The tag is the release record; the workflow
+# refuses to publish if the tag and package.json version disagree.
+name: Publish
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Build and validate without publishing"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: build-test-publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          registry-url: https://npm.pkg.github.com
+          scope: "@appsindie"
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Lint
+        run: npm run lint --if-present
+
+      - name: Test
+        run: npm test --if-present
+
+      - name: Build
+        run: npm run build --if-present
+
+      - name: Verify package name scope and version match tag
+        if: github.event_name == 'push'
+        run: |
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          tag="${GITHUB_REF_NAME#v}"
+          case "$name" in
+            @appsindie/*) ;;
+            *) echo "package name '$name' is not in the @appsindie scope"; exit 1 ;;
+          esac
+          if [ "$version" != "$tag" ]; then
+            echo "package.json version ($version) does not match tag ($tag)"
+            exit 1
+          fi
+
+      - name: Verify peer dependencies are declared, not bundled
+        run: |
+          node -e '
+            const pkg = require("./package.json");
+            const peers = Object.keys(pkg.peerDependencies || {});
+            if (peers.length === 0) {
+              console.log("no peerDependencies declared");
+            }
+            const deps = Object.keys(pkg.dependencies || {});
+            const dupes = peers.filter((p) => deps.includes(p));
+            if (dupes.length) {
+              console.error("peer deps also listed as runtime dependencies: " + dupes.join(", "));
+              process.exit(1);
+            }
+            for (const [name, range] of Object.entries(pkg.peerDependencies || {})) {
+              if (!range || range === "*") {
+                console.error("peer dependency " + name + " must declare an explicit range");
+                process.exit(1);
+              }
+            }
+          '
+
+      - name: Verify publish target is GitHub Packages
+        run: |
+          node -e '
+            const pkg = require("./package.json");
+            const registry = (pkg.publishConfig || {}).registry;
+            if (registry !== "https://npm.pkg.github.com") {
+              console.error("publishConfig.registry must be https://npm.pkg.github.com (found: " + registry + ")");
+              process.exit(1);
+            }
+          '
+
+      - name: Pack (contents preview)
+        run: npm pack --dry-run
+
+      - name: Publish to GitHub Packages
+        if: github.event_name == 'push' || inputs.dry_run == false
+        run: npm publish --access restricted
+        env:
+          # Least privilege: workflow-scoped token, `packages: write` only.
+          # No org PAT, no long-lived publish credential.
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

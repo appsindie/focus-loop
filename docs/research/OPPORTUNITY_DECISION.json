@@ -1,0 +1,93 @@
+{
+  "idea_id": "I01",
+  "decision": "VALIDATE NOW",
+  "confidence": "Medium-High",
+  "recommended_platform": "iOS + Android (React Native / Expo)",
+  "core_user": "Adults with ADHD, remote workers, students and knowledge workers who need friction-free focus sessions",
+  "core_job": "Start a timed focus session and avoid phone distraction until the timer ends",
+  "acquisition_summary": {
+    "base_monthly_organic_installs": 10000,
+    "base_monthly_organic_installs_month12": 16000,
+    "lower_monthly_organic_installs_month9": 4000,
+    "upper_monthly_organic_installs_month9": 20000,
+    "required_cumulative_installs": 25772.0,
+    "required_steady_state_monthly_installs": 3827.0,
+    "install_to_mau_factor_month9": 0.3608,
+    "install_to_mau_factor_month12": 0.316,
+    "steady_state_factor": 2.43,
+    "months_to_realistic_mau": 8,
+    "months_to_cash_break_even": 1,
+    "months_to_2000_net_contribution": 8,
+    "scale_feasibility": "FEASIBLE",
+    "lower_bound_month9_net_monthly_contribution": 1208.16,
+    "lower_bound_month9_meets_numeric_target": false,
+    "lower_bound_month9_note": "At the lower-bound organic ramp (~4,000 installs/month at Month 9), Month-9 net contribution falls to ~$1,208 and the $2,000 target is not met."
+  },
+  "economic_summary": {
+    "base_month9_mau": 14686.0,
+    "base_month12_mau": 26136.0,
+    "conservative_monthly_revenue": 4229.85024,
+    "base_monthly_revenue": 6042.6432,
+    "optimistic_monthly_revenue": 7855.43616,
+    "base_ad_arpu": 0.2312,
+    "base_ai_cost_per_mau": 0.0,
+    "base_variable_contribution_per_mau": 0.2312,
+    "base_month9_net_monthly_contribution": 3245.4032,
+    "base_month12_net_monthly_contribution": 5892.6432,
+    "cash_break_even_mau": 648.788927,
+    "build_weeks": 6,
+    "validation_weeks": 2,
+    "developer_opportunity_cost_low_mid_high": [
+      4000.0,
+      8000.0,
+      16000.0
+    ],
+    "monthly_contribution_per_build_week": 736.5804,
+    "twelve_month_contribution_per_build_week": 3265.7154,
+    "meets_numeric_target": true
+  },
+  "portfolio_contribution": [
+    "Timer engine reusable for I04 Routine Clock",
+    "Notification scheduling component",
+    "Streak / gamification component",
+    "Home-screen widget architecture",
+    "In-app analytics / cohort measurement patterns"
+  ],
+  "structural_wedge": "Forest and Focus To-Do are locked into ads+IAP feature bloat (gamification, task management, Gantt, wearables) and cannot strip down to a no-account, ad-light, adult/ADHD-focused timer without cannibalizing premium revenue. Focus Loop captures the segment that finds Forest's tree metaphor childish and Focus To-Do bloated.",
+  "critical_assumption": "Users accept an interstitial at the end of a 25-minute focus session and the widget drives enough daily returns to sustain 20 active days/month.",
+  "evidence_that_could_reverse_decision": [
+    "Real ad-network fill rate in Tier-1 productivity traffic is materially below the Playwire public benchmarks used in the model.",
+    "iOS ATT opt-in is so low that ad attribution and eCPM collapse, or Android AccessibilityService app-blocking is rejected by Play Store.",
+    "ASO ranking for 'pomodoro timer' / 'adhd focus app' requires >50k reviews to reach top 10, which is not achievable organically within 9 months.",
+    "If the organic install ramp reaches only the lower bound (4,000 installs/month at Month 9), the Month-9 net contribution drops to ~$1,208 and the $2,000 target is not met."
+  ],
+  "mvp_scope": [
+    "One core job: start a 25-minute focus timer with break reminders",
+    "Must-have: local notifications, home-screen widget, session/break/streak log",
+    "Ad placements: interstitial at session completion, rewarded video for theme unlock, small banner on setup screen",
+    "No account required; optional Android AccessibilityService app-blocking",
+    "Analytics: D1/D7/D30, active days, sessions per day, ad impressions/revenue"
+  ],
+  "validation_metrics": [
+    "D1 retention >= 50%, D7 retention >= 45%, D30 retention >= 42% (classic day-based cohort)",
+    "Month-1 (install-month) active fraction >= 70%, Month-2 >= 42%, Month-3 >= 28% (month-cohort, from inputs.json)",
+    "20 active days/month and 2 sessions/active day",
+    "Month-9 Net Monthly Contribution >= $2,000",
+    "Rank in top 15 for 'pomodoro timer' or top 5 for 'adhd focus app' within 9 months",
+    "Ad ARPU within +/-20% of $0.23 by Month 6"
+  ],
+  "kill_criteria": [
+    "Base-case Month-9 Net Monthly Contribution < $2,000 after launch",
+    "Build takes >8 weeks or app is rejected from either store for policy reasons",
+    "Real ad fill / ATT impact drives ad ARPU below $0.15 at Month 6",
+    "Cannot rank in top 20 for a primary head or long-tail keyword by Month 6",
+    "D30 retention < 35% or D7 retention < 30% at Month 3"
+  ],
+  "unknowns": [
+    "Actual ad-network fill rates in Tier-1 productivity traffic post-ATT.",
+    "iOS ATT opt-in rate and its effect on ad attribution/eCPM.",
+    "Android AccessibilityService approval and Play Store policy for app blocking.",
+    "Organic ASO velocity and review-rate needed to rank for 'pomodoro timer' variants.",
+    "At the lower-bound organic ramp (~4,000 installs/month at Month 9), Month-9 net contribution falls to approximately $1,208 and the $2,000 target is not met; the base or upper install path is required to clear the gate."
+  ]
+}

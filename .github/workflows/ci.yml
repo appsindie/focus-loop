@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  checks:
+    name: governance-checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect Node project
+        id: node
+        run: |
+          if [ -f package.json ]; then
+            echo "present=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Setup Node
+        if: steps.node.outputs.present == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        if: steps.node.outputs.present == 'true'
+        run: npm ci
+        env:
+          # Required for @appsindie/* installs from GitHub Packages.
+          # GITHUB_TOKEN only reads packages owned by this repository, so cross-repo
+          # @appsindie dependencies need the org-level APPSINDIE_PACKAGES_TOKEN.
+          NODE_AUTH_TOKEN: ${{ secrets.APPSINDIE_PACKAGES_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Lint
+        if: steps.node.outputs.present == 'true'
+        run: npm run lint --if-present
+
+      - name: Typecheck
+        if: steps.node.outputs.present == 'true'
+        run: npm run typecheck --if-present
+
+      - name: Test
+        if: steps.node.outputs.present == 'true'
+        run: npm test --if-present
+
+      - name: Format check
+        if: steps.node.outputs.present == 'true'
+        run: npm run format:check --if-present
+
+      - name: Verify generic skills live in appsindie/devin-skills
+        run: |
+          grep -q "appsindie/devin-skills" docs/operations/DEVIN_SOFTWARE_FACTORY.md || (echo "DEVIN_SOFTWARE_FACTORY.md must reference appsindie/devin-skills for generic skills" && exit 1)
+
+      - name: Verify there is no second governance tree
+        run: |
+          if [ -d governance ]; then
+            echo ".agents/ is the only governance tree; remove governance/"
+            exit 1
+          fi
+
+      - name: Verify no traceability matrix
+        run: |
+          matches=$(find docs -iname '*traceability*' 2>/dev/null || true)
+          if [ -n "$matches" ]; then
+            echo "$matches"
+            echo "Traceability matrices are not used; living documents carry the truth."
+            exit 1
+          fi
+      - name: Verify AGENTS Core Policy is intact
+        run: |
+          test -f AGENTS.md || (echo "AGENTS.md missing" && exit 1)
+          grep -q "## Core Policy (do not remove)" AGENTS.md || (echo "AGENTS.md Core Policy heading missing" && exit 1)
+      - name: Verify package config resolves @appsindie from GitHub Packages
+        run: |
+          matches=$(find . -path ./node_modules -prune -o \
+            \( -name .npmrc -o -name package-lock.json -o -name yarn.lock -o -name pnpm-lock.yaml \) \
+            -exec grep -In -e "pkgs\.dev\.azure\.com" -e "pkgs\.visualstudio\.com" {} + || true)
+          if [ -n "$matches" ]; then
+            echo "$matches"
+            echo "Azure Artifacts reference found in package config; @appsindie must resolve from npm.pkg.github.com"
+            exit 1
+          fi

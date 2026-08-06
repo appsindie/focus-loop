@@ -1,0 +1,27 @@
+{
+  "//": "Merge into package.json. See .agents/skills/engineering/assets/verify/README.md.",
+
+  "//verify": "Everything deterministic. Green before every commit and every review fire.",
+  "//verify:fast": "Typecheck + lint only, for the per-file loop during generation.",
+  "//audit": "Time-varying — dependency CVEs. Slice completion, before each gate, weekly. NEVER per file.",
+
+  "scripts": {
+    "verify": "npm run verify:types && npm run verify:lint && npm run verify:format && npm run verify:deadcode && npm run verify:sast && npm run verify:secrets",
+    "verify:fast": "npm run verify:types && npm run verify:lint",
+
+    "verify:types": "tsc --noEmit",
+    "verify:lint": "eslint . --max-warnings 0",
+    "verify:format": "prettier --check .",
+    "verify:deadcode": "knip",
+    "verify:sast": "semgrep --config p/owasp-top-ten --config p/security-audit --error --quiet",
+    "verify:secrets": "gitleaks detect --no-banner --redact",
+
+    "audit": "osv-scanner scan source --recursive .",
+
+    "fix": "eslint . --fix && prettier --write ."
+  },
+
+  "//expo": "Expo apps add expo-doctor to verify: \"&& npx expo-doctor\"",
+  "//semgrep": "Pin the ruleset version once chosen. An auto-updating ruleset makes this check time-varying, and it then belongs in audit, not verify.",
+  "//fix": "`fix` is a convenience for humans and agents mid-slice. It is never a substitute for reading what changed."
+}

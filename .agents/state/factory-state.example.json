@@ -1,0 +1,43 @@
+{
+  "active_branch": "release/v1",
+  "gates": {
+    "0": {
+      "evidence": "research/i01/FINAL_DECISION.json",
+      "signed_at": "2026-08-05",
+      "signed_by": "justin.nguyen@appsindie.com",
+      "status": "passed"
+    },
+    "1": {
+      "evidence": "docs/product/PRODUCT_CONCEPT.md",
+      "signed_at": "2026-08-12",
+      "signed_by": "justin.nguyen@appsindie.com",
+      "status": "passed"
+    },
+    "2": {
+      "status": "open"
+    },
+    "3": {
+      "status": "open"
+    },
+    "4": {
+      "status": "open"
+    }
+  },
+  "hold": false,
+  "last_review": {
+    "fired_at": "2026-08-14T09:12:00Z",
+    "round_count": 1,
+    "routine": "code-review",
+    "session_url": "https://claude.ai/code/session_01HJKLMNOPQRSTUVWXYZ",
+    "verdict": "pass"
+  },
+  "next_action": "Run SIT regression per docs/qa/QA_PLAN.md, then request Gate 2.",
+  "open_exceptions": [],
+  "open_pr": "https://github.com/appsindie/focus-loop/pull/12",
+  "owner": "justin.nguyen@appsindie.com",
+  "phase": 2,
+  "product": "focus-loop",
+  "repo": "appsindie/focus-loop",
+  "schema_version": "1",
+  "updated_at": "2026-08-14T09:12:00Z"
+}

@@ -1,0 +1,31 @@
+{
+  "//": "Extend from this. See .agents/skills/engineering/assets/verify/README.md.",
+  "compilerOptions": {
+    "strict": true,
+
+    "//noUncheckedIndexedAccess": "Types arr[i] as T | undefined. The single most useful flag beyond `strict` — it catches the off-by-one and empty-collection reads that otherwise surface as a runtime crash on a user's device.",
+    "noUncheckedIndexedAccess": true,
+
+    "//exactOptionalPropertyTypes": "Distinguishes a missing property from one explicitly set to undefined. Matters wherever an object is serialised to an API.",
+    "exactOptionalPropertyTypes": true,
+
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "forceConsistentCasingInFileNames": true,
+
+    "//noUnusedLocals": "Left to ESLint, which understands the `_` prefix convention. Enabling both means two different errors for one problem.",
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "moduleResolution": "bundler",
+    "module": "esnext",
+    "target": "es2022",
+    "lib": ["es2022"],
+    "jsx": "react-jsx"
+  }
+}
