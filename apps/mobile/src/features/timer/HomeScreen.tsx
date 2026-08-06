@@ -8,6 +8,7 @@ type HomeScreenProps = {
   onSelectMinutes: (minutes: number) => void;
   onStart: () => void;
   onOpenSettings: () => void;
+  onOpenHistory: () => void;
   sessionsToday: number;
   streakDays: number;
 };
@@ -17,6 +18,7 @@ export function HomeScreen({
   onSelectMinutes,
   onStart,
   onOpenSettings,
+  onOpenHistory,
   sessionsToday,
   streakDays,
 }: HomeScreenProps) {
@@ -90,6 +92,17 @@ export function HomeScreen({
           </Text>
         </View>
       </View>
+
+      <Pressable
+        accessibilityLabel="View focus history"
+        accessibilityRole="button"
+        onPress={onOpenHistory}
+        style={styles.historyButton}
+      >
+        <Text style={styles.historyButtonText} allowFontScaling>
+          View history
+        </Text>
+      </Pressable>
     </View>
   );
 }
@@ -194,5 +207,16 @@ const styles = StyleSheet.create({
   statLabel: {
     ...typography.caption,
     color: colors.textMuted,
+  },
+  historyButton: {
+    alignSelf: "center",
+    marginTop: spacing.md,
+    padding: spacing.md,
+    minHeight: 48,
+    justifyContent: "center",
+  },
+  historyButtonText: {
+    ...typography.body,
+    color: colors.primary,
   },
 });

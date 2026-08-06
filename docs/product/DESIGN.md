@@ -70,10 +70,14 @@ This is the living design reference for the Focus Loop mobile app. It is intenti
 - Top bar: settings gear, streak pill.
 - Banner ad zone at bottom of setup (small, 50 dp height).
 
+![Home screen mockup](design/home-screen-mockup.png)
+
 ### S1.2 Timer running
 - Full-screen `TimerRing` with countdown `display`.
 - Pause / Cancel controls, 48 dp each.
 - Keep screen awake while timer is active.
+
+![Timer screen mockup](design/timer-screen-mockup.png)
 
 ### S1.3 Break / complete
 - Confetti-free: static success state.
@@ -84,10 +88,20 @@ This is the living design reference for the Focus Loop mobile app. It is intenti
 - Stat pills: duration, sessions today, streak.
 - Primary action: **Start another**.
 
+![Summary screen mockup](design/summary-screen-mockup.png)
+
+### S2.1 History
+- Reverse-chronological list of completed focus sessions.
+- Each row shows duration and completion date.
+
+![History screen mockup](design/history-screen-mockup.png)
+
 ### S5.1 Settings
 - Timer duration presets.
 - Sound / vibration toggles.
 - Theme selection (locked themes show rewarded-video unlock).
+
+![Settings screen mockup](design/settings-screen-mockup.png)
 
 ## 7. Motion & accessibility
 
@@ -104,6 +118,7 @@ This is the living design reference for the Focus Loop mobile app. It is intenti
 
 ## 9. Open design work
 
-- High-fidelity mockups for S1.1–S1.5 and S5.1–S5.2.
-- Brand icon, splash screen.
+- Brand icon and splash screen.
 - Rewarded unlock and widget preview screens.
+- Dark mode reference images.
+- App Store / Play Store screenshots and preview video.

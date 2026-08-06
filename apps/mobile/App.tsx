@@ -4,10 +4,12 @@ import { useCallback, useEffect, useState } from "react";
 import { requestNotificationPermissions } from "./src/features/notifications/NotificationScheduler";
 import { DEFAULT_SETTINGS, useSettings } from "./src/features/settings/useSettings";
 import { SettingsScreen } from "./src/features/settings/SettingsScreen";
+import { HistoryScreen } from "./src/features/timer/HistoryScreen";
 import { HomeScreen } from "./src/features/timer/HomeScreen";
 import { SummaryScreen } from "./src/features/timer/SummaryScreen";
 import { TimerScreen } from "./src/features/timer/TimerScreen";
 import {
+  CompletedSession,
   SessionStats,
   computeStats,
   loadSessions,
@@ -15,7 +17,7 @@ import {
 } from "./src/features/timer/SessionStore";
 import { useTimer } from "./src/features/timer/useTimer";
 
-type AppScreen = "home" | "timer" | "summary" | "settings";
+type AppScreen = "home" | "timer" | "summary" | "settings" | "history";
 
 function KeepAwakeActivator() {
   useKeepAwake();
@@ -32,23 +34,25 @@ export default function App() {
   } = useSettings();
   const [selectedMinutes, setSelectedMinutes] = useState(DEFAULT_SETTINGS.defaultDurationMinutes);
   const [stats, setStats] = useState<SessionStats>({ sessionsToday: 0, streakDays: 0 });
+  const [sessions, setSessions] = useState<CompletedSession[]>([]);
   const timer = useTimer();
+
+  const refreshSessions = useCallback(async () => {
+    const loaded = await loadSessions();
+    setSessions(loaded);
+    setStats(computeStats(loaded, new Date()));
+  }, []);
 
   useEffect(() => {
     void requestNotificationPermissions();
-    void loadSessions().then((sessions) => setStats(computeStats(sessions, new Date())));
-  }, []);
+    void refreshSessions();
+  }, [refreshSessions]);
 
   useEffect(() => {
     if (!settingsLoading) {
       setSelectedMinutes(settings.defaultDurationMinutes);
     }
   }, [settings.defaultDurationMinutes, settingsLoading]);
-
-  const refreshStats = useCallback(async () => {
-    const sessions = await loadSessions();
-    setStats(computeStats(sessions, new Date()));
-  }, []);
 
   const handleStart = useCallback(() => {
     void timer.start(selectedMinutes * 60);
@@ -59,10 +63,10 @@ export default function App() {
     timer.complete();
     if (timer.startedAt) {
       await recordSession(timer.startedAt, timer.durationSeconds);
-      await refreshStats();
+      await refreshSessions();
     }
     setScreen("summary");
-  }, [timer, refreshStats]);
+  }, [timer, refreshSessions]);
 
   const handleCancel = useCallback(() => {
     timer.cancel();
@@ -77,7 +81,11 @@ export default function App() {
     setScreen("settings");
   }, []);
 
-  const handleBackFromSettings = useCallback(() => {
+  const handleOpenHistory = useCallback(() => {
+    setScreen("history");
+  }, []);
+
+  const handleBackToHome = useCallback(() => {
     setScreen("home");
   }, []);
 
@@ -95,6 +103,7 @@ export default function App() {
           onSelectMinutes={setSelectedMinutes}
           onStart={handleStart}
           onOpenSettings={handleOpenSettings}
+          onOpenHistory={handleOpenHistory}
           sessionsToday={stats.sessionsToday}
           streakDays={stats.streakDays}
         />
@@ -118,12 +127,13 @@ export default function App() {
           onStartAnother={handleStartAnother}
         />
       )}
+      {screen === "history" && <HistoryScreen sessions={sessions} onBack={handleBackToHome} />}
       {screen === "settings" && (
         <SettingsScreen
           settings={settings}
           onChange={updateSettings}
           onSave={() => void handleSaveSettings()}
-          onBack={handleBackFromSettings}
+          onBack={handleBackToHome}
         />
       )}
       <StatusBar style="auto" />
