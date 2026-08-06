@@ -25,7 +25,7 @@
   "last_review": null,
   "next_action": "Open release/v1 -> main draft PR; fire shaping reviewer; then move to product-design and build planning.",
   "open_exceptions": [],
-  "open_pr": null,
+  "open_pr": "https://github.com/appsindie/focus-loop/pull/1",
   "owner": "justin.nguyen@appsindie.com",
   "phase": 1,
   "product": "focus-loop",
