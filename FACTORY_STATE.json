@@ -23,7 +23,7 @@
   },
   "hold": false,
   "last_review": null,
-  "next_action": "Draft PRODUCT_CONCEPT.md and PRODUCT_SPEC_LIVE.md for Gate 1; open release/v1 -> main draft PR; fire shaping reviewer.",
+  "next_action": "Open release/v1 -> main draft PR; fire shaping reviewer; then move to product-design and build planning.",
   "open_exceptions": [],
   "open_pr": null,
   "owner": "justin.nguyen@appsindie.com",

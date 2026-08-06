@@ -1,4 +1,4 @@
-# Focus Loop — Product Spec (journey & screen level), v1 draft
+# Focus Loop — Product Spec (journey & screen level), v1.0 shaping
 
 Concept, scope cuts, phases, business acceptance criteria and success metrics live in `PRODUCT_CONCEPT.md` and are **not repeated here**.
 Design system and UI/UX standards: to be recorded in `DESIGN.md`.

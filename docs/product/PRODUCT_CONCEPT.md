@@ -1,4 +1,4 @@
-# Focus Loop — Product Concept (v1 draft)
+# Focus Loop — Product Concept (v1.0 shaping)
 
 High-level concept for the I01 opportunity approved at Gate 0. Journey and screen detail lives in `PRODUCT_SPEC_LIVE.md`.
 
@@ -80,8 +80,8 @@ Order is a dependency constraint: no MMP premium until MVP retention and ads are
 ## 6. Design & brand
 
 - Design system / brand source: AppsIndie shared design tokens (to be formalised; start with the minimal, high-contrast ADHD-friendly palette: large tap targets, clear type, reduced motion by default).
-- Design tool project: Figma — to be created for mobile screens and widget.
-- Screens done / still missing: none done; widget, home, timer, break, stats, settings, rewarded unlock screens needed.
+- Design tool project: Figma — `Focus Loop Mobile v1`.
+- Screens done / still missing: wireframes pending; all screens listed in `PRODUCT_SPEC_LIVE.md` need high-fidelity mockups before Gate 2.
 
 ## 7. Open questions
 
