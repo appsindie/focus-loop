@@ -22,7 +22,13 @@
     }
   },
   "hold": false,
-  "last_review": null,
+  "last_review": {
+    "fired_at": "2026-08-06T16:20:00Z",
+    "round_count": 1,
+    "routine": "shaping",
+    "session_url": "https://claude.ai/code/session_014DEuxjSusV6yCjHU5v9HT9",
+    "verdict": "pending"
+  },
   "next_action": "Open release/v1 -> main draft PR; fire shaping reviewer; then move to product-design and build planning.",
   "open_exceptions": [],
   "open_pr": "https://github.com/appsindie/focus-loop/pull/1",
