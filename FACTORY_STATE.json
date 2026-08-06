@@ -23,10 +23,10 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-08-06T16:20:00Z",
-    "round_count": 1,
+    "fired_at": "2026-08-06T16:25:00Z",
+    "round_count": 2,
     "routine": "shaping",
-    "session_url": "https://claude.ai/code/session_014DEuxjSusV6yCjHU5v9HT9",
+    "session_url": "https://claude.ai/code/session_01LcrHDzQQ29tiSEUZTRzmHt",
     "verdict": "pending"
   },
   "next_action": "Open release/v1 -> main draft PR; fire shaping reviewer; then move to product-design and build planning.",
