@@ -7,6 +7,7 @@ type HomeScreenProps = {
   selectedMinutes: number;
   onSelectMinutes: (minutes: number) => void;
   onStart: () => void;
+  onOpenSettings: () => void;
   sessionsToday: number;
   streakDays: number;
 };
@@ -15,12 +16,26 @@ export function HomeScreen({
   selectedMinutes,
   onSelectMinutes,
   onStart,
+  onOpenSettings,
   sessionsToday,
   streakDays,
 }: HomeScreenProps) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Focus Loop</Text>
+      <View style={styles.header}>
+        <Text style={styles.title}>Focus Loop</Text>
+        <Pressable
+          accessibilityLabel="Open settings"
+          accessibilityRole="button"
+          onPress={onOpenSettings}
+          style={styles.settingsButton}
+        >
+          <Text style={styles.settingsButtonText} allowFontScaling>
+            Settings
+          </Text>
+        </Pressable>
+      </View>
+
       <Text style={styles.subtitle}>Choose a session length</Text>
 
       <View style={styles.presets}>
@@ -87,11 +102,28 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xxl,
     justifyContent: "center",
   },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    position: "absolute",
+    top: spacing.xxl,
+    left: spacing.lg,
+    right: spacing.lg,
+  },
   title: {
     ...typography.title,
     color: colors.text,
-    textAlign: "center",
-    marginBottom: spacing.sm,
+  },
+  settingsButton: {
+    minHeight: 48,
+    minWidth: 48,
+    justifyContent: "center",
+    alignItems: "flex-end",
+  },
+  settingsButtonText: {
+    ...typography.body,
+    color: colors.primary,
   },
   subtitle: {
     ...typography.body,
