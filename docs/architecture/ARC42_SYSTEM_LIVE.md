@@ -10,7 +10,7 @@
 - Offline-first core timer; no backend needed for MVP.
 - Sub-1.5-second cold start.
 - Accurate timer even when backgrounded.
-- Reusable timer engine and widget architecture for I04 Routine Clock.
+- Reusable timer engine and widget architecture *if* it can be achieved without extra abstraction; I04 Routine Clock is not a committed consumer until it clears its own Gate 0.
 
 **Stakeholders**
 - Product owner: justin.nguyen@appsindie.com
