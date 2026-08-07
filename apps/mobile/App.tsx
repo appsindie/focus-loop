@@ -35,7 +35,11 @@ export default function App() {
   const [selectedMinutes, setSelectedMinutes] = useState(DEFAULT_SETTINGS.defaultDurationMinutes);
   const [stats, setStats] = useState<SessionStats>({ sessionsToday: 0, streakDays: 0 });
   const [sessions, setSessions] = useState<CompletedSession[]>([]);
-  const timer = useTimer();
+
+  const timer = useTimer({
+    soundEnabled: settings.soundEnabled,
+    vibrationEnabled: settings.vibrationEnabled,
+  });
 
   const refreshSessions = useCallback(async () => {
     const loaded = await loadSessions();
@@ -54,19 +58,23 @@ export default function App() {
     }
   }, [settings.defaultDurationMinutes, settingsLoading]);
 
+  useEffect(() => {
+    const startedAt = timer.startedAt;
+    const durationSeconds = timer.durationSeconds;
+    if (timer.state !== "completed" || startedAt == null || durationSeconds === 0) {
+      return;
+    }
+    void (async () => {
+      await recordSession(startedAt, durationSeconds);
+      await refreshSessions();
+      setScreen("summary");
+    })();
+  }, [timer.state, timer.startedAt, timer.durationSeconds, refreshSessions]);
+
   const handleStart = useCallback(() => {
     void timer.start(selectedMinutes * 60);
     setScreen("timer");
   }, [selectedMinutes, timer]);
-
-  const handleComplete = useCallback(async () => {
-    timer.complete();
-    if (timer.startedAt) {
-      await recordSession(timer.startedAt, timer.durationSeconds);
-      await refreshSessions();
-    }
-    setScreen("summary");
-  }, [timer, refreshSessions]);
 
   const handleCancel = useCallback(() => {
     timer.cancel();
@@ -117,7 +125,6 @@ export default function App() {
             onPause={timer.pause}
             onResume={() => void timer.resume()}
             onCancel={handleCancel}
-            onComplete={() => void handleComplete()}
           />
         </>
       )}

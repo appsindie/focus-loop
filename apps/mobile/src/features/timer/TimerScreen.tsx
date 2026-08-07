@@ -9,7 +9,6 @@ type TimerScreenProps = {
   onPause: () => void;
   onResume: () => void;
   onCancel: () => void;
-  onComplete: () => void;
 };
 
 export function TimerScreen({
@@ -18,13 +17,14 @@ export function TimerScreen({
   onPause,
   onResume,
   onCancel,
-  onComplete,
 }: TimerScreenProps) {
   const isRunning = state === "running";
+  const isCompleted = state === "completed";
+  const title = isCompleted ? "Completed" : isRunning ? "Focusing" : "Paused";
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{isRunning ? "Focusing" : "Paused"}</Text>
+      <Text style={styles.title}>{title}</Text>
 
       <View style={styles.ring}>
         <Text style={styles.timerText} allowFontScaling>
@@ -32,54 +32,47 @@ export function TimerScreen({
         </Text>
       </View>
 
-      <View style={styles.controls}>
-        {isRunning ? (
+      {isCompleted ? (
+        <Text style={styles.completedText} allowFontScaling>
+          Focus session complete
+        </Text>
+      ) : (
+        <View style={styles.controls}>
+          {isRunning ? (
+            <Pressable
+              accessibilityLabel="Pause focus session"
+              accessibilityRole="button"
+              onPress={onPause}
+              style={[styles.controlButton, { backgroundColor: colors.accent }]}
+            >
+              <Text style={styles.controlButtonText} allowFontScaling>
+                Pause
+              </Text>
+            </Pressable>
+          ) : (
+            <Pressable
+              accessibilityLabel="Resume focus session"
+              accessibilityRole="button"
+              onPress={onResume}
+              style={[styles.controlButton, { backgroundColor: colors.primary }]}
+            >
+              <Text style={styles.controlButtonText} allowFontScaling>
+                Resume
+              </Text>
+            </Pressable>
+          )}
+
           <Pressable
-            accessibilityLabel="Pause focus session"
+            accessibilityLabel="Cancel focus session"
             accessibilityRole="button"
-            onPress={onPause}
-            style={[styles.controlButton, { backgroundColor: colors.accent }]}
+            onPress={onCancel}
+            style={[styles.controlButton, { backgroundColor: colors.danger }]}
           >
             <Text style={styles.controlButtonText} allowFontScaling>
-              Pause
+              Cancel
             </Text>
           </Pressable>
-        ) : (
-          <Pressable
-            accessibilityLabel="Resume focus session"
-            accessibilityRole="button"
-            onPress={onResume}
-            style={[styles.controlButton, { backgroundColor: colors.primary }]}
-          >
-            <Text style={styles.controlButtonText} allowFontScaling>
-              Resume
-            </Text>
-          </Pressable>
-        )}
-
-        <Pressable
-          accessibilityLabel="Cancel focus session"
-          accessibilityRole="button"
-          onPress={onCancel}
-          style={[styles.controlButton, { backgroundColor: colors.danger }]}
-        >
-          <Text style={styles.controlButtonText} allowFontScaling>
-            Cancel
-          </Text>
-        </Pressable>
-      </View>
-
-      {process.env.NODE_ENV === "development" && (
-        <Pressable
-          accessibilityLabel="Complete focus session"
-          accessibilityRole="button"
-          onPress={onComplete}
-          style={styles.devCompleteButton}
-        >
-          <Text style={styles.devCompleteText} allowFontScaling>
-            Dev: complete
-          </Text>
-        </Pressable>
+        </View>
       )}
     </View>
   );
@@ -129,12 +122,8 @@ const styles = StyleSheet.create({
     ...typography.headline,
     color: colors.primaryText,
   },
-  devCompleteButton: {
-    marginTop: spacing.xl,
-    padding: spacing.md,
-  },
-  devCompleteText: {
-    ...typography.caption,
+  completedText: {
+    ...typography.body,
     color: colors.textMuted,
   },
 });

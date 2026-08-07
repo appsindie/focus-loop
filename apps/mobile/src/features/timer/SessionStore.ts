@@ -20,6 +20,25 @@ function startOfDayTimestamp(date: Date): number {
   return copy.getTime();
 }
 
+function previousDayTimestamp(timestamp: number): number {
+  const date = new Date(timestamp);
+  date.setDate(date.getDate() - 1);
+  return startOfDayTimestamp(date);
+}
+
+function isCompletedSession(value: unknown): value is CompletedSession {
+  if (typeof value !== "object" || value == null) {
+    return false;
+  }
+  const candidate = value as Record<string, unknown>;
+  return (
+    typeof candidate["id"] === "string" &&
+    typeof candidate["startedAt"] === "string" &&
+    typeof candidate["endedAt"] === "string" &&
+    typeof candidate["durationSeconds"] === "number"
+  );
+}
+
 export async function loadSessions(): Promise<CompletedSession[]> {
   try {
     const raw = await AsyncStorage.getItem(SESSIONS_KEY);
@@ -27,10 +46,10 @@ export async function loadSessions(): Promise<CompletedSession[]> {
       return [];
     }
     const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) {
+    if (!Array.isArray(parsed) || !parsed.every(isCompletedSession)) {
       return [];
     }
-    return parsed as CompletedSession[];
+    return parsed;
   } catch {
     return [];
   }
@@ -63,7 +82,7 @@ export function computeStreak(sessions: CompletedSession[], now: Date): number {
   const uniqueDays = Array.from(uniqueDayTimestamps).sort((a, b) => b - a);
 
   const today = startOfDayTimestamp(now);
-  const yesterday = today - 24 * 60 * 60 * 1000;
+  const yesterday = previousDayTimestamp(today);
   const mostRecentDay = uniqueDays[0];
 
   if (mostRecentDay == null) {
@@ -76,9 +95,9 @@ export function computeStreak(sessions: CompletedSession[], now: Date): number {
 
   let streak = 1;
   for (let i = 1; i < uniqueDays.length; i += 1) {
-    const previousDay = uniqueDays[i - 1]! - 24 * 60 * 60 * 1000;
+    const expectedPreviousDay = previousDayTimestamp(uniqueDays[i - 1]!);
     const currentDay = uniqueDays[i]!;
-    if (currentDay === previousDay) {
+    if (currentDay === expectedPreviousDay) {
       streak += 1;
     } else {
       break;

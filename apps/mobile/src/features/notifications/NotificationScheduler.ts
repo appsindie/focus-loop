@@ -13,18 +13,26 @@ export async function requestNotificationPermissions(): Promise<boolean> {
   return status === PermissionStatus.GRANTED;
 }
 
-export async function scheduleTimerCompletionNotification(seconds: number): Promise<void> {
+export async function scheduleTimerCompletionNotification(
+  seconds: number,
+  soundEnabled = true,
+): Promise<void> {
   await cancelTimerNotification();
+
+  const scheduledSeconds = Math.max(0, Math.ceil(seconds));
+  if (scheduledSeconds <= 0) {
+    return;
+  }
 
   const id = await Notifications.scheduleNotificationAsync({
     content: {
       title: "Focus Loop",
       body: "Focus session complete. Time for a break.",
-      sound: true,
+      sound: soundEnabled,
     },
     trigger: {
       type: SchedulableTriggerInputTypes.TIME_INTERVAL,
-      seconds,
+      seconds: scheduledSeconds,
     },
   });
 
