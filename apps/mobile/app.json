@@ -94,6 +94,12 @@
           ]
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "592916ef-5e3c-4257-b853-cbcf0d21aa78"
+      }
+    },
+    "owner": "appsindie"
   }
 }
