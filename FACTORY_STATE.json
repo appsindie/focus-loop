@@ -28,10 +28,10 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-08-08T13:11:00Z",
-    "round_count": 3,
+    "fired_at": "2026-08-07T14:56:05Z",
+    "round_count": 4,
     "routine": "release",
-    "session_url": "https://claude.ai/code/session_016FHV24vY2y9uQ9gJGkwSMh",
+    "session_url": "https://claude.ai/code/session_01PCXE64sb6YXs4SQCR6pMXN",
     "verdict": "pending"
   },
   "next_action": "Addressed release review round 3 findings REL-01/02/03; re-fire release review. Remaining Phase 3 work: resolve any new review findings, replace test AdMob IDs with production IDs, run EAS pipeline and native QA, then proceed to Gate 3.",
