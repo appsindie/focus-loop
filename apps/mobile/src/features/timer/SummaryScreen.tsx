@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useInterstitialAd } from "../ads/useInterstitialAd";
 import { colors, radii, spacing, typography } from "../../shared/theme";
 import { formatTime } from "./formatTime";
 
@@ -8,6 +9,8 @@ type SummaryScreenProps = {
 };
 
 export function SummaryScreen({ durationSeconds, onStartAnother }: SummaryScreenProps) {
+  useInterstitialAd();
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Session complete</Text>

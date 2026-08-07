@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "405329001357",
+    "project_id": "focus-loop-3db4a",
+    "storage_bucket": "focus-loop-3db4a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405329001357:android:672a33c749e94346eb1bc4",
+        "android_client_info": {
+          "package_name": "com.appsindie.focusloop"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8kGOwTQV2bh4gPgLfcLVz1lLummJFcuI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

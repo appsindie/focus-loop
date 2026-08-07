@@ -16,6 +16,7 @@ import {
   recordSession,
 } from "./src/features/timer/SessionStore";
 import { useTimer } from "./src/features/timer/useTimer";
+import { AdsProvider } from "./src/features/ads/AdsProvider";
 
 type AppScreen = "home" | "timer" | "summary" | "settings" | "history";
 
@@ -104,7 +105,7 @@ export default function App() {
   }, [saveSettings, settings.defaultDurationMinutes]);
 
   return (
-    <>
+    <AdsProvider>
       {screen === "home" && (
         <HomeScreen
           selectedMinutes={selectedMinutes}
@@ -144,6 +145,6 @@ export default function App() {
         />
       )}
       <StatusBar style="auto" />
-    </>
+    </AdsProvider>
   );
 }

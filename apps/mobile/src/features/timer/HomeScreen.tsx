@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Banner } from "../ads/Banner";
 import { colors, radii, spacing, typography } from "../../shared/theme";
 
 const PRESETS = [15, 25, 45];
@@ -103,6 +104,10 @@ export function HomeScreen({
           View history
         </Text>
       </Pressable>
+
+      <View style={styles.banner}>
+        <Banner />
+      </View>
     </View>
   );
 }
@@ -218,5 +223,10 @@ const styles = StyleSheet.create({
   historyButtonText: {
     ...typography.body,
     color: colors.primary,
+  },
+  banner: {
+    marginTop: spacing.md,
+    alignItems: "center",
+    minHeight: 60,
   },
 });
