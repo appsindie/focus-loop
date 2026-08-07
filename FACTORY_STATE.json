@@ -34,7 +34,7 @@
     "session_url": "https://claude.ai/code/session_01PCXE64sb6YXs4SQCR6pMXN",
     "verdict": "APPROVE"
   },
-  "next_action": "Production AdMob IDs replaced in app.json and adsConfig.ts; EXCEPTION_REPORT and FACTORY_STATE updated to close RR-03. Release review remains APPROVED. Remaining Phase 3 work: run EAS pipeline and native QA, then proceed to Gate 3.",
+  "next_action": "EAS project initialized and Android preview build queued (ID: 6a3df2ba-3f6e-4139-97fc-46bedd9efc06). iOS preview build needs App Store Connect API key (key ID, issuer ID, .p8) and at least one registered device. Remaining Phase 3 work: complete EAS builds, run native QA, then proceed to Gate 3.",
   "open_exceptions": [
     {
       "blocking": true,
@@ -186,5 +186,5 @@
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-08-07T15:38:12Z"
+  "updated_at": "2026-08-07T15:45:34Z"
 }
