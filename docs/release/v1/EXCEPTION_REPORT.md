@@ -4,7 +4,7 @@
 
 **not ready** — v1.0.0, surfaces ios/android
 
-- Checks run: 26 — passed: 7, failed-and-remediated: 0, manual: 0, exceptions: 19
+- Checks run: 26 — passed: 6, failed-and-remediated: 0, manual: 0, exceptions: 20
 - Gate 3 decision needed: **yes**
 
 ## Exception summary
@@ -24,6 +24,7 @@
 | RR-11 | Internal testing build not produced                              | Internal testing                                          | justin.nguyen@appsindie.com | 2026-08-18 | block   |
 | RR-12 | Privacy / data-safety declaration not completed                  | Privacy delta                                             | justin.nguyen@appsindie.com | 2026-08-22 | block   |
 | RR-13 | Release record not completed                                     | Release notes, Changelog, Traceability                    | justin.nguyen@appsindie.com | 2026-08-12 | block   |
+| RR-14 | EAS / portal credentials not fully verified                      | Credentials                                               | justin.nguyen@appsindie.com | 2026-08-18 | block   |
 
 ## Exceptions
 
@@ -143,6 +144,15 @@
 - **Default if you say nothing**: blocks Gate 3.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-08-12
+
+### RR-14. EAS / portal credentials not fully verified
+
+- **Situation**: `npx eas-cli whoami` confirmed the `EXPO_TOKEN` is valid (account: tuan3.nguyen@gmail.com). The `EXPO_APPLE_ID` / Apple App Store Connect credentials have not been verified for expiry or access.
+- **Options**: A — verify Apple ID / App Store Connect credentials in portal before Gate 3. B — verify before first store submission.
+- **Recommendation**: A before Gate 3 if production rollout is the goal; B is acceptable if this release stops at internal testing.
+- **Default if you say nothing**: blocks store submission.
+- **Owner**: justin.nguyen@appsindie.com
+- **Deadline**: 2026-08-18
 
 ## What ships
 

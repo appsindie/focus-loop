@@ -9,12 +9,12 @@
 
 ## Functional
 
-| Item                  | Check                                      | Status    | Evidence                                                                                                         |
-| --------------------- | ------------------------------------------ | --------- | ---------------------------------------------------------------------------------------------------------------- |
-| SIT regression        | QA plan run recorded in `docs/qa/`         | exception | Web-preview E2E completed (`docs/qa/v1-e2e-test-report.md`). Native device SIT not yet run.                      |
-| Failure-mode cases    | `docs/qa/` failure-mode suite results      | exception | Cancel regression passed; ad load-failure graceful handling not yet verified on device.                          |
-| Open defects          | Defect list for this version               | pass      | No open defects. Gate 2 exception E1 was deferred and closed.                                                    |
-| Third-party sandboxes | SIT config points at real vendor sandboxes | pass      | Google official `TestIds` are real AdMob sandbox IDs, not mocks; Firebase `focus-loop-3db4a` project configured. |
+| Item                  | Check                                      | Status    | Evidence                                                                                                                      |
+| --------------------- | ------------------------------------------ | --------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| SIT regression        | QA plan run recorded in `docs/qa/`         | exception | Web-preview E2E completed (`docs/qa/v1-e2e-test-report.md`). Native device SIT not yet run.                                   |
+| Failure-mode cases    | `docs/qa/` failure-mode suite results      | exception | Cancel regression passed; ad load-failure graceful handling not yet verified on device.                                       |
+| Open defects          | Defect list for this version               | pass      | No open defects. Gate 2 exception E1 deferred/closed: https://github.com/appsindie/focus-loop/pull/1#issuecomment-5211987117. |
+| Third-party sandboxes | SIT config points at real vendor sandboxes | pass      | Google official `TestIds` are real AdMob sandbox IDs, not mocks; Firebase `focus-loop-3db4a` project configured.              |
 
 ## Rollback
 
@@ -36,12 +36,12 @@
 
 ## Security and privacy
 
-| Item                     | Check                             | Status    | Evidence                                                                                           |
-| ------------------------ | --------------------------------- | --------- | -------------------------------------------------------------------------------------------------- |
-| Findings by severity     | `security` skill output           | pass      | `docs/security/ads-integration-security-review.md`: no critical/high findings, one low (test IDs). |
-| Deferred `high` findings | Deferral record                   | pass      | None.                                                                                              |
-| Secrets                  | Scan diff and variable files      | pass      | No secrets in repo; `.npmrc` uses `NODE_AUTH_TOKEN` env var; Firebase keys are client public keys. |
-| Privacy delta            | Data-safety / privacy declaration | exception | Store privacy/permissions declarations not yet completed for v1.                                   |
+| Item                     | Check                             | Status    | Evidence                                                                                                                         |
+| ------------------------ | --------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Findings by severity     | `security` skill output           | pass      | `docs/security/ads-integration-security-review.md`: no critical/high findings, one low (test IDs).                               |
+| Deferred `high` findings | Deferral record                   | pass      | None.                                                                                                                            |
+| Secrets                  | Scan diff and variable files      | pass      | No secrets in repo per `docs/security/ads-integration-security-review.md` (Disclosure); `.npmrc` uses `NODE_AUTH_TOKEN` env var. |
+| Privacy delta            | Data-safety / privacy declaration | exception | Store privacy/permissions declarations not yet completed for v1.                                                                 |
 
 ## Data
 
@@ -53,12 +53,12 @@ Not applicable — v1 uses Expo managed workflow and Firebase/AdMob SaaS; no Ter
 
 ## Store compliance (mobile)
 
-| Item             | Check                                         | Status    | Evidence                                                         |
-| ---------------- | --------------------------------------------- | --------- | ---------------------------------------------------------------- |
-| Store agreements | `manual` — portal status                      | exception | Not verified by a human yet.                                     |
-| Credentials      | EAS / portal credential validity              | pass      | `EXPO_TOKEN` and `EXPO_APPLE_ID` are provisioned in org secrets. |
-| Declarations     | Privacy, permissions, data safety, age rating | exception | Declarations not yet drafted for ATT, notifications, and ads.    |
-| Internal testing | Build present in internal testing             | exception | No EAS build produced yet.                                       |
+| Item             | Check                                         | Status    | Evidence                                                                                                                               |
+| ---------------- | --------------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Store agreements | `manual` — portal status                      | exception | Not verified by a human yet.                                                                                                           |
+| Credentials      | EAS / portal credential validity              | exception | `npx eas-cli whoami` confirms EXPO_TOKEN is valid (account: tuan3.nguyen@gmail.com). Apple ID / store credentials expiry not verified. |
+| Declarations     | Privacy, permissions, data safety, age rating | exception | Declarations not yet drafted for ATT, notifications, and ads.                                                                          |
+| Internal testing | Build present in internal testing             | exception | No EAS build produced yet.                                                                                                             |
 
 ## Release record
 
@@ -78,5 +78,5 @@ Not applicable — v1 uses Expo managed workflow and Firebase/AdMob SaaS; no Ter
 
 ## Tally
 
-- **Checks run / passed / failed-and-remediated / manual / exception**: 26 / 7 / 0 / 0 / 19
-- **Exceptions raised**: 19 (all documented above)
+- **Checks run / passed / failed-and-remediated / manual / exception**: 26 / 6 / 0 / 0 / 20
+- **Exceptions raised**: 20 (all documented above)

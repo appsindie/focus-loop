@@ -34,7 +34,7 @@
     "session_url": "https://claude.ai/code/session_016FHV24vY2y9uQ9gJGkwSMh",
     "verdict": "pending"
   },
-  "next_action": "Release review round 3 fired; awaiting verdict. Remaining Phase 3 work: resolve review findings, replace test AdMob IDs with production IDs, run EAS pipeline and native QA, then proceed to Gate 3.",
+  "next_action": "Addressed release review round 3 findings REL-01/02/03; re-fire release review. Remaining Phase 3 work: resolve any new review findings, replace test AdMob IDs with production IDs, run EAS pipeline and native QA, then proceed to Gate 3.",
   "open_exceptions": [
     {
       "blocking": true,
@@ -178,6 +178,17 @@
       "severity": "high",
       "title": "Release record not completed",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-08-18",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-14",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "EAS / portal credentials not fully verified",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
     }
   ],
   "open_pr": "https://github.com/appsindie/focus-loop/pull/1",
@@ -186,5 +197,5 @@
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-08-08T13:11:00Z"
+  "updated_at": "2026-08-07T14:56:05Z"
 }
