@@ -1,0 +1,38 @@
+# Focus Loop v1 — Core Focus Journey E2E Test Plan
+
+## Preconditions
+
+- Repo `/home/ubuntu/repos/focus-loop` is on branch `release/v1`.
+- Dependencies installed (`npm install` at root, `postinstall` installs `apps/mobile`).
+- `npm run verify` passes.
+- Expo web dev server running at `http://localhost:8081`.
+- Chrome opened with a fresh profile so `AsyncStorage`/`localStorage` is empty.
+
+## Test 1: Settings-driven 1-minute focus session (happy path)
+
+| Step | Action                                                                         | Expected result                                                                                                                                                                                                                                                        | Source evidence                                                  |
+| ---- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| 1.1  | Load `http://localhost:8081` in Chrome.                                        | Home screen renders: title **"Focus Loop"**, subtitle **"Choose a session length"**, three preset buttons **15 min**, **25 min** (selected/green), **45 min**, a primary **"Start Focus"** button, stats **"0 today"** and **"0 day streak"**, and **"View history"**. | `HomeScreen.tsx` L4, L44-64, L77-94                              |
+| 1.2  | Tap **"Settings"** (top right).                                                | Settings screen renders with **"Default focus length (minutes)" = 25**, **"Sound on completion" ON**, **"Vibration on completion" ON**, and an enabled **"Save"** button.                                                                                              | `SettingsScreen.tsx` L20-92, `SettingsStore.ts` L11              |
+| 1.3  | Change default focus length to **1**, turn **OFF** both toggles, tap **Save**. | App returns to Home.                                                                                                                                                                                                                                                   | `SettingsScreen.tsx` L44-88, `App.tsx` L100-104                  |
+| 1.4  | Tap **"Start Focus"**.                                                         | Timer screen appears with title **"Focusing"** and countdown **"01:00"**.                                                                                                                                                                                              | `TimerScreen.tsx` L21-31, `App.tsx` L119-128                     |
+| 1.5  | Wait ~2 seconds.                                                               | Countdown shows **"00:58"** or **"00:59"** and title stays **"Focusing"**.                                                                                                                                                                                             | `useTimer.ts` L75-84                                             |
+| 1.6  | Tap **"Pause"**.                                                               | Title changes to **"Paused"**, control button changes to **"Resume"**, and countdown stops.                                                                                                                                                                            | `TimerScreen.tsx` L35-63, `useTimer.ts` L106-115                 |
+| 1.7  | Wait ~3 seconds.                                                               | Displayed time does **not** decrease from the paused value.                                                                                                                                                                                                            | `useTimer.ts` L106-115 (pausedMsRef)                             |
+| 1.8  | Tap **"Resume"**.                                                              | Title returns to **"Focusing"** and countdown resumes.                                                                                                                                                                                                                 | `useTimer.ts` L117-133                                           |
+| 1.9  | Allow the 1-minute timer to reach **00:00**.                                   | Timer screen title changes to **"Completed"** and shows **"Focus session complete"**.                                                                                                                                                                                  | `TimerScreen.tsx` L22-37, `useTimer.ts` L51-64, L75-84           |
+| 1.10 | Wait for auto-transition.                                                      | **SummaryScreen** renders with **"Session complete"**, focused pill **"01:00"**, and **"Start another"**.                                                                                                                                                              | `App.tsx` L61-72 (onComplete effect), `SummaryScreen.tsx` L10-36 |
+| 1.11 | Tap **"Start another"**.                                                       | Home shows **"1 today"** and **"1 day streak"**.                                                                                                                                                                                                                       | `App.tsx` L44-48, `SessionStore.ts` L91-119                      |
+| 1.12 | Tap **"View history"**.                                                        | History screen lists exactly **one** completed session with duration **"01:00"** and today's date.                                                                                                                                                                     | `HistoryScreen.tsx` L16-61                                       |
+
+## Test 2: Cancel regression
+
+| Step | Action                                                                     | Expected result                                                                             | Source evidence                          |
+| ---- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------- |
+| 2.1  | On Home (after Test 1), tap **"Start Focus"** (default is still 1 minute). | Timer screen appears with **"01:00"** and title **"Focusing"**.                             | `App.tsx` L74-77                         |
+| 2.2  | Tap **"Cancel"**.                                                          | App returns to Home immediately.                                                            | `App.tsx` L79-82, `useTimer.ts` L135-146 |
+| 2.3  | Check stats and history.                                                   | Stats remain **"1 today"** and **"1 day streak"**; history still shows exactly one session. | `SessionStore.ts` L62-76                 |
+
+## Non-UI verification
+
+- Run `npm run verify` at repo root. Pass criteria: `tsc --noEmit` exits 0, `eslint` exits 0, `jest --ci --coverage=false` reports all suites passed, `prettier --check .` reports no formatting issues.
