@@ -31,13 +31,24 @@
     "session_url": "https://claude.ai/code/session_011uYs6A79h8pvkcJ7SGn9VG",
     "verdict": "pass"
   },
-  "next_action": "Code-review passed (round 2). Request human Gate 2 signoff on PR #1.",
-  "open_exceptions": [],
+  "next_action": "E2E core journey passed on Expo web preview. Exception E1 tracks web-preview interaction regressions. Awaiting human decision / Gate 2 signoff on PR #1.",
+  "open_exceptions": [
+    {
+      "id": "E1",
+      "title": "Web preview mouse/keyboard interaction regressions and non-preset selection UI",
+      "severity": "medium",
+      "blocking": false,
+      "default_if_silent": "proceed",
+      "gate": 2,
+      "deadline": "2026-08-08",
+      "owner": "justin.nguyen@appsindie.com"
+    }
+  ],
   "open_pr": "https://github.com/appsindie/focus-loop/pull/1",
   "owner": "justin.nguyen@appsindie.com",
   "phase": 2,
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-08-07T00:40:00Z"
+  "updated_at": "2026-08-07T00:48:59Z"
 }
