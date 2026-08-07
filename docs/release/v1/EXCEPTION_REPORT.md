@@ -159,13 +159,14 @@
 - Focus Loop v1.0.0: Pomodoro timer with 15/25/45-minute presets, session history, streak, local notifications, and AdMob banner + interstitial ads.
 - Rollout plan: 5% → 25% → 100% on TestFlight / Play Console internal testing tracks, halting on thresholds in `docs/release/SLO_AND_ALERTING.md` once wired.
 - Rollback: mobile binary cannot be recalled; rollout is halted and a hotfix is submitted. Owner and command to be recorded in `RUNBOOK_mobile.md`.
+- Store submission and promotion to production App Store / Play Store remains a human action after Gate 3; this release artifact does not perform a store submission.
 
 ## Accepted risks carried into production
 
-| Risk                                                             | Accepted by                 | Date       | Revisit at                |
-| ---------------------------------------------------------------- | --------------------------- | ---------- | ------------------------- |
-| AdMob SDK collecting device/usage data per Google/Apple policies | justin.nguyen@appsindie.com | 2026-08-08 | Before store submission   |
-| Test AdMob IDs in QA builds                                      | justin.nguyen@appsindie.com | 2026-08-08 | Before production rollout |
+| Risk                                                             | Accepted by                 | Date       | Revisit at                                                                   |
+| ---------------------------------------------------------------- | --------------------------- | ---------- | ---------------------------------------------------------------------------- |
+| AdMob SDK collecting device/usage data per Google/Apple policies | justin.nguyen@appsindie.com | 2026-08-08 | Before store submission (`docs/security/ads-integration-security-review.md`) |
+| Test AdMob IDs in QA builds                                      | justin.nguyen@appsindie.com | 2026-08-08 | Before production rollout (RR-03)                                            |
 
 ## After the release
 

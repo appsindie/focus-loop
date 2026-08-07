@@ -36,12 +36,12 @@
 
 ## Security and privacy
 
-| Item                     | Check                             | Status    | Evidence                                                                                                                         |
-| ------------------------ | --------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| Findings by severity     | `security` skill output           | pass      | `docs/security/ads-integration-security-review.md`: no critical/high findings, one low (test IDs).                               |
-| Deferred `high` findings | Deferral record                   | pass      | None.                                                                                                                            |
-| Secrets                  | Scan diff and variable files      | pass      | No secrets in repo per `docs/security/ads-integration-security-review.md` (Disclosure); `.npmrc` uses `NODE_AUTH_TOKEN` env var. |
-| Privacy delta            | Data-safety / privacy declaration | exception | Store privacy/permissions declarations not yet completed for v1.                                                                 |
+| Item                     | Check                             | Status    | Evidence                                                                                                                          |
+| ------------------------ | --------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Findings by severity     | `security` skill output           | pass      | `docs/security/ads-integration-security-review.md`: no critical/high findings, three low (F01–F03, see doc for resolution notes). |
+| Deferred `high` findings | Deferral record                   | pass      | None.                                                                                                                             |
+| Secrets                  | Scan diff and variable files      | pass      | No secrets in repo per `docs/security/ads-integration-security-review.md` (Disclosure); `.npmrc` uses `NODE_AUTH_TOKEN` env var.  |
+| Privacy delta            | Data-safety / privacy declaration | exception | Store privacy/permissions declarations not yet completed for v1.                                                                  |
 
 ## Data
 
