@@ -34,14 +34,14 @@
   "next_action": "E2E core journey passed on Expo web preview. Exception E1 tracks web-preview interaction regressions. Awaiting human decision / Gate 2 signoff on PR #1.",
   "open_exceptions": [
     {
-      "id": "E1",
-      "title": "Web preview mouse/keyboard interaction regressions and non-preset selection UI",
-      "severity": "medium",
       "blocking": false,
+      "deadline": "2026-08-08",
       "default_if_silent": "proceed",
       "gate": 2,
-      "deadline": "2026-08-08",
-      "owner": "justin.nguyen@appsindie.com"
+      "id": "E1",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "medium",
+      "title": "Web preview mouse/keyboard interaction regressions and non-preset selection UI"
     }
   ],
   "open_pr": "https://github.com/appsindie/focus-loop/pull/1",
