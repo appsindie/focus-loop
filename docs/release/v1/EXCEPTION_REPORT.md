@@ -4,7 +4,7 @@
 
 **not ready** — v1.0.0, surfaces ios/android
 
-- Checks run: 26 — passed: 6, failed-and-remediated: 0, manual: 0, exceptions: 20
+- Checks run: 26 — passed: 6, failed-and-remediated: 0, manual: 0, exceptions: 20 (RR-03 resolved after production AdMob IDs were provided; 13 formal exceptions remain)
 - Gate 3 decision needed: **yes**
 
 ## Exception summary
@@ -13,7 +13,6 @@
 | ----- | ---------------------------------------------------------------- | --------------------------------------------------------- | --------------------------- | ---------- | ------- |
 | RR-01 | Native device SIT not run                                        | SIT regression                                            | justin.nguyen@appsindie.com | 2026-08-15 | block   |
 | RR-02 | Failure-mode cases not verified                                  | Failure-mode cases                                        | justin.nguyen@appsindie.com | 2026-08-15 | block   |
-| RR-03 | Production AdMob / Firebase IDs are test values                  | —                                                         | justin.nguyen@appsindie.com | 2026-08-18 | block   |
 | RR-04 | North-star events and dashboards not wired                       | North-star events, Dashboards                             | justin.nguyen@appsindie.com | 2026-08-20 | block   |
 | RR-05 | Alerts, rollout thresholds and rollback triggers not operational | Alerts wired, Rollout halt thresholds, Trigger conditions | justin.nguyen@appsindie.com | 2026-08-20 | block   |
 | RR-06 | Rollback command and owner not finalized                         | Rollback command, Rollback owner                          | justin.nguyen@appsindie.com | 2026-08-18 | block   |
@@ -45,15 +44,6 @@
 - **Default if you say nothing**: blocks Gate 3.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-08-15
-
-### RR-03. Production AdMob / Firebase IDs are test values
-
-- **Situation**: `app.json` and `src/features/ads/adsConfig.ts` use Google's test AdMob App IDs and ad unit IDs. Firebase project is configured for the correct package/bundle.
-- **Options**: A — provide production AdMob App IDs and ad unit IDs before store submission. B — keep test IDs for the next QA build and replace them before release.
-- **Recommendation**: B for QA, A before store submission.
-- **Default if you say nothing**: blocks production rollout; QA build can still proceed.
-- **Owner**: justin.nguyen@appsindie.com
-- **Deadline**: 2026-08-18
 
 ### RR-04. North-star events and dashboards not wired
 

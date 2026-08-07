@@ -50,11 +50,11 @@ the binary).
 
 ## Findings
 
-| ID | Severity | Finding | Resolution |
-|---|---|---|---|
-| F01 | LOW | Ad SDK errors are not surfaced in the UI. | All SDK load/show errors are swallowed/ignored by the wrapper and the app continues. |
-| F02 | LOW | ATT permission is requested one second after app start. | This is the standard placement; the copy is configured in `app.json`. No PII is collected before permission. |
-| F03 | LOW | Test AdMob IDs are committed. | They are replaced at release time with production IDs via `app.json` and `src/features/ads/adsConfig.ts`. |
+| ID  | Severity | Finding                                                 | Resolution                                                                                                                                       |
+| --- | -------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| F01 | LOW      | Ad SDK errors are not surfaced in the UI.               | All SDK load/show errors are swallowed/ignored by the wrapper and the app continues.                                                             |
+| F02 | LOW      | ATT permission is requested one second after app start. | This is the standard placement; the copy is configured in `app.json`. No PII is collected before permission.                                     |
+| F03 | LOW      | Test AdMob IDs are committed.                           | Production AdMob App IDs and ad unit IDs are now in `app.json` and `src/features/ads/adsConfig.ts`; `TestIds` are used only in `__DEV__` builds. |
 
 ## Outcome
 
