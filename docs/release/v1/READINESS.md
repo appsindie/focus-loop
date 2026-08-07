@@ -9,12 +9,12 @@
 
 ## Functional
 
-| Item                  | Check                                      | Status    | Evidence                                                                                    |
-| --------------------- | ------------------------------------------ | --------- | ------------------------------------------------------------------------------------------- |
-| SIT regression        | QA plan run recorded in `docs/qa/`         | exception | Web-preview E2E completed (`docs/qa/v1-e2e-test-report.md`). Native device SIT not yet run. |
-| Failure-mode cases    | `docs/qa/` failure-mode suite results      | exception | Cancel regression passed; ad load-failure graceful handling not yet verified on device.     |
-| Open defects          | Defect list for this version               | pass      | No open defects. Gate 2 exception E1 was deferred and closed.                               |
-| Third-party sandboxes | SIT config points at real vendor sandboxes | pass      | AdMob test IDs (`TestIds`) and Firebase `focus-loop-3db4a` sandbox configured.              |
+| Item                  | Check                                      | Status    | Evidence                                                                                                         |
+| --------------------- | ------------------------------------------ | --------- | ---------------------------------------------------------------------------------------------------------------- |
+| SIT regression        | QA plan run recorded in `docs/qa/`         | exception | Web-preview E2E completed (`docs/qa/v1-e2e-test-report.md`). Native device SIT not yet run.                      |
+| Failure-mode cases    | `docs/qa/` failure-mode suite results      | exception | Cancel regression passed; ad load-failure graceful handling not yet verified on device.                          |
+| Open defects          | Defect list for this version               | pass      | No open defects. Gate 2 exception E1 was deferred and closed.                                                    |
+| Third-party sandboxes | SIT config points at real vendor sandboxes | pass      | Google official `TestIds` are real AdMob sandbox IDs, not mocks; Firebase `focus-loop-3db4a` project configured. |
 
 ## Rollback
 
@@ -78,5 +78,5 @@ Not applicable — v1 uses Expo managed workflow and Firebase/AdMob SaaS; no Ter
 
 ## Tally
 
-- **Checks run / passed / failed-and-remediated / manual / exception**: 20 / 4 / 0 / 1 / 15
-- **Exceptions raised**: 15 (all documented above)
+- **Checks run / passed / failed-and-remediated / manual / exception**: 26 / 7 / 0 / 0 / 19
+- **Exceptions raised**: 19 (all documented above)
