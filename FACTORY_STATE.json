@@ -29,12 +29,12 @@
   "hold": false,
   "last_review": {
     "fired_at": "2026-08-08T13:11:00Z",
-    "round_count": 2,
+    "round_count": 3,
     "routine": "release",
-    "session_url": "https://claude.ai/code/session_01Jr2NisNWiJdBLGPsEg9hyL",
+    "session_url": "https://claude.ai/code/session_016FHV24vY2y9uQ9gJGkwSMh",
     "verdict": "pending"
   },
-  "next_action": "Updated readiness docs and FACTORY_STATE open_exceptions per release review round 2. Re-fire release review after verify.",
+  "next_action": "Release review round 3 fired; awaiting verdict. Remaining Phase 3 work: resolve review findings, replace test AdMob IDs with production IDs, run EAS pipeline and native QA, then proceed to Gate 3.",
   "open_exceptions": [
     {
       "id": "RR-01",
