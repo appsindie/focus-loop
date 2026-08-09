@@ -1,0 +1,19 @@
+{
+  "name": "focus-loop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Focus Loop — ad-light Pomodoro timer for adults with ADHD",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "postinstall": "cd apps/mobile && npm ci --silent",
+    "verify": "cd apps/mobile && npm run verify",
+    "verify:fast": "cd apps/mobile && npm run verify:fast",
+    "lint": "cd apps/mobile && npm run verify:lint",
+    "typecheck": "cd apps/mobile && npm run verify:types",
+    "test": "cd apps/mobile && npm test",
+    "format:check": "cd apps/mobile && npm run verify:format",
+    "fix": "cd apps/mobile && npm run fix"
+  }
+}

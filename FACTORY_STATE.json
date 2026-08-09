@@ -8,11 +8,16 @@
       "status": "passed"
     },
     "1": {
-      "evidence": "docs/product/PRODUCT_CONCEPT.md",
-      "status": "open"
+      "evidence": "docs/product/PRODUCT_CONCEPT.md, docs/product/MARKET_RESEARCH_LIVE.md",
+      "signed_at": "2026-08-06",
+      "signed_by": "justin.nguyen@appsindie.com",
+      "status": "passed"
     },
     "2": {
-      "status": "open"
+      "evidence": "https://github.com/appsindie/focus-loop/pull/1#issuecomment-5210571237",
+      "signed_at": "2026-08-07",
+      "signed_by": "justin.nguyen@appsindie.com",
+      "status": "passed"
     },
     "3": {
       "status": "open"
@@ -22,14 +27,164 @@
     }
   },
   "hold": false,
-  "last_review": null,
-  "next_action": "Draft PRODUCT_CONCEPT.md and PRODUCT_SPEC_LIVE.md for Gate 1; open release/v1 -> main draft PR; fire shaping reviewer.",
-  "open_exceptions": [],
-  "open_pr": null,
+  "last_review": {
+    "fired_at": "2026-08-07T15:02:59Z",
+    "round_count": 4,
+    "routine": "release",
+    "session_url": "https://claude.ai/code/session_01PCXE64sb6YXs4SQCR6pMXN",
+    "verdict": "APPROVE"
+  },
+  "next_action": "EAS project initialized and Android preview build queued (ID: 6a3df2ba-3f6e-4139-97fc-46bedd9efc06). iOS preview build needs App Store Connect API key (key ID, issuer ID, .p8) and at least one registered device. Remaining Phase 3 work: complete EAS builds, run native QA, then proceed to Gate 3.",
+  "open_exceptions": [
+    {
+      "blocking": true,
+      "deadline": "2026-08-15",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-01",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "Native device SIT not run",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-08-15",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-02",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "Failure-mode cases not verified",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-08-20",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-04",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "North-star events and dashboards not wired",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-08-20",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-05",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "Alerts, rollout thresholds and rollback triggers not operational",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-08-18",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-06",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "Rollback command and owner not finalized",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-08-20",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-07",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "Rollback not rehearsed",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-08-20",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-08",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "Runbook and escalation path not operational",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-08-22",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-09",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "Store agreements not verified",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-08-22",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-10",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "Store declarations not completed",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-08-18",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-11",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "Internal testing build not produced",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-08-22",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-12",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "Privacy / data-safety declaration not completed",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-08-12",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-13",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "Release record not completed",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-08-18",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-14",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "EAS / portal credentials not fully verified",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    }
+  ],
+  "open_pr": "https://github.com/appsindie/focus-loop/pull/1",
   "owner": "justin.nguyen@appsindie.com",
-  "phase": 1,
+  "phase": 3,
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-08-06T16:05:00Z"
+  "updated_at": "2026-08-07T15:45:34Z"
 }

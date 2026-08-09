@@ -15,7 +15,7 @@ Build Focus Loop with React Native inside Expo managed workflow. Use EAS Build f
 - One codebase for iOS + Android.
 - Fast iteration via Expo Go for timer logic and UI.
 - EAS handles certificates, builds, and submissions.
-- Aligns with AppsIndie default stack; reusable components for I04 Routine Clock.
+- Aligns with AppsIndie default stack; components may be reusable for I04 Routine Clock if that opportunity clears its own Gate 0, but no Focus Loop design decision is driven by it.
 
 **Negative**
 - Native modules (AccessibilityService, some ad SDKs) may require prebuild / config plugins.

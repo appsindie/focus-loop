@@ -1,0 +1,51 @@
+{
+  "name": "mobile",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "dependencies": {
+    "@appsindie/react-native-ads": "^3.0.0",
+    "@react-native-async-storage/async-storage": "^3.1.1",
+    "expo": "~57.0.11",
+    "expo-build-properties": "~57.0.0",
+    "expo-keep-awake": "^57.0.1",
+    "expo-notifications": "^57.0.9",
+    "expo-status-bar": "~57.0.1",
+    "expo-tracking-transparency": "~57.0.0",
+    "react": "19.2.3",
+    "react-dom": "^19.2.3",
+    "react-native": "0.86.2",
+    "react-native-google-mobile-ads": "^16.4.0",
+    "react-native-web": "^0.21.2"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@react-native/jest-preset": "^0.86.2",
+    "@testing-library/react-native": "^14.0.1",
+    "@types/jest": "^30.0.0",
+    "@types/react": "~19.2.2",
+    "eslint": "^10.8.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "jest": "^29.7.0",
+    "jest-expo": "^57.0.3",
+    "prettier": "^3.9.6",
+    "react-test-renderer": "^19.2.3",
+    "test-renderer": "^1.2.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.66.0"
+  },
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "verify": "npm run verify:types && npm run verify:lint && npm run verify:test && npm run verify:format",
+    "verify:fast": "npm run verify:types && npm run verify:lint",
+    "verify:types": "tsc --noEmit",
+    "verify:lint": "eslint . --max-warnings 0",
+    "verify:test": "jest --ci --coverage=false",
+    "verify:format": "prettier --check .",
+    "test": "jest --coverage=false",
+    "fix": "eslint . --fix && prettier --write ."
+  },
+  "private": true
+}
