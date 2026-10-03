@@ -1,0 +1,27 @@
+{
+  "$schema": "focus-loop/icons@1",
+  "source": "canvas 1791070597-62cf",
+  "grid": 24,
+  "stroke": { "width": 1.75, "linecap": "round", "linejoin": "round", "color": "currentColor" },
+  "note": "Each value is the inner SVG for <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">. Icons marked fill use fill=\"currentColor\" and no stroke.",
+  "icons": {
+    "stats": "<path d=\"M5 20V12M12 20V4M19 20v-5\"/>",
+    "settings": "<path d=\"M4 7h10M18 7h2M4 17h2M10 17h10\"/><circle cx=\"16\" cy=\"7\" r=\"2\"/><circle cx=\"8\" cy=\"17\" r=\"2\"/>",
+    "back": "<path d=\"M15 5l-7 7 7 7\"/>",
+    "close": "<path d=\"M6 6l12 12M18 6L6 18\"/>",
+    "chevron-right": "<path d=\"M9 6l6 6-6 6\"/>",
+    "external": "<path d=\"M7 17L17 7M9 7h8v8\"/>",
+    "plus": "<path d=\"M12 5v14M5 12h14\"/>",
+    "arrow-up": "<path d=\"M12 19V5M6 11l6-6 6 6\"/>",
+    "check": "<path d=\"M4 12l5 5L20 6\"/>",
+    "lock": "<rect x=\"5\" y=\"11\" width=\"14\" height=\"10\" rx=\"2\"/><path d=\"M8 11V8a4 4 0 0 1 8 0v3\"/>",
+    "pause": {
+      "fill": true,
+      "svg": "<rect x=\"6\" y=\"5\" width=\"4\" height=\"14\" rx=\"1\"/><rect x=\"14\" y=\"5\" width=\"4\" height=\"14\" rx=\"1\"/>"
+    },
+    "display-disc": {
+      "viewBox": "0 0 20 20",
+      "svg": "<circle cx=\"10\" cy=\"10\" r=\"8.5\" stroke-width=\"1.5\"/><path d=\"M10 10V1.5A8.5 8.5 0 0 1 18.1 12.6z\" fill=\"currentColor\" stroke=\"none\"/>"
+    }
+  }
+}

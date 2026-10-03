@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Focus Loop v2 — Strategy</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#B93C0A}a:hover{color:#9A3412}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1160px; box-sizing: border-box; padding: 64px 72px; background: #F3EEE5; color: #1C1915; font-family: 'Be Vietnam Pro', system-ui, sans-serif; display: flex; flex-direction: column">
+  <div style="display: flex; justify-content: space-between; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: #4A443C; padding-bottom: 14px; border-bottom: 1px solid #1C1915">
+    <div>Focus Loop v2 · thiết kế đề xuất</div>
+    <div>Gộp A + B + C · hai chế độ hiển thị</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 760px minmax(0, 1fr); column-gap: 72px; padding: 36px 0 32px; border-bottom: 1px solid #D8D0C2">
+    <h1 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 500; font-size: 68px; line-height: 1.02; letter-spacing: -0.02em">Một app,<br>hai cách nhìn thời gian.</h1>
+    <p style="margin: 0; align-self: end; font-size: 16px; line-height: 1.6; color: #4A443C">Mọi tính năng ở đây đều phải trả lời được: nó giúp người dùng quay lại vào ngày mai hay giúp app kiếm tiền mà không làm họ khó chịu? Quảng cáo và Premium chỉ xuất hiện sau khi người dùng đã nhận được giá trị, không bao giờ trong lúc họ đang tập trung.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 820px minmax(0, 1fr); column-gap: 56px; padding-top: 28px; flex-grow: 1">
+    <div style="display: flex; flex-direction: column">
+      <div style="display: grid; grid-template-columns: 220px minmax(0, 1fr) 170px; column-gap: 20px; padding-bottom: 10px; border-bottom: 1.5px solid #1C1915; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #4A443C">
+        <div>Người dùng nói</div><div>App làm gì</div><div>Đo bằng</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 220px minmax(0, 1fr) 170px; column-gap: 20px; padding: 14px 0; border-bottom: 1px solid #D8D0C2; font-size: 14px; line-height: 1.5">
+        <div style="font-family: 'Newsreader', Georgia, serif; font-size: 19px; line-height: 1.25">“Khó nhất là bắt đầu.”</div>
+        <div>Bắt đầu một chạm từ widget hoặc Live Activity. App nhớ nhịp lần trước. Ghi chú ý định là tuỳ chọn, không bắt buộc.</div>
+        <div style="color: #4A443C">Tỉ lệ bắt đầu phiên, % phiên từ widget</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 220px minmax(0, 1fr) 170px; column-gap: 20px; padding: 14px 0; border-bottom: 1px solid #D8D0C2; font-size: 14px; line-height: 1.5">
+        <div style="font-family: 'Newsreader', Georgia, serif; font-size: 19px; line-height: 1.25">“Tôi không cảm được thời gian trôi.”</div>
+        <div>Hai chế độ hiển thị, Đĩa và Số, đổi được ngay trên màn focus. Widget và Live Activity dùng cùng chế độ.</div>
+        <div style="color: #4A443C">Tỉ lệ hoàn thành phiên (mục tiêu ≥ 70%)</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 220px minmax(0, 1fr) 170px; column-gap: 20px; padding: 14px 0; border-bottom: 1px solid #D8D0C2; font-size: 14px; line-height: 1.5">
+        <div style="font-family: 'Newsreader', Georgia, serif; font-size: 19px; line-height: 1.25">“Một ý nghĩ là tôi mở app khác.”</div>
+        <div>“Later, not now”: ghi nhanh mà không rời màn hình. Ý nghĩ được giữ lại cho phiên sau.</div>
+        <div style="color: #4A443C">Tỉ lệ kết thúc sớm</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 220px minmax(0, 1fr) 170px; column-gap: 20px; padding: 14px 0; border-bottom: 1px solid #D8D0C2; font-size: 14px; line-height: 1.5">
+        <div style="font-family: 'Newsreader', Georgia, serif; font-size: 19px; line-height: 1.25">“Tôi quên nghỉ rồi kiệt sức.”</div>
+        <div>Vòng 4 × (focus + break) có tự chuyển. Break có màn hình riêng và gợi ý việc nên làm ngoài màn hình.</div>
+        <div style="color: #4A443C">Số vòng/ngày, D7</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 220px minmax(0, 1fr) 170px; column-gap: 20px; padding: 14px 0; border-bottom: 1px solid #D8D0C2; font-size: 14px; line-height: 1.5">
+        <div style="font-family: 'Newsreader', Georgia, serif; font-size: 19px; line-height: 1.25">“Mất streak là tôi bỏ luôn.”</div>
+        <div>Không có streak. Thay bằng số ngày focus trong tuần, đặt mục tiêu 4/7 ngày. Bỏ một ngày không làm mất gì.</div>
+        <div style="color: #4A443C">D30 (mục tiêu ≥ 42%)</div>
+      </div>
+      <div style="display: grid; grid-template-columns: 220px minmax(0, 1fr) 170px; column-gap: 20px; padding: 14px 0; font-size: 14px; line-height: 1.5">
+        <div style="font-family: 'Newsreader', Georgia, serif; font-size: 19px; line-height: 1.25">“Tôi muốn thấy mình tiến bộ.”</div>
+        <div>Mỗi phiên kết thúc bằng câu hỏi Finished / Moved forward / Got stuck. Cuối tuần có thẻ tổng kết để chia sẻ.</div>
+        <div style="color: #4A443C">Tỉ lệ share, cài đặt organic</div>
+      </div>
+
+      <div style="margin-top: 22px; padding: 22px 24px; background: #1C1915; color: #F3EEE5; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 32px">
+        <div style="grid-column: 1 / 3; font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: #F0A27F; margin-bottom: 10px">Hai chế độ hiển thị</div>
+        <div style="font-size: 14px; line-height: 1.55"><span style="font-family: 'Newsreader', Georgia, serif; font-size: 20px">Đĩa.</span> Dành cho người cần “thấy” thời gian. Đọc được từ xa 2m, không gây áp lực vì không có giây đếm ngược. Luôn kèm một dòng chữ “about 18 min left” cho screen reader.</div>
+        <div style="font-size: 14px; line-height: 1.55"><span style="font-family: 'Newsreader', Georgia, serif; font-size: 20px">Số.</span> Dành cho người cần con số chính xác. Phút hiển thị thật lớn, giây nhỏ hơn. Chọn chế độ ở lần mở app đầu tiên bằng chính thao tác bắt đầu phiên, nên không tốn thêm bước nào.</div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 22px">
+      <div>
+        <div style="font-family: 'Newsreader', Georgia, serif; font-size: 26px; font-weight: 500; padding-bottom: 8px; border-bottom: 1.5px solid #1C1915">Doanh thu</div>
+        <div style="padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 14px; line-height: 1.5"><span style="font-weight: 600">Banner:</span> chỉ ở cuối màn Home. Không bao giờ xuất hiện trên Focus hay Break.</div>
+        <div style="padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 14px; line-height: 1.5"><span style="font-weight: 600">Interstitial:</span> hiện khi rời màn hoàn thành vòng, hoặc sau phiên thứ 2 nếu chưa xong vòng. Tối đa 1 lần mỗi 30 phút. Không hiện trong 3 phiên đầu của người dùng mới để bảo vệ D1.</div>
+        <div style="padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 14px; line-height: 1.5"><span style="font-weight: 600">Rewarded:</span> dùng thử theme, âm thanh hoặc màu đĩa trong 24 giờ.</div>
+        <div style="padding: 11px 0; font-size: 14px; line-height: 1.5"><span style="font-weight: 600">Premium:</span> bỏ quảng cáo, thêm âm thanh và theme, xem toàn bộ lịch sử, thêm kiểu widget. Có gói năm và gói trọn đời. Paywall hiện lần đầu sau vòng hoàn thành đầu tiên, sau đó chỉ khi người dùng tự mở Settings hoặc chạm vào món bị khoá.</div>
+      </div>
+      <div>
+        <div style="font-family: 'Newsreader', Georgia, serif; font-size: 26px; font-weight: 500; padding-bottom: 8px; border-bottom: 1.5px solid #1C1915">Growth</div>
+        <div style="padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 14px; line-height: 1.5"><span style="font-weight: 600">Widget và Live Activity:</span> app hiện diện trên màn hình mỗi ngày, người xung quanh cũng nhìn thấy.</div>
+        <div style="padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 14px; line-height: 1.5"><span style="font-weight: 600">Thẻ tuần:</span> ảnh tỉ lệ story, có tên app, dành cho các cộng đồng ADHD và productivity.</div>
+        <div style="padding: 11px 0; font-size: 14px; line-height: 1.5"><span style="font-weight: 600">Xin đánh giá:</span> sau vòng hoàn thành thứ 3 có ít nhất một kết quả “Finished”, tức lúc người dùng đang vui.</div>
+      </div>
+      <div>
+        <div style="font-family: 'Newsreader', Georgia, serif; font-size: 26px; font-weight: 500; padding-bottom: 8px; border-bottom: 1.5px solid #1C1915">Nên A/B test</div>
+        <div style="padding: 11px 0; font-size: 14px; line-height: 1.6">Chế độ mặc định (Đĩa hay Số) khi người dùng bỏ qua màn chọn · Interstitial cuối vòng hay cuối phiên · Paywall sau vòng đầu tiên hay sau ngày thứ 3</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1160}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

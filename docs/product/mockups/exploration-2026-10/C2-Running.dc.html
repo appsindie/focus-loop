@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Visual Time — Running</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#FF8A5B}a:hover{color:#FFB08F}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 60px 24px 32px; background: #000000; color: #F2EFEA; font-family: 'Host Grotesk', system-ui, sans-serif; font-feature-settings: 'tnum'; display: flex; flex-direction: column; align-items: center">
+  <div style="font-size: 14px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: #8E8A85">Focus</div>
+
+  <button type="button" aria-label="About 18 minutes left. Tap to show minutes." style="margin-top: 72px; padding: 0; border: none; background: transparent; width: 310px; height: 310px; border-radius: 155px">
+    <div style="width: 310px; height: 310px; border-radius: 155px; background: conic-gradient(#FF6A2B 0deg 112deg, #121212 112deg 360deg)"></div>
+  </button>
+  <div style="margin-top: 22px; font-size: 15px; color: #8E8A85">Tap the disc to see minutes</div>
+
+  <div style="margin-top: 40px; display: flex; align-items: center; gap: 12px; font-size: 15px; color: #C9C4BD">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8E8A85" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2" width="10" height="20" rx="2"></rect><path d="M10 18h4"></path></svg>
+    Turn your phone face-down to dim it
+  </div>
+
+  <div style="margin-top: auto; width: 100%; display: flex; justify-content: space-between; align-items: center">
+    <button type="button" style="height: 56px; padding: 0 28px; border-radius: 28px; border: 1px solid #3A3733; background: transparent; color: #F2EFEA; font-family: inherit; font-size: 17px; font-weight: 600">Pause</button>
+    <div style="display: flex; align-items: center; gap: 12px">
+      <span style="font-size: 14px; color: #8E8A85">Hold to end</span>
+      <button type="button" aria-label="End session. Press and hold, or double-tap to confirm." style="position: relative; width: 64px; height: 64px; padding: 0; border: none; border-radius: 32px; background: #121212; color: #F2EFEA; display: flex; align-items: center; justify-content: center">
+        <svg width="64" height="64" viewBox="0 0 64 64" style="position: absolute; top: 0; left: 0" aria-hidden="true"><g transform="rotate(-90 32 32)" fill="none" stroke-width="3" stroke-linecap="round"><circle cx="32" cy="32" r="29" stroke="#2A2724"></circle><circle cx="32" cy="32" r="29" stroke="#F2EFEA" stroke-dasharray="55 182"></circle></g></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"></rect></svg>
+      </button>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <title>Focus Loop app icon (master, default variant)</title>
+  <rect width="1024" height="1024" rx="230" fill="#141210"/>
+  <circle cx="512" cy="512" r="300" fill="none" stroke="#F6F3EE" stroke-width="64"/>
+  <path d="M512 512 L512 276 A236 236 0 1 1 276 512 Z" fill="#FF6A2B"/>
+</svg>

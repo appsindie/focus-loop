@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Splash</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Host+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: {{c.bg}}; color: {{c.ink}}; font-family: 'Host Grotesk', system-ui, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px">
+  <svg width="112" height="112" viewBox="0 0 112 112" role="img" aria-label="Focus Loop"><circle cx="56" cy="56" r="47" fill="none" stroke="{{c.ink}}" stroke-width="10"></circle><path d="M56 56 L56 19 A37 37 0 1 1 19 56 Z" fill="{{c.focus}}"></path></svg>
+  <div style="font-size: 22px; font-weight: 600; letter-spacing: -0.01em">Focus Loop</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const T = {
+      light: { bg: '#F6F3EE', surface: '#FFFFFF', ink: '#141210', ink2: '#4A443C', muted: '#6B645B', faint: '#8A8175', rule: '#DDD6CB', track: '#E9DFD3', trackB: '#D3E3D8', focus: '#D9480F', focusT: '#B93C0A', brk: '#2F7D4F', brkT: '#2F7D4F', onBrk: '#FFFFFF', btn: '#141210', onBtn: '#F6F3EE', chip: '#ECE5DA', scrim: 'rgba(20,18,16,0.45)', breakBg: '#2F7D4F', accentSoft: '#F0A27F' },
+      dark: { bg: '#0B0A09', surface: '#191715', ink: '#F2EEE8', ink2: '#C9C2B8', muted: '#9A9289', faint: '#7A7269', rule: '#2C2926', track: '#2A2420', trackB: '#1C2A22', focus: '#FF6A2B', focusT: '#FF8A5B', brk: '#3FA66A', brkT: '#6CC892', onBrk: '#0B0A09', btn: '#F2EEE8', onBtn: '#0B0A09', chip: '#221F1C', scrim: 'rgba(0,0,0,0.6)', breakBg: '#173D28', accentSoft: '#B93C0A' }
+    };
+    return { c: T[this.props.theme === 'dark' ? 'dark' : 'light'] };
+  }
+}
+</script>
+</body>
+</html>

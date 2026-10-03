@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Home</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Host+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 56px 24px 20px; background: {{c.bg}}; color: {{c.ink}}; font-family: 'Host Grotesk', system-ui, sans-serif; font-feature-settings: 'tnum'; display: flex; flex-direction: column">
+  <div style="display: flex; justify-content: space-between; align-items: center">
+    <div style="font-size: 14px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: {{c.muted}}">Thu 2 Oct</div>
+    <div style="display: flex; color: {{c.ink}}">
+      <button type="button" aria-label="Your week" style="width: 44px; height: 44px; border: none; background: transparent; color: inherit; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M5 20V12M12 20V4M19 20v-5"></path></svg></button>
+      <button type="button" aria-label="Settings" style="width: 44px; height: 44px; border: none; background: transparent; color: inherit; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"></path><circle cx="16" cy="7" r="2"></circle><circle cx="8" cy="17" r="2"></circle></svg></button>
+    </div>
+  </div>
+
+  <h1 style="margin: 24px 0 0; font-size: 46px; line-height: 1; font-weight: 600; letter-spacing: -0.03em">Focus 2<span style="color: {{c.faint}}"> of 4</span></h1>
+
+  <div style="margin-top: 18px">
+    <div style="display: flex; gap: 3px; height: 10px" aria-label="Loop: focus 1 and first break done">
+      <div style="flex-grow: 25; background: {{c.focus}}"></div>
+      <div style="flex-grow: 5; background: {{c.brk}}"></div>
+      <div style="flex-grow: 25; background: {{c.track}}; box-shadow: inset 0 0 0 2px {{c.focus}}"></div>
+      <div style="flex-grow: 5; background: {{c.trackB}}"></div>
+      <div style="flex-grow: 25; background: {{c.track}}"></div>
+      <div style="flex-grow: 5; background: {{c.trackB}}"></div>
+      <div style="flex-grow: 25; background: {{c.track}}"></div>
+      <div style="flex-grow: 15; background: {{c.trackB}}"></div>
+    </div>
+    <div style="margin-top: 8px; display: flex; justify-content: space-between; font-size: 13px; color: {{c.muted}}"><span>25 focus · 5 break · <a href="#" style="color: {{c.ink}}">change</a></span><span>Loop ends 16:06</span></div>
+  </div>
+
+  <label for="intent" style="margin-top: 36px; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: {{c.muted}}">The one thing (optional)</label>
+  <input id="intent" type="text" value="Draft the intro for the Q4 report" style="margin-top: 6px; height: 52px; padding: 0; border: none; border-bottom: 2px solid {{c.ink}}; background: transparent; font-family: 'Newsreader', Georgia, serif; font-size: 24px; color: {{c.ink}}">
+  <div style="margin-top: 14px; display: flex; flex-direction: column">
+    <div style="font-size: 13px; color: {{c.muted}}">Waiting from last time</div>
+    <div style="min-height: 44px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid {{c.rule}}; font-family: 'Newsreader', Georgia, serif; font-size: 18px; color: {{c.ink2}}">Book the dentist<button type="button" aria-label="Use as the one thing" style="width: 44px; height: 44px; border: none; background: transparent; color: {{c.ink}}; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 19V5M6 11l6-6 6 6"></path></svg></button></div>
+  </div>
+
+  <div style="margin-top: auto; display: flex; flex-direction: column; gap: 12px">
+    <div style="display: flex; justify-content: space-between; font-size: 14px; color: {{c.ink2}}"><span>Today 1 focus · 25 min</span><span>Week goal met</span></div>
+    <button type="button" style="height: 64px; border: none; border-radius: 32px; background: {{c.btn}}; color: {{c.onBtn}}; font-family: inherit; font-size: 19px; font-weight: 600; display: flex; align-items: center; justify-content: space-between; padding: 0 26px"><span>Start Focus 2</span><span style="font-weight: 500; color: {{c.accentSoft}}">25:00</span></button>
+    <div style="height: 50px; border: 1px dashed {{c.faint}}; display: flex; align-items: center; justify-content: center; font-size: 12px; color: {{c.muted}}">Banner ad 320×50 · free tier only</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const T = {
+      light: { bg: '#F6F3EE', surface: '#FFFFFF', ink: '#141210', ink2: '#4A443C', muted: '#6B645B', faint: '#8A8175', rule: '#DDD6CB', track: '#E9DFD3', trackB: '#D3E3D8', focus: '#D9480F', focusT: '#B93C0A', brk: '#2F7D4F', brkT: '#2F7D4F', onBrk: '#FFFFFF', btn: '#141210', onBtn: '#F6F3EE', chip: '#ECE5DA', scrim: 'rgba(20,18,16,0.45)', breakBg: '#2F7D4F', accentSoft: '#F0A27F' },
+      dark: { bg: '#0B0A09', surface: '#191715', ink: '#F2EEE8', ink2: '#C9C2B8', muted: '#9A9289', faint: '#7A7269', rule: '#2C2926', track: '#2A2420', trackB: '#1C2A22', focus: '#FF6A2B', focusT: '#FF8A5B', brk: '#3FA66A', brkT: '#6CC892', onBrk: '#0B0A09', btn: '#F2EEE8', onBtn: '#0B0A09', chip: '#221F1C', scrim: 'rgba(0,0,0,0.6)', breakBg: '#173D28', accentSoft: '#B93C0A' }
+    };
+    return { c: T[this.props.theme === 'dark' ? 'dark' : 'light'] };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Weekly share card</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&amp;family=Host+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#F6F3EE}a:hover{color:#F0A27F}
+</style>
+</helmet>
+<div style="width: 390px; height: 693px; box-sizing: border-box; padding: 40px 32px; background: #141210; color: #F6F3EE; font-family: 'Host Grotesk', system-ui, sans-serif; font-feature-settings: 'tnum'; display: flex; flex-direction: column">
+  <div style="font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #A39B90">My focus week</div>
+  <div style="margin-top: 28px; font-size: 120px; line-height: 0.85; font-weight: 600; letter-spacing: -0.06em">275</div>
+  <div style="margin-top: 10px; font-size: 20px; color: #D8D0C2">minutes, 4 days</div>
+
+  <div style="margin-top: 36px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; align-items: end; height: 90px" aria-hidden="true">
+    <div style="height: 36px; background: #D9480F"></div>
+    <div style="height: 72px; background: #D9480F"></div>
+    <div style="height: 18px; background: #D9480F"></div>
+    <div style="height: 72px; background: #D9480F"></div>
+    <div style="height: 4px; background: #3A3631"></div>
+    <div style="height: 4px; background: #3A3631"></div>
+    <div style="height: 4px; background: #3A3631"></div>
+  </div>
+
+  <div style="margin-top: 36px; font-family: 'Newsreader', Georgia, serif; font-style: italic; font-size: 26px; line-height: 1.2; color: #F6F3EE">5 things finished.<br>6 moved forward.</div>
+
+  <div style="margin-top: auto; display: flex; justify-content: space-between; align-items: center; padding-top: 16px; border-top: 1px solid #3A3631">
+    <div style="display: flex; align-items: center; gap: 10px">
+      <div style="width: 22px; height: 22px; border-radius: 11px; background: conic-gradient(#D9480F 0deg 270deg, #3A3631 270deg 360deg)" aria-hidden="true"></div>
+      <span style="font-size: 16px; font-weight: 600">Focus Loop</span>
+    </div>
+    <span style="font-size: 13px; color: #A39B90">No account. Free.</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":693}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
