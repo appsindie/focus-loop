@@ -6,17 +6,22 @@ Merging a `design-sync` PR is the sponsor's approval of that canvas version. New
 
 ## Open shaping points
 
-| Id    | Point                                                                                                                                                                                                         | Proposed default                                     | Owner   |
-| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------- |
-| OP-01 | Plus pricing (yearly, lifetime) and trial length. Screens show `[PRICE]`.                                                                                                                                     | 7-day trial on yearly; prices from store experiments | Sponsor |
-| OP-02 | Rewarded unlock is a **24-hour trial** in the design. Spec J6-R3 previously said the unlock persists. Spec updated to the design; confirm, or the design reverts to a permanent unlock.                       | 24-hour trial                                        | Sponsor |
-| OP-03 | Default of Settings → Show seconds. P07 shows seconds; P20 shows the toggle off.                                                                                                                              | On (affects Numbers only)                            | Sponsor |
-| OP-04 | Streak removed in favour of a weekly goal (any N of 7 days). Changes spec J1-R6 and J4. North-star tracking must switch to "days focused per week".                                                           | Weekly goal 4 days                                   | Sponsor |
-| OP-05 | Interstitial moved from "every session end" to "leaving Loop complete, max 1 / 30 min, not in first 3 sessions". Lowers impressions per session; economics in Gate 0 assumed one per session (hypothesis V1). | Ship capped placement, A/B against per-session       | Sponsor |
-| OP-06 | App icon and palette change from Pilot green to ink + ember. Store assets and splash need regenerating.                                                                                                       | Adopt                                                | Sponsor |
-| OP-07 | Values set by design without data: weekly goal 4, review prompt after 3rd loop, history 7 days free.                                                                                                          | Keep, revisit after 4 weeks of data                  | Growth  |
+| Id    | Point                                                                                                                                                                                                                       | Proposed default                                     | Owner   |
+| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------- |
+| OP-01 | Plus pricing (yearly, lifetime) and trial length. Screens show `[PRICE]`.                                                                                                                                                   | 7-day trial on yearly; prices from store experiments | Sponsor |
+| OP-02 | Rewarded unlock is a **24-hour trial** in the design. Spec J6-R3 previously said the unlock persists. Spec updated to the design; confirm, or the design reverts to a permanent unlock.                                     | 24-hour trial                                        | Sponsor |
+| OP-03 | Default of Settings → Show seconds. P07 shows seconds; P20 shows the toggle off.                                                                                                                                            | On (affects Numbers only)                            | Sponsor |
+| OP-04 | Streak removed in favour of a weekly goal (any N of 7 days). Changes spec J1-R6 and J4. North-star tracking must switch to "days focused per week".                                                                         | Weekly goal 4 days                                   | Sponsor |
+| OP-05 | ~~Interstitial frequency cap~~ — closed 2026-10-03: frequency and caps are server-side; the design only fixes trigger points (leaving Loop complete; leaving Close-out after the 2nd focus when the loop is not completed). | Closed                                               | Sponsor |
+| OP-06 | App icon and palette change from Pilot green to ink + ember. Store assets and splash need regenerating.                                                                                                                     | Adopt                                                | Sponsor |
+| OP-07 | Values set by design without data: weekly goal 4, review prompt after 3rd loop, history 7 days free.                                                                                                                        | Keep, revisit after 4 weeks of data                  | Growth  |
 
-## Round 3 — 2026-10-03 · canvas `1791070597-62cf` (this sync)
+## Round 4 — 2026-10-03 · canvas `1791071241-7cd3` (this sync)
+
+- Sponsor: ad limits are server-side; the design only needs correct trigger points per journey. DESIGN.md §5, spec J1-R4 and the journey map now name trigger points only. OP-05 closed.
+- Export fix: PNGs re-rendered with the brand fonts.
+
+## Round 3 — 2026-10-03 · canvas `1791070597-62cf`
 
 - Full production set: brand (icon family, tokens, components), journey map J1–J10, 24 phone screens in light and
   dark, 6 tablet layouts in light and dark.

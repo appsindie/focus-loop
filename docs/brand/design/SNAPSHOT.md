@@ -1,7 +1,7 @@
 # Focus Loop brand — design snapshot
 
 - **Canvas**: https://claude.ai/artifact/353nThLC4HuEBSdmAZFuUd (page "1 · Brand")
-- **Canvas version**: `1791070597-62cf`
+- **Canvas version**: `1791071241-7cd3`
 - **Synced**: 2026-10-03
 - **Fidelity**: `design:hifi`
 - **Sponsor decisions**: [`docs/product/DESIGN_REVIEW.md`](../../product/DESIGN_REVIEW.md)
@@ -45,6 +45,10 @@ The wedge is the remaining-time disc used in the app. At 60px and below the ring
 it does not blur.
 
 ## Changed in this sync
+
+### `1791071241-7cd3` — 2026-10-03
+
+- Brand PNGs re-rendered with the correct fonts (previous export fell back to system fonts). Sources unchanged.
 
 ### `1791070597-62cf` — 2026-10-03
 

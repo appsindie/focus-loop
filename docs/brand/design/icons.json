@@ -1,6 +1,6 @@
 {
   "$schema": "focus-loop/icons@1",
-  "source": "canvas 1791070597-62cf",
+  "source": "canvas 1791071241-7cd3",
   "grid": 24,
   "stroke": { "width": 1.75, "linecap": "round", "linejoin": "round", "color": "currentColor" },
   "note": "Each value is the inner SVG for <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\">. Icons marked fill use fill=\"currentColor\" and no stroke.",

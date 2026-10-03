@@ -1,14 +1,14 @@
 # Focus Loop — Product Spec (journey & screen level), v1.0 shaping
 
 Concept, scope cuts, phases, business acceptance criteria and success metrics live in `PRODUCT_CONCEPT.md` and are **not repeated here**.
-Design system and UI/UX standards: `DESIGN.md` (v2.0). Approved screens: `design/SNAPSHOT.md`, canvas `1791070597-62cf`. Design decisions and open points: `DESIGN_REVIEW.md`.
+Design system and UI/UX standards: `DESIGN.md` (v2.1). Approved screens: `design/SNAPSHOT.md`, canvas `1791071241-7cd3`. Design decisions and open points: `DESIGN_REVIEW.md`.
 
 Normative language: **SHALL** = mandatory. Anything not stated as a rule is an implementation decision.
 
 ## Document control
 
 - **Document ID**: PRODUCT_SPEC_LIVE.md
-- **Version**: v1.1 draft (design-sync, canvas `1791070597-62cf`)
+- **Version**: v1.1 draft (design-sync, canvas `1791071241-7cd3`)
 - **Status**: draft
 - **Owner**: justin.nguyen@appsindie.com
 - **Last updated (UTC)**: 2026-10-03
@@ -64,7 +64,7 @@ S1.1 Home (focus setup)
 - R1: A session SHALL be startable in <= 3 taps from app cold start (tap icon, tap start, optionally confirm duration).
 - R2: The default session duration SHALL be 25 minutes; the user SHALL be able to change it before starting and in settings.
 - R3: The timer screen SHALL NOT show banner ads, upsells, or non-timer UI during the countdown.
-- R4: At session completion the app SHALL show the close-out and then a break (S1.3). An interstitial ad MAY be shown only when leaving Loop complete (S1.6), or after the 2nd completed focus if no loop completes; at most 1 per 30 minutes and never in a user's first 3 sessions.
+- R4: At session completion the app SHALL show the close-out and then a break (S1.3). Interstitial trigger points are only: leaving Loop complete (S1.6), and leaving the close-out after the 2nd completed focus when the loop is not completed. Whether an ad shows at a trigger (frequency caps, new-user grace) is controlled server-side.
 - R5: Ending a session early SHALL always require confirmation. The partial session SHALL be saved unless the user explicitly discards it.
 - R6: There is no streak. A calendar day counts toward the weekly goal (default 4 of 7 days) if at least one session, including a partial one, was recorded that day.
 - R7: The user SHALL choose how time is shown (Disc or Numbers) on first launch; tapping the choice starts the first 25-minute session. The choice SHALL be switchable on the timer screen and in settings, and SHALL apply to widgets and Live Activity.
@@ -375,4 +375,4 @@ J1 is the only journey that must ship in Pilot; all others depend on it.
 ## Review & signoff
 
 - Product/scope: draft, pending Gate 1 review.
-- Design: v2.0 hi-fi, canvas `1791070597-62cf`; approved when the design-sync PR is merged. Open points in `DESIGN_REVIEW.md`.
+- Design: v2.0 hi-fi, canvas `1791071241-7cd3`; approved when the design-sync PR is merged. Open points in `DESIGN_REVIEW.md`.

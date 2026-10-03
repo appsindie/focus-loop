@@ -1,6 +1,6 @@
 # Focus Loop — Design rules
 
-**Status**: v2.0 · `design:hifi` · built from canvas `1791070597-62cf` (synced 2026-10-03). Previous: v1 Pilot
+**Status**: v2.1 · `design:hifi` · built from canvas `1791071241-7cd3` (synced 2026-10-03). v2.1: ads defined as trigger points only. Previous: v2.0 (`1791070597-62cf`), v1 Pilot
 (minimal, superseded).
 
 The screens are in [`design/`](design/SNAPSHOT.md) and the tokens, icons and app icon in
@@ -18,7 +18,7 @@ and open points are in [`DESIGN_REVIEW.md`](DESIGN_REVIEW.md).
 4. **Your words in serif.** Anything the user typed (intention, parked thoughts) is set in Newsreader. Everything the
    app says is Host Grotesk.
 5. **No shame.** No streaks, no red failure states. Ended-early and "Got stuck" sessions still count.
-6. **Ads only after value.** Never on Focus, Break, Close-out or any sheet. See §5.
+6. **Ads only after value.** Never on Focus, Break, Close-out or any sheet. The design fixes where ads may trigger; the server decides whether they show. See §5.
 7. **One primary action per screen**, at the bottom, in the thumb zone.
 
 ## 2. Foundations
@@ -117,7 +117,7 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
 
 - Total focus minutes, full loop strip, one row per focus with intention and outcome, week-goal line.
 - Primary **Long break 15:00**, secondary **Share my week**.
-- First loop ever: show P14 when leaving this screen. Later loops: interstitial when leaving (§5).
+- First loop ever: show P14 when leaving this screen. Later loops: interstitial trigger when leaving (§5).
 
 ### P13 Welcome back
 
@@ -192,13 +192,13 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
 
 ## 5. Ads and Plus
 
-| Placement     | Rule                                                                                                                               |
-| ------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Banner        | Home (phone and tablet) only, free tier only.                                                                                      |
-| Interstitial  | When leaving P12, or after the 2nd completed focus if no loop completes. Max 1 per 30 minutes. Never in a user's first 3 sessions. |
-| Rewarded      | Only from P15 on an explicit tap. Grants a 24-hour trial of one item.                                                              |
-| Paywall       | First time leaving P12; otherwise only from Settings or a locked item. Never before the first session.                             |
-| Review prompt | Store review API after the 3rd completed loop that contains at least one "Finished".                                               |
+| Placement     | Rule                                                                                                                                                                                                                                         |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Banner        | Home (phone and tablet) only, free tier only.                                                                                                                                                                                                |
+| Interstitial  | Trigger points: leaving P12 Loop complete, and leaving P10 Close-out after the 2nd focus when the loop is not completed. Whether an ad is shown at a trigger (frequency, caps, new-user grace) is decided by the server, not the app design. |
+| Rewarded      | Only from P15 on an explicit tap. Grants a 24-hour trial of one item.                                                                                                                                                                        |
+| Paywall       | First time leaving P12; otherwise only from Settings or a locked item. Never before the first session.                                                                                                                                       |
+| Review prompt | Store review API after the 3rd completed loop that contains at least one "Finished".                                                                                                                                                         |
 
 ## 6. Motion and accessibility
 

@@ -2,7 +2,7 @@
 
 - **Canvas**: https://claude.ai/artifact/353nThLC4HuEBSdmAZFuUd (pages "2 · Journeys", "3 · Phone · Light",
   "4 · Phone · Dark", "5 · Tablet")
-- **Canvas version**: `1791070597-62cf`
+- **Canvas version**: `1791071241-7cd3`
 - **Synced**: 2026-10-03
 - **Fidelity**: `design:hifi`
 - **Sponsor decisions**: [`../DESIGN_REVIEW.md`](../DESIGN_REVIEW.md)
@@ -64,22 +64,27 @@ folder by hand: change the canvas, then sync. Every build PR must name the canva
 Screen codes: `P##` phone, `D##` its dark artboard, `T##` / `TD##` tablet. Numbers are stable; a removed screen keeps
 its number retired.
 
-| Journey                  | Flow                                                                                      |
-| ------------------------ | ----------------------------------------------------------------------------------------- |
-| J1 First launch          | P01 → P02 → P06/P07 → P10 → P03 → OS permission → P11                                     |
-| J2 Daily loop            | P04 → P06 → (P08) → P10 → P11 → ×4 → P12 → interstitial (capped) → long break             |
-| J3 End early             | P06 Pause → P09 → P10 (partial) or Keep going → P06                                       |
-| J4 Start outside the app | Widget (P24) → P06, skipping Home · Live Activity (P23) · "Break time" notification → P11 |
-| J5 Reminders             | P20 → P22 → notification 09:00 (P23) → P06                                                |
-| J6 Progress and sharing  | P04 → P17 ⇄ P18 · P19 → system share sheet                                                |
-| J7 Upgrade               | P12 (first loop only) → P14 → store purchase → P16                                        |
-| J8 Rewarded trial        | P20 → P15 → rewarded video → unlocked 24h · load failure → toast "Try again"              |
-| J9 App killed by the OS  | P01 → still within time → P06 resumes · time passed → P13                                 |
-| J10 Customise            | P20 → P21 · display, appearance, seconds · about, legal, version                          |
+| Journey                  | Flow                                                                                          |
+| ------------------------ | --------------------------------------------------------------------------------------------- |
+| J1 First launch          | P01 → P02 → P06/P07 → P10 → P03 → OS permission → P11                                         |
+| J2 Daily loop            | P04 → P06 → (P08) → P10 → P11 → ×4 → P12 → interstitial trigger (server decides) → long break |
+| J3 End early             | P06 Pause → P09 → P10 (partial) or Keep going → P06                                           |
+| J4 Start outside the app | Widget (P24) → P06, skipping Home · Live Activity (P23) · "Break time" notification → P11     |
+| J5 Reminders             | P20 → P22 → notification 09:00 (P23) → P06                                                    |
+| J6 Progress and sharing  | P04 → P17 ⇄ P18 · P19 → system share sheet                                                    |
+| J7 Upgrade               | P12 (first loop only) → P14 → store purchase → P16                                            |
+| J8 Rewarded trial        | P20 → P15 → rewarded video → unlocked 24h · load failure → toast "Try again"                  |
+| J9 App killed by the OS  | P01 → still within time → P06 resumes · time passed → P13                                     |
+| J10 Customise            | P20 → P21 · display, appearance, seconds · about, legal, version                              |
 
 Tablet uses the same flow; Home and Week/History become two-column, Settings becomes master–detail.
 
 ## Changed in this sync
+
+### `1791071241-7cd3` — 2026-10-03
+
+- Journey map (J2): interstitial shown as a trigger point; frequency is server-side. `J-Map` source and PNG updated.
+- All PNGs re-rendered: the previous export fell back to system fonts. Sources unchanged.
 
 ### `1791070597-62cf` — 2026-10-03
 
