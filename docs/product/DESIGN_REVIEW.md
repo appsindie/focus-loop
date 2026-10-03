@@ -9,7 +9,7 @@ Merging a `design-sync` PR is the sponsor's approval of that canvas version. New
 | Id    | Point                                                                                                                                                                                                                       | Proposed default                                     | Owner   |
 | ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------- |
 | OP-01 | Plus pricing (yearly, lifetime) and trial length. Screens show `[PRICE]`.                                                                                                                                                   | 7-day trial on yearly; prices from store experiments | Sponsor |
-| OP-02 | Rewarded unlock is a **24-hour trial** in the design. Spec J6-R3 previously said the unlock persists. Spec updated to the design; confirm, or the design reverts to a permanent unlock.                                     | 24-hour trial                                        | Sponsor |
+| OP-02 | ~~Rewarded unlock: 24-hour trial vs permanent~~ — closed 2026-10-03: sponsor confirmed **24-hour trial**; permanent unlock only via Plus. Spec J6-R3 stands.                                                                | Closed                                               | Sponsor |
 | OP-03 | Default of Settings → Show seconds. P07 shows seconds; P20 shows the toggle off.                                                                                                                                            | On (affects Numbers only)                            | Sponsor |
 | OP-04 | Streak removed in favour of a weekly goal (any N of 7 days). Changes spec J1-R6 and J4. North-star tracking must switch to "days focused per week".                                                                         | Weekly goal 4 days                                   | Sponsor |
 | OP-05 | ~~Interstitial frequency cap~~ — closed 2026-10-03: frequency and caps are server-side; the design only fixes trigger points (leaving Loop complete; leaving Close-out after the 2nd focus when the loop is not completed). | Closed                                               | Sponsor |
@@ -17,6 +17,8 @@ Merging a `design-sync` PR is the sponsor's approval of that canvas version. New
 | OP-07 | Values set by design without data: weekly goal 4, review prompt after 3rd loop, history 7 days free.                                                                                                                        | Keep, revisit after 4 weeks of data                  | Growth  |
 
 ## Round 4 — 2026-10-03 · canvas `1791071241-7cd3` (this sync)
+
+- Sponsor: rewarded ads unlock a 24-hour trial only, not a permanent unlock. OP-02 closed; no canvas change.
 
 - Sponsor: ad limits are server-side; the design only needs correct trigger points per journey. DESIGN.md §5, spec J1-R4 and the journey map now name trigger points only. OP-05 closed.
 - Export fix: PNGs re-rendered with the brand fonts.

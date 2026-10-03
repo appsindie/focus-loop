@@ -199,7 +199,7 @@ Widget tap -> S1.2 Timer running -> S1.3 Break/complete -> S1.4 Summary
 
 - R1: A locked item SHALL display a "Watch ad to unlock" action.
 - R2: The rewarded video SHALL only play when explicitly requested by the user.
-- R3: A rewarded unlock SHALL grant a 24-hour trial of the item, persisted locally; no account. Permanent unlock is via Plus. (Open point OP-02 in `DESIGN_REVIEW.md`.)
+- R3: A rewarded unlock SHALL grant a 24-hour trial of the item, persisted locally; no account. Permanent unlock is via Plus. Confirmed by the sponsor on 2026-10-03.
 - R4: The user SHALL be able to use the unlocked item immediately after the ad completes.
 
 **Screens**: S5.2 Theme/sound picker, S6.1 Rewarded unlock
