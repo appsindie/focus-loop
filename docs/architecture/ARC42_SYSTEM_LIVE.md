@@ -6,7 +6,7 @@ Re-shaped on hi-fi design canvas `1791071241-7cd3` (2026-10-03): the unit is now
 
 **Business goals**
 
-- Ship a no-account Pomodoro loop for iOS + Android within 6 build + 2 validation weeks.
+- Ship a no-account Pomodoro loop for iOS + Android in ~8–9 build + ~2 validation weeks (~10–11 total); Gate 0's "Build takes >8 weeks" criterion is at risk — the week-6 de-scope checkpoint is in PRODUCT_CONCEPT §3.
 - Prove the portfolio slot: Month-9 net monthly contribution >= $2,000 (ad ARPU + Plus) and D30 retention >= 42%.
 
 **Quality goals**
@@ -48,7 +48,7 @@ Re-shaped on hi-fi design canvas `1791071241-7cd3` (2026-10-03): the unit is now
 
 ## 4. Solution Strategy
 
-- **Local-first**: all state lives on device; keeps build scope within 6 weeks. The one exception is that ad frequency is decided by AdMob's server-side configuration — no owned backend (ADR-003).
+- **Local-first**: all state lives on device; no backend to build in an already-tight ~8–9 week window. The one exception is that ad frequency is decided by AdMob's server-side configuration — no owned backend (ADR-003).
 - **Modular loop engine**: separate timer/loop state machine, notifications, stats, ad triggers, widget/Live Activity, share-card, entitlement, and app-blocking modules.
 - **Ads at designed trigger points only**: banner on Home (free tier); interstitial triggers on leaving Loop complete and on leaving Close-out after the 2nd focus when the loop is not completed; rewarded only on explicit tap. Whether a trigger shows an ad is an AdMob console decision (caps, grace) — the app always fires the trigger.
 - **Platform native APIs via Expo**: managed workflow where possible; config plugins for Live Activity and widgets; eject only if AccessibilityService requires it.

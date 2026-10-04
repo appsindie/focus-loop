@@ -26,7 +26,7 @@ Measured via:
 Guard-rail:
 
 - **Net blended contribution >= $0.15 / MAU-month by Month 6** — replaces the Gate 0 ad-only guard-rail (ad ARPU +/-20% of $0.23), which the v1 trigger-point design structurally under-shoots; re-baseline flagged for sponsor sign-off at Gate 1 (see re-model below).
-- **Build + validation <= 8 weeks** — hard roadmap constraint from Gate 0; applied to the whole v1 build window, sponsor-accepted at the 8–9 week estimate edge (see §3).
+- **"Build takes >8 weeks"** — verbatim Gate 0 kill criterion (basis: `build_weeks: 6` + `validation_weeks: 2`). The real v1 window is ~8–9 weeks build + ~2 weeks validation (~10–11 weeks); the sponsor accepted the all-in-one build 2026-10-04 — the week-6 overrun checkpoint + de-scope order is in §3.
 
 Rule: every journey and every screen SHALL improve at least one north-star metric — otherwise it is cut.
 
@@ -43,16 +43,18 @@ Gate 0 modelled about 2 interstitials per active day at $0.2312 Ad ARPU. The v1 
 
 Plus revenue is **net of the 30% store commission** ($19.99/yr → ~$1.17/user-month; ~$1.42 at the 15% small-business tier).
 
-| Case  | Ad ARPU | Plus conversion of MAU | Blended net / month       | Blended ARPU | vs $2,000           |
-| ----- | ------- | ---------------------- | ------------------------- | ------------ | ------------------- |
-| Lower | $0.10   | 1% (~147 subs)         | ~$1,469 + ~$171 = ~$1,640 | ~$0.11       | miss                |
-| Base  | $0.13   | 2% (~294 subs)         | ~$1,909 + ~$343 = ~$2,250 | ~$0.15       | pass, ~12% headroom |
-| Upper | $0.15   | 3% (~441 subs)         | ~$2,203 + ~$514 = ~$2,720 | ~$0.19       | pass                |
+| Case  | Ad ARPU | Plus conversion of MAU | Blended revenue / month   | Contribution (−$150 fixed) | vs $2,000          |
+| ----- | ------- | ---------------------- | ------------------------- | -------------------------- | ------------------ |
+| Lower | $0.10   | 1% (~147 subs)         | ~$1,469 + ~$171 = ~$1,640 | ~$1,490                    | miss               |
+| Base  | $0.13   | 2% (~294 subs)         | ~$1,909 + ~$343 = ~$2,250 | ~$2,100                    | pass, ~5% headroom |
+| Upper | $0.15   | 3% (~441 subs)         | ~$2,203 + ~$514 = ~$2,720 | ~$2,570                    | pass               |
+
+The $150/month fixed operating cost Gate 0 deducted (`base_month9_net_monthly_contribution` = $3,395 − $150) is applied so the cases compare like-for-like with the $2,000 contribution target.
 
 Two honest consequences:
 
 - **Plus ships at launch** (single v1 — sponsor, 2026-10-03), so the blended figure applies from day one; there is no ads-only interim state.
-- The **base case barely clears** both the $2,000 target and the $0.15 blended guard-rail; the lower case misses. The Gate 0 economic headroom the v1 model had is gone — halved triggers plus Plus pulling heavy users out of the ad pool.
+- The **base case barely clears** the $2,000 contribution target (~5% headroom after the $150 fixed cost) and sits exactly at the $0.15 blended guard-rail; the lower case misses. The Gate 0 economic headroom the v1 model had is gone — halved triggers plus Plus pulling heavy users out of the ad pool.
 
 **Gate 0 re-check — pending sponsor (explicit item at Gate 1 signature):** the v1 design trades ad impressions for retention surface. If the sponsor wants the Gate 0 margin back, the levers are AdMob cap values at build time, Plus pricing/positioning, or re-opening the Gate 0 target. This is recorded, not smoothed over: the ±20%-of-$0.23 ad-ARPU guard-rail is retired in favour of **net blended contribution** as the tracked figure.
 
@@ -98,7 +100,11 @@ Two honest consequences:
 | v1 (this cycle)             | Prove the designed product earns its retention — the Gate 0 question, still unanswered by the pilot | All journeys J1–J10: loop + breaks, both displays, weekly goal, widgets + Live Activity, reminders, share card, Plus + rewarded trials, full customise, tablet | Gate 2 SIT; store release per Phase 3                              |
 | Later                       | Expand value                                                                                        | Cross-device sync, advanced stats, coach/team, wearables                                                                                                       | Gate 4 review on v1 actuals                                        |
 
-**Single-version build — sponsor decision 2026-10-03:** "dev het slices version nay, chua lên store nên v1 thôi" (develop all journeys in this version; nothing has shipped to a store, so it is named v1). The earlier release-slice/fast-follow split (shaping review SR-02) is superseded; the dependency graph in `PRODUCT_SPEC_LIVE.md` is the build-order guide inside the cycle. Build estimate ~8–9 weeks on the pilot Expo skeleton (timer/ads reused) — at the edge of Gate 0's "build <= 8 weeks" kill criterion, accepted by the sponsor with the all-in-one call.
+**Single-version build — sponsor decision 2026-10-03:** "dev het slices version nay, chua lên store nên v1 thôi" (develop all journeys in this version; nothing has shipped to a store, so it is named v1). The earlier release-slice/fast-follow split (shaping review SR-02) is superseded; the dependency graph in `PRODUCT_SPEC_LIVE.md` is the build-order guide inside the cycle.
+
+Build estimate on the pilot Expo skeleton (timer/ads reused): **~8–9 weeks engineering + ~2 weeks validation → a ~10–11 week window.** Against Gate 0's verbatim kill criterion _"Build takes >8 weeks"_ (basis: `build_weeks: 6` + `validation_weeks: 2`), the upper half of the build estimate alone breaches the criterion — the sponsor accepted the all-in-one build knowing the estimate; this is recorded, not re-read.
+
+**Overrun checkpoint (pre-agreed, fires at build week 6):** if the remaining J1–J10 scope does not fit the remaining window, P1 scope de-scopes in this order — tablet layouts (T01–T06) → J6 share card (P19; Week/History stay) → J8 rewarded trial → P23 Live Activity + lock-screen widget → J5 reminders → J10 non-essential customise. J7 Plus is never de-scoped — it carries the contribution case; P0 journeys (J1–J4, J9) are never de-scoped — they carry the retention question. A de-scoped item becomes the next cycle's first work. Alternatively the sponsor may waive or re-baseline the 8-week criterion at the Gate 1 signature — his call, not assumed here.
 
 ## 4. Journey x persona map (priority)
 
