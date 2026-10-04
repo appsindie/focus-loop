@@ -21,6 +21,14 @@ const CARD_STYLES: Record<ShareCardStyle, { bg: string; ink: string; muted: stri
 
 const STYLE_ORDER: ShareCardStyle[] = ["ink", "paper", "ember"];
 
+// Style chip labels — explicit map (S10-02): every value is a dictionary key,
+// never a capitalised id. Exported for i18n's coverage test.
+export const STYLE_LABELS: Record<ShareCardStyle, string> = {
+  ink: "Ink",
+  paper: "Paper",
+  ember: "Ember",
+};
+
 // The off-screen card rendered at a fixed 9:16 canvas so the shared image is
 // identical on every device. Always carries the app name (J6-R5).
 function ShareCard({
@@ -189,7 +197,7 @@ export function ShareScreen({
               key={name}
               accessibilityRole="button"
               accessibilityState={{ selected }}
-              accessibilityLabel={t("Card style {name}", { name })}
+              accessibilityLabel={t("Card style {name}", { name: t(STYLE_LABELS[name]) })}
               onPress={() => setCardStyle(name)}
               style={[
                 styles.styleChip,
@@ -200,7 +208,7 @@ export function ShareScreen({
               ]}
             >
               <Text style={[styles.styleChipText, { color: CARD_STYLES[name].ink }]}>
-                {t(name.charAt(0).toUpperCase() + name.slice(1))}
+                {t(STYLE_LABELS[name])}
               </Text>
             </Pressable>
           );

@@ -1,4 +1,4 @@
-import { createAudioPlayer, type AudioPlayer } from "expo-audio";
+import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
 import brownNoise from "../../assets/sounds/brown-noise.wav";
 import rainOnWindow from "../../assets/sounds/rain-on-window.wav";
 import whiteNoise from "../../assets/sounds/white-noise.wav";
@@ -14,6 +14,28 @@ const SOURCES: Record<string, number> = {
 };
 
 let current: { id: string; player: AudioPlayer } | null = null;
+let audioModeSet = false;
+
+// CR-34: without this, focus sounds die the moment the user locks the phone
+// — the normal use. The config plugin already ships UIBackgroundModes:audio
+// (enableBackgroundPlayback defaults true); the mode flags are the runtime
+// half. Android note for SIT: sustained background past ~3min needs lock
+// screen controls (setActiveForLockScreen) — an OS limitation, noted in the
+// test plan rather than fought here.
+function ensureAudioMode(): void {
+  if (audioModeSet) {
+    return;
+  }
+  audioModeSet = true;
+  try {
+    void setAudioModeAsync({
+      playsInSilentMode: true,
+      shouldPlayInBackground: true,
+    }).catch(() => {});
+  } catch {
+    // best-effort — module absent in jest/Expo Go
+  }
+}
 
 // Idempotent: restarting the same id resumes it; switching ids rebuilds.
 // The controller calls this on every focus-running render.
@@ -32,6 +54,7 @@ export function startFocusSound(id: string): void {
     return;
   }
   try {
+    ensureAudioMode();
     const player = createAudioPlayer(source);
     player.loop = true;
     player.play();

@@ -10,11 +10,15 @@ function csvField(value: string | null): string {
   if (value == null) {
     return "";
   }
+  // S9-04: free text that opens with a formula character (=, +, -, @) is
+  // evaluated by Sheets/Excel — prefix it with a single quote so the export
+  // stays inert when shared into a spreadsheet.
+  const guarded = /^[=+\-@]/.test(value) ? `'${value}` : value;
   // RFC 4180: quote fields containing separators/quotes/newlines; double quotes.
-  if (/[",\n\r]/.test(value)) {
-    return `"${value.replace(/"/g, '""')}"`;
+  if (/[",\n\r]/.test(guarded)) {
+    return `"${guarded.replace(/"/g, '""')}"`;
   }
-  return value;
+  return guarded;
 }
 
 export function sessionsToCsv(sessions: FocusSession[]): string {

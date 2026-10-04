@@ -5,7 +5,7 @@ import { Palette, radii, spacing, typography } from "../../shared/theme";
 import { TABLET_PADDING, useIsTablet } from "../../shared/layout";
 import {
   RHYTHM_BOUNDS,
-  RHYTHM_PRESET_LABELS,
+  RHYTHM_PRESET_NAMES,
   Rhythm,
   RhythmPresetId,
   loopDurationSeconds,
@@ -132,7 +132,7 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
             onPress={() => pickPreset(id)}
             accessibilityRole="button"
             accessibilityLabel={t("Rhythm preset {name}", {
-              name: RHYTHM_PRESET_LABELS[id],
+              name: t(RHYTHM_PRESET_NAMES[id]),
             })}
             accessibilityState={{ selected }}
             style={[
@@ -144,7 +144,7 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
             ]}
           >
             <Text style={[styles.presetName, { color: colors.ink }]} allowFontScaling>
-              {t(RHYTHM_PRESET_LABELS[id].replace(/ [\d/× \d]+$/, ""))}
+              {t(RHYTHM_PRESET_NAMES[id])}
             </Text>
             <Text style={[styles.presetSub, { color: colors.muted }]} allowFontScaling>
               {PRESET_SUB[id]()}

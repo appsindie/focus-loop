@@ -16,8 +16,16 @@ export function toExpoWeekday(isoDay: number): number {
   return isoDay === 7 ? 1 : isoDay + 1;
 }
 
-export function reminderIdentifier(reminderId: string, isoDay: number): string {
-  return `${REMINDER_ID_PREFIX}${reminderId}-d${toExpoWeekday(isoDay)}`;
+// The identifier encodes hour+minute (S9-01): an in-place time edit produces
+// a NEW identifier, so the stale one lands in the "not wanted" pass and is
+// cancelled instead of firing at the old time forever.
+export function reminderIdentifier(
+  reminderId: string,
+  isoDay: number,
+  hour = 0,
+  minute = 0,
+): string {
+  return `${REMINDER_ID_PREFIX}${reminderId}-d${toExpoWeekday(isoDay)}-h${hour}m${minute}`;
 }
 
 function reminderContent(reminder: Reminder): Notifications.NotificationContentInput {
@@ -88,7 +96,7 @@ export function syncReminderSchedules(prefs: ReminderPrefs, context: SyncContext
         continue;
       }
       for (const isoDay of reminder.days) {
-        wanted.add(reminderIdentifier(reminder.id, isoDay));
+        wanted.add(reminderIdentifier(reminder.id, isoDay, reminder.hour, reminder.minute));
       }
     }
     if (context.goalUnmet) {
@@ -117,7 +125,7 @@ export function syncReminderSchedules(prefs: ReminderPrefs, context: SyncContext
         continue;
       }
       for (const isoDay of reminder.days) {
-        const identifier = reminderIdentifier(reminder.id, isoDay);
+        const identifier = reminderIdentifier(reminder.id, isoDay, reminder.hour, reminder.minute);
         if (pending.has(identifier)) {
           continue;
         }

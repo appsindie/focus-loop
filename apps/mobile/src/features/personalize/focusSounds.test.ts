@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { createAudioPlayer } from "expo-audio";
+import { createAudioPlayer, setAudioModeAsync } from "expo-audio";
 import { pauseFocusSound, startFocusSound, stopFocusSound } from "./focusSounds";
 
 const create = jest.mocked(createAudioPlayer);
+const setMode = jest.mocked(setAudioModeAsync);
 
 type FakePlayer = { play: jest.Mock; pause: jest.Mock; remove: jest.Mock; loop: boolean };
 let lastPlayer: FakePlayer;
@@ -21,6 +22,15 @@ describe("focusSounds (J8)", () => {
     expect(create).toHaveBeenCalledTimes(1);
     expect(lastPlayer.loop).toBe(true);
     expect(lastPlayer.play).toHaveBeenCalledTimes(1);
+    // CR-34: background/silent-mode audio flags are armed exactly once on the
+    // first real sound (module state — asserting here keeps order honest).
+    expect(setMode).toHaveBeenCalledTimes(1);
+    expect(setMode).toHaveBeenCalledWith({
+      playsInSilentMode: true,
+      shouldPlayInBackground: true,
+    });
+    startFocusSound("brown-noise");
+    expect(setMode).toHaveBeenCalledTimes(1);
   });
 
   it("is a no-op for silence and unknown ids", () => {

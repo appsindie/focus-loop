@@ -3,6 +3,15 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 
 import { SUPPORTED_LOCALES } from "./index";
+import { CATALOGUE } from "../features/personalize/catalogue";
+import { RHYTHM_PRESET_NAMES } from "../features/loop/rhythm";
+import { STYLE_LABELS } from "../features/loop/screens/ShareScreen";
+import {
+  ABOUT_LINKS,
+  APPEARANCE_OPTIONS,
+  DISPLAY_MODE_OPTIONS,
+  RAIL,
+} from "../features/settings/SettingsScreen";
 
 const LOCALES_DIR = join(__dirname, "locales");
 const NATIVE_DIR = join(__dirname, "native");
@@ -41,5 +50,26 @@ describe("locale dictionaries", () => {
     ) as Record<string, string>;
     expect(native["CFBundleDisplayName"]).toBe("Focus Loop");
     expect(native["NSUserTrackingUsageDescription"]).toBeTruthy();
+  });
+});
+
+// S10-02: labels rendered through a runtime t(label) are invisible to
+// literal-key extraction — every label table a screen renders from must be
+// listed here, and every label must be a dictionary key.
+const RUNTIME_LABEL_TABLES: { table: string; labels: string[] }[] = [
+  { table: "RAIL (settings sections)", labels: RAIL.map((r) => r.label) },
+  { table: "ABOUT_LINKS", labels: ABOUT_LINKS.map((l) => l.label) },
+  { table: "DISPLAY_MODE_OPTIONS", labels: DISPLAY_MODE_OPTIONS.map((o) => o.label) },
+  { table: "APPEARANCE_OPTIONS", labels: APPEARANCE_OPTIONS.map((o) => o.label) },
+  { table: "STYLE_LABELS (share cards)", labels: Object.values(STYLE_LABELS) },
+  { table: "RHYTHM_PRESET_NAMES", labels: Object.values(RHYTHM_PRESET_NAMES) },
+  { table: "CATALOGUE names", labels: CATALOGUE.map((item) => item.name) },
+];
+
+describe("runtime label tables (S10-02)", () => {
+  it.each(RUNTIME_LABEL_TABLES)("$table are all dictionary keys", ({ labels }) => {
+    const enDict = load("en");
+    const missing = labels.filter((label) => !(label in enDict));
+    expect(missing).toEqual([]);
   });
 });

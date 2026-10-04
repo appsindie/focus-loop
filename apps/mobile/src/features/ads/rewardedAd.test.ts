@@ -99,6 +99,17 @@ describe("watchForReward (J8-R1)", () => {
     await expect(pending).resolves.toBe("load-failed");
   });
 
+  it("does not fire 'load-failed' mid-watch after the ad loads (CR-32)", async () => {
+    const pending = watchForReward("unit-1");
+    await Promise.resolve();
+    fire("rewarded_loaded");
+    // Slow fill + a playing video: the load-bounded timer must be dead by now.
+    jest.advanceTimersByTime(60_000);
+    fire("rewarded_earned_reward");
+    fire("closed");
+    await expect(pending).resolves.toBe("earned");
+  });
+
   it("treats a missing createForAdRequest as 'unavailable', not a crash", async () => {
     rngma.RewardedAd.createForAdRequest.mockImplementationOnce(() => {
       throw new Error("old RNGMA");

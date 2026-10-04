@@ -67,6 +67,10 @@ export async function watchForReward(
     const timer = setTimeout(() => settle("load-failed"), LOAD_TIMEOUT_MS);
     unsubscribe = [
       ad.addAdEventListener(RewardedAdEventType.LOADED, () => {
+        // CR-32: the timeout bounds the LOAD wait only. Left armed, a slow
+        // fill plus a playing video lets it fire "load-failed" mid-watch —
+        // the viewer finishes the ad and gets no reward.
+        clearTimeout(timer);
         try {
           // show() is async — a presentation failure (no activity, torn-down
           // screen) rejects here, mapped onto the same "show-failed" result.

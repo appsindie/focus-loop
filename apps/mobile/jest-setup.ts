@@ -99,6 +99,7 @@ jest.mock("expo-audio", () => ({
     loop: false,
     volume: 1,
   })),
+  setAudioModeAsync: jest.fn(() => Promise.resolve()),
 }));
 
 // The IAP native module only exists in a dev-client build. The port layer is

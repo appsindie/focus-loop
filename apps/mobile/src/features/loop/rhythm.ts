@@ -17,10 +17,13 @@ export const RHYTHM_PRESETS: Record<Exclude<RhythmPresetId, "custom">, Rhythm> =
 
 export const DEFAULT_RHYTHM: Rhythm = RHYTHM_PRESETS.classic;
 
-export const RHYTHM_PRESET_LABELS: Record<RhythmPresetId, string> = {
-  classic: "Classic 25/5 ×4",
-  gentle: "Gentle start 15/5",
-  "deep-work": "Deep work 50/10 ×3",
+// Display-only preset names (S10-02): explicit per preset — the P21 row
+// renders these verbatim through t(), never a regex-derived piece of a
+// label-with-numbers. Each value is a dictionary key.
+export const RHYTHM_PRESET_NAMES: Record<RhythmPresetId, string> = {
+  classic: "Classic",
+  gentle: "Gentle start",
+  "deep-work": "Deep work",
   custom: "Custom",
 };
 

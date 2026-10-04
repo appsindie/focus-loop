@@ -13,11 +13,25 @@ import { CONTACT_URL, LICENSES_URL, PRIVACY_URL, TERMS_URL } from "./about";
 
 export type AboutLink = "privacy" | "terms" | "licenses" | "contact";
 
-const ABOUT_LINKS: { id: AboutLink; label: string; url: string }[] = [
+// Every `label` in the label tables below is an i18n key — exported so
+// i18n's coverage test can scan the tables (S10-02): a runtime t(label) must
+// never fall back to English.
+export const ABOUT_LINKS: { id: AboutLink; label: string; url: string }[] = [
   { id: "privacy", label: "Privacy Policy", url: PRIVACY_URL },
   { id: "terms", label: "Terms of Use", url: TERMS_URL },
   { id: "licenses", label: "Open-source licenses", url: LICENSES_URL },
   { id: "contact", label: "Contact & feedback", url: CONTACT_URL },
+];
+
+export const DISPLAY_MODE_OPTIONS: { id: DisplayMode; label: string }[] = [
+  { id: "disc", label: "Disc" },
+  { id: "numbers", label: "Numbers" },
+];
+
+export const APPEARANCE_OPTIONS: { id: Appearance; label: string }[] = [
+  { id: "light", label: "Light" },
+  { id: "dark", label: "Dark" },
+  { id: "system", label: "System" },
 ];
 
 function openLink(url: string): void {
@@ -194,7 +208,7 @@ type SectionId = "timer" | "plus" | "data" | "about";
 
 // T05 rail labels — Themes and Reminders route to their own screens on tap
 // (they are journeys of their own, not detail panes).
-const RAIL: { id: SectionId | "themes" | "reminders"; label: string }[] = [
+export const RAIL: { id: SectionId | "themes" | "reminders"; label: string }[] = [
   { id: "timer", label: "Timer & display" },
   { id: "themes", label: "Themes & sounds" },
   { id: "reminders", label: "Reminders" },
@@ -241,10 +255,7 @@ export function SettingsScreen({
         <Segmented<DisplayMode>
           colors={colors}
           accessibilityLabel={t("Show time as")}
-          options={[
-            { id: "disc", label: "Disc" },
-            { id: "numbers", label: "Numbers" },
-          ]}
+          options={DISPLAY_MODE_OPTIONS}
           value={settings.displayMode ?? "disc"}
           onChange={(displayMode) => onChange({ displayMode })}
         />
@@ -254,11 +265,7 @@ export function SettingsScreen({
         <Segmented<Appearance>
           colors={colors}
           accessibilityLabel={t("Appearance")}
-          options={[
-            { id: "light", label: "Light" },
-            { id: "dark", label: "Dark" },
-            { id: "system", label: "System" },
-          ]}
+          options={APPEARANCE_OPTIONS}
           value={settings.appearance}
           onChange={(appearance) => onChange({ appearance })}
         />

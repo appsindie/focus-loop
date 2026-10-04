@@ -1,7 +1,9 @@
-import { beforeEach, describe, expect, it } from "@jest/globals";
+import { afterEach, beforeEach, describe, expect, it } from "@jest/globals";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setLocaleForTests } from "../../i18n";
 import {
   DEFAULT_REMINDER_PREFS,
+  dayChipLetters,
   loadReminderPrefs,
   newReminderId,
   normalizeReminders,
@@ -57,5 +59,25 @@ describe("newReminderId", () => {
     const a = newReminderId(new Date("2026-01-01T00:00:00Z"));
     const b = newReminderId(new Date("2026-01-01T00:00:00Z"));
     expect(a).not.toBe(b);
+  });
+});
+
+describe("dayChipLetters (S10-03)", () => {
+  afterEach(() => setLocaleForTests("en"));
+
+  it("returns 7 weekday letters for English", () => {
+    expect(dayChipLetters()).toHaveLength(7);
+  });
+
+  it("gives CLDR's own initials where they differ (es: X for Wednesday)", () => {
+    setLocaleForTests("es");
+    const letters = dayChipLetters();
+    // es narrow: L M X J V S D — Tuesday≠Thursday was impossible via t("T").
+    expect(letters).toEqual(["L", "M", "X", "J", "V", "S", "D"]);
+  });
+
+  it("uses CJK day numerals in zh-Hans", () => {
+    setLocaleForTests("zh-Hans");
+    expect(dayChipLetters()).toEqual(["一", "二", "三", "四", "五", "六", "日"]);
   });
 });

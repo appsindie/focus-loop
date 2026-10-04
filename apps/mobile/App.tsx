@@ -3,8 +3,8 @@ import { useKeepAwake } from "expo-keep-awake";
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { AdsContext, Banner, useFullScreenAds } from "@appsindie/react-native-ads";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AdsContext, useFullScreenAds } from "@appsindie/react-native-ads";
+
 import { AppState, Linking, StyleSheet, Text, View } from "react-native";
 import { AdsProvider } from "./src/features/ads/AdsProvider";
 import { useLoopController } from "./src/features/loop/useLoopController";
@@ -39,6 +39,7 @@ import {
 } from "./src/features/personalize/focusSounds";
 import { watchForReward } from "./src/features/ads/rewardedAd";
 import { ADS_CONFIG } from "./src/features/ads/adsConfig";
+import { HomeBanner } from "./src/features/ads/HomeBanner";
 import { SettingsScreen } from "./src/features/settings/SettingsScreen";
 import { RhythmScreen } from "./src/features/settings/RhythmScreen";
 import { sessionsToCsv } from "./src/features/settings/dataExport";
@@ -51,15 +52,11 @@ import {
   reminderSummaryLine,
   saveReminderPrefs,
 } from "./src/features/reminders/reminderStore";
-import {
-  clearReminderSchedules,
-  syncReminderSchedules,
-} from "./src/features/reminders/reminderScheduler";
+import { syncReminderSchedules } from "./src/features/reminders/reminderScheduler";
 import { sessionsOnDay } from "./src/features/loop/SessionLog";
-import { cancelStepAlert } from "./src/features/notifications/NotificationScheduler";
+import { wipeStoredData } from "./src/features/settings/deleteAllData";
 import { DEFAULT_SETTINGS, Settings, useSettings } from "./src/features/settings/useSettings";
 import { saveSettings } from "./src/features/settings/SettingsStore";
-import { defaultEntitlement, saveEntitlement } from "./src/features/loop/entitlement";
 import { HistoryScreen } from "./src/features/loop/screens/HistoryScreen";
 import { ShareScreen } from "./src/features/loop/screens/ShareScreen";
 import { WeekScreen } from "./src/features/loop/screens/WeekScreen";
@@ -297,13 +294,15 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
       const ScreenOrientation =
         require("expo-screen-orientation") as typeof import("expo-screen-orientation");
       /* eslint-enable @typescript-eslint/no-require-imports */
+      // .catch: a rejected lock leaves the native manifest values — iPhones
+      // stay portrait via infoPlist, Android falls back to "default" (S10-04).
       void ScreenOrientation.lockAsync(
         isTablet
           ? ScreenOrientation.OrientationLock.ALL
           : ScreenOrientation.OrientationLock.PORTRAIT_UP,
-      );
+      ).catch(() => {});
     } catch {
-      // Module absent (jest / web preview): OS lock from app.json still applies.
+      // Module absent (jest / web preview): the native manifest values apply.
     }
   }, [isTablet]);
   const goalUnmet = week.daysMet < settings.weeklyGoalDays;
@@ -363,16 +362,26 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
   // Restore purchases (store-side receipt).
   const onDeleteAll = useCallback(() => {
     void (async () => {
-      await cancelStepAlert();
-      await clearReminderSchedules();
-      const keys = (await AsyncStorage.getAllKeys()).filter((key) => key.startsWith("focus-loop/"));
-      await AsyncStorage.removeMany(keys);
-      await saveSettings(DEFAULT_SETTINGS);
-      await saveEntitlement(defaultEntitlement());
+      await wipeStoredData(() => {
+        // S9-02: in-memory mirrors reset before the storage wipe — the
+        // reminder-sync effect must see empty prefs when it re-runs.
+        setReminderPrefs(DEFAULT_REMINDER_PREFS);
+      });
       await persistSettings(DEFAULT_SETTINGS);
       resetAllData();
     })();
   }, [persistSettings, resetAllData]);
+
+  // P04 free-tier banner — one node shared by both Home paths (S10-01):
+  // phone pins it to the bottom, tablet renders it in Home's right column
+  // (T01). The entitlement gate lives inside HomeBanner.
+  const homeBanner = (
+    <HomeBanner
+      entitlementLoaded={entitlementLoaded}
+      hasAdsRemoval={hasAdsRemoval}
+      backgroundColor={colors.bg}
+    />
+  );
 
   const keepAwake =
     (route === "focus" || route === "break") &&
@@ -410,25 +419,10 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           onStart={startFocus}
           onOpenSettings={() => go("settings")}
           onOpenWeek={() => go("week")}
-          bannerSlot={
-            isTablet ? (
-              <View style={[styles.bannerSlot, { backgroundColor: colors.bg }]}>
-                <Banner hasAdsRemoval={hasAdsRemoval} />
-              </View>
-            ) : undefined
-          }
+          bannerSlot={isTablet ? homeBanner : undefined}
         />
       ) : null}
-      {route === "home" && !isTablet ? (
-        // P04 free-tier banner, 320x50 pinned to the bottom of Home. Hidden
-        // until the entitlement read lands so Plus never flashes an ad (CR-25).
-        // On tablet the same banner sits in Home's right column (T01).
-        entitlementLoaded ? (
-          <View style={[styles.bannerSlot, { backgroundColor: colors.bg }]}>
-            <Banner hasAdsRemoval={hasAdsRemoval} />
-          </View>
-        ) : null
-      ) : null}
+      {route === "home" && !isTablet ? homeBanner : null}
       {route === "focus" ? (
         <FocusScreen
           colors={focusColors}
@@ -628,7 +622,6 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
 }
 
 const styles = StyleSheet.create({
-  bannerSlot: { alignItems: "center" },
   splash: { flex: 1, alignItems: "center", justifyContent: "center" },
   splashMark: { ...typography.h1Screen, letterSpacing: -0.5 },
 });

@@ -1,16 +1,12 @@
-import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { t } from "../../i18n";
 import { Palette, radii, spacing, typography } from "../../shared/theme";
 import { TABLET_PADDING, useIsTablet } from "../../shared/layout";
-import { MAX_REMINDERS, Reminder, ReminderPrefs } from "./reminderStore";
+import { dayChipLetters, MAX_REMINDERS, Reminder, ReminderPrefs } from "./reminderStore";
 
-// ISO Mon..Sun chip letters.
+// ISO Mon..Sun chip indices; letters come from CLDR via dayChipLetters().
 const CHIP_INDICES = [0, 1, 2, 3, 4, 5, 6] as const;
-
-function dayChipLabel(index: number): string {
-  return [t("M"), t("T"), t("W"), t("T"), t("F"), t("S"), t("S")][index] ?? "";
-}
 
 function formatTime(hour: number, minute: number): string {
   return `${hour}:${String(minute).padStart(2, "0")}`;
@@ -93,6 +89,7 @@ export function RemindersScreen({ colors, prefs, onChange, onBack }: RemindersSc
   };
 
   const isTablet = useIsTablet();
+  const chipLetters = dayChipLetters();
   return (
     <SafeAreaView
       style={[
@@ -119,137 +116,143 @@ export function RemindersScreen({ colors, prefs, onChange, onBack }: RemindersSc
         <View style={styles.backButton} />
       </View>
 
-      <Text style={[styles.explainer, { color: colors.muted }]} allowFontScaling>
-        {t("A nudge at the times you plan to focus. Tapping it starts your rhythm right away.")}
-      </Text>
+      {/* S9-03: reminder cards + evening note can overflow a phone screen —
+          everything below the header scrolls, like SettingsScreen. */}
+      <ScrollView testID="reminders-scroll">
+        <Text style={[styles.explainer, { color: colors.muted }]} allowFontScaling>
+          {t("A nudge at the times you plan to focus. Tapping it starts your rhythm right away.")}
+        </Text>
 
-      {prefs.reminders.map((reminder) => (
-        <View
-          key={reminder.id}
-          style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.rule }]}
-        >
-          <View style={styles.timeRow}>
-            <Text style={[styles.timeLabel, { color: colors.ink }]} allowFontScaling>
-              {formatTime(reminder.hour, reminder.minute)}
-            </Text>
-            <View style={styles.timeSteppers}>
-              <View style={styles.timeStepper}>
-                <Text style={[styles.timeStepperLabel, { color: colors.faint }]}>{t("hour")}</Text>
-                <MiniStepper
-                  colors={colors}
-                  accessibilityLabel={`${formatTime(reminder.hour, reminder.minute)} hour`}
-                  value={reminder.hour}
-                  min={0}
-                  max={23}
-                  onChange={(hour) => setReminder(reminder.id, { hour })}
-                />
-              </View>
-              <View style={styles.timeStepper}>
-                <Text style={[styles.timeStepperLabel, { color: colors.faint }]}>{t("min")}</Text>
-                <MiniStepper
-                  colors={colors}
-                  accessibilityLabel={`${formatTime(reminder.hour, reminder.minute)} minute`}
-                  value={reminder.minute}
-                  min={0}
-                  max={59}
-                  onChange={(minute) => setReminder(reminder.id, { minute })}
-                />
+        {prefs.reminders.map((reminder) => (
+          <View
+            key={reminder.id}
+            style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.rule }]}
+          >
+            <View style={styles.timeRow}>
+              <Text style={[styles.timeLabel, { color: colors.ink }]} allowFontScaling>
+                {formatTime(reminder.hour, reminder.minute)}
+              </Text>
+              <View style={styles.timeSteppers}>
+                <View style={styles.timeStepper}>
+                  <Text style={[styles.timeStepperLabel, { color: colors.faint }]}>
+                    {t("hour")}
+                  </Text>
+                  <MiniStepper
+                    colors={colors}
+                    accessibilityLabel={`${formatTime(reminder.hour, reminder.minute)} hour`}
+                    value={reminder.hour}
+                    min={0}
+                    max={23}
+                    onChange={(hour) => setReminder(reminder.id, { hour })}
+                  />
+                </View>
+                <View style={styles.timeStepper}>
+                  <Text style={[styles.timeStepperLabel, { color: colors.faint }]}>{t("min")}</Text>
+                  <MiniStepper
+                    colors={colors}
+                    accessibilityLabel={`${formatTime(reminder.hour, reminder.minute)} minute`}
+                    value={reminder.minute}
+                    min={0}
+                    max={59}
+                    onChange={(minute) => setReminder(reminder.id, { minute })}
+                  />
+                </View>
               </View>
             </View>
-          </View>
 
-          <View style={styles.chips}>
-            {CHIP_INDICES.map((index) => {
-              const isoDay = index + 1;
-              const active = reminder.days.includes(isoDay);
-              return (
+            <View style={styles.chips}>
+              {CHIP_INDICES.map((index) => {
+                const isoDay = index + 1;
+                const active = reminder.days.includes(isoDay);
+                return (
+                  <Pressable
+                    key={`${reminder.id}-d${isoDay}`}
+                    onPress={() =>
+                      setReminder(reminder.id, {
+                        days: active
+                          ? reminder.days.filter((d) => d !== isoDay)
+                          : [...reminder.days, isoDay].sort(),
+                      })
+                    }
+                    accessibilityRole="button"
+                    accessibilityLabel={t("{time} reminder day {day}", {
+                      time: formatTime(reminder.hour, reminder.minute),
+                      day: isoDay,
+                    })}
+                    accessibilityState={{ selected: active }}
+                    style={[
+                      styles.chip,
+                      { borderColor: colors.rule },
+                      active && { backgroundColor: colors.chip, borderColor: colors.chip },
+                    ]}
+                  >
+                    <Text style={[styles.chipText, { color: active ? colors.ink : colors.faint }]}>
+                      {chipLetters[index] ?? ""}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+
+            <View style={styles.rowFooter}>
+              <Text style={[styles.toggleLabel, { color: colors.muted }]} allowFontScaling>
+                {formatTime(reminder.hour, reminder.minute)}{" "}
+                {reminder.enabled ? t("reminder on") : t("reminder off")}
+              </Text>
+              <View style={styles.footerControls}>
                 <Pressable
-                  key={`${reminder.id}-d${isoDay}`}
-                  onPress={() =>
-                    setReminder(reminder.id, {
-                      days: active
-                        ? reminder.days.filter((d) => d !== isoDay)
-                        : [...reminder.days, isoDay].sort(),
-                    })
-                  }
+                  onPress={() => removeReminder(reminder.id)}
                   accessibilityRole="button"
-                  accessibilityLabel={t("{time} reminder day {day}", {
+                  accessibilityLabel={t("Remove {time} reminder", {
                     time: formatTime(reminder.hour, reminder.minute),
-                    day: isoDay,
                   })}
-                  accessibilityState={{ selected: active }}
-                  style={[
-                    styles.chip,
-                    { borderColor: colors.rule },
-                    active && { backgroundColor: colors.chip, borderColor: colors.chip },
-                  ]}
+                  hitSlop={8}
                 >
-                  <Text style={[styles.chipText, { color: active ? colors.ink : colors.faint }]}>
-                    {dayChipLabel(index)}
+                  <Text style={[styles.removeText, { color: colors.danger }]} allowFontScaling>
+                    {t("Remove")}
                   </Text>
                 </Pressable>
-              );
-            })}
-          </View>
-
-          <View style={styles.rowFooter}>
-            <Text style={[styles.toggleLabel, { color: colors.muted }]} allowFontScaling>
-              {formatTime(reminder.hour, reminder.minute)}{" "}
-              {reminder.enabled ? t("reminder on") : t("reminder off")}
-            </Text>
-            <View style={styles.footerControls}>
-              <Pressable
-                onPress={() => removeReminder(reminder.id)}
-                accessibilityRole="button"
-                accessibilityLabel={t("Remove {time} reminder", {
-                  time: formatTime(reminder.hour, reminder.minute),
-                })}
-                hitSlop={8}
-              >
-                <Text style={[styles.removeText, { color: colors.danger }]} allowFontScaling>
-                  {t("Remove")}
-                </Text>
-              </Pressable>
-              <Switch
-                accessibilityLabel={t("{time} reminder toggle", {
-                  time: formatTime(reminder.hour, reminder.minute),
-                })}
-                onValueChange={(enabled) => setReminder(reminder.id, { enabled })}
-                value={reminder.enabled}
-              />
+                <Switch
+                  accessibilityLabel={t("{time} reminder toggle", {
+                    time: formatTime(reminder.hour, reminder.minute),
+                  })}
+                  onValueChange={(enabled) => setReminder(reminder.id, { enabled })}
+                  value={reminder.enabled}
+                />
+              </View>
             </View>
           </View>
-        </View>
-      ))}
+        ))}
 
-      {prefs.reminders.length < MAX_REMINDERS ? (
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t("Add a reminder")}
-          onPress={addReminder}
-          style={[styles.addRow, { borderColor: colors.rule }]}
-        >
-          <Text style={[styles.addText, { color: colors.focus }]} allowFontScaling>
-            {t("Add a reminder")}
-          </Text>
-        </Pressable>
-      ) : null}
+        {prefs.reminders.length < MAX_REMINDERS ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t("Add a reminder")}
+            onPress={addReminder}
+            style={[styles.addRow, { borderColor: colors.rule }]}
+          >
+            <Text style={[styles.addText, { color: colors.focus }]} allowFontScaling>
+              {t("Add a reminder")}
+            </Text>
+          </Pressable>
+        ) : null}
 
-      <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.rule }]}>
-        <Text style={[styles.eveningBody, { color: colors.muted }]} allowFontScaling>
-          {t("If you haven't focused by 20:00 on a goal day, we can send one gentle note.")}
-        </Text>
-        <View style={styles.eveningRow}>
-          <Text style={[styles.toggleLabel, { color: colors.ink }]} allowFontScaling>
-            {prefs.eveningNote ? t("On") : t("Off")}
+        <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.rule }]}>
+          <Text style={[styles.eveningBody, { color: colors.muted }]} allowFontScaling>
+            {t("If you haven't focused by 20:00 on a goal day, we can send one gentle note.")}
           </Text>
-          <Switch
-            accessibilityLabel={t("Evening goal-day note")}
-            onValueChange={(eveningNote) => onChange({ ...prefs, eveningNote })}
-            value={prefs.eveningNote}
-          />
+          <View style={styles.eveningRow}>
+            <Text style={[styles.toggleLabel, { color: colors.ink }]} allowFontScaling>
+              {prefs.eveningNote ? t("On") : t("Off")}
+            </Text>
+            <Switch
+              accessibilityLabel={t("Evening goal-day note")}
+              onValueChange={(eveningNote) => onChange({ ...prefs, eveningNote })}
+              value={prefs.eveningNote}
+            />
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }

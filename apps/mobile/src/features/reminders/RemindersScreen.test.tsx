@@ -83,6 +83,26 @@ describe("RemindersScreen (P22)", () => {
     });
   });
 
+  it("keeps the evening note reachable behind a ScrollView at cap (S9-03)", async () => {
+    const prefs: ReminderPrefs = {
+      reminders: Array.from({ length: MAX_REMINDERS }, (_, i) => ({
+        id: `r-${i}`,
+        hour: 9,
+        minute: 0,
+        days: [1],
+        enabled: true,
+      })),
+      eveningNote: false,
+    };
+    const { getByTestId, getByLabelText } = await renderScreen(prefs);
+    // The whole reminder list + evening card scroll — the toggle can never be
+    // pushed off-screen by a long list.
+    getByTestId("reminders-scroll");
+    const toggle = getByLabelText("Evening goal-day note");
+    await fireEvent(toggle, "onValueChange", true);
+    expect(toggle).toBeTruthy();
+  });
+
   it("still offers the add row on an empty default state", async () => {
     const { getByLabelText } = await renderScreen(DEFAULT_REMINDER_PREFS);
     getByLabelText("Add a reminder");

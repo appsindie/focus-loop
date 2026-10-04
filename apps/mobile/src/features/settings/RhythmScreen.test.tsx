@@ -27,22 +27,22 @@ async function renderScreen(settings = SETTINGS) {
 describe("RhythmScreen (P21)", () => {
   it("lists the three presets plus Custom (J10-R1)", async () => {
     const { getByLabelText } = await renderScreen();
-    getByLabelText("Rhythm preset Classic 25/5 ×4");
-    getByLabelText("Rhythm preset Gentle start 15/5");
-    getByLabelText("Rhythm preset Deep work 50/10 ×3");
+    getByLabelText("Rhythm preset Classic");
+    getByLabelText("Rhythm preset Gentle start");
+    getByLabelText("Rhythm preset Deep work");
     getByLabelText("Rhythm preset Custom");
   });
 
   it("marks the current preset as selected", async () => {
     const { getByLabelText } = await renderScreen();
-    const row = getByLabelText("Rhythm preset Classic 25/5 ×4");
+    const row = getByLabelText("Rhythm preset Classic");
     const state = row.props["accessibilityState"] as { selected?: boolean } | undefined;
     expect(state?.selected).toBe(true);
   });
 
   it("picking Gentle saves immediately — no Save button (J10-R3)", async () => {
     const { getByLabelText, onChange } = await renderScreen();
-    await fireEvent.press(getByLabelText("Rhythm preset Gentle start 15/5"));
+    await fireEvent.press(getByLabelText("Rhythm preset Gentle start"));
     expect(onChange).toHaveBeenCalledWith({ rhythmPresetId: "gentle" });
   });
 

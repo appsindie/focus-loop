@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { t } from "../../i18n";
+import { locale, t } from "../../i18n";
 
 const REMINDERS_KEY = "focus-loop/v1/reminders";
 
@@ -93,8 +93,21 @@ export async function saveReminderPrefs(prefs: ReminderPrefs): Promise<void> {
   );
 }
 
-function dayLetters(): string[] {
-  return [t("M"), t("T"), t("W"), t("T"), t("F"), t("S"), t("S")];
+const DAY_KEYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"] as const;
+
+// ISO Mon..Sun chip letters. English-keyed gettext cannot give Tue and Thu
+// (or Sat and Sun) different glyphs from t("T")/t("S"), so the letters come
+// from CLDR via Intl weekday "narrow" — every locale gets its own distinct
+// initials (S10-03). First letter of the translated short name is the
+// fallback where Intl narrow is unavailable.
+export function dayChipLetters(): string[] {
+  try {
+    const fmt = new Intl.DateTimeFormat(locale(), { weekday: "narrow" });
+    // 2024-01-01 is a Monday.
+    return DAY_KEYS.map((_, index) => fmt.format(new Date(2024, 0, index + 1)).charAt(0));
+  } catch {
+    return DAY_KEYS.map((key) => t(key).charAt(0));
+  }
 }
 
 function sameSet(a: number[], b: number[]): boolean {
@@ -115,7 +128,7 @@ export function reminderDaysLabel(days: number[]): string {
   if (days.length === 7) {
     return t("Daily");
   }
-  const letters = dayLetters();
+  const letters = dayChipLetters();
   return [...days]
     .sort()
     .map((d) => letters[d - 1])

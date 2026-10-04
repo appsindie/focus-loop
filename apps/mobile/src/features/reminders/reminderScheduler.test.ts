@@ -80,7 +80,7 @@ describe("syncReminderSchedules", () => {
   });
 
   it("cancels stale identifiers and keeps wanted ones", async () => {
-    const keep = reminderIdentifier("r-1", 1);
+    const keep = reminderIdentifier("r-1", 1, 9, 0);
     getAll.mockResolvedValue([
       { identifier: keep },
       { identifier: "focus-loop-reminder-gone-d3" },
@@ -97,6 +97,31 @@ describe("syncReminderSchedules", () => {
     // And the kept id is not re-scheduled.
     const rescheduled = schedule.mock.calls.map(([arg]) => arg.identifier);
     expect(rescheduled).not.toContain(keep);
+  });
+
+  it("cancels the old time and schedules the new one on a time edit (S9-01)", async () => {
+    // r-1 edited 9:00 → 9:30: the 9:00 identifiers are pending on device and
+    // must be cancelled, the 9:30 ones scheduled fresh.
+    const PREFS_EDITED: ReminderPrefs = {
+      ...PREFS,
+      reminders: [{ ...PREFS.reminders[0]!, minute: 30 }, PREFS.reminders[1]!],
+    };
+    getAll.mockResolvedValue(
+      [1, 2, 3, 4, 5].map((d) => ({
+        identifier: reminderIdentifier("r-1", d, 9, 0),
+      })) as never,
+    );
+    await syncReminderSchedules(PREFS_EDITED, CONTEXT);
+    const cancelled = cancel.mock.calls.map(([id]) => id);
+    for (const d of [1, 2, 3, 4, 5]) {
+      expect(cancelled).toContain(reminderIdentifier("r-1", d, 9, 0));
+    }
+    const scheduled = schedule.mock.calls.map(([arg]) => arg.identifier);
+    for (const d of [1, 2, 3, 4, 5]) {
+      expect(scheduled).toContain(reminderIdentifier("r-1", d, 9, 30));
+    }
+    const trigger = schedule.mock.calls[0]?.[0].trigger;
+    expect(trigger).toEqual({ type: "weekly", weekday: 2, hour: 9, minute: 30 });
   });
 });
 

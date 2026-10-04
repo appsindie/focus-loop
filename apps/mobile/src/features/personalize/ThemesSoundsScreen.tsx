@@ -94,7 +94,14 @@ export function ThemesSoundsScreen({
       setAdState("failed");
       return;
     }
-    await onTrialEarned(item.id);
+    try {
+      await onTrialEarned(item.id);
+    } catch {
+      // The trial write failed (CR-33) — never pretend it granted: retry copy
+      // and no trial_started event.
+      setAdState("failed");
+      return;
+    }
     trackEvent("trial_started", { itemId: item.id });
     setTrialItem(null);
   };

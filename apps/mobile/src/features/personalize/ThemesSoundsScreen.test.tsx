@@ -80,6 +80,18 @@ describe("ThemesSoundsScreen (J8 / P15)", () => {
     expect(props.onTrialEarned).not.toHaveBeenCalled();
   });
 
+  it("shows retry copy when the trial write fails after a watched ad (CR-33)", async () => {
+    const props = makeProps({
+      onTrialEarned: jest.fn(() => Promise.reject(new Error("storage gone"))),
+    });
+    const { getByLabelText, getByText } = await render(<ThemesSoundsScreen {...props} />);
+    await fireEvent.press(getByLabelText(/Ocean — locked/));
+    await fireEvent.press(getByText("Watch video"));
+    // Never pretend the trial granted — same retry affordance as a load fail.
+    await waitFor(() => expect(getByText("Couldn't load the video. Try again")).toBeTruthy());
+    expect(props.onTrialEarned).toHaveBeenCalledWith("ocean");
+  });
+
   it("sends Plus-only items straight to the paywall — no trial card (J8-R4)", async () => {
     const props = makeProps();
     const { getByLabelText, queryByText } = await render(<ThemesSoundsScreen {...props} />);
