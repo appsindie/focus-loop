@@ -22,13 +22,13 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-10-04T03:30:00Z",
-    "round_count": 6,
+    "fired_at": "2026-10-04T03:47:00Z",
+    "round_count": 7,
     "routine": "code-review",
-    "session_url": "https://claude.ai/code/cse_01NbtjjK6xFBm9EyLhRuXBQB",
+    "session_url": "https://claude.ai/code/cse_012ds6Q1DVLRgoHAanmkntze",
     "verdict": "pending"
   },
-  "next_action": "Phase 2 slice 5: J6 progress — Week screen P17 (7-day chart), Share card P19 (native share), store review prompt; History P18 shell already landed slice 2. Then slice 6 ad broker Plus-removal flag.",
+  "next_action": "Phase 2 slice 6: ad broker — Plus-removal flag wired to entitlement + AdMob console caps verification note; interstitials already call useFullScreenAds since slice 2.",
   "open_exceptions": [
     {
       "blocking": true,
