@@ -5,7 +5,7 @@ import { Palette, typography } from "../../../shared/theme";
 import { PrimaryButton, TextButton } from "../../../shared/ui/Buttons";
 import { trackEvent } from "../../analytics/events";
 import { buyPlus, restorePlus } from "../purchase";
-import { createExpoIapStore, type PlusStore, type StoreProduct } from "../iapPort";
+import { getDefaultPlusStore, type PlusStore, type StoreProduct } from "../iapPort";
 import { type PlusPlan } from "../plusProducts";
 
 const BENEFITS = [
@@ -24,7 +24,9 @@ type PaywallState =
 
 export function PaywallScreen({
   colors,
-  store = createExpoIapStore(),
+  // getDefaultPlusStore() is a module singleton — a per-render factory here
+  // once re-fired the load effect on every render (CR-27).
+  store = getDefaultPlusStore(),
   onClose,
   onPurchased,
   onRestored,
@@ -64,6 +66,8 @@ export function PaywallScreen({
     setBusy(null);
     if (outcome === "purchased") {
       onPurchased();
+    } else if (outcome === "pending") {
+      setNotice("Payment is still being approved — Plus turns on when it clears.");
     } else if (outcome === "failed") {
       // Generic copy per the error registry; the store error is never shown raw.
       setNotice("We couldn't reach the store. Check your connection and try again.");

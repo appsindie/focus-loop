@@ -131,7 +131,8 @@
         }
       ],
       "expo-sharing",
-      "expo-iap"
+      "expo-iap",
+      "expo-audio"
     ],
     "extra": {
       "eas": {

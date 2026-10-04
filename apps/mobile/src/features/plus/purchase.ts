@@ -1,6 +1,6 @@
 import { trackEvent } from "../analytics/events";
 import { applyVerification, grantPlus } from "../loop/entitlement";
-import { createExpoIapStore, type PlusStore } from "./iapPort";
+import { getDefaultPlusStore, type PlusStore } from "./iapPort";
 import { planForProductId, PLUS_PRODUCT_IDS, type PlusPlan } from "./plusProducts";
 
 // J7 purchase orchestration — thin over PlusStore so every path (paywall buy,
@@ -8,11 +8,14 @@ import { planForProductId, PLUS_PRODUCT_IDS, type PlusPlan } from "./plusProduct
 // and analytics events. Store absence (Expo Go / pre-product-catalog) resolves
 // to "failed"/"unknown" rather than throwing into the UI.
 
-export type BuyOutcome = "purchased" | "cancelled" | "failed";
+// "pending": the store took the order but payment has not settled (Play
+// pending methods, iOS Ask-to-Buy) — no grant; the next start re-check
+// activates Plus once the receipt shows it (CR-28).
+export type BuyOutcome = "purchased" | "cancelled" | "pending" | "failed";
 
 export async function buyPlus(
   plan: PlusPlan,
-  store: PlusStore = createExpoIapStore(),
+  store: PlusStore = getDefaultPlusStore(),
   now: Date = new Date(),
 ): Promise<BuyOutcome> {
   try {
@@ -33,7 +36,7 @@ export async function buyPlus(
 export type RestoreOutcome = "restored" | "none" | "failed";
 
 export async function restorePlus(
-  store: PlusStore = createExpoIapStore(),
+  store: PlusStore = getDefaultPlusStore(),
   now: Date = new Date(),
 ): Promise<RestoreOutcome> {
   try {
@@ -56,7 +59,7 @@ export async function restorePlus(
 // expiry stamp passes. A store error is "unknown" — the kept local flag is
 // never revoked nor extended by a failed query (tri-state, CR-02).
 export async function verifyPlusWithStore(
-  store: PlusStore = createExpoIapStore(),
+  store: PlusStore = getDefaultPlusStore(),
   now: Date = new Date(),
 ): Promise<void> {
   try {

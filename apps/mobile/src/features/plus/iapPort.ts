@@ -33,7 +33,12 @@ export type StorePurchase = {
 };
 
 export type PurchaseResult =
-  { kind: "purchased"; purchase: StorePurchase } | { kind: "cancelled" } | { kind: "failed" };
+  | { kind: "purchased"; purchase: StorePurchase }
+  | { kind: "cancelled" }
+  // Store confirmed but payment is settling (Play pending, iOS Ask-to-Buy).
+  // Nothing to grant — Plus activates on the next start re-check (CR-28).
+  | { kind: "pending" }
+  | { kind: "failed" };
 
 export interface PlusStore {
   loadProducts(): Promise<StoreProduct[]>;
@@ -51,6 +56,19 @@ async function ensureConnection(): Promise<void> {
   connection ??= initConnection().then(() => undefined);
   return connection;
 }
+
+// The default store is a module singleton: passing `createExpoIapStore()` as a
+// React default prop would mint a new object every render and re-fire every
+// effect keyed on it (CR-27 — the paywall's load effect looped forever).
+let defaultStore: PlusStore | null = null;
+export function getDefaultPlusStore(): PlusStore {
+  defaultStore ??= createExpoIapStore();
+  return defaultStore;
+}
+
+// A purchase flow that neither store listener settles would leave the buy
+// spinner spinning forever — bound it (CR-28).
+const PURCHASE_SETTLE_MS = 60_000;
 
 function purchaseExpiry(purchase: {
   productId: string;
@@ -94,31 +112,52 @@ export function createExpoIapStore(): PlusStore {
       const productId = PLUS_PRODUCT_IDS[plan];
       const type = plan === "yearly" ? "subs" : "in-app";
       return new Promise<PurchaseResult>((resolve) => {
+        let settled = false;
+        const settle = (result: PurchaseResult) => {
+          if (settled) {
+            return;
+          }
+          settled = true;
+          clearTimeout(timer);
+          updatedSub.remove();
+          errorSub.remove();
+          resolve(result);
+        };
+        const timer = setTimeout(() => settle({ kind: "failed" }), PURCHASE_SETTLE_MS);
         const updatedSub = purchaseUpdatedListener((purchase) => {
           if (purchase.productId !== productId && purchase.currentPlanId !== productId) {
             return;
           }
-          updatedSub.remove();
-          errorSub.remove();
-          void finishTransaction({ purchase, isConsumable: false })
-            .catch(() => {})
+          // Pending (slow payment, Ask-to-Buy) is not owned yet — the next
+          // start re-check picks the purchase up when it clears (CR-28).
+          if (purchase.purchaseState === "pending") {
+            settle({ kind: "pending" });
+            return;
+          }
+          if (purchase.purchaseState !== "purchased") {
+            settle({ kind: "failed" });
+            return;
+          }
+          // finishTransaction acknowledges the payment on Android — if it
+          // fails the purchase auto-refunds in days, so report failed rather
+          // than granting Plus the store will take back (CR-28).
+          finishTransaction({ purchase, isConsumable: false })
             .then(() =>
-              resolve({
+              settle({
                 kind: "purchased",
                 purchase: {
                   productId: purchase.productId,
                   plusExpiresAt: purchaseExpiry(purchase),
                 },
               }),
-            );
+            )
+            .catch(() => settle({ kind: "failed" }));
         });
         const errorSub = purchaseErrorListener((error) => {
           if (error.productId != null && error.productId !== productId) {
             return;
           }
-          updatedSub.remove();
-          errorSub.remove();
-          resolve({ kind: error.code === ErrorCode.UserCancelled ? "cancelled" : "failed" });
+          settle({ kind: error.code === ErrorCode.UserCancelled ? "cancelled" : "failed" });
         });
         const props =
           type === "subs"
@@ -128,23 +167,23 @@ export function createExpoIapStore(): PlusStore {
             : Platform.OS === "ios"
               ? { request: { apple: { sku: productId } }, type: "in-app" as const }
               : { request: { google: { skus: [productId] } }, type: "in-app" as const };
-        requestPurchase(props).catch(() => {
-          updatedSub.remove();
-          errorSub.remove();
-          resolve({ kind: "failed" });
-        });
+        requestPurchase(props).catch(() => settle({ kind: "failed" }));
       });
     },
 
     async restorePurchases(): Promise<StorePurchase[]> {
       await ensureConnection();
       const purchases = await getAvailablePurchases();
-      return purchases
-        .filter((p) => PRODUCT_IDS.includes(p.productId))
-        .map((p) => ({
-          productId: p.productId,
-          plusExpiresAt: purchaseExpiry(p),
-        }));
+      return (
+        purchases
+          // Same ownership bar as the buy path — a pending row in the receipt
+          // must not grant Plus (CR-28).
+          .filter((p) => PRODUCT_IDS.includes(p.productId) && p.purchaseState === "purchased")
+          .map((p) => ({
+            productId: p.productId,
+            plusExpiresAt: purchaseExpiry(p),
+          }))
+      );
     },
   };
 }

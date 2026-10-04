@@ -3,6 +3,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { colors, radii, spacing, typography } from "../../shared/theme";
 import { loopSummary, resolveRhythm } from "../loop/rhythm";
 import { Appearance, DisplayMode, Settings } from "./SettingsStore";
+import { PLUS_PRODUCT_IDS } from "../plus/plusProducts";
 
 type SettingsScreenProps = {
   settings: Settings;
@@ -12,6 +13,9 @@ type SettingsScreenProps = {
   // J7: Plus card + R4 restore row.
   isPlus: boolean;
   plusExpiresAt: string | null;
+  // CR-29: an Android yearly sub reports no client-side expiry — the label
+  // comes from the product id, not the absence of a date.
+  plusProductId: string | null;
   onUpgrade: () => void;
   onRestore: () => void;
   restoreMessage?: string | null;
@@ -97,6 +101,7 @@ export function SettingsScreen({
   onBack,
   isPlus,
   plusExpiresAt,
+  plusProductId,
   onUpgrade,
   onRestore,
   restoreMessage,
@@ -130,9 +135,11 @@ export function SettingsScreen({
               Focus Loop Plus
             </Text>
             <Text style={styles.plusStatus} allowFontScaling>
-              {plusExpiresAt != null
-                ? `Active until ${new Date(plusExpiresAt).toLocaleDateString()}`
-                : "Lifetime"}
+              {plusProductId === PLUS_PRODUCT_IDS.lifetime
+                ? "Lifetime"
+                : plusExpiresAt != null
+                  ? `Active until ${new Date(plusExpiresAt).toLocaleDateString()}`
+                  : "Active"}
             </Text>
           </View>
         ) : (

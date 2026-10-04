@@ -300,6 +300,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           onBack={() => go("home")}
           isPlus={hasAdsRemoval}
           plusExpiresAt={entitlement.plusExpiresAt}
+          plusProductId={entitlement.productId}
           restoreMessage={restoreMessage}
           onUpgrade={() => {
             setRestoreMessage(null);

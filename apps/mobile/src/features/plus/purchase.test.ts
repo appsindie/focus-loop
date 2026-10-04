@@ -40,6 +40,12 @@ describe("buyPlus (J7)", () => {
     expect(entitlement.lastVerifiedAt).toBe(NOW.toISOString());
   });
 
+  it("reports 'pending' without granting when payment is still settling (CR-28)", async () => {
+    const store = fakeStore({ purchase: () => Promise.resolve({ kind: "pending" }) });
+    await expect(buyPlus("yearly", store, NOW)).resolves.toBe("pending");
+    expect((await loadEntitlement()).isPlus).toBe(false);
+  });
+
   it("leaves entitlement untouched when the user cancels", async () => {
     const store = fakeStore({ purchase: () => Promise.resolve({ kind: "cancelled" }) });
     await expect(buyPlus("lifetime", store, NOW)).resolves.toBe("cancelled");
