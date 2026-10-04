@@ -18,6 +18,34 @@
     }
   },
   "submit": {
-    "production": {}
+    "preview": {
+      "extends": "production",
+      "android": {
+        "serviceAccountKeyPath": "./serviceAccount.json",
+        "track": "internal",
+        "releaseStatus": "completed"
+      },
+      "ios": {
+        "ascAppId": "6818991496",
+        "appleTeamId": "72443C4DUD",
+        "ascApiKeyPath": "./storeConnect.p8",
+        "ascApiKeyId": "JVGX98WMQ3",
+        "ascApiKeyIssuerId": "e08cafd8-a655-4267-b4e9-6834e11c7d31"
+      }
+    },
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "./serviceAccount.json",
+        "track": "production",
+        "releaseStatus": "completed"
+      },
+      "ios": {
+        "ascAppId": "6818991496",
+        "appleTeamId": "72443C4DUD",
+        "ascApiKeyPath": "./storeConnect.p8",
+        "ascApiKeyId": "JVGX98WMQ3",
+        "ascApiKeyIssuerId": "e08cafd8-a655-4267-b4e9-6834e11c7d31"
+      }
+    }
   }
 }
