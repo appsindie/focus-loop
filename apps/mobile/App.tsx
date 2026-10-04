@@ -2,7 +2,8 @@ import { StatusBar } from "expo-status-bar";
 import { useKeepAwake } from "expo-keep-awake";
 import { useCallback, useEffect, useState } from "react";
 import { requestNotificationPermissions } from "./src/features/notifications/NotificationScheduler";
-import { DEFAULT_SETTINGS, useSettings } from "./src/features/settings/useSettings";
+import { DEFAULT_RHYTHM, resolveRhythm } from "./src/features/loop/rhythm";
+import { useSettings } from "./src/features/settings/useSettings";
 import { SettingsScreen } from "./src/features/settings/SettingsScreen";
 import { HistoryScreen } from "./src/features/timer/HistoryScreen";
 import { HomeScreen } from "./src/features/timer/HomeScreen";
@@ -33,7 +34,7 @@ export default function App() {
     update: updateSettings,
     save: saveSettings,
   } = useSettings();
-  const [selectedMinutes, setSelectedMinutes] = useState(DEFAULT_SETTINGS.defaultDurationMinutes);
+  const [selectedMinutes, setSelectedMinutes] = useState(DEFAULT_RHYTHM.focusMinutes);
   const [stats, setStats] = useState<SessionStats>({ sessionsToday: 0, streakDays: 0 });
   const [sessions, setSessions] = useState<CompletedSession[]>([]);
 
@@ -53,11 +54,13 @@ export default function App() {
     void refreshSessions();
   }, [refreshSessions]);
 
+  const rhythm = resolveRhythm(settings.rhythmPresetId, settings.customRhythm);
+
   useEffect(() => {
     if (!settingsLoading) {
-      setSelectedMinutes(settings.defaultDurationMinutes);
+      setSelectedMinutes(rhythm.focusMinutes);
     }
-  }, [settings.defaultDurationMinutes, settingsLoading]);
+  }, [rhythm.focusMinutes, settingsLoading]);
 
   useEffect(() => {
     const startedAt = timer.startedAt;
@@ -100,9 +103,9 @@ export default function App() {
 
   const handleSaveSettings = useCallback(async () => {
     await saveSettings();
-    setSelectedMinutes(settings.defaultDurationMinutes);
+    setSelectedMinutes(rhythm.focusMinutes);
     setScreen("home");
-  }, [saveSettings, settings.defaultDurationMinutes]);
+  }, [saveSettings, rhythm.focusMinutes]);
 
   return (
     <AdsProvider>

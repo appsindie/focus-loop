@@ -1,6 +1,7 @@
-import { Pressable, StyleSheet, Switch, Text, TextInput, View } from "react-native";
+import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
 import { colors, radii, spacing, typography } from "../../shared/theme";
-import { DEFAULT_SETTINGS, Settings } from "./SettingsStore";
+import { loopSummary, resolveRhythm } from "../loop/rhythm";
+import { Settings } from "./SettingsStore";
 
 type SettingsScreenProps = {
   settings: Settings;
@@ -9,16 +10,8 @@ type SettingsScreenProps = {
   onBack: () => void;
 };
 
-function clampDuration(value: string): number {
-  const parsed = Number.parseInt(value, 10);
-  if (Number.isNaN(parsed)) {
-    return DEFAULT_SETTINGS.defaultDurationMinutes;
-  }
-  return Math.min(Math.max(parsed, 1), 180);
-}
-
 export function SettingsScreen({ settings, onChange, onSave, onBack }: SettingsScreenProps) {
-  const canSave = settings.defaultDurationMinutes >= 1 && settings.defaultDurationMinutes <= 180;
+  const rhythm = resolveRhythm(settings.rhythmPresetId, settings.customRhythm);
 
   return (
     <View style={styles.container}>
@@ -41,15 +34,32 @@ export function SettingsScreen({ settings, onChange, onSave, onBack }: SettingsS
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle} allowFontScaling>
-          Default focus length (minutes)
+          Rhythm
         </Text>
-        <TextInput
-          accessibilityLabel="Default focus length in minutes"
-          keyboardType="number-pad"
-          maxLength={3}
-          onChangeText={(text) => onChange({ defaultDurationMinutes: clampDuration(text) })}
-          style={styles.input}
-          value={String(settings.defaultDurationMinutes)}
+        <Text style={styles.sectionBody} allowFontScaling>
+          {loopSummary(rhythm)}
+        </Text>
+      </View>
+
+      <View style={styles.row}>
+        <Text style={styles.rowLabel} allowFontScaling>
+          Show seconds
+        </Text>
+        <Switch
+          accessibilityLabel="Toggle show seconds"
+          onValueChange={(value) => onChange({ showSeconds: value })}
+          value={settings.showSeconds}
+        />
+      </View>
+
+      <View style={styles.row}>
+        <Text style={styles.rowLabel} allowFontScaling>
+          Auto-start breaks
+        </Text>
+        <Switch
+          accessibilityLabel="Toggle auto-start breaks"
+          onValueChange={(value) => onChange({ autoStartBreaks: value })}
+          value={settings.autoStartBreaks}
         />
       </View>
 
@@ -78,10 +88,8 @@ export function SettingsScreen({ settings, onChange, onSave, onBack }: SettingsS
       <Pressable
         accessibilityLabel="Save settings"
         accessibilityRole="button"
-        accessibilityState={{ disabled: !canSave }}
-        disabled={!canSave}
         onPress={onSave}
-        style={[styles.saveButton, !canSave && styles.saveButtonDisabled]}
+        style={styles.saveButton}
       >
         <Text style={styles.saveButtonText} allowFontScaling>
           Save
@@ -125,16 +133,9 @@ const styles = StyleSheet.create({
     color: colors.text,
     marginBottom: spacing.sm,
   },
-  input: {
-    ...typography.headline,
-    color: colors.text,
-    backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: radii.md,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.md,
-    minHeight: 56,
+  sectionBody: {
+    ...typography.body,
+    color: colors.textMuted,
   },
   row: {
     flexDirection: "row",
@@ -160,9 +161,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     marginTop: spacing.xl,
-  },
-  saveButtonDisabled: {
-    opacity: 0.5,
   },
   saveButtonText: {
     ...typography.headline,
