@@ -167,6 +167,42 @@ describe("LoopEngine", () => {
     expect(restored.completedFocusRecord!.endedAt).toBe("2026-10-03T23:55:00.000Z");
   });
 
+  it("extendFocus inserts a same-round extension and keeps the deferred break (P10 keep-going)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start("write");
+    now.t = 600_000;
+    engine.tick();
+    expect(engine.currentPhase).toBe("step-done");
+    const firstRecord = engine.completedFocusRecord!;
+    engine.clearFocusRecord();
+
+    expect(engine.extendFocus(600)).toBe(true);
+    expect(engine.currentPhase).toBe("running");
+    expect(engine.currentStep).toMatchObject({ kind: "focus", durationSeconds: 600 });
+
+    now.t += 600_000;
+    engine.tick();
+    expect(engine.currentPhase).toBe("step-done");
+    const extensionRecord = engine.completedFocusRecord!;
+    // The extension is its own session on the same loop + round.
+    expect(extensionRecord.loopId).toBe(firstRecord.loopId);
+    expect(extensionRecord.roundIndex).toBe(firstRecord.roundIndex);
+    expect(extensionRecord.startedAt).toBe(new Date(600_000).toISOString());
+    expect(extensionRecord.focusedSeconds).toBe(600);
+
+    engine.advance();
+    expect(engine.currentStep!.kind).toBe("break"); // the skipped-over break still exists
+  });
+
+  it("extendFocus refuses outside step-done or on non-focus steps", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    expect(engine.extendFocus(600)).toBe(false); // idle
+    engine.start();
+    expect(engine.extendFocus(600)).toBe(false); // running
+  });
+
   it("auto-started focus counts from the break's true end (CR-03)", () => {
     const now = { t: 0 };
     const engine = makeEngine(now, true);

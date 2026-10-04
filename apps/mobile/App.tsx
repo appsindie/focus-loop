@@ -1,153 +1,241 @@
 import { StatusBar } from "expo-status-bar";
 import { useKeepAwake } from "expo-keep-awake";
-import { useCallback, useEffect, useState } from "react";
-import { requestNotificationPermissions } from "./src/features/notifications/NotificationScheduler";
-import { DEFAULT_RHYTHM, resolveRhythm } from "./src/features/loop/rhythm";
-import { useSettings } from "./src/features/settings/useSettings";
-import { SettingsScreen } from "./src/features/settings/SettingsScreen";
-import { HistoryScreen } from "./src/features/timer/HistoryScreen";
-import { HomeScreen } from "./src/features/timer/HomeScreen";
-import { SummaryScreen } from "./src/features/timer/SummaryScreen";
-import { TimerScreen } from "./src/features/timer/TimerScreen";
-import {
-  CompletedSession,
-  SessionStats,
-  computeStats,
-  loadSessions,
-  recordSession,
-} from "./src/features/timer/SessionStore";
-import { useTimer } from "./src/features/timer/useTimer";
+import { useCallback, useMemo } from "react";
+import { Banner, useFullScreenAds } from "@appsindie/react-native-ads";
+import { StyleSheet, Text, View } from "react-native";
 import { AdsProvider } from "./src/features/ads/AdsProvider";
-
-type AppScreen = "home" | "timer" | "summary" | "settings" | "history";
+import { useLoopController } from "./src/features/loop/useLoopController";
+import { BreakScreen } from "./src/features/loop/screens/BreakScreen";
+import { CloseoutScreen } from "./src/features/loop/screens/CloseoutScreen";
+import { FirstLaunchScreen } from "./src/features/loop/screens/FirstLaunchScreen";
+import { FocusScreen } from "./src/features/loop/screens/FocusScreen";
+import { HomeScreen } from "./src/features/loop/screens/HomeScreen";
+import { LoopDoneScreen } from "./src/features/loop/screens/LoopDoneScreen";
+import { NotifAskSheet } from "./src/features/loop/screens/NotifAskSheet";
+import { mostRecentUnused } from "./src/features/loop/parkedThoughts";
+import { SettingsScreen } from "./src/features/settings/SettingsScreen";
+import { DEFAULT_SETTINGS, Settings, useSettings } from "./src/features/settings/useSettings";
+import { saveSettings } from "./src/features/settings/SettingsStore";
+import { HistoryScreen } from "./src/features/loop/screens/HistoryScreen";
+import { palette, typography } from "./src/shared/theme";
 
 function KeepAwakeActivator() {
   useKeepAwake();
   return null;
 }
 
+function Splash() {
+  return (
+    <View style={[styles.splash, { backgroundColor: palette.light.bg }]}>
+      <Text style={[styles.splashMark, { color: palette.light.ink }]}>Focus Loop</Text>
+    </View>
+  );
+}
+
 export default function App() {
-  const [screen, setScreen] = useState<AppScreen>("home");
-  const {
-    settings,
-    loading: settingsLoading,
-    update: updateSettings,
-    save: saveSettings,
-  } = useSettings();
-  const [selectedMinutes, setSelectedMinutes] = useState(DEFAULT_RHYTHM.focusMinutes);
-  const [stats, setStats] = useState<SessionStats>({ sessionsToday: 0, streakDays: 0 });
-  const [sessions, setSessions] = useState<CompletedSession[]>([]);
+  const { settings, loading: settingsLoading, update: updateSettings } = useSettings();
 
-  const timer = useTimer({
-    soundEnabled: settings.soundEnabled,
-    vibrationEnabled: settings.vibrationEnabled,
-  });
-
-  const refreshSessions = useCallback(async () => {
-    const loaded = await loadSessions();
-    setSessions(loaded);
-    setStats(computeStats(loaded, new Date()));
-  }, []);
-
-  useEffect(() => {
-    void requestNotificationPermissions();
-    void refreshSessions();
-  }, [refreshSessions]);
-
-  const rhythm = resolveRhythm(settings.rhythmPresetId, settings.customRhythm);
-
-  useEffect(() => {
-    if (!settingsLoading) {
-      setSelectedMinutes(rhythm.focusMinutes);
-    }
-  }, [rhythm.focusMinutes, settingsLoading]);
-
-  useEffect(() => {
-    const startedAt = timer.startedAt;
-    const durationSeconds = timer.durationSeconds;
-    if (timer.state !== "completed" || startedAt == null || durationSeconds === 0) {
-      return;
-    }
-    void (async () => {
-      await recordSession(startedAt, durationSeconds);
-      await refreshSessions();
-      setScreen("summary");
-    })();
-  }, [timer.state, timer.startedAt, timer.durationSeconds, refreshSessions]);
-
-  const handleStart = useCallback(() => {
-    void timer.start(selectedMinutes * 60);
-    setScreen("timer");
-  }, [selectedMinutes, timer]);
-
-  const handleCancel = useCallback(() => {
-    timer.cancel();
-    setScreen("home");
-  }, [timer]);
-
-  const handleStartAnother = useCallback(() => {
-    setScreen("home");
-  }, []);
-
-  const handleOpenSettings = useCallback(() => {
-    setScreen("settings");
-  }, []);
-
-  const handleOpenHistory = useCallback(() => {
-    setScreen("history");
-  }, []);
-
-  const handleBackToHome = useCallback(() => {
-    setScreen("home");
-  }, []);
-
-  const handleSaveSettings = useCallback(async () => {
-    await saveSettings();
-    setSelectedMinutes(rhythm.focusMinutes);
-    setScreen("home");
-  }, [saveSettings, rhythm.focusMinutes]);
+  // Save-immediately semantics (P20: no Save button) — patch state + disk together.
+  const persistSettings = useCallback(
+    async (patch: Partial<Settings>) => {
+      const next = { ...settings, ...patch };
+      updateSettings(patch);
+      await saveSettings(next);
+    },
+    [settings, updateSettings],
+  );
 
   return (
     <AdsProvider>
-      {screen === "home" && (
-        <HomeScreen
-          selectedMinutes={selectedMinutes}
-          onSelectMinutes={setSelectedMinutes}
-          onStart={handleStart}
-          onOpenSettings={handleOpenSettings}
-          onOpenHistory={handleOpenHistory}
-          sessionsToday={stats.sessionsToday}
-          streakDays={stats.streakDays}
-        />
-      )}
-      {screen === "timer" && (
-        <>
-          {timer.state === "running" && <KeepAwakeActivator />}
-          <TimerScreen
-            remainingSeconds={timer.remainingSeconds}
-            state={timer.state}
-            onPause={timer.pause}
-            onResume={() => void timer.resume()}
-            onCancel={handleCancel}
-          />
-        </>
-      )}
-      {screen === "summary" && (
-        <SummaryScreen
-          durationSeconds={timer.durationSeconds}
-          onStartAnother={handleStartAnother}
-        />
-      )}
-      {screen === "history" && <HistoryScreen sessions={sessions} onBack={handleBackToHome} />}
-      {screen === "settings" && (
-        <SettingsScreen
-          settings={settings}
-          onChange={updateSettings}
-          onSave={() => void handleSaveSettings()}
-          onBack={handleBackToHome}
-        />
-      )}
-      <StatusBar style="auto" />
+      <AppBody
+        settings={settingsLoading ? DEFAULT_SETTINGS : settings}
+        settingsLoading={settingsLoading}
+        persistSettings={persistSettings}
+      />
     </AdsProvider>
   );
 }
+
+// Renders inside AdsProvider so the ads lib hooks see the module context.
+type AppBodyProps = {
+  settings: Settings;
+  settingsLoading: boolean;
+  persistSettings: (patch: Partial<Settings>) => Promise<void>;
+};
+
+function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
+  // Free tier for now; J7's entitlement flips hasAdsRemoval.
+  const { showFullscreenAds } = useFullScreenAds(false);
+  const interstitial = useMemo(() => ({ show: showFullscreenAds }), [showFullscreenAds]);
+  const controller = useLoopController(settings, settingsLoading, interstitial);
+  const colors = palette.light; // Dark theme + Appearance wiring lands with P20 polish.
+
+  const {
+    route,
+    go,
+    phase,
+    step,
+    engine,
+    sessions,
+    sessionsInLoop,
+    parkedThoughts,
+    week,
+    todayMinutes,
+    isNewWeek,
+    loopEndsAtMs,
+    longBreakSeconds,
+    intentionDraft,
+    setIntentionDraft,
+    outcomeDraft,
+    setOutcome,
+    notifAskOpen,
+    answerNotifAsk,
+    chooseDisplayMode,
+    startFocus,
+    startBreak,
+    keepGoing,
+    startNextFocus,
+    extendBreak,
+    endEarlySave,
+    endEarlyDiscard,
+    startLongBreak,
+    skipLongBreak,
+    parkThought,
+    adoptParked,
+    shareWeek,
+  } = controller;
+
+  const keepAwake =
+    (route === "focus" || route === "break") && (phase === "running" || phase === "paused");
+  const darkStatus = route === "break";
+
+  return (
+    <>
+      {keepAwake ? <KeepAwakeActivator /> : null}
+      {route === "loading" ? <Splash /> : null}
+      {route === "first-launch" ? (
+        <FirstLaunchScreen
+          colors={colors}
+          onChoose={(mode) => chooseDisplayMode(mode, persistSettings)}
+        />
+      ) : null}
+      {route === "home" ? (
+        <HomeScreen
+          colors={colors}
+          now={new Date()}
+          plan={engine.planSteps}
+          focusNumber={Math.max(1, engine.currentFocusNumber)}
+          totalFocus={engine.totalFocusCount}
+          loopEndsAtMs={loopEndsAtMs}
+          intention={intentionDraft}
+          onIntentionChange={setIntentionDraft}
+          parked={mostRecentUnused(parkedThoughts)}
+          onUseParkedThought={(t) => void adoptParked(t)}
+          week={week}
+          todayMinutes={todayMinutes}
+          isNewWeek={isNewWeek}
+          onStart={startFocus}
+          onOpenSettings={() => go("settings")}
+          onOpenWeek={() => go("history")}
+        />
+      ) : null}
+      {route === "home" ? (
+        // P04 free-tier banner, 320x50 pinned to the bottom of Home.
+        <View style={styles.bannerSlot}>
+          <Banner hasAdsRemoval={false} />
+        </View>
+      ) : null}
+      {route === "focus" ? (
+        <FocusScreen
+          colors={colors}
+          displayMode={settings.displayMode ?? "disc"}
+          onDisplayModeChange={(mode) => void persistSettings({ displayMode: mode })}
+          showSeconds={settings.showSeconds}
+          focusNumber={engine.currentFocusNumber}
+          totalFocus={engine.totalFocusCount}
+          intention={engine.currentIntention}
+          steps={engine.planSteps}
+          currentIndex={engine.currentStepIndex}
+          remainingSeconds={engine.remainingSeconds()}
+          durationSeconds={step?.durationSeconds ?? 0}
+          nextStep={controller.nextStep}
+          paused={phase === "paused"}
+          parkedThoughts={parkedThoughts}
+          elapsedSeconds={engine.elapsedSeconds()}
+          onPause={() => engine.pause()}
+          onResume={() => engine.resume()}
+          onParkThought={(text) => void parkThought(text)}
+          onEndEarlySave={endEarlySave}
+          onEndEarlyDiscard={endEarlyDiscard}
+        />
+      ) : null}
+      {route === "closeout" ? (
+        <CloseoutScreen
+          colors={colors}
+          focusNumber={engine.currentFocusNumber}
+          focusedSeconds={controller.lastSession?.focusedSeconds ?? step?.durationSeconds ?? 0}
+          intention={controller.lastSession?.intention ?? null}
+          outcome={outcomeDraft}
+          onOutcome={setOutcome}
+          autoStartBreaks={settings.autoStartBreaks}
+          onAutoStartBreaks={(v) => void persistSettings({ autoStartBreaks: v })}
+          nextStep={controller.nextStep}
+          onStartBreak={startBreak}
+          onKeepGoing={keepGoing}
+        />
+      ) : null}
+      {route === "break" ? (
+        <BreakScreen
+          colors={colors}
+          displayMode={settings.displayMode ?? "disc"}
+          remainingSeconds={engine.remainingSeconds()}
+          durationSeconds={step?.durationSeconds ?? 0}
+          nextFocusNumber={Math.min(engine.currentFocusNumber + 1, engine.totalFocusCount)}
+          autoStart={settings.autoStartBreaks}
+          onExtend={extendBreak}
+          onStartFocus={startNextFocus}
+        />
+      ) : null}
+      {route === "loop-done" ? (
+        <LoopDoneScreen
+          colors={colors}
+          sessionsInLoop={sessionsInLoop}
+          steps={engine.planSteps}
+          week={week}
+          longBreakSeconds={longBreakSeconds}
+          onStartLongBreak={startLongBreak}
+          onShareWeek={() => void shareWeek()}
+          onSkipLongBreak={skipLongBreak}
+        />
+      ) : null}
+      {route === "settings" ? (
+        <SettingsScreen
+          settings={settings}
+          onChange={(patch) => void persistSettings(patch)}
+          onBack={() => go("home")}
+        />
+      ) : null}
+      {route === "history" ? (
+        <HistoryScreen
+          sessions={sessions}
+          isPlus={false /* J7 entitlement lands in the Plus slice */}
+          onBack={() => go("home")}
+          colors={colors}
+        />
+      ) : null}
+      <NotifAskSheet
+        visible={notifAskOpen}
+        colors={colors}
+        onAllow={() => answerNotifAsk(true)}
+        onNotNow={() => answerNotifAsk(false)}
+      />
+      <StatusBar style={darkStatus ? "light" : "dark"} />
+    </>
+  );
+}
+
+const styles = StyleSheet.create({
+  bannerSlot: { alignItems: "center", backgroundColor: palette.light.bg },
+  splash: { flex: 1, alignItems: "center", justifyContent: "center" },
+  splashMark: { ...typography.h1Screen, letterSpacing: -0.5 },
+});

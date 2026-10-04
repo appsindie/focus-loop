@@ -6,7 +6,7 @@ const SETTINGS_KEY = "focus-loop/settings";
 
 // Display mode null = the P05 chooser has not been answered yet (J1-R3 requires it
 // before the first Start).
-export type DisplayMode = "numbers" | "progress";
+export type DisplayMode = "numbers" | "disc";
 export type Appearance = "system" | "light" | "dark";
 
 export type Settings = {
@@ -60,11 +60,18 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(Math.round(value), min), max);
 }
 
+// Stored payloads may carry the pilot's "progress" display value; it folds to
+// "disc" on load (canvas vocabulary).
+type StoredSettings = Omit<Settings, "displayMode"> & {
+  displayMode: DisplayMode | "progress" | null;
+};
+
 // Bounds enforced on load: a bad rhythm id or NaN/0 field would crash or degenerate
-// the loop plan downstream (code review CR-04).
-function normalizeSettings(settings: Settings): Settings {
+// the loop plan downstream (code review CR-04). Legacy "progress" folds to "disc".
+function normalizeSettings(settings: StoredSettings): Settings {
   return {
     ...settings,
+    displayMode: settings.displayMode === "progress" ? "disc" : settings.displayMode,
     customRhythm: {
       focusMinutes: clamp(
         settings.customRhythm.focusMinutes,
@@ -91,7 +98,7 @@ function normalizeSettings(settings: Settings): Settings {
   };
 }
 
-function isSettings(value: unknown): value is Settings {
+function isSettings(value: unknown): value is StoredSettings {
   if (typeof value !== "object" || value == null) {
     return false;
   }
@@ -100,6 +107,7 @@ function isSettings(value: unknown): value is Settings {
     PRESET_IDS.includes(candidate["rhythmPresetId"] as RhythmPresetId) &&
     isRhythm(candidate["customRhythm"]) &&
     (candidate["displayMode"] === "numbers" ||
+      candidate["displayMode"] === "disc" ||
       candidate["displayMode"] === "progress" ||
       candidate["displayMode"] === null) &&
     typeof candidate["showSeconds"] === "boolean" &&
@@ -131,7 +139,7 @@ export async function loadSettings(): Promise<Settings> {
         const anchor = new Date().toISOString();
         const latest = await AsyncStorage.getItem(SETTINGS_KEY);
         const parsedLatest: unknown = latest == null ? null : JSON.parse(latest);
-        const settings = isSettings(parsedLatest)
+        const settings: Settings = isSettings(parsedLatest)
           ? normalizeSettings(parsedLatest)
           : { ...DEFAULT_SETTINGS };
         settings.firstInstallAt = settings.firstInstallAt ?? anchor;

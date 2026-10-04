@@ -1,25 +1,101 @@
 import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { colors, radii, spacing, typography } from "../../shared/theme";
 import { loopSummary, resolveRhythm } from "../loop/rhythm";
-import { Settings } from "./SettingsStore";
+import { Appearance, DisplayMode, Settings } from "./SettingsStore";
 
 type SettingsScreenProps = {
   settings: Settings;
+  // P20: changes save immediately — the parent persists every patch.
   onChange: (patch: Partial<Settings>) => void;
-  onSave: () => void;
   onBack: () => void;
 };
 
-export function SettingsScreen({ settings, onChange, onSave, onBack }: SettingsScreenProps) {
+function Stepper({
+  value,
+  min,
+  max,
+  onChange,
+  accessibilityLabel,
+}: {
+  value: number;
+  min: number;
+  max: number;
+  onChange: (value: number) => void;
+  accessibilityLabel: string;
+}) {
+  return (
+    <View style={styles.stepper} accessibilityLabel={accessibilityLabel}>
+      <Pressable
+        onPress={() => onChange(Math.max(min, value - 1))}
+        accessibilityRole="button"
+        accessibilityLabel={`Decrease ${accessibilityLabel}`}
+        hitSlop={8}
+        style={styles.stepButton}
+      >
+        <Text style={styles.stepButtonText}>−</Text>
+      </Pressable>
+      <Text style={styles.stepValue}>{value}</Text>
+      <Pressable
+        onPress={() => onChange(Math.min(max, value + 1))}
+        accessibilityRole="button"
+        accessibilityLabel={`Increase ${accessibilityLabel}`}
+        hitSlop={8}
+        style={styles.stepButton}
+      >
+        <Text style={styles.stepButtonText}>+</Text>
+      </Pressable>
+    </View>
+  );
+}
+
+function Segmented<T extends string>({
+  options,
+  value,
+  onChange,
+  accessibilityLabel,
+}: {
+  options: { id: T; label: string }[];
+  value: T;
+  onChange: (value: T) => void;
+  accessibilityLabel: string;
+}) {
+  return (
+    <View style={styles.segmented} accessibilityLabel={accessibilityLabel}>
+      {options.map((o) => {
+        const selected = o.id === value;
+        return (
+          <Pressable
+            key={o.id}
+            onPress={() => onChange(o.id)}
+            accessibilityRole="button"
+            accessibilityLabel={`${accessibilityLabel}: ${o.label}`}
+            accessibilityState={{ selected }}
+            style={[styles.segmentOption, selected && styles.segmentSelected]}
+          >
+            <Text style={[styles.segmentText, selected && styles.segmentTextSelected]}>
+              {o.label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
+
+// P20 interim: the full screen order lands in the settings slice; these rows are
+// the v1 controls the loop surfaces depend on today.
+export function SettingsScreen({ settings, onChange, onBack }: SettingsScreenProps) {
   const rhythm = resolveRhythm(settings.rhythmPresetId, settings.customRhythm);
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Pressable
           accessibilityLabel="Back to home"
           accessibilityRole="button"
           onPress={onBack}
+          hitSlop={8}
           style={styles.backButton}
         >
           <Text style={styles.backButtonText} allowFontScaling>
@@ -32,6 +108,37 @@ export function SettingsScreen({ settings, onChange, onSave, onBack }: SettingsS
         <View style={styles.backButton} />
       </View>
 
+      <View style={styles.row}>
+        <Text style={styles.rowLabel} allowFontScaling>
+          Show time as
+        </Text>
+        <Segmented<DisplayMode>
+          accessibilityLabel="Show time as"
+          options={[
+            { id: "disc", label: "Disc" },
+            { id: "numbers", label: "Numbers" },
+          ]}
+          value={settings.displayMode ?? "disc"}
+          onChange={(displayMode) => onChange({ displayMode })}
+        />
+      </View>
+
+      <View style={styles.row}>
+        <Text style={styles.rowLabel} allowFontScaling>
+          Appearance
+        </Text>
+        <Segmented<Appearance>
+          accessibilityLabel="Appearance"
+          options={[
+            { id: "system", label: "System" },
+            { id: "light", label: "Light" },
+            { id: "dark", label: "Dark" },
+          ]}
+          value={settings.appearance}
+          onChange={(appearance) => onChange({ appearance })}
+        />
+      </View>
+
       <View style={styles.section}>
         <Text style={styles.sectionTitle} allowFontScaling>
           Rhythm
@@ -39,6 +146,19 @@ export function SettingsScreen({ settings, onChange, onSave, onBack }: SettingsS
         <Text style={styles.sectionBody} allowFontScaling>
           {loopSummary(rhythm)}
         </Text>
+      </View>
+
+      <View style={styles.row}>
+        <Text style={styles.rowLabel} allowFontScaling>
+          Weekly goal (days)
+        </Text>
+        <Stepper
+          accessibilityLabel="Weekly goal days"
+          value={settings.weeklyGoalDays}
+          min={1}
+          max={7}
+          onChange={(weeklyGoalDays) => onChange({ weeklyGoalDays })}
+        />
       </View>
 
       <View style={styles.row}>
@@ -84,18 +204,7 @@ export function SettingsScreen({ settings, onChange, onSave, onBack }: SettingsS
           value={settings.vibrationEnabled}
         />
       </View>
-
-      <Pressable
-        accessibilityLabel="Save settings"
-        accessibilityRole="button"
-        onPress={onSave}
-        style={styles.saveButton}
-      >
-        <Text style={styles.saveButtonText} allowFontScaling>
-          Save
-        </Text>
-      </Pressable>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -104,7 +213,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.xxl,
   },
   header: {
     flexDirection: "row",
@@ -126,7 +234,7 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   section: {
-    marginBottom: spacing.xl,
+    marginVertical: spacing.lg,
   },
   sectionTitle: {
     ...typography.headline,
@@ -149,21 +257,25 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     marginBottom: spacing.md,
     minHeight: 56,
+    gap: spacing.md,
   },
   rowLabel: {
     ...typography.body,
     color: colors.text,
+    flexShrink: 1,
   },
-  saveButton: {
-    minHeight: 56,
-    borderRadius: radii.md,
-    backgroundColor: colors.primary,
+  stepper: { flexDirection: "row", alignItems: "center", gap: spacing.md },
+  stepButton: { minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center" },
+  stepButtonText: { fontSize: 24, color: colors.text },
+  stepValue: { ...typography.headline, color: colors.text, minWidth: 24, textAlign: "center" },
+  segmented: { flexDirection: "row", borderRadius: radii.pill, overflow: "hidden" },
+  segmentOption: {
+    paddingHorizontal: 12,
+    minHeight: 44,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: spacing.xl,
   },
-  saveButtonText: {
-    ...typography.headline,
-    color: colors.primaryText,
-  },
+  segmentSelected: { backgroundColor: colors.chip, borderRadius: radii.pill },
+  segmentText: { ...typography.caption, color: colors.textMuted },
+  segmentTextSelected: { color: colors.text, fontWeight: "600" },
 });

@@ -52,9 +52,28 @@ export class LoopEngine {
   private pendingFocusRecord: FocusRecord | null = null;
 
   constructor(plan: LoopStep[], options: LoopEngineOptions = {}) {
-    this.plan = plan;
+    this.plan = [...plan];
     this.now = options.now ?? (() => Date.now());
     this.autoStartBreaks = options.autoStartBreaks ?? false;
+  }
+
+  get planSteps(): readonly LoopStep[] {
+    return this.plan;
+  }
+
+  // Loop strip + "FOCUS N OF M": count of focus steps at or before the current index.
+  get currentFocusNumber(): number {
+    let count = 0;
+    for (let i = 0; i <= this.stepIndex && i < this.plan.length; i++) {
+      if (this.plan[i]!.kind === "focus") {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+  get totalFocusCount(): number {
+    return this.plan.filter((s) => s.kind === "focus").length;
   }
 
   get currentPhase(): EnginePhase {
@@ -73,6 +92,10 @@ export class LoopEngine {
 
   get currentLoopId(): string {
     return this.loopId;
+  }
+
+  get currentIntention(): string | null {
+    return this.intention;
   }
 
   // The record the app writes to the session log before showing P10 (spec J2-R4).
@@ -127,6 +150,11 @@ export class LoopEngine {
     }
     const remainingMs = step.durationSeconds * 1000 - this.elapsedMs();
     return Math.max(0, Math.ceil(remainingMs / 1000));
+  }
+
+  // P09 "End and save N min" shows minutes focused so far.
+  elapsedSeconds(): number {
+    return Math.max(0, Math.floor(this.elapsedMs() / 1000));
   }
 
   private buildFocusRecord(partial: boolean, endedAtMs: number): FocusRecord {
@@ -225,6 +253,19 @@ export class LoopEngine {
       // Adding to pausedMs shortens computed elapsed → remaining grows by the extension.
       this.pausedMs += extraSeconds * 1000;
     }
+  }
+
+  // P10 "Keep going, 10 more minutes": inserts a same-round extension focus right
+  // after the completed one. It ends like any focus — a second record is emitted and
+  // the deferred break still waits behind it.
+  extendFocus(extraSeconds: number): boolean {
+    const step = this.plan[this.stepIndex];
+    if (this.phase !== "step-done" || step?.kind !== "focus" || extraSeconds <= 0) {
+      return false;
+    }
+    this.plan.splice(this.stepIndex + 1, 0, { ...step, durationSeconds: extraSeconds });
+    this.advance(this.intention);
+    return true;
   }
 
   // J3 "End and save N min": the partial session is emitted and the loop is abandoned.

@@ -77,7 +77,10 @@ export async function recordSession(session: Omit<FocusSession, "id">): Promise<
   return recorded;
 }
 
-export async function updateSessionOutcome(id: string, outcome: SessionOutcome): Promise<void> {
+export async function updateSessionOutcome(
+  id: string,
+  outcome: SessionOutcome | null,
+): Promise<void> {
   const sessions = await loadSessions();
   const index = sessions.findIndex((session) => session.id === id);
   if (index === -1) {
