@@ -29,16 +29,16 @@
 
 ### RR-01. Native device SIT not run
 
-- **Situation**: E2E verification was run on the Expo web preview (`docs/qa/v1-e2e-test-report.md`). The web preview has known mouse/keyboard interaction regressions that do not affect native builds. No iOS or Android native SIT build has been executed.
-- **Options**: A — run `eas build` plus native QA before Gate 3. B — accept web-preview functional evidence and move to TestFlight/Play Console internal testing after Gate 3.
-- **Recommendation**: A.
+- **Situation**: E2E verification was run on the Expo web preview (`docs/qa/v1-e2e-test-report.md`). **Partial progress**: native iOS Simulator SIT pass done (iPhone 17, iOS 26, debug dev-client) — J1 first-launch + ATT prompt + display pick, J2 focus start/pause/end-early/save, Home (loop summary, weekly goal counter, live AdMob banner), Settings P20, Themes & sounds trial rows, Paywall P14 with fallback prices all verified on-device; three native build defects found and fixed in the pass (widget Info.plist, duplicate ActivityAttributes, expo-store-review `SceneGeometry` patch via patch-package). Remaining for a physical device: haptics, real push delivery, Live Activity on lock screen, IAP sandbox purchase.
+- **Options**: A — run `eas build` plus native QA before Gate 3. B — accept simulator+web evidence and move to TestFlight/Play Console internal testing after Gate 3.
+- **Recommendation**: A — first preview EAS build doubles as the TestFlight artifact.
 - **Default if you say nothing**: blocks Gate 3.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-08-15
 
 ### RR-02. Failure-mode cases not verified
 
-- **Situation**: Cancel regression passed on web preview. Ad load-failure graceful handling, notification permission denial, and offline edge cases have not been exercised on a device.
+- **Situation**: Cancel regression passed on web preview. **Partial progress**: ATT denial path verified on iOS Simulator ("Ask App Not to Track" → non-personalized test banner still loads in the Home slot); store-product fetch failure degrades to fallback prices on the paywall. Still unexercised on device: ad load-failure UI, notification permission denial, offline edge cases, IAP sandbox purchase.
 - **Options**: A — add and run failure-mode cases on native SIT before Gate 3. B — defer to internal testing.
 - **Recommendation**: A.
 - **Default if you say nothing**: blocks Gate 3.
@@ -135,18 +135,21 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-08-12
 
-### RR-14. EAS / portal credentials not fully verified
+### RR-14. EAS / portal credentials and console products not fully provisioned
 
-- **Situation**: `npx eas-cli whoami` confirmed the `EXPO_TOKEN` is valid (account: tuan3.nguyen@gmail.com). The `EXPO_APPLE_ID` / Apple App Store Connect credentials have not been verified for expiry or access.
-- **Options**: A — verify Apple ID / App Store Connect credentials in portal before Gate 3. B — verify before first store submission.
-- **Recommendation**: A before Gate 3 if production rollout is the goal; B is acceptable if this release stops at internal testing.
-- **Default if you say nothing**: blocks store submission.
+- **Situation**: `npx eas-cli whoami` confirmed the `EXPO_TOKEN` is valid (account: tuan3.nguyen@gmail.com). The `EXPO_APPLE_ID` / Apple App Store Connect credentials have not been verified for expiry or access. Console store products required by the v1 build (Phase 2, 2026-10-04):
+  - App Store Connect / Play Console IAP: `com.appsindie.focusloop.plus.yearly` (auto-renewable, 7-day free trial, $19.99) and `com.appsindie.focusloop.plus.lifetime` (non-consumable, $49.99) — J7 Plus. App code reads these product ids in `apps/mobile/src/features/plus/` (ids created by sponsor 2026-10-04).
+  - AdMob rewarded ad unit for the J8 24h-trial flow — the app calls `watchForReward` with a production unit id placeholder; without it the rewarded path reports `unavailable` (spec retry copy shown).
+  - AdMob console frequency caps on the interstitial unit (sponsor: ad limits live server-side, not in app code).
+- **Options**: A — verify credentials and create the products/ad unit before Gate 3. B — verify before first store submission.
+- **Recommendation**: A before Gate 3; without the console products Plus and J8 trials cannot be SIT-tested on a real store sandbox.
+- **Default if you say nothing**: blocks store submission and J7/J8 store-sandbox verification.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-08-18
 
 ## What ships
 
-- Focus Loop v1.0.0: Pomodoro timer with 15/25/45-minute presets, session history, streak, local notifications, and AdMob banner + interstitial ads.
+- Focus Loop v1.0.0: no-account focus–break loop (Disc/Numbers, weekly goal 4-of-7 replacing streak), widgets + Live Activity, reminders, share card, Plus (Yearly $19.99 7-day trial / Lifetime $49.99), rewarded 24h theme/sound trials, session history, local notifications, and AdMob banner + interstitial ads.
 - Rollout plan: 5% → 25% → 100% on TestFlight / Play Console internal testing tracks, halting on thresholds in `docs/release/SLO_AND_ALERTING.md` once wired.
 - Rollback: mobile binary cannot be recalled; rollout is halted and a hotfix is submitted. Owner and command to be recorded in `RUNBOOK_mobile.md`.
 - Store submission and promotion to production App Store / Play Store remains a human action after Gate 3; this release artifact does not perform a store submission.

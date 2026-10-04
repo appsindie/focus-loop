@@ -8,16 +8,13 @@
       "status": "passed"
     },
     "1": {
-      "evidence": "docs/product/PRODUCT_CONCEPT.md, docs/product/MARKET_RESEARCH_LIVE.md",
-      "signed_at": "2026-08-06",
+      "evidence": "https://github.com/appsindie/focus-loop/pull/4#label-gate-signed",
+      "signed_at": "2026-10-04",
       "signed_by": "justin.nguyen@appsindie.com",
       "status": "passed"
     },
     "2": {
-      "evidence": "https://github.com/appsindie/focus-loop/pull/1#issuecomment-5210571237",
-      "signed_at": "2026-08-07",
-      "signed_by": "justin.nguyen@appsindie.com",
-      "status": "passed"
+      "status": "open"
     },
     "3": {
       "status": "open"
@@ -28,13 +25,13 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-08-07T15:02:59Z",
-    "round_count": 4,
-    "routine": "release",
-    "session_url": "https://claude.ai/code/session_01PCXE64sb6YXs4SQCR6pMXN",
-    "verdict": "APPROVE"
+    "fired_at": "2026-10-04T06:50:00Z",
+    "round_count": 14,
+    "routine": "code-review",
+    "session_url": "https://claude.ai/code/cse_01U5QaCa2KjQtCahZZQp1JoV",
+    "verdict": "no-verdict"
   },
-  "next_action": "EAS project initialized and Android preview build queued (ID: 6a3df2ba-3f6e-4139-97fc-46bedd9efc06). iOS preview build needs App Store Connect API key (key ID, issuer ID, .p8) and at least one registered device. Remaining Phase 3 work: complete EAS builds, run native QA, then proceed to Gate 3.",
+  "next_action": "Convention override (sponsor 2026-10-04, verbatim \"release pr riêng\"): cycle PR #4 merges BEFORE Gate 3; release gets its own release PR. Remaining: real-device SIT (RR-01/02 partial via iOS Simulator pass), console products + declarations, release PR at Gate 3",
   "open_exceptions": [
     {
       "blocking": true,
@@ -180,11 +177,11 @@
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     }
   ],
-  "open_pr": "https://github.com/appsindie/focus-loop/pull/1",
+  "open_pr": "https://github.com/appsindie/focus-loop/pull/4",
   "owner": "justin.nguyen@appsindie.com",
-  "phase": 3,
+  "phase": 2,
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-08-07T15:45:34Z"
+  "updated_at": "2026-10-04T13:18:24Z"
 }

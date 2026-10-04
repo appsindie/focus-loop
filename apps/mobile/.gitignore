@@ -30,6 +30,9 @@ yarn-error.*
 .DS_Store
 *.pem
 
+# submit credentials materialized at submit time
+serviceAccount.json
+
 # local env files
 .env*.local
 

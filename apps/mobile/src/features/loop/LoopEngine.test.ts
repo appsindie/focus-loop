@@ -1,0 +1,346 @@
+import { describe, expect, it } from "@jest/globals";
+import { LoopEngine } from "./LoopEngine";
+import { buildLoopPlan } from "./loopPlan";
+
+const PLAN = buildLoopPlan({ focusMinutes: 10, breakMinutes: 2, rounds: 2, longBreakMinutes: 5 });
+// steps: F(600s) B(120s) F(600s) LB(300s)
+
+function makeEngine(nowRef: { t: number }, autoStartBreaks = false) {
+  return new LoopEngine(PLAN, { now: () => nowRef.t, autoStartBreaks });
+}
+
+describe("LoopEngine", () => {
+  it("runs focus → step-done with a completed focus record (spec J2-R4)", () => {
+    const now = { t: 1_000_000 };
+    const engine = makeEngine(now);
+    engine.start("ship the spec");
+    expect(engine.currentPhase).toBe("running");
+    expect(engine.remainingSeconds()).toBe(600);
+
+    now.t += 600_000;
+    engine.tick();
+    expect(engine.currentPhase).toBe("step-done");
+    const record = engine.completedFocusRecord;
+    expect(record).toMatchObject({
+      roundIndex: 1,
+      intention: "ship the spec",
+      plannedSeconds: 600,
+      focusedSeconds: 600,
+      partial: false,
+    });
+  });
+
+  it("advances through the whole loop: break → focus → loop-done → long break → finished", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+
+    now.t += 600_000;
+    engine.tick();
+    engine.advance();
+    expect(engine.currentStep!.kind).toBe("break");
+    expect(engine.remainingSeconds()).toBe(120);
+
+    now.t += 120_000;
+    engine.tick();
+    expect(engine.currentPhase).toBe("step-done");
+
+    engine.advance("second");
+    now.t += 600_000;
+    engine.tick();
+    expect(engine.currentPhase).toBe("loop-done");
+
+    engine.advance();
+    expect(engine.currentStep!.kind).toBe("longBreak");
+    now.t += 300_000;
+    engine.tick();
+    expect(engine.currentPhase).toBe("finished");
+  });
+
+  it("auto-starts the next focus when a break ends and the P10 toggle is on (spec J2-R8)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now, true);
+    engine.start();
+    now.t += 600_000;
+    engine.tick();
+    engine.advance();
+    expect(engine.currentStep!.kind).toBe("break");
+    now.t += 120_000;
+    engine.tick();
+    expect(engine.currentPhase).toBe("running");
+    expect(engine.currentStep!.kind).toBe("focus");
+    expect(engine.currentStep!.roundIndex).toBe(2);
+  });
+
+  it("pause and resume keep the remaining time honest", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t += 100_000;
+    engine.pause();
+    expect(engine.currentPhase).toBe("paused");
+    now.t += 999_999_000;
+    engine.resume();
+    expect(engine.currentPhase).toBe("running");
+    expect(engine.remainingSeconds()).toBe(500);
+  });
+
+  it("end early emits a partial record and abandons the loop (spec J3-R2)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t += 150_000;
+    engine.pause();
+    const record = engine.endEarly();
+    expect(record).toMatchObject({ focusedSeconds: 150, plannedSeconds: 600, partial: true });
+    expect(engine.currentPhase).toBe("abandoned");
+  });
+
+  it("discard emits nothing and abandons (spec J3)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t += 50_000;
+    engine.discard();
+    expect(engine.currentPhase).toBe("abandoned");
+    expect(engine.completedFocusRecord).toBeNull();
+  });
+
+  it("skips and extends a running break (spec J2 variants)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t += 600_000;
+    engine.tick();
+    engine.advance();
+    expect(engine.currentStep!.kind).toBe("break");
+
+    engine.extendBreak(300); // +5 min
+    expect(engine.remainingSeconds()).toBe(420);
+
+    engine.skipBreak();
+    expect(engine.currentStep!.kind).toBe("focus");
+    expect(engine.currentPhase).toBe("running");
+  });
+
+  it("snapshot + restore resumes a killed loop with time left (spec J9)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t += 100_000;
+    const snap = engine.snapshot()!;
+
+    const restored = makeEngine(now);
+    restored.restore(snap);
+    expect(restored.currentPhase).toBe("running");
+    expect(restored.remainingSeconds()).toBe(500);
+    expect(restored.currentLoopId).toBe(engine.currentLoopId);
+  });
+
+  it("restore of a focus that ended while closed emits the record for P13 recovery", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start("deep work");
+    const snap = engine.snapshot()!;
+    now.t += 700_000; // focus (600s) completed while the app was dead
+
+    const restored = makeEngine(now);
+    restored.restore(snap);
+    expect(restored.currentPhase).toBe("step-done");
+    expect(restored.completedFocusRecord).toMatchObject({
+      intention: "deep work",
+      partial: false,
+      focusedSeconds: 600,
+    });
+  });
+
+  it("stamps endedAt at the true step end across a midnight boundary (CR-03)", () => {
+    const now = { t: Date.parse("2026-10-03T23:45:00Z") };
+    const engine = makeEngine(now);
+    engine.start();
+    const snap = engine.snapshot()!;
+    now.t = Date.parse("2026-10-04T00:10:00Z"); // noticed 25 min later, next day
+
+    const restored = makeEngine(now);
+    restored.restore(snap);
+    // True end = start + 10 min = 23:55 the SAME day — not the 00:10 notice time.
+    expect(restored.completedFocusRecord!.endedAt).toBe("2026-10-03T23:55:00.000Z");
+  });
+
+  it("extendFocus inserts a same-round extension and keeps the deferred break (P10 keep-going)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start("write");
+    now.t = 600_000;
+    engine.tick();
+    expect(engine.currentPhase).toBe("step-done");
+    const firstRecord = engine.completedFocusRecord!;
+    engine.clearFocusRecord();
+
+    expect(engine.extendFocus(600)).toBe(true);
+    expect(engine.currentPhase).toBe("running");
+    expect(engine.currentStep).toMatchObject({ kind: "focus", durationSeconds: 600 });
+
+    now.t += 600_000;
+    engine.tick();
+    expect(engine.currentPhase).toBe("step-done");
+    const extensionRecord = engine.completedFocusRecord!;
+    // The extension is its own session on the same loop + round.
+    expect(extensionRecord.loopId).toBe(firstRecord.loopId);
+    expect(extensionRecord.roundIndex).toBe(firstRecord.roundIndex);
+    expect(extensionRecord.startedAt).toBe(new Date(600_000).toISOString());
+    expect(extensionRecord.focusedSeconds).toBe(600);
+
+    engine.advance();
+    expect(engine.currentStep!.kind).toBe("break"); // the skipped-over break still exists
+  });
+
+  it("extendFocus refuses outside step-done or on non-focus steps", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    expect(engine.extendFocus(600)).toBe(false); // idle
+    engine.start();
+    expect(engine.extendFocus(600)).toBe(false); // running
+  });
+
+  it("extensions are not numbered focuses — N/M counters stay honest (CR-07)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t = 600_000;
+    engine.tick();
+    expect(engine.currentFocusNumber).toBe(1);
+    expect(engine.totalFocusCount).toBe(2);
+
+    engine.extendFocus(600);
+    // The extension runs, but the loop still has 2 numbered focuses.
+    expect(engine.currentFocusNumber).toBe(1);
+    expect(engine.totalFocusCount).toBe(2);
+    // The strip still renders it — the plan grew honestly.
+    expect(engine.planSteps).toHaveLength(5);
+  });
+
+  it("a second loop after an extension runs the rhythm's plan, not the spliced one (CR-07)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t = 600_000;
+    engine.tick();
+    engine.extendFocus(600);
+    now.t += 600_000;
+    engine.tick();
+    engine.advance(); // the deferred break
+    engine.discard();
+
+    engine.start();
+    expect(engine.planSteps).toHaveLength(4); // F B F LB — the extension is gone
+    expect(engine.totalFocusCount).toBe(2);
+  });
+
+  it("the close-out ad trigger still counts real focuses after an extension (CR-07)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t = 600_000;
+    engine.tick();
+    engine.extendFocus(600);
+    now.t += 600_000;
+    engine.tick(); // extension done — closeout for the extension round
+    // Only one REAL focus completed — an interstitial must not fire here (§5).
+    expect(engine.currentFocusNumber).toBe(1);
+  });
+
+  it("snapshot → restore resumes a running focus with real elapsed (J9)", () => {
+    const now = { t: 1_000_000 };
+    const engine = makeEngine(now);
+    engine.start("resume me");
+    now.t += 120_000;
+    const snap = engine.snapshot()!;
+
+    // "Killed": a new engine at a later wall-clock time.
+    now.t += 180_000;
+    const recovered = makeEngine(now);
+    const phase = recovered.restore(snap);
+    expect(phase).toBe("running");
+    expect(recovered.remainingSeconds()).toBe(300); // 600 - 300 elapsed
+    expect(recovered.currentIntention).toBe("resume me");
+    expect(recovered.currentLoopId).toBe(snap.loopId);
+  });
+
+  it("restore lands step-done with the pending record when the focus expired while closed (J9)", () => {
+    const now = { t: 1_000_000 };
+    const engine = makeEngine(now);
+    engine.start();
+    const snap = engine.snapshot()!;
+
+    now.t += 900_000; // 15 min later — the 10-min focus long done
+    const recovered = makeEngine(now);
+    const phase = recovered.restore(snap);
+    expect(phase).toBe("step-done");
+    expect(recovered.completedFocusRecord).not.toBeNull();
+    // endedAt = true step end (start + planned), not restore/notice time (CR-03).
+    expect(recovered.completedFocusRecord!.endedAt).toBe(new Date(1_600_000).toISOString());
+  });
+
+  it("restore folds kill-time into pausedMs so a paused timer resumes correctly (J9)", () => {
+    const now = { t: 1_000_000 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t += 100_000;
+    engine.pause();
+    const snap = engine.snapshot()!;
+
+    now.t += 5 * 60_000; // killed while paused for 5 minutes
+    const recovered = makeEngine(now);
+    const phase = recovered.restore(snap);
+    expect(phase).toBe("running");
+    expect(recovered.remainingSeconds()).toBe(500); // pause time does not burn focus
+  });
+
+  it("restore of a step-done snapshot keeps the pending record for the writer (J9)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t = 600_000;
+    engine.tick();
+    const snap = engine.snapshot()!; // killed on the close-out, record unwritten
+
+    const recovered = makeEngine(now);
+    const phase = recovered.restore(snap);
+    expect(phase).toBe("step-done");
+    expect(recovered.completedFocusRecord!.focusedSeconds).toBe(600);
+  });
+
+  it("restore replays the extension plan so the in-flight step resolves (J9+CR-07)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t = 600_000;
+    engine.tick();
+    engine.extendFocus(600);
+    now.t += 60_000;
+    const snap = engine.snapshot()!; // killed mid-extension
+
+    now.t += 120_000;
+    const recovered = makeEngine(now);
+    const phase = recovered.restore(snap);
+    expect(phase).toBe("running");
+    // stepIndex 1 resolves to the EXTENSION step from the snapshot's plan.
+    expect(recovered.currentStep).toMatchObject({ kind: "focus", extension: true });
+    expect(recovered.remainingSeconds()).toBe(420);
+  });
+
+  it("auto-started focus counts from the break's true end (CR-03)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now, true);
+    engine.start();
+    now.t = 600_000;
+    engine.tick();
+    engine.advance(); // break starts at 600_000, ends at 720_000
+    now.t = 750_000; // noticed 30s after the break's true end
+    engine.tick();
+    expect(engine.currentPhase).toBe("running");
+    expect(engine.currentStep!.kind).toBe("focus");
+    expect(engine.remainingSeconds()).toBe(570); // 30s already elapsed, not reset
+  });
+});

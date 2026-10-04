@@ -1,0 +1,57 @@
+%% Focus Loop — journey flow, J1–J10 (design canvas 1791071241-7cd3)
+%% Editable source; rendered diagram is docs/product/design/png/J-Map.png (design of record)
+flowchart LR
+  subgraph OS[OS surfaces]
+    ICON[App icon]
+    W[P24 Widget / Lock screen]
+    LA[P23 Live Activity / notification]
+    KILL[OS kill]
+  end
+
+  subgraph APP[In app]
+    P01[P01 Splash] --> P02[P02 Choose display]
+    P02 -->|tap = display + start 25m| F[P06/P07 Focus]
+    P04[P04/P05 Home] -->|Start| F
+    W -->|Focus N| F
+    LA -->|Break time / reminder| B[P11 Break]
+    F --> SHTL[SHT-later]
+    F --> SHEND[SHT-end-early]
+    SHEND -->|Keep going| F
+    SHEND -->|End & save partial| CO[P10 Close-out]
+    F --> CO
+    CO --> B
+    B -->|xN rounds| F
+    CO -->|loop done| LC[P12 Loop complete]
+    LC --> LB[P11 Long break]
+    LC --> SH[P19 Share]
+    CO -->|2nd focus, loop not done| TRIG((Interstitial trigger\nAdMob decides))
+    LC --> TRIG
+    LC -->|first ever loop| PW[P14 Paywall]
+    PW -->|StoreKit / Play Billing| PLUS[P16 PlusWelcome]
+    KILL --> P01
+    P01 -->|time left| F
+    P01 -->|expired| WB[P13 Welcome back]
+    WB --> CO
+    WB --> B
+    P03[P03 Notif ask] --> B
+    CO --> P03
+    SET[P20 Settings] --> RHY[P21 Rhythm]
+    SET --> REM[P22 Reminders]
+    SET --> TH[P15 Themes]
+    TH -->|locked item| RW[Rewarded video]
+    RW -->|24h trial| TH
+    P04 --> WK[P17 Week / P18 History]
+    LC --> WK
+  end
+
+  J1[ J1 first open ]:::j
+  J2[ J2 daily loop ]:::j
+  J3[ J3 stop midway ]:::j
+  J4[ J4 external start ]:::j
+  J5[ J5 reminders ]:::j
+  J6[ J6 progress + share ]:::j
+  J7[ J7 Plus ]:::j
+  J8[ J8 rewarded theme ]:::j
+  J9[ J9 OS kill ]:::j
+  J10[ J10 customise ]:::j
+  classDef j fill:#FF6A2B,stroke:#141210,color:#fff
