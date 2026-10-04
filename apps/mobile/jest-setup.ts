@@ -1,5 +1,9 @@
 import { jest } from "@jest/globals";
 
+// RNTL 14's render/fireEvent are async and can exceed jest's 5s default on a
+// cold CI worker (seen on ThemesSoundsScreen). 30s headroom, still finite.
+jest.setTimeout(30_000);
+
 const storage: Record<string, string> = {};
 
 const mockAsyncStorage = {
