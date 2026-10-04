@@ -24,7 +24,7 @@ Applied across the corpus:
 
 - The release-slice/fast-follow split (SR-02/SR-07) is superseded — all journeys J1–J10 ship together; the journey-dependency graph is the build-order guide inside the cycle.
 - Version renamed v2 → v1 everywhere (spec, concept, ARC42, ADR-003); the cycle branch becomes `release/v1` and the shaping checkpoint PR is re-opened on it (PR #3 superseded, review history carried).
-- Kill-criterion reading resolved: Gate 0's verbatim "Build takes >8 weeks" applies to the whole v1 window; the ~8–9 week build estimate (~10–11 with validation) breaches it on the upper half — sponsor-accepted with the all-in-one call, week-6 checkpoint recorded (see SR-09 below).
+- Kill-criterion reading resolved: Gate 0's verbatim "Build takes >8 weeks" (6 build + 2 validation basis) is exceeded outright by the ~10–11 week v1 window — sponsor-accepted with the all-in-one call; the Gate 1 signature is an explicit waiver or re-baseline of the criterion, and the week-6 checkpoint guards the ~10–11 week plan as the overrun guard (see SR-09/SR-11 below).
 - The ads-only-slice economics caveat is moot: Plus ships at launch, so the blended figure applies from day one.
 
 Shaping review round 4 on the re-cut (verdict **APPROVE WITH CONCERNS**) found two accuracy issues in the figures the sponsor signs — both applied:
@@ -32,7 +32,9 @@ Shaping review round 4 on the re-cut (verdict **APPROVE WITH CONCERNS**) found t
 - SR-09 (major): the kill criterion was mis-quoted as "build + validation <= 8 weeks" and ARC42 still said 6+2. Now: Gate 0's criterion quoted verbatim ("Build takes >8 weeks"), the real window stated as ~8–9 build + ~2 validation (~10–11 weeks) consistently across concept + ARC42, and a **pre-agreed week-6 overrun checkpoint with a P1 de-scope order** recorded in the concept (tablet → share card → J8 → P23 → J5 → J10 extras; J7 Plus and P0 journeys never de-scope). A sponsor waiver/re-baseline at Gate 1 is the alternative — his call.
 - SR-10 (minor): the re-model compared revenue with a contribution target without deducting Gate 0's $150/month fixed cost → restated as contribution: lower ~$1,490 (miss), base ~$2,100 (**~5% headroom**, not ~12%), upper ~$2,570.
 
-Items awaiting sponsor at Gate 1 signature: blended-ARPU guard-rail + Gate 0 economics re-check (contribution figures above); the week-6 checkpoint applies unless he waives the 8-week criterion.
+Shaping review round 5 (verdict **APPROVE**): SR-11 applied — the checkpoint now names its reference window (the ~10–11 week plan, not the Gate 0 budget) and the breach is stated outright; SR-12 applied — PR base retargeted to `main` after PR #2 merged.
+
+Items awaiting sponsor at Gate 1 signature: blended-ARPU guard-rail + Gate 0 economics re-check (contribution figures above) + an explicit **waiver or re-baseline of the 8-week kill criterion** (the week-6 checkpoint guards the accepted ~10–11 week plan).
 
 ## Round 6 — 2026-10-03 · shaping review on the v2 re-shape (PR #3)
 
