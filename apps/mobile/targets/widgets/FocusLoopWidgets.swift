@@ -84,9 +84,29 @@ struct FocusLoopProvider: TimelineProvider {
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<FocusLoopEntry>) -> Void) {
-        let entry = FocusLoopEntry(date: Date(), snapshot: loadWidgetSnapshot())
-        completion(Timeline(entries: [entry], policy: .after(Date().addingTimeInterval(3600))))
+        let now = Date()
+        let snapshot = loadWidgetSnapshot()
+        var entries = [FocusLoopEntry(date: now, snapshot: snapshot)]
+        // CR-19: the running state is rendered against the entry's date, so an
+        // entry just past endsAt flips the widget back to idle copy even when
+        // the app never republishes (backgrounded, killed, rebooted).
+        if let running = snapshot.running, !running.paused {
+            let endsAt = Date(timeIntervalSince1970: running.endsAtMs / 1000)
+            if endsAt > now {
+                entries.append(FocusLoopEntry(date: endsAt.addingTimeInterval(1), snapshot: snapshot))
+            }
+        }
+        completion(Timeline(entries: entries, policy: .after(now.addingTimeInterval(3600))))
     }
+}
+
+// CR-19: a running state only counts while its endsAt is still ahead —
+// paused stays true (no wall-clock end), an expired countdown is idle.
+private func liveRunning(_ snapshot: WidgetSnapshot, at date: Date) -> WidgetSnapshot.Running? {
+    guard let running = snapshot.running else { return nil }
+    if running.paused { return running }
+    let endsAt = Date(timeIntervalSince1970: running.endsAtMs / 1000)
+    return endsAt > date ? running : nil
 }
 
 // ── Home-screen widget (P24 small + medium) ────────────────────────────────
@@ -99,11 +119,11 @@ struct FocusLoopHomeWidgetView: View {
                 .font(.system(size: 10, weight: .semibold))
                 .foregroundColor(emberColor)
                 .kerning(1)
-            if let running = entry.snapshot.running {
+            if let running = liveRunning(entry.snapshot, at: entry.date) {
                 Text(running.kind == "focus" ? "Focus \(running.currentFocusNumber) of \(running.totalFocusCount)" : "Break")
                     .font(.system(size: 17, weight: .bold))
                     .foregroundColor(inkColor)
-                Text(running.paused ? "Paused" : "\(max(1, running.remainingSeconds / 60)) min left")
+                Text(running.paused ? "Paused" : "\(max(1, Int(running.endsAtMs / 1000 - entry.date.timeIntervalSince1970) / 60)) min left")
                     .font(.system(size: 12))
                     .foregroundColor(inkColor.opacity(0.6))
             } else {
@@ -129,7 +149,10 @@ struct FocusLoopHomeWidget: Widget {
     let kind = "FocusLoopHomeWidget"
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: FocusLoopProvider()) { entry in
+            // CR-16: while idle the whole tile is the J4-R1 one-tap start;
+            // during a session a tap just opens the app on the running step.
             FocusLoopHomeWidgetView(entry: entry)
+                .widgetURL(liveRunning(entry.snapshot, at: entry.date) == nil ? startURL() : nil)
         }
         .configurationDisplayName("Focus Loop")
         .description("Week progress and a one-tap start.")
@@ -165,7 +188,7 @@ struct FocusLoopNextWidgetView: View {
     }
 
     private var nextLine: String {
-        if let running = entry.snapshot.running {
+        if let running = liveRunning(entry.snapshot, at: entry.date) {
             return running.kind == "focus" ? "Focusing now" : "On a break"
         }
         if let parked = entry.snapshot.nextParkedText, !parked.isEmpty {
@@ -233,7 +256,7 @@ struct FocusLoopLiveActivityWidget: Widget {
                             .font(.system(size: 13))
                             .foregroundStyle(.secondary)
                     } else {
-                        Text(timerInterval: Date()...endsAt(context.state), countsDown: true)
+                        countdownLabel(context.state)
                             .font(.system(size: 13, weight: .medium))
                             .foregroundStyle(.secondary)
                     }
@@ -257,7 +280,7 @@ struct FocusLoopLiveActivityWidget: Widget {
                     if context.state.paused {
                         Text("Paused")
                     } else {
-                        Text(timerInterval: Date()...endsAt(context.state), countsDown: true)
+                        countdownLabel(context.state)
                             .multilineTextAlignment(.trailing)
                             .frame(width: 60)
                     }
@@ -275,7 +298,7 @@ struct FocusLoopLiveActivityWidget: Widget {
                 if context.state.paused {
                     Image(systemName: "pause.fill")
                 } else {
-                    Text(timerInterval: Date()...endsAt(context.state), countsDown: true)
+                    countdownLabel(context.state)
                         .frame(width: 44)
                 }
             } minimal: {
@@ -286,6 +309,19 @@ struct FocusLoopLiveActivityWidget: Widget {
 
     private func endsAt(_ state: FocusLoopActivityAttributes.ContentState) -> Date {
         Date(timeIntervalSince1970: state.endsAtMs / 1000)
+    }
+
+    // CR-15: Date()...endsAt is a ClosedRange and traps once endsAt is in the
+    // past (the activity outlives the suspended app). Past the end we render
+    // "Done" instead; staleDate in the pushed state also marks it stale.
+    @ViewBuilder
+    private func countdownLabel(_ state: FocusLoopActivityAttributes.ContentState) -> some View {
+        let end = endsAt(state)
+        if end <= Date() {
+            Text("Done")
+        } else {
+            Text(timerInterval: Date()...end, countsDown: true)
+        }
     }
 }
 

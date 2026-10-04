@@ -8,7 +8,8 @@ export type FocusLoopEvent =
   | "loop_completed" // all focuses of a loop done (P12 reached)
   | "ad_trigger_shown" // an interstitial trigger point fired and cleared the grace window
   | "ad_trigger_suppressed" // a trigger point fired but was suppressed (new-user grace)
-  | "session_recovered"; // J9: a killed session was restored (any outcome)
+  | "session_recovered" // J9: a killed session was restored (any outcome)
+  | "store_review_prompted"; // J6-R6: the OS review sheet was requested (3rd qualified loop)
 
 export type EventProps = Record<string, string | number | boolean | null>;
 export type EventSink = (name: FocusLoopEvent, props: EventProps) => void;

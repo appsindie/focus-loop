@@ -4,7 +4,9 @@ import {
   DEFAULT_WIDGET_SNAPSHOT,
   WIDGET_DATA_KEY,
   buildWidgetSnapshot,
+  liveRunning,
   loadWidgetSnapshot,
+  type RunningStepSurface,
 } from "./widgetData";
 
 beforeEach(async () => {
@@ -61,5 +63,45 @@ describe("loadWidgetSnapshot", () => {
     });
     await AsyncStorage.setItem(WIDGET_DATA_KEY, JSON.stringify(snapshot));
     await expect(loadWidgetSnapshot()).resolves.toEqual(snapshot);
+  });
+});
+
+describe("liveRunning (CR-19)", () => {
+  const running = (overrides: Partial<RunningStepSurface> = {}): RunningStepSurface => ({
+    kind: "focus",
+    displayMode: "disc",
+    remainingSeconds: 300,
+    endsAtMs: 1_800_000_000_000,
+    paused: false,
+    currentFocusNumber: 1,
+    totalFocusCount: 4,
+    ...overrides,
+  });
+  const withRunning = (r: RunningStepSurface | null) =>
+    buildWidgetSnapshot({
+      weekDaysMet: 0,
+      weekGoalDays: 4,
+      nextParkedText: null,
+      focusMinutes: 25,
+      running: r,
+    });
+
+  it("is null when nothing is running", () => {
+    expect(liveRunning(withRunning(null))).toBeNull();
+  });
+
+  it("is live while endsAtMs is ahead of render time", () => {
+    const snapshot = withRunning(running({ endsAtMs: 10_000 }));
+    expect(liveRunning(snapshot, 5_000)).not.toBeNull();
+  });
+
+  it("falls back to idle once endsAtMs has passed (app never republished)", () => {
+    const snapshot = withRunning(running({ endsAtMs: 10_000 }));
+    expect(liveRunning(snapshot, 10_001)).toBeNull();
+  });
+
+  it("a paused step stays live — it has no wall-clock end", () => {
+    const snapshot = withRunning(running({ paused: true, endsAtMs: 0 }));
+    expect(liveRunning(snapshot, Number.MAX_SAFE_INTEGER)).not.toBeNull();
   });
 });

@@ -50,6 +50,23 @@ export function buildWidgetSnapshot(input: {
   return { schemaVersion: 1, ...input };
 }
 
+// CR-19: a running state only counts while endsAt is still ahead of render
+// time — paused stays live (no wall-clock end), an expired countdown renders
+// as idle. Mirror of liveRunning() in FocusLoopWidgets.swift.
+export function liveRunning(
+  snapshot: WidgetSnapshot,
+  nowMs: number = Date.now(),
+): RunningStepSurface | null {
+  const running = snapshot.running;
+  if (running == null) {
+    return null;
+  }
+  if (running.paused) {
+    return running;
+  }
+  return running.endsAtMs > nowMs ? running : null;
+}
+
 // Read side for the Android headless widget task — tolerates a missing or
 // corrupt value by falling back to defaults (a widget that renders zeros beats
 // a widget that crashes headless).

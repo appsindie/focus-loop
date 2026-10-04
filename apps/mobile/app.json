@@ -129,7 +129,8 @@
             "3qcr597p9d.skadnetwork"
           ]
         }
-      ]
+      ],
+      "expo-sharing"
     ],
     "extra": {
       "eas": {

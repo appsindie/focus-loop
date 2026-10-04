@@ -41,7 +41,10 @@ public class ReactNativeWidgetExtensionModule: Module {
                 do {
                     _ = try Activity<FocusLoopActivityAttributes>.request(
                         attributes: attributes,
-                        content: ActivityContent(state: state, staleDate: nil),
+                        // CR-15: past the step end the system marks the
+                        // activity stale instead of counting into negative
+                        // time while the app is suspended.
+                        content: ActivityContent(state: state, staleDate: paused ? nil : Date(timeIntervalSince1970: endsAtMs / 1000)),
                         pushType: nil
                     )
                 } catch {
@@ -60,7 +63,7 @@ public class ReactNativeWidgetExtensionModule: Module {
                 )
                 Task {
                     for activity in Activity<FocusLoopActivityAttributes>.activities {
-                        await activity.update(ActivityContent(state: state, staleDate: nil))
+                        await activity.update(ActivityContent(state: state, staleDate: paused ? nil : Date(timeIntervalSince1970: endsAtMs / 1000)))
                     }
                 }
             }
@@ -68,8 +71,12 @@ public class ReactNativeWidgetExtensionModule: Module {
 
         Function("endActivity") { () in
             if #available(iOS 16.2, *) {
+                // CR-18: capture the live set BEFORE the Task runs — an end
+                // issued back-to-back with startActivity must not reach the
+                // just-requested replacement activity.
+                let outgoing = Activity<FocusLoopActivityAttributes>.activities
                 Task {
-                    for activity in Activity<FocusLoopActivityAttributes>.activities {
+                    for activity in outgoing {
                         await activity.end(nil, dismissalPolicy: .immediate)
                     }
                 }

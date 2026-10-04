@@ -6,6 +6,37 @@ import { buildLoopPlan } from "./loopPlan";
 import { LoopSnapshot } from "./LoopEngine";
 import { DEFAULT_SETTINGS, Settings } from "../settings/SettingsStore";
 import { saveEngineSnapshot } from "./engineSnapshot";
+import { requireNativeModule } from "expo-modules-core";
+
+// CR-17: spy on the iOS native surface module so the unconditional endActivity
+// teardown is observable from jest (Platform.OS === "ios" under jest-expo).
+jest.mock("expo-modules-core", () => {
+  const actual = jest.requireActual<typeof import("expo-modules-core")>("expo-modules-core");
+  const module = {
+    areActivitiesEnabled: () => true,
+    startActivity: jest.fn(),
+    updateActivity: jest.fn(),
+    endActivity: jest.fn(),
+    setSharedData: jest.fn(),
+    reloadWidgetTimelines: jest.fn(),
+  };
+  return {
+    ...actual,
+    // Our module answers with the spy; every other native lookup (expo's own
+    // winter runtime included) passes through to the real implementation.
+    requireNativeModule: jest.fn((name: string) =>
+      name === "ReactNativeWidgetExtension" ? module : actual.requireNativeModule(name),
+    ),
+  };
+});
+
+type NativeModuleSpy = {
+  endActivity: jest.MockedFunction<() => void>;
+};
+const nativeModuleSpy = (): NativeModuleSpy => {
+  const mod: unknown = requireNativeModule("ReactNativeWidgetExtension");
+  return mod as NativeModuleSpy;
+};
 
 const SETTINGS: Settings = { ...DEFAULT_SETTINGS, displayMode: "disc" };
 
@@ -319,5 +350,14 @@ describe("useLoopController", () => {
       await Promise.resolve();
     });
     expect(result.current.engine.currentPhase).toBe("paused");
+  });
+
+  it("CR-17: boot with a null snapshot ends a Live Activity a dead process left behind", async () => {
+    // The OS keeps a Live Activity for hours after the app is killed — the
+    // in-memory flag is false on the next boot, so teardown must be
+    // unconditional on the first null-surface sync.
+    await renderHook(() => useLoopController(SETTINGS, false));
+    await flushBoot();
+    expect(nativeModuleSpy().endActivity).toHaveBeenCalled();
   });
 });

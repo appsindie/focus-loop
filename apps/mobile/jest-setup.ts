@@ -46,6 +46,10 @@ jest.mock("expo-notifications", () => ({
   cancelScheduledNotificationAsync: jest.fn(() => Promise.resolve()),
   cancelAllScheduledNotificationsAsync: jest.fn(() => Promise.resolve()),
   getAllScheduledNotificationsAsync: jest.fn(() => Promise.resolve([])),
+  dismissNotificationAsync: jest.fn(() => Promise.resolve()),
+  dismissAllNotificationsAsync: jest.fn(() => Promise.resolve()),
+  setNotificationChannelAsync: jest.fn(() => Promise.resolve(null)),
+  AndroidImportance: { LOW: 2, DEFAULT: 3, HIGH: 4 },
   PermissionStatus: {
     GRANTED: "granted",
     DENIED: "denied",
@@ -57,4 +61,9 @@ jest.mock("expo-notifications", () => ({
     WEEKLY: "weekly",
     YEARLY: "yearly",
   },
+}));
+
+jest.mock("expo-store-review", () => ({
+  isAvailableAsync: jest.fn(() => Promise.resolve(false)),
+  requestReview: jest.fn(() => Promise.resolve()),
 }));

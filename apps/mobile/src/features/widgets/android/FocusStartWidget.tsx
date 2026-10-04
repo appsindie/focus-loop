@@ -1,19 +1,22 @@
 import { FlexWidget, TextWidget } from "react-native-android-widget";
-import type { WidgetSnapshot } from "../../surfaces/widgetData";
+import { liveRunning, type WidgetSnapshot } from "../../surfaces/widgetData";
 import { widgetPalette } from "./widgetPalette";
 
 // J4-R1/R2 small home-screen widget: the whole tile is the Start target —
 // one tap opens focusloop://start, which begins a session with the last-used
 // rhythm without showing Home. Footer shows this week's goal progress.
 export function FocusStartWidget({ snapshot }: { snapshot: WidgetSnapshot }) {
-  const running = snapshot.running;
+  // CR-19: derive liveness from endsAtMs at render time — a republish may
+  // never arrive after background/kill, so an expired countdown falls back
+  // to the idle tile instead of freezing "Focusing · Nm left" forever.
+  const running = liveRunning(snapshot);
   const headline =
     running == null
       ? `Focus ${snapshot.focusMinutes}`
       : running.kind === "focus"
         ? running.paused
           ? `Paused · ${snapshot.focusMinutes}m`
-          : `Focusing · ${Math.ceil(running.remainingSeconds / 60)}m left`
+          : `Focusing · ${Math.max(1, Math.ceil((running.endsAtMs - Date.now()) / 60000))}m left`
         : "On a break";
   return (
     <FlexWidget

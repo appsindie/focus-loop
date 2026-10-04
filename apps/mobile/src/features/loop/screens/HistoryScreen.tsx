@@ -3,6 +3,7 @@ import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FocusSession } from "../SessionLog";
 import { Palette, typography } from "../../../shared/theme";
+import { ProgressTabs } from "./ProgressTabs";
 
 const OUTCOME_LABEL: Record<string, string> = {
   finished: "Finished",
@@ -50,17 +51,21 @@ function rowText(s: FocusSession): { main: string; meta: string } {
   };
 }
 
-// P18-lite: grouped by day, "time · intention · outcome". Free tier shows the
-// last 7 days then the Plus footer (J6 slice adds the real gate + P17 Week tab).
+// P18: grouped by day, "time · intention · outcome". Free tier shows the
+// last 7 days then the Plus footer (J6-R3); "Share my week" opens P19.
 export function HistoryScreen({
   sessions,
   isPlus,
   onBack,
+  onWeek,
+  onShare,
   colors,
 }: {
   sessions: FocusSession[];
   isPlus: boolean;
   onBack: () => void;
+  onWeek: () => void;
+  onShare: () => void;
   colors: Palette;
 }) {
   const cutoff = Date.now() - 7 * 24 * 60 * 60 * 1000;
@@ -80,8 +85,17 @@ export function HistoryScreen({
           <Text style={[styles.backText, { color: colors.ink }]}>Back</Text>
         </Pressable>
         <Text style={[styles.title, { color: colors.ink }]}>History</Text>
-        <View style={styles.back} />
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Share my week"
+          onPress={onShare}
+          hitSlop={8}
+          style={styles.back}
+        >
+          <Text style={[styles.shareLink, { color: colors.focusText }]}>Share</Text>
+        </Pressable>
       </View>
+      <ProgressTabs active="history" onWeek={onWeek} onHistory={() => {}} colors={colors} />
       {groups.length === 0 ? (
         <Text style={[styles.empty, { color: colors.muted }]}>No sessions yet.</Text>
       ) : (
@@ -122,6 +136,7 @@ const styles = StyleSheet.create({
   header: { flexDirection: "row", alignItems: "center", marginBottom: 16 },
   back: { width: 48, minHeight: 44, justifyContent: "center" },
   backText: { ...typography.body },
+  shareLink: { ...typography.label, fontSize: 13, textAlign: "right" },
   title: { ...typography.title, flex: 1, textAlign: "center" },
   empty: { ...typography.body, textAlign: "center", marginTop: 48 },
   group: { marginBottom: 20 },

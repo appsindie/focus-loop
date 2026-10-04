@@ -1,6 +1,5 @@
 import * as Haptics from "expo-haptics";
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
-import { Share } from "react-native";
 import {
   cancelStepAlert,
   clearStepAlertsAtBoot,
@@ -31,6 +30,7 @@ import { resolveRhythm } from "./rhythm";
 import { isCloseoutTriggerPoint } from "./triggers";
 import { computeWeekProgress } from "./weeklyGoal";
 import { loadEngineSnapshot, saveEngineSnapshot } from "./engineSnapshot";
+import { maybePromptStoreReview } from "./reviewPrompt";
 import { trackEvent } from "../analytics/events";
 import type { FocusLoopIntent } from "../../linking";
 import { publishWidgetSnapshot } from "../surfaces/surfaceBridge";
@@ -47,7 +47,9 @@ export type LoopRoute =
   | "loop-done"
   | "welcome-back"
   | "settings"
-  | "history";
+  | "week"
+  | "history"
+  | "share";
 
 export type LoopController = ReturnType<typeof useLoopController>;
 
@@ -294,6 +296,13 @@ export function useLoopController(
         }
       } else if (after === "loop-done") {
         trackEvent("loop_completed", { loopId: engine.currentLoopId });
+        // J6-R6: store review sheet after the 3rd qualified loop — fired at
+        // most once ever; the OS decides whether the sheet actually shows.
+        void maybePromptStoreReview(engine.currentLoopId, sessionsRef.current).then((requested) => {
+          if (requested) {
+            trackEvent("store_review_prompted", { loopId: engine.currentLoopId });
+          }
+        });
         go("loop-done");
       } else if (after === "finished") {
         go("home");
@@ -454,19 +463,6 @@ export function useLoopController(
     [reloadData],
   );
 
-  const shareWeek = useCallback(async () => {
-    const now = new Date();
-    const week = computeWeekProgress(sessions, now, settings.weeklyGoalDays);
-    const minutes = Math.round(
-      sessions
-        .filter((s) => new Date(s.endedAt).getTime() >= week.weekStartTimestamp)
-        .reduce((sum, s) => sum + s.focusedSeconds, 0) / 60,
-    );
-    await Share.share({
-      message: `This week on Focus Loop: ${minutes} min of focus, ${week.daysMet} of ${week.goalDays} goal days.`,
-    });
-  }, [sessions, settings.weeklyGoalDays]);
-
   const setOutcome = useCallback(
     (outcome: SessionOutcome | null) => {
       setOutcomeDraft(outcome);
@@ -618,7 +614,6 @@ export function useLoopController(
     skipLongBreak,
     parkThought,
     adoptParked,
-    shareWeek,
     pauseFocus,
     resumeFocus,
     welcomeHowDidItGo,

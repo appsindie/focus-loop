@@ -36,10 +36,12 @@ export function syncLiveSurface(state: RunningStepSurface | null): void {
       return;
     }
     if (state == null) {
-      if (activeAttributes != null) {
-        mod.endActivity();
-        activeAttributes = null;
-      }
+      // CR-17: end unconditionally — a Live Activity outlives this JS process
+      // (OS keeps it for hours after a swipe-away), so the in-memory flag
+      // reads false on the next boot. endActivity is a native no-op when the
+      // activity set is empty.
+      mod.endActivity();
+      activeAttributes = null;
       return;
     }
     const attributesChanged =

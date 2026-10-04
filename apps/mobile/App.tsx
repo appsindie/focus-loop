@@ -17,6 +17,8 @@ import { SettingsScreen } from "./src/features/settings/SettingsScreen";
 import { DEFAULT_SETTINGS, Settings, useSettings } from "./src/features/settings/useSettings";
 import { saveSettings } from "./src/features/settings/SettingsStore";
 import { HistoryScreen } from "./src/features/loop/screens/HistoryScreen";
+import { ShareScreen } from "./src/features/loop/screens/ShareScreen";
+import { WeekScreen } from "./src/features/loop/screens/WeekScreen";
 import { WelcomeBackScreen } from "./src/features/loop/screens/WelcomeBackScreen";
 import { parseFocusLoopUrl, type FocusLoopIntent } from "./src/linking";
 import { palette, typography } from "./src/shared/theme";
@@ -138,7 +140,6 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
     skipLongBreak,
     parkThought,
     adoptParked,
-    shareWeek,
     pauseFocus,
     resumeFocus,
     welcomeHowDidItGo,
@@ -176,7 +177,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           isNewWeek={isNewWeek}
           onStart={startFocus}
           onOpenSettings={() => go("settings")}
-          onOpenWeek={() => go("history")}
+          onOpenWeek={() => go("week")}
         />
       ) : null}
       {route === "home" ? (
@@ -252,7 +253,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           week={week}
           longBreakSeconds={longBreakSeconds}
           onStartLongBreak={startLongBreak}
-          onShareWeek={() => void shareWeek()}
+          onShareWeek={() => go("share")}
           onSkipLongBreak={skipLongBreak}
         />
       ) : null}
@@ -263,13 +264,29 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           onBack={() => go("home")}
         />
       ) : null}
+      {route === "week" ? (
+        <WeekScreen
+          sessions={sessions}
+          week={week}
+          now={new Date()}
+          onBack={() => go("home")}
+          onHistory={() => go("history")}
+          onShare={() => go("share")}
+          colors={colors}
+        />
+      ) : null}
       {route === "history" ? (
         <HistoryScreen
           sessions={sessions}
           isPlus={false /* J7 entitlement lands in the Plus slice */}
           onBack={() => go("home")}
+          onWeek={() => go("week")}
+          onShare={() => go("share")}
           colors={colors}
         />
+      ) : null}
+      {route === "share" ? (
+        <ShareScreen sessions={sessions} week={week} onBack={() => go("week")} colors={colors} />
       ) : null}
       <NotifAskSheet
         visible={notifAskOpen}

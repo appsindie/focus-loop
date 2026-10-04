@@ -1,14 +1,20 @@
 import { FlexWidget, TextWidget } from "react-native-android-widget";
-import type { WidgetSnapshot } from "../../surfaces/widgetData";
+import { liveRunning, type WidgetSnapshot } from "../../surfaces/widgetData";
 import { widgetPalette } from "./widgetPalette";
 
 // J4-R2 medium home-screen widget: week progress, the next parked thought to
 // pick up (P06), and an explicit Start button deep-linking focusloop://start.
 export function FocusNextWidget({ snapshot }: { snapshot: WidgetSnapshot }) {
+  // CR-19: an expired running state renders as "next up", not a frozen session.
+  const running = liveRunning(snapshot);
   const nextLine =
-    snapshot.nextParkedText != null
-      ? `Next up: ${snapshot.nextParkedText}`
-      : `Next up: Focus ${snapshot.focusMinutes}`;
+    running != null
+      ? running.kind === "focus"
+        ? "Focusing now"
+        : "On a break"
+      : snapshot.nextParkedText != null
+        ? `Next up: ${snapshot.nextParkedText}`
+        : `Next up: Focus ${snapshot.focusMinutes}`;
   return (
     <FlexWidget
       clickAction="OPEN_APP"

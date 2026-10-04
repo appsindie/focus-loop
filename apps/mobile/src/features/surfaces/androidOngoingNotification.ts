@@ -8,8 +8,6 @@ import type { RunningStepSurface } from "./widgetData";
 const LIVE_CHANNEL_ID = "focus-loop-live";
 const LIVE_NOTIFICATION_ID = "focus-loop-live";
 
-let liveNotificationShown = false;
-
 function formatUntil(endsAtMs: number): string {
   const end = new Date(endsAtMs);
   const hh = String(end.getHours()).padStart(2, "0");
@@ -32,10 +30,10 @@ function copyFor(state: RunningStepSurface): { title: string; body: string } {
 export async function syncLiveSurface(state: RunningStepSurface | null): Promise<void> {
   try {
     if (state == null) {
-      if (liveNotificationShown) {
-        liveNotificationShown = false;
-        await Notifications.dismissNotificationAsync(LIVE_NOTIFICATION_ID);
-      }
+      // CR-17: dismiss unconditionally — the notification outlives this
+      // process (sticky + autoDismiss:false), so an in-memory "was it mine"
+      // flag is false after every OS kill. Dismissing an absent id is a no-op.
+      await Notifications.dismissNotificationAsync(LIVE_NOTIFICATION_ID);
       return;
     }
     await Notifications.setNotificationChannelAsync(LIVE_CHANNEL_ID, {
@@ -54,7 +52,6 @@ export async function syncLiveSurface(state: RunningStepSurface | null): Promise
       // An Android channelId-only trigger posts immediately on our channel.
       trigger: { channelId: LIVE_CHANNEL_ID },
     });
-    liveNotificationShown = true;
   } catch {
     // Notification permission denied or channel unavailable — silent per spec.
   }
