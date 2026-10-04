@@ -1,7 +1,7 @@
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
-import brownNoise from "../../assets/sounds/brown-noise.wav";
-import rainOnWindow from "../../assets/sounds/rain-on-window.wav";
-import whiteNoise from "../../assets/sounds/white-noise.wav";
+import brownNoise from "../../../assets/sounds/brown-noise.wav";
+import rainOnWindow from "../../../assets/sounds/rain-on-window.wav";
+import whiteNoise from "../../../assets/sounds/white-noise.wav";
 
 // J8-R3: the chosen focus sound loops underneath a running focus step.
 // Playback is best-effort — Expo Go and jest have no native audio module, so
