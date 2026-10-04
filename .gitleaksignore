@@ -1,0 +1,3 @@
+# eas.json ascApiKeyIssuerId — Apple issuer ID is a public identifier, not a credential;
+# the actual secret is the .p8 key which lives only in EAS env vars (never committed).
+2b73c2fd69a0c546888fd084addb48f31a0bcb0e:apps/mobile/eas.json:generic-api-key:49

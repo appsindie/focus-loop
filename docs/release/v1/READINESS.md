@@ -14,7 +14,7 @@
 | SIT regression        | QA plan run recorded in `docs/qa/`         | waived    | Sponsor waived device SIT 2026-10-04 (RR-01 waiver record). Web-preview E2E + iOS Simulator pass retained as partial evidence.                    |
 | Failure-mode cases    | `docs/qa/` failure-mode suite results      | waived    | Sponsor waived 2026-10-04 (RR-02 waiver record). Cancel regression, ATT-deny and paywall fallback verified on simulator; device paths deferred to internal testing. |
 | Open defects          | Defect list for this version               | pass      | No open defects. Gate 2 exception E1 deferred/closed: https://github.com/appsindie/focus-loop/pull/1#issuecomment-5211987117.                   |
-| Third-party sandboxes | SIT config points at real vendor sandboxes | pass      | Production AdMob IDs provided by sponsor (RR-03 resolved); Firebase `focus-loop-3db4a` configured; ASC app record 6818991496 created with IAP ids. |
+| Third-party sandboxes | SIT config points at real vendor sandboxes | waived    | Config points at real vendor surfaces (production AdMob IDs, Firebase `focus-loop-3db4a`, ASC app 6818991496 with IAP ids), but no sandbox run exists — folded into the RR-01 waiver; IAP/AdMob sandbox paths must be exercised in internal testing (RR-19). |
 
 ## Rollback
 
@@ -40,7 +40,7 @@
 | ------------------------ | --------------------------------- | --------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | Findings by severity     | `security` skill output           | pass      | `docs/security/ads-integration-security-review.md`: no critical/high findings, three low (F01–F03).                               |
 | Deferred `high` findings | Deferral record                   | pass      | None.                                                                                                                             |
-| Secrets                  | Scan diff and variable files      | pass      | No secrets in repo per `docs/security/ads-integration-security-review.md` (Disclosure); `eas.json` carries identifiers only; store credentials come from EAS env vars at build time. |
+| Secrets                  | Scan diff and variable files      | pass      | gitleaks 8.30.1 on `main..release/1.0.0`: no leaks (`docs/security/v1-secrets-scan.txt`). Store credentials materialise only from EAS env vars via `write-store-credentials.sh`; one suppressed finding is a public Apple identifier. |
 | Privacy delta            | Data-safety / privacy declaration | exception | RR-12 — data collection mapped to legal pages, store declaration not yet completed.                                               |
 
 ## Data
@@ -78,7 +78,7 @@ Not applicable — v1 uses Expo managed workflow and Firebase/AdMob SaaS; no Ter
 
 ## Tally
 
-- **Checks run / passed / waived / failed-and-remediated / manual / exception**: 26 / 11 / 2 / 0 / 0 / 13
-- **Exceptions open**: 14 (RR-04..RR-12, RR-14..RR-18 — the 13 exception rows above; RR-05/16/17 and RR-04/15 and RR-08/18 share rows but are recorded separately per reviewer feedback)
+- **Checks run / passed / waived / failed-and-remediated / manual / exception**: 26 / 9 / 3 / 0 / 0 / 14
+- **Exceptions open**: 15 — RR-04..RR-12, RR-14..RR-19 (14 exception rows above plus RR-19, the waiver re-test condition, which maps to no readiness row)
 - **Resolved**: RR-03 (production AdMob IDs), RR-13 (release record)
-- **Waived**: RR-01, RR-02 (sponsor waiver 2026-10-04)
+- **Waived**: RR-01, RR-02 (sponsor waiver 2026-10-04 — signature pending on the release PR)

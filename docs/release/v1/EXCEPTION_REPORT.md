@@ -4,7 +4,8 @@
 
 **not ready** — v1.0.0, surfaces ios/android
 
-- Re-audited 2026-10-04 at release/1.0.0 head. Checks run: 26 — passed: 11, waived: 2 (RR-01, RR-02 — sponsor waiver), failed-and-remediated: 0, manual: 0, open exceptions: 14 (RR-04..RR-12, RR-14..RR-18). RR-13 resolved (release notes + changelog). RR-11 in-flight.
+- Re-audited 2026-10-04 at release/1.0.0 head. Checks run: 26 — passed: 9, waived: 3 (RR-01, RR-02 sponsor waiver + the third-party-sandbox row folded under it), failed-and-remediated: 0, manual: 0, exception rows: 14. Open exceptions: 15 (RR-04..RR-12, RR-14..RR-19). RR-13 resolved (release notes + changelog). RR-11 in-flight.
+- Gate 2 status: **open — human signature pending on this PR** (sponsor waived SIT verbally 2026-10-04; the waiver is recorded but the gate stays open until the owner signs here).
 - Gate 3 decision needed: **yes**
 
 ## Exception summary
@@ -28,6 +29,7 @@
 | RR-16 | Rollout halt thresholds not wired to alerts                       | Rollout halt thresholds | justin.nguyen@appsindie.com | 2026-10-11 | block   |
 | RR-17 | Rollback trigger conditions not wired                             | Trigger conditions      | justin.nguyen@appsindie.com | 2026-10-11 | block   |
 | RR-18 | Escalation path not defined                                       | Escalation path         | justin.nguyen@appsindie.com | 2026-10-11 | block   |
+| RR-19 | SIT waiver re-test condition — device items untested               | (waiver condition)      | justin.nguyen@appsindie.com | 2026-10-11 | block   |
 
 ## Waiver records (closed exceptions)
 
@@ -119,7 +121,7 @@
 
 - **Situation**: No EAS build has been produced. **Progress 2026-10-04**: release pipeline wired (`.eas/workflows/release.yml` — `workflow_dispatch` only, no push trigger, so every build/submission is a separately confirmed go-ahead; `eas.json` `appVersionSource: remote` + `submit.internal` profile). First production build pending named confirmation.
 - **Options**: A — run `eas build` production now (iOS first, then Android), submit to internal tracks. B — defer.
-- **Recommendation**: A — the internal-testing build doubles as the SIT artifact under the RR-01/02 waiver.
+- **Recommendation**: A — the internal-testing build doubles as the SIT artifact under the RR-01/02 waiver; the items the waiver defers are tracked as blocking exception RR-19.
 - **Default if you say nothing**: blocks Gate 3.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-06
@@ -137,6 +139,15 @@
 
 - **Resolution**: `docs/release/v1/RELEASE_NOTES.md` written (rollout/monitoring/rollback, compliance, traceability to PR #4 + J1–J10 + 297-test verify); `CHANGELOG.md` carries the v1.0.0 product entry.
 - **Owner**: justin.nguyen@appsindie.com
+
+### RR-19. SIT waiver re-test condition — device items untested
+
+- **Situation**: The RR-01/02 waiver drops pre-release device SIT, but the items it names (haptics, real push, Live Activity, IAP sandbox purchase, ad-failure UI on device, notification-denial flow, offline edge cases) still have to be exercised somewhere — the waiver moves them to internal testing, it does not delete them.
+- **Options**: A — exercise each item on the internal-testing build before production promotion and record the result on this report. B — drop silently.
+- **Recommendation**: A — internal testing is the de-facto SIT; the waiver is void if the items are never run.
+- **Default if you say nothing**: blocks production promotion (internal testing itself is unblocked).
+- **Owner**: justin.nguyen@appsindie.com
+- **Deadline**: 2026-10-11 (before production promotion)
 
 ### RR-14. EAS / portal credentials and console products not fully provisioned
 

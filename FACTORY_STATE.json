@@ -1,5 +1,5 @@
 {
-  "active_branch": "release/v1",
+  "active_branch": "release/1.0.0",
   "gates": {
     "0": {
       "evidence": "docs/research/OPPORTUNITY_DECISION.json",
@@ -14,10 +14,8 @@
       "status": "passed"
     },
     "2": {
-      "evidence": "Sponsor waived SIT: \"k sit, làm release luôn đi. app mới chưa có user mà sit gì men\" — RR-01/RR-02 waived in docs/release/v1/EXCEPTION_REPORT.md; iOS Simulator pass retained as evidence",
-      "signed_at": "2026-10-04",
-      "signed_by": "justin.nguyen@appsindie.com",
-      "status": "passed"
+      "note": "Sponsor waived device SIT verbally 2026-10-04 (\"k sit, làm release luôn đi. app mới chưa có user mà sit gì men\") — recorded as RR-01/02 waiver in docs/release/v1/EXCEPTION_REPORT.md; gate stays open until the owner signs on PR #6.",
+      "status": "open"
     },
     "3": {
       "status": "open"
@@ -34,7 +32,7 @@
     "session_url": "https://claude.ai/code/cse_01VQKu2umnVBpdLbjr5uV1Xd",
     "verdict": "pending"
   },
-  "next_action": "Phase 3 release: PR #6 fixes for release review round 15 pushed; next = iOS production build 1.0.0 on sponsor confirmation, then submit internal track, then Android. Owner Gate-2 signature pending on PR #6 (waiver record in EXCEPTION_REPORT). Gate-3 exceptions: RR-09/10/12/14 before submission; RR-04..08,15..18 before production rollout",
+  "next_action": "Build done; Gate 2 open pending owner signature on PR #6 (SIT waiver recorded). Next: iOS production build 1.0.0 on sponsor confirmation, then TestFlight submit, then Android. Gate-3 exceptions: RR-09/10/12/14 before submission; RR-04..08,15..19 before production rollout",
   "open_exceptions": [
     {
       "blocking": true,
@@ -189,13 +187,24 @@
       "severity": "medium",
       "title": "Escalation path not defined",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-10-11",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-19",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "SIT waiver re-test condition — device items untested",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
     }
   ],
-  "open_pr": "https://github.com/appsindie/focus-loop/pull/4",
+  "open_pr": "https://github.com/appsindie/focus-loop/pull/6",
   "owner": "justin.nguyen@appsindie.com",
-  "phase": 3,
+  "phase": 2,
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-10-04T14:02:45Z"
+  "updated_at": "2026-10-04T14:06:33Z"
 }
