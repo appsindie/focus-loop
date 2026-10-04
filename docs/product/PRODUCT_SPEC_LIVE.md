@@ -343,7 +343,7 @@ OS kill -> relaunch -> P01 Splash
 **Journey rules**
 
 - R1: Rhythm SHALL offer presets Classic 25/5×4, Gentle start 15/5, Deep work 50/10×3, and Custom (steppers for focus, break, long break, rounds); the loop strip and "One loop = …" SHALL update live.
-- R2: Settings SHALL cover: display (Disc/Numbers), appearance (Light/Dark/System), Show seconds (default **on** — sponsor, 2026-10-03; affects Numbers only), vibrate at end, weekly goal, auto-start breaks, themes & sounds, reminders, app-blocking (Android, opt-in with explanation), Plus card + Restore, data export (CSV) and delete-all (confirmed), About (Privacy, Terms, Ad choices, licenses, contact), app version.
+- R2: Settings SHALL cover: display (Disc/Numbers), appearance (Light/Dark/System), Show seconds (default **on** — sponsor, 2026-10-03; affects Numbers only), vibrate at end, weekly goal, auto-start breaks, themes & sounds, reminders, app-blocking (Android, opt-in with explanation — **deferred**: absent from the approved P20 canvas and not buildable in the Expo managed workflow without a native module; revisit if a dev-client/Digital-Wellbeing approach lands — Level-A decision, Phase 2 slice 9), Plus card + Restore, data export (CSV) and delete-all (confirmed), About (Privacy, Terms, Ad choices, licenses, contact), app version.
 - R3: Changes SHALL save immediately; there is no Save button.
 - R4: "Delete all data…" SHALL ask for confirmation.
 

@@ -19,22 +19,21 @@ const mockAsyncStorage = {
     return Promise.resolve();
   }),
   getAllKeys: jest.fn(() => Promise.resolve(Object.keys(storage))),
-  multiGet: jest.fn((keys: string[]) => Promise.resolve(keys.map((k) => [k, storage[k] ?? null]))),
-  multiSet: jest.fn((pairs: [string, string][]) => {
-    for (const [k, v] of pairs) {
+  getMany: jest.fn((keys: string[]) =>
+    Promise.resolve(Object.fromEntries(keys.map((k) => [k, storage[k] ?? null]))),
+  ),
+  setMany: jest.fn((entries: Record<string, string>) => {
+    for (const [k, v] of Object.entries(entries)) {
       storage[k] = v;
     }
     return Promise.resolve();
   }),
-  multiRemove: jest.fn((keys: string[]) => {
+  removeMany: jest.fn((keys: string[]) => {
     for (const k of keys) {
       delete storage[k];
     }
     return Promise.resolve();
   }),
-  mergeItem: jest.fn(() => Promise.resolve()),
-  multiMerge: jest.fn(() => Promise.resolve()),
-  flushGetRequests: jest.fn(() => undefined),
 };
 
 jest.mock("@react-native-async-storage/async-storage", () => mockAsyncStorage);
@@ -48,6 +47,7 @@ jest.mock("expo-notifications", () => ({
   getAllScheduledNotificationsAsync: jest.fn(() => Promise.resolve([])),
   dismissNotificationAsync: jest.fn(() => Promise.resolve()),
   dismissAllNotificationsAsync: jest.fn(() => Promise.resolve()),
+  addNotificationResponseReceivedListener: jest.fn(() => ({ remove: jest.fn() })),
   setNotificationChannelAsync: jest.fn(() => Promise.resolve(null)),
   AndroidImportance: { LOW: 2, DEFAULT: 3, HIGH: 4 },
   PermissionStatus: {
@@ -60,6 +60,7 @@ jest.mock("expo-notifications", () => ({
     DAILY: "daily",
     WEEKLY: "weekly",
     YEARLY: "yearly",
+    DATE: "date",
   },
 }));
 

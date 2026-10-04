@@ -52,7 +52,9 @@ export type LoopRoute =
   | "share"
   | "paywall"
   | "plus-welcome"
-  | "themes";
+  | "themes"
+  | "rhythm"
+  | "reminders";
 
 export type LoopController = ReturnType<typeof useLoopController>;
 
@@ -657,6 +659,21 @@ export function useLoopController(
     );
   });
 
+  // P20 "Delete all data…" (J10-R4): storage is already wiped by the caller —
+  // this resets the in-memory mirrors so no stale session/plan leaks back into
+  // the UI or gets re-persisted. The boot flow can't re-derive "first launch"
+  // from disk anymore (keys are gone), so route to P02 explicitly.
+  const resetAllData = useCallback(() => {
+    engine.discard();
+    afterEngineChange();
+    setSessions([]);
+    setParkedThoughts([]);
+    setLastSession(null);
+    setIntentionDraft("");
+    setOutcomeDraft(null);
+    go("first-launch");
+  }, [engine, afterEngineChange, go]);
+
   return {
     route,
     go,
@@ -697,6 +714,7 @@ export function useLoopController(
     welcomeHowDidItGo,
     welcomeSkipToBreak,
     handleDeepLinkIntent,
+    resetAllData,
     // J7: paywall open/close plumbing. openPaywall records the entry point for
     // the conversion metric; the close/purchase paths run the action the user
     // had picked before P14 opened.

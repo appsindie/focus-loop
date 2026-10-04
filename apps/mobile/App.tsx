@@ -1,8 +1,11 @@
 import { StatusBar } from "expo-status-bar";
 import { useKeepAwake } from "expo-keep-awake";
+import Constants from "expo-constants";
+import * as Notifications from "expo-notifications";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AdsContext, Banner, useFullScreenAds } from "@appsindie/react-native-ads";
-import { Linking, StyleSheet, Text, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AppState, Linking, StyleSheet, Text, View } from "react-native";
 import { AdsProvider } from "./src/features/ads/AdsProvider";
 import { useLoopController } from "./src/features/loop/useLoopController";
 import { BreakScreen } from "./src/features/loop/screens/BreakScreen";
@@ -37,14 +40,32 @@ import {
 import { watchForReward } from "./src/features/ads/rewardedAd";
 import { ADS_CONFIG } from "./src/features/ads/adsConfig";
 import { SettingsScreen } from "./src/features/settings/SettingsScreen";
+import { RhythmScreen } from "./src/features/settings/RhythmScreen";
+import { sessionsToCsv } from "./src/features/settings/dataExport";
+import { shareCsvFile } from "./src/features/settings/shareCsv";
+import { RemindersScreen } from "./src/features/reminders/RemindersScreen";
+import {
+  DEFAULT_REMINDER_PREFS,
+  ReminderPrefs,
+  loadReminderPrefs,
+  reminderSummaryLine,
+  saveReminderPrefs,
+} from "./src/features/reminders/reminderStore";
+import {
+  clearReminderSchedules,
+  syncReminderSchedules,
+} from "./src/features/reminders/reminderScheduler";
+import { sessionsOnDay } from "./src/features/loop/SessionLog";
+import { cancelStepAlert } from "./src/features/notifications/NotificationScheduler";
 import { DEFAULT_SETTINGS, Settings, useSettings } from "./src/features/settings/useSettings";
 import { saveSettings } from "./src/features/settings/SettingsStore";
+import { defaultEntitlement, saveEntitlement } from "./src/features/loop/entitlement";
 import { HistoryScreen } from "./src/features/loop/screens/HistoryScreen";
 import { ShareScreen } from "./src/features/loop/screens/ShareScreen";
 import { WeekScreen } from "./src/features/loop/screens/WeekScreen";
 import { WelcomeBackScreen } from "./src/features/loop/screens/WelcomeBackScreen";
 import { parseFocusLoopUrl, type FocusLoopIntent } from "./src/linking";
-import { palette, typography } from "./src/shared/theme";
+import { palette, typography, usePalette } from "./src/shared/theme";
 
 function KeepAwakeActivator() {
   useKeepAwake();
@@ -52,9 +73,12 @@ function KeepAwakeActivator() {
 }
 
 function Splash() {
+  // Pre-settings: follow the OS appearance so dark-mode users don't get a
+  // light flash on cold start.
+  const colors = usePalette("system");
   return (
-    <View style={[styles.splash, { backgroundColor: palette.light.bg }]}>
-      <Text style={[styles.splashMark, { color: palette.light.ink }]}>Focus Loop</Text>
+    <View style={[styles.splash, { backgroundColor: colors.bg }]}>
+      <Text style={[styles.splashMark, { color: colors.ink }]}>Focus Loop</Text>
     </View>
   );
 }
@@ -183,7 +207,9 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
   // P15: the picked disc colour re-tints the focus palette — only while the
   // pick is unlocked (Plus or live trial); the accent derives its darker
   // focusText variant via shadeHex (design ships one hex per colour).
-  const colors = palette.light; // Dark theme + Appearance wiring lands with P20 polish.
+  // J10-R2: Appearance (Light/Dark/System) re-tints every screen via the
+  // `colors` prop; the P15 disc colour still overrides the focus accent below.
+  const colors = usePalette(settings.appearance);
   const focusColors = useMemo(() => {
     const item = catalogueItem(settings.discColorId);
     if (
@@ -243,11 +269,92 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
     resumeFocus,
     welcomeHowDidItGo,
     welcomeSkipToBreak,
+    resetAllData,
   } = controller;
+
+  // J5: reminder prefs are a separate small store; the schedule reconciles on
+  // prefs change, a logged session (today's evening note may be due off), and
+  // every return to foreground. Permission-denied is a silent no-op inside.
+  const [reminderPrefs, setReminderPrefs] = useState<ReminderPrefs>(DEFAULT_REMINDER_PREFS);
+  useEffect(() => {
+    void loadReminderPrefs().then(setReminderPrefs);
+  }, []);
+  const persistReminders = useCallback(async (prefs: ReminderPrefs) => {
+    setReminderPrefs(prefs);
+    await saveReminderPrefs(prefs);
+  }, []);
+  const focusedToday = sessionsOnDay(sessions, new Date()).length > 0;
+  const goalUnmet = week.daysMet < settings.weeklyGoalDays;
+  useEffect(() => {
+    void syncReminderSchedules(reminderPrefs, {
+      focusedToday,
+      goalUnmet,
+      now: new Date(),
+    });
+  }, [reminderPrefs, focusedToday, goalUnmet]);
+  useEffect(() => {
+    const sub = AppState.addEventListener("change", (state) => {
+      if (state === "active") {
+        void syncReminderSchedules(reminderPrefs, {
+          focusedToday,
+          goalUnmet,
+          now: new Date(),
+        });
+      }
+    });
+    return () => sub.remove();
+  }, [reminderPrefs, focusedToday, goalUnmet]);
+
+  // J5 exit: tapping a reminder/evening notification starts the rhythm — the
+  // payload carries the same focusloop:// intent the widgets use (J4).
+  const controllerRef = useRef(controller);
+  controllerRef.current = controller;
+  useEffect(() => {
+    const sub = Notifications.addNotificationResponseReceivedListener((response) => {
+      const raw = response.notification.request.content.data?.["url"];
+      const intent = parseFocusLoopUrl(typeof raw === "string" ? raw : null);
+      if (intent != null) {
+        controllerRef.current.handleDeepLinkIntent(intent);
+      }
+    });
+    return () => sub.remove();
+  }, []);
+
+  // P20: a row's one-line summary for the first enabled reminder.
+  const remindersSummary = useMemo(() => {
+    const first = reminderPrefs.reminders.find((r) => r.enabled);
+    return first == null ? "Off" : reminderSummaryLine(first);
+  }, [reminderPrefs]);
+
+  // P20 "Export sessions (CSV)" — generic failure copy only (no native error).
+  const [exportMessage, setExportMessage] = useState<string | null>(null);
+  const onExportData = useCallback(() => {
+    void (async () => {
+      const result = await shareCsvFile(sessionsToCsv(sessions));
+      setExportMessage(result === "shared" ? null : "Couldn't export right now. Try again.");
+    })();
+  }, [sessions]);
+
+  // P20 "Delete all data…" (J10-R4, confirmed in the sheet): cancel pending
+  // notifications first so nothing fires from beyond the wipe, then remove
+  // every focus-loop/ key and reset the in-memory mirrors. Plus survives via
+  // Restore purchases (store-side receipt).
+  const onDeleteAll = useCallback(() => {
+    void (async () => {
+      await cancelStepAlert();
+      await clearReminderSchedules();
+      const keys = (await AsyncStorage.getAllKeys()).filter((key) => key.startsWith("focus-loop/"));
+      await AsyncStorage.removeMany(keys);
+      await saveSettings(DEFAULT_SETTINGS);
+      await saveEntitlement(defaultEntitlement());
+      await persistSettings(DEFAULT_SETTINGS);
+      resetAllData();
+    })();
+  }, [persistSettings, resetAllData]);
 
   const keepAwake =
     (route === "focus" || route === "break") && (phase === "running" || phase === "paused");
-  const darkStatus = route === "break";
+  const darkStatus = route === "break" || colors === palette.dark;
 
   return (
     <>
@@ -283,7 +390,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
         // P04 free-tier banner, 320x50 pinned to the bottom of Home. Hidden
         // until the entitlement read lands so Plus never flashes an ad (CR-25).
         entitlementLoaded ? (
-          <View style={styles.bannerSlot}>
+          <View style={[styles.bannerSlot, { backgroundColor: colors.bg }]}>
             <Banner hasAdsRemoval={hasAdsRemoval} />
           </View>
         ) : null
@@ -361,6 +468,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
       ) : null}
       {route === "settings" ? (
         <SettingsScreen
+          colors={colors}
           settings={settings}
           onChange={(patch) => void persistSettings(patch)}
           onBack={() => go("home")}
@@ -369,6 +477,15 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           plusProductId={entitlement.productId}
           restoreMessage={restoreMessage}
           onOpenThemes={() => go("themes")}
+          onOpenRhythm={() => go("rhythm")}
+          onOpenReminders={() => go("reminders")}
+          remindersSummary={remindersSummary}
+          onExportData={onExportData}
+          exportMessage={exportMessage}
+          onDeleteAll={onDeleteAll}
+          allowTracking={ads.allowTracking}
+          onSetAllowTracking={(allow) => ads.setAllowTracking?.(allow)}
+          version={Constants.expoConfig?.version ?? "1.0.0"}
           onUpgrade={() => {
             setRestoreMessage(null);
             controller.setPostPaywall("settings");
@@ -446,6 +563,22 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           onBack={() => go("settings")}
         />
       ) : null}
+      {route === "rhythm" ? (
+        <RhythmScreen
+          colors={colors}
+          settings={settings}
+          onChange={(patch) => void persistSettings(patch)}
+          onBack={() => go("settings")}
+        />
+      ) : null}
+      {route === "reminders" ? (
+        <RemindersScreen
+          colors={colors}
+          prefs={reminderPrefs}
+          onChange={(prefs) => void persistReminders(prefs)}
+          onBack={() => go("settings")}
+        />
+      ) : null}
       <NotifAskSheet
         visible={notifAskOpen}
         colors={colors}
@@ -458,7 +591,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
 }
 
 const styles = StyleSheet.create({
-  bannerSlot: { alignItems: "center", backgroundColor: palette.light.bg },
+  bannerSlot: { alignItems: "center" },
   splash: { flex: 1, alignItems: "center", justifyContent: "center" },
   splashMark: { ...typography.h1Screen, letterSpacing: -0.5 },
 });
