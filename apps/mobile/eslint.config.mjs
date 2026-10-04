@@ -13,6 +13,8 @@ export default tseslint.config(
       "ios/**",
       "node_modules/**",
       "**/*.generated.ts",
+      "plugins/**",
+      "scripts/**/*.js",
     ],
   },
   js.configs.recommended,

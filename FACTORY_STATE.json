@@ -1,5 +1,5 @@
 {
-  "active_branch": "release/v1",
+  "active_branch": "release/1.0.0",
   "gates": {
     "0": {
       "evidence": "docs/research/OPPORTUNITY_DECISION.json",
@@ -14,6 +14,7 @@
       "status": "passed"
     },
     "2": {
+      "note": "Sponsor waived device SIT verbally 2026-10-04 (\"k sit, làm release luôn đi. app mới chưa có user mà sit gì men\") — recorded as RR-01/02 waiver in docs/release/v1/EXCEPTION_REPORT.md; gate stays open until the owner signs on PR #6.",
       "status": "open"
     },
     "3": {
@@ -25,72 +26,50 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-10-04T06:50:00Z",
-    "round_count": 14,
-    "routine": "code-review",
-    "session_url": "https://claude.ai/code/cse_01U5QaCa2KjQtCahZZQp1JoV",
-    "verdict": "no-verdict"
+    "fired_at": "2026-10-04T14:07:20Z",
+    "round_count": 17,
+    "routine": "release",
+    "session_url": "https://claude.ai/code/cse_014ay7poAtCv2SsZB6SJJuVv",
+    "verdict": "pass"
   },
-  "next_action": "Convention override (sponsor 2026-10-04, verbatim \"release pr riêng\"): cycle PR #4 merges BEFORE Gate 3; release gets its own release PR. Remaining: real-device SIT (RR-01/02 partial via iOS Simulator pass), console products + declarations, release PR at Gate 3",
+  "next_action": "Build done; Gate 2 open pending owner signature on PR #6 (SIT waiver recorded). Next: iOS production build 1.0.0 on sponsor confirmation, then TestFlight submit, then Android. Gate-3 exceptions: RR-09/10/12/14 before submission; RR-04..08,15..19 before production rollout",
   "open_exceptions": [
     {
       "blocking": true,
-      "deadline": "2026-08-15",
-      "default_if_silent": "block",
-      "gate": 3,
-      "id": "RR-01",
-      "owner": "justin.nguyen@appsindie.com",
-      "severity": "high",
-      "title": "Native device SIT not run",
-      "url": "docs/release/v1/EXCEPTION_REPORT.md"
-    },
-    {
-      "blocking": true,
-      "deadline": "2026-08-15",
-      "default_if_silent": "block",
-      "gate": 3,
-      "id": "RR-02",
-      "owner": "justin.nguyen@appsindie.com",
-      "severity": "high",
-      "title": "Failure-mode cases not verified",
-      "url": "docs/release/v1/EXCEPTION_REPORT.md"
-    },
-    {
-      "blocking": true,
-      "deadline": "2026-08-20",
+      "deadline": "2026-10-11",
       "default_if_silent": "block",
       "gate": 3,
       "id": "RR-04",
       "owner": "justin.nguyen@appsindie.com",
       "severity": "high",
-      "title": "North-star events and dashboards not wired",
+      "title": "North-star analytics events not wired",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     },
     {
       "blocking": true,
-      "deadline": "2026-08-20",
+      "deadline": "2026-10-11",
       "default_if_silent": "block",
       "gate": 3,
       "id": "RR-05",
       "owner": "justin.nguyen@appsindie.com",
       "severity": "high",
-      "title": "Alerts, rollout thresholds and rollback triggers not operational",
+      "title": "Alerts not wired or test-fired",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     },
     {
       "blocking": true,
-      "deadline": "2026-08-18",
+      "deadline": "2026-10-11",
       "default_if_silent": "block",
       "gate": 3,
       "id": "RR-06",
       "owner": "justin.nguyen@appsindie.com",
       "severity": "high",
-      "title": "Rollback command and owner not finalized",
+      "title": "Rollback command not finalized (owner named)",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     },
     {
       "blocking": true,
-      "deadline": "2026-08-20",
+      "deadline": "2026-10-11",
       "default_if_silent": "block",
       "gate": 3,
       "id": "RR-07",
@@ -101,18 +80,18 @@
     },
     {
       "blocking": true,
-      "deadline": "2026-08-20",
+      "deadline": "2026-10-11",
       "default_if_silent": "block",
       "gate": 3,
       "id": "RR-08",
       "owner": "justin.nguyen@appsindie.com",
       "severity": "high",
-      "title": "Runbook and escalation path not operational",
+      "title": "Runbook procedures still placeholders",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     },
     {
       "blocking": true,
-      "deadline": "2026-08-22",
+      "deadline": "2026-10-06",
       "default_if_silent": "block",
       "gate": 3,
       "id": "RR-09",
@@ -123,7 +102,7 @@
     },
     {
       "blocking": true,
-      "deadline": "2026-08-22",
+      "deadline": "2026-10-06",
       "default_if_silent": "block",
       "gate": 3,
       "id": "RR-10",
@@ -134,18 +113,18 @@
     },
     {
       "blocking": true,
-      "deadline": "2026-08-18",
+      "deadline": "2026-10-06",
       "default_if_silent": "block",
       "gate": 3,
       "id": "RR-11",
       "owner": "justin.nguyen@appsindie.com",
       "severity": "high",
-      "title": "Internal testing build not produced",
+      "title": "Internal testing build not produced — in-flight",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     },
     {
       "blocking": true,
-      "deadline": "2026-08-22",
+      "deadline": "2026-10-06",
       "default_if_silent": "block",
       "gate": 3,
       "id": "RR-12",
@@ -156,32 +135,76 @@
     },
     {
       "blocking": true,
-      "deadline": "2026-08-12",
-      "default_if_silent": "block",
-      "gate": 3,
-      "id": "RR-13",
-      "owner": "justin.nguyen@appsindie.com",
-      "severity": "high",
-      "title": "Release record not completed",
-      "url": "docs/release/v1/EXCEPTION_REPORT.md"
-    },
-    {
-      "blocking": true,
-      "deadline": "2026-08-18",
+      "deadline": "2026-10-06",
       "default_if_silent": "block",
       "gate": 3,
       "id": "RR-14",
       "owner": "justin.nguyen@appsindie.com",
       "severity": "high",
-      "title": "EAS / portal credentials not fully verified",
+      "title": "EAS / portal credentials and console products not fully provisioned",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-10-11",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-15",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "medium",
+      "title": "Dashboards not created",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-10-11",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-16",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "Rollout halt thresholds not wired to alerts",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-10-11",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-17",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "Rollback trigger conditions not wired",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-10-11",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-18",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "medium",
+      "title": "Escalation path not defined",
+      "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": true,
+      "deadline": "2026-10-11",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "RR-19",
+      "owner": "justin.nguyen@appsindie.com",
+      "severity": "high",
+      "title": "SIT waiver re-test condition — device items untested",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     }
   ],
-  "open_pr": "https://github.com/appsindie/focus-loop/pull/4",
+  "open_pr": "https://github.com/appsindie/focus-loop/pull/6",
   "owner": "justin.nguyen@appsindie.com",
   "phase": 2,
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-10-04T13:18:24Z"
+  "updated_at": "2026-10-04T14:08:57Z"
 }

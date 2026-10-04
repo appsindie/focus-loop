@@ -4,7 +4,7 @@
 
 - **Product / surface**: Focus Loop / iOS & Android
 - **Version (CalVer)**: v1.0.0
-- **Rollback owner**: TBD
+- **Rollback owner**: justin.nguyen@appsindie.com
 - **Last rehearsed**: N/A
 
 ## What this service does
@@ -38,10 +38,14 @@ If the symptom is not in this table and the rollout is in progress: **halt the s
 Mobile binaries cannot be recalled from user devices. The rollback action is to **halt the staged rollout** and submit a hotfix.
 
 ```bash
-# Halt staged rollout in App Store Connect / Play Console
-# Then build and submit a hotfix
-npx eas build --platform <ios|android> --profile production
-npx eas submit -p <ios|android>
+# 1. Halt the rollout — console actions (no command exists for iOS):
+#    Play Console → Release → Production → open the staged release → "Halt rollout"
+#      (internal track: do not promote the build further)
+#    App Store Connect → app 6818991496 → the in-flight version → "Pause phased release"
+#      (or remove the build from review if still pending)
+# 2. Hotfix: branch off main, fix, verify green, human merges, then:
+npx eas build --platform ios     --profile production   # or --platform android
+npx eas submit -p ios --profile internal                # internal first, then human promotes
 ```
 
 - **Trigger conditions**: thresholds in `docs/release/SLO_AND_ALERTING.md`.

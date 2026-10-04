@@ -2,6 +2,27 @@
 
 All notable changes to this template are documented in this file.
 
+## Focus Loop v1.0.0 (2026-10-04)
+
+### Added
+
+- Complete product: focus-loop engine (N × focus+break + long break), J1–J10 per canvas `1791071241-7cd3` — Disc/Numbers display, weekly goal 4/7, step-boundary notifications, iOS Live Activity + home widgets, Android widgets, app-kill recovery, reminders, share card, parked thoughts, CSV export/reset, 19 locales, tablet layouts.
+- Monetisation: AdMob banner + end-of-loop interstitial (caps server-side), Focus Loop Plus yearly $19.99 (7-day trial) / lifetime $49.99 via `expo-iap`, rewarded-ad 24h theme/sound trials.
+- Release pipeline: `.eas/workflows/{release,preview}.yml` (fingerprint + get-build + build + submit), `scripts/set-version-from-branch.js`, `scripts/write-store-credentials.sh`, `plugins/withAndroidLintFix.js`, `eas.json` `appVersionSource: remote` + `submit.internal` profile.
+- Release docs: `docs/release/v1/RELEASE_NOTES.md`; store-compliance/legal pages at `appsindie.com/docs/legal/focus-loop/*` (landing PR #5).
+
+### Fixed (first native build)
+
+- Widget extension `Info.plist` added under `targets/widgets/`; removed duplicate `FocusLoopActivityAttributes` declaration (the config plugin compiles `Attributes.swift` into both targets); `expo-store-review@57.0.3` `SceneGeometry` compile error patched via `patch-package`; focus-sound imports corrected to app-root `assets/`.
+
+### Waived for this release (sponsor, 2026-10-04)
+
+- Physical-device SIT and device failure-mode cases (RR-01/RR-02) — "app mới chưa có user"; iOS Simulator SIT pass evidence retained in the exception report.
+
+---
+
+_Template governance history below is pre-product and retained for provenance._
+
 ## Journey-Slice Governance, Full Pipeline, Reusable Shaping Skills (2026-07-27)
 
 ### Removed
