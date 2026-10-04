@@ -1,10 +1,9 @@
 name: Release / Internal Testing
 
+# No push trigger: every build and every submission is a separate confirmed
+# human go-ahead (release skill). Trigger manually via `eas workflow:run` or
+# the EAS dashboard, or run `eas build`/`eas submit` directly per confirmation.
 on:
-  push:
-    branches:
-      - "release/*"
-      - "releases/*"
   workflow_dispatch:
     inputs:
       platform:
@@ -34,7 +33,7 @@ jobs:
   get_android_build:
     name: Check for existing Android production build
     needs: [fingerprint]
-    if: ${{ github.event_name == 'push' || inputs.platform == 'all' || inputs.platform == 'android' }}
+    if: ${{ inputs.platform == 'all' || inputs.platform == 'android' }}
     type: get-build
     params:
       fingerprint_hash: ${{ needs.fingerprint.outputs.android_fingerprint_hash }}
@@ -43,7 +42,7 @@ jobs:
   get_ios_build:
     name: Check for existing iOS production build
     needs: [fingerprint]
-    if: ${{ github.event_name == 'push' || inputs.platform == 'all' || inputs.platform == 'ios' }}
+    if: ${{ inputs.platform == 'all' || inputs.platform == 'ios' }}
     type: get-build
     params:
       fingerprint_hash: ${{ needs.fingerprint.outputs.ios_fingerprint_hash }}
@@ -52,7 +51,7 @@ jobs:
   build_android:
     name: Build Android production
     after: [get_android_build]
-    if: ${{ (github.event_name == 'push' || inputs.platform == 'all' || inputs.platform == 'android') && after.get_android_build.status == 'success' && !after.get_android_build.outputs.build_id }}
+    if: ${{ (inputs.platform == 'all' || inputs.platform == 'android') && after.get_android_build.status == 'success' && !after.get_android_build.outputs.build_id }}
     type: build
     hooks:
       before_install_node_modules:
@@ -68,7 +67,7 @@ jobs:
   build_ios:
     name: Build iOS production
     after: [get_ios_build]
-    if: ${{ (github.event_name == 'push' || inputs.platform == 'all' || inputs.platform == 'ios') && after.get_ios_build.status == 'success' && !after.get_ios_build.outputs.build_id }}
+    if: ${{ (inputs.platform == 'all' || inputs.platform == 'ios') && after.get_ios_build.status == 'success' && !after.get_ios_build.outputs.build_id }}
     type: build
     hooks:
       before_install_node_modules:
