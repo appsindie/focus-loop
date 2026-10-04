@@ -17,6 +17,7 @@ import { SettingsScreen } from "./src/features/settings/SettingsScreen";
 import { DEFAULT_SETTINGS, Settings, useSettings } from "./src/features/settings/useSettings";
 import { saveSettings } from "./src/features/settings/SettingsStore";
 import { HistoryScreen } from "./src/features/loop/screens/HistoryScreen";
+import { WelcomeBackScreen } from "./src/features/loop/screens/WelcomeBackScreen";
 import { palette, typography } from "./src/shared/theme";
 
 function KeepAwakeActivator() {
@@ -103,6 +104,10 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
     parkThought,
     adoptParked,
     shareWeek,
+    pauseFocus,
+    resumeFocus,
+    welcomeHowDidItGo,
+    welcomeSkipToBreak,
   } = controller;
 
   const keepAwake =
@@ -162,8 +167,8 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           paused={phase === "paused"}
           parkedThoughts={parkedThoughts}
           elapsedSeconds={engine.elapsedSeconds()}
-          onPause={() => engine.pause()}
-          onResume={() => engine.resume()}
+          onPause={pauseFocus}
+          onResume={resumeFocus}
           onParkThought={(text) => void parkThought(text)}
           onEndEarlySave={endEarlySave}
           onEndEarlyDiscard={endEarlyDiscard}
@@ -194,6 +199,14 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           autoStart={settings.autoStartBreaks}
           onExtend={extendBreak}
           onStartFocus={startNextFocus}
+        />
+      ) : null}
+      {route === "welcome-back" ? (
+        <WelcomeBackScreen
+          colors={colors}
+          focusedSeconds={controller.lastSession?.focusedSeconds ?? step?.durationSeconds ?? 0}
+          onHowDidItGo={welcomeHowDidItGo}
+          onSkipToBreak={welcomeSkipToBreak}
         />
       ) : null}
       {route === "loop-done" ? (

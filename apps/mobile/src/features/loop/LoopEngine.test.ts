@@ -203,6 +203,133 @@ describe("LoopEngine", () => {
     expect(engine.extendFocus(600)).toBe(false); // running
   });
 
+  it("extensions are not numbered focuses — N/M counters stay honest (CR-07)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t = 600_000;
+    engine.tick();
+    expect(engine.currentFocusNumber).toBe(1);
+    expect(engine.totalFocusCount).toBe(2);
+
+    engine.extendFocus(600);
+    // The extension runs, but the loop still has 2 numbered focuses.
+    expect(engine.currentFocusNumber).toBe(1);
+    expect(engine.totalFocusCount).toBe(2);
+    // The strip still renders it — the plan grew honestly.
+    expect(engine.planSteps).toHaveLength(5);
+  });
+
+  it("a second loop after an extension runs the rhythm's plan, not the spliced one (CR-07)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t = 600_000;
+    engine.tick();
+    engine.extendFocus(600);
+    now.t += 600_000;
+    engine.tick();
+    engine.advance(); // the deferred break
+    engine.discard();
+
+    engine.start();
+    expect(engine.planSteps).toHaveLength(4); // F B F LB — the extension is gone
+    expect(engine.totalFocusCount).toBe(2);
+  });
+
+  it("the close-out ad trigger still counts real focuses after an extension (CR-07)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t = 600_000;
+    engine.tick();
+    engine.extendFocus(600);
+    now.t += 600_000;
+    engine.tick(); // extension done — closeout for the extension round
+    // Only one REAL focus completed — an interstitial must not fire here (§5).
+    expect(engine.currentFocusNumber).toBe(1);
+  });
+
+  it("snapshot → restore resumes a running focus with real elapsed (J9)", () => {
+    const now = { t: 1_000_000 };
+    const engine = makeEngine(now);
+    engine.start("resume me");
+    now.t += 120_000;
+    const snap = engine.snapshot()!;
+
+    // "Killed": a new engine at a later wall-clock time.
+    now.t += 180_000;
+    const recovered = makeEngine(now);
+    const phase = recovered.restore(snap);
+    expect(phase).toBe("running");
+    expect(recovered.remainingSeconds()).toBe(300); // 600 - 300 elapsed
+    expect(recovered.currentIntention).toBe("resume me");
+    expect(recovered.currentLoopId).toBe(snap.loopId);
+  });
+
+  it("restore lands step-done with the pending record when the focus expired while closed (J9)", () => {
+    const now = { t: 1_000_000 };
+    const engine = makeEngine(now);
+    engine.start();
+    const snap = engine.snapshot()!;
+
+    now.t += 900_000; // 15 min later — the 10-min focus long done
+    const recovered = makeEngine(now);
+    const phase = recovered.restore(snap);
+    expect(phase).toBe("step-done");
+    expect(recovered.completedFocusRecord).not.toBeNull();
+    // endedAt = true step end (start + planned), not restore/notice time (CR-03).
+    expect(recovered.completedFocusRecord!.endedAt).toBe(new Date(1_600_000).toISOString());
+  });
+
+  it("restore folds kill-time into pausedMs so a paused timer resumes correctly (J9)", () => {
+    const now = { t: 1_000_000 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t += 100_000;
+    engine.pause();
+    const snap = engine.snapshot()!;
+
+    now.t += 5 * 60_000; // killed while paused for 5 minutes
+    const recovered = makeEngine(now);
+    const phase = recovered.restore(snap);
+    expect(phase).toBe("running");
+    expect(recovered.remainingSeconds()).toBe(500); // pause time does not burn focus
+  });
+
+  it("restore of a step-done snapshot keeps the pending record for the writer (J9)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t = 600_000;
+    engine.tick();
+    const snap = engine.snapshot()!; // killed on the close-out, record unwritten
+
+    const recovered = makeEngine(now);
+    const phase = recovered.restore(snap);
+    expect(phase).toBe("step-done");
+    expect(recovered.completedFocusRecord!.focusedSeconds).toBe(600);
+  });
+
+  it("restore replays the extension plan so the in-flight step resolves (J9+CR-07)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now);
+    engine.start();
+    now.t = 600_000;
+    engine.tick();
+    engine.extendFocus(600);
+    now.t += 60_000;
+    const snap = engine.snapshot()!; // killed mid-extension
+
+    now.t += 120_000;
+    const recovered = makeEngine(now);
+    const phase = recovered.restore(snap);
+    expect(phase).toBe("running");
+    // stepIndex 1 resolves to the EXTENSION step from the snapshot's plan.
+    expect(recovered.currentStep).toMatchObject({ kind: "focus", extension: true });
+    expect(recovered.remainingSeconds()).toBe(420);
+  });
+
   it("auto-started focus counts from the break's true end (CR-03)", () => {
     const now = { t: 0 };
     const engine = makeEngine(now, true);

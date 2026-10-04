@@ -1,4 +1,5 @@
 import { InterstitialTrigger } from "../loop/triggers";
+import { trackEvent } from "../analytics/events";
 
 // ADR-003: the design fixes WHERE ads trigger; AdMob console caps decide whether
 // they show. New-user grace is owned client-side because console caps cannot
@@ -27,8 +28,10 @@ export function notifyInterstitialTrigger(
   now: Date = new Date(),
 ): "suppressed-grace" | "queued" {
   if (isWithinAdGrace(firstInstallAt, now)) {
+    trackEvent("ad_trigger_suppressed", { trigger, reason: "new-user-grace" });
     return "suppressed-grace";
   }
+  trackEvent("ad_trigger_shown", { trigger });
   show?.();
   return "queued";
 }

@@ -21,14 +21,20 @@ export type FocusRecord = {
 };
 
 // Persisted on every transition so an OS-killed loop can resume or recover (spec J9).
+// Covers step-done/loop-done too: killed on the close-out still owes the log its
+// record, so pendingFocusRecord rides along.
 export type LoopSnapshot = {
   loopId: string;
   stepIndex: number;
-  phase: "running" | "paused";
+  phase: "running" | "paused" | "step-done" | "loop-done";
   stepStartedAtMs: number;
   pausedMs: number;
   pausedAtMs: number | null;
   intention: string | null;
+  pendingFocusRecord: FocusRecord | null;
+  // The working plan INCLUDING any extension steps, so a restore lands on the same
+  // step the user was actually running (CR-07 made plan mutable).
+  plan: LoopStep[];
 };
 
 export type LoopEngineOptions = {
@@ -38,7 +44,10 @@ export type LoopEngineOptions = {
 };
 
 export class LoopEngine {
-  private readonly plan: LoopStep[];
+  // The rhythm's plan as constructed — `plan` is the working copy extendFocus
+  // splices into; start() always rebuilds from basePlan (CR-07).
+  private readonly basePlan: LoopStep[];
+  private plan: LoopStep[];
   private readonly now: () => number;
   private autoStartBreaks: boolean;
 
@@ -52,6 +61,7 @@ export class LoopEngine {
   private pendingFocusRecord: FocusRecord | null = null;
 
   constructor(plan: LoopStep[], options: LoopEngineOptions = {}) {
+    this.basePlan = [...plan];
     this.plan = [...plan];
     this.now = options.now ?? (() => Date.now());
     this.autoStartBreaks = options.autoStartBreaks ?? false;
@@ -61,11 +71,19 @@ export class LoopEngine {
     return this.plan;
   }
 
+  // The rhythm plan this engine resets to — used by the controller to decide whether
+  // a settings change needs a fresh engine between loops (CR-07).
+  get baseSteps(): readonly LoopStep[] {
+    return this.basePlan;
+  }
+
   // Loop strip + "FOCUS N OF M": count of focus steps at or before the current index.
+  // Extensions are real elapsed focus but not numbered rounds (CR-07).
   get currentFocusNumber(): number {
     let count = 0;
     for (let i = 0; i <= this.stepIndex && i < this.plan.length; i++) {
-      if (this.plan[i]!.kind === "focus") {
+      const step = this.plan[i]!;
+      if (step.kind === "focus" && step.extension !== true) {
         count += 1;
       }
     }
@@ -73,7 +91,7 @@ export class LoopEngine {
   }
 
   get totalFocusCount(): number {
-    return this.plan.filter((s) => s.kind === "focus").length;
+    return this.plan.filter((s) => s.kind === "focus" && s.extension !== true).length;
   }
 
   get currentPhase(): EnginePhase {
@@ -112,6 +130,9 @@ export class LoopEngine {
   }
 
   start(intention: string | null = null): void {
+    // A fresh loop always runs the rhythm's plan — extension splices from a
+    // previous loop must not leak into this one (CR-07).
+    this.plan = [...this.basePlan];
     this.loopId = `${this.now()}-${Math.random().toString(36).slice(2, 9)}`;
     this.stepIndex = 0;
     this.intention = intention;
@@ -263,7 +284,11 @@ export class LoopEngine {
     if (this.phase !== "step-done" || step?.kind !== "focus" || extraSeconds <= 0) {
       return false;
     }
-    this.plan.splice(this.stepIndex + 1, 0, { ...step, durationSeconds: extraSeconds });
+    this.plan.splice(this.stepIndex + 1, 0, {
+      ...step,
+      durationSeconds: extraSeconds,
+      extension: true,
+    });
     this.advance(this.intention);
     return true;
   }
@@ -292,7 +317,12 @@ export class LoopEngine {
   }
 
   snapshot(): LoopSnapshot | null {
-    if (this.phase !== "running" && this.phase !== "paused") {
+    if (
+      this.phase === "idle" ||
+      this.phase === "abandoned" ||
+      this.phase === "finished" ||
+      this.stepIndex >= this.plan.length
+    ) {
       return null;
     }
     return {
@@ -303,25 +333,36 @@ export class LoopEngine {
       pausedMs: this.pausedMs,
       pausedAtMs: this.pausedAtMs,
       intention: this.intention,
+      pendingFocusRecord: this.pendingFocusRecord,
+      plan: [...this.plan],
     };
   }
 
   // J9: restore after an OS kill. Time left → resume running; the step ended while the
   // app was closed → emit the record and land on step-done/loop-done so P13/P10 can
-  // honestly recover it (the log is written on restore, spec P13).
-  restore(snapshot: LoopSnapshot): void {
+  // honestly recover it (the log is written on restore, spec P13). Returns the phase
+  // after recovery so the caller can route: still running → resume, ended while
+  // closed → welcome-back, was already step-done → straight back to the close-out.
+  restore(snapshot: LoopSnapshot): EnginePhase {
     this.loopId = snapshot.loopId;
+    // Restore the snapshot's plan (extensions included) so stepIndex resolves to the
+    // exact step that was in flight; basePlan stays the rhythm plan for the next loop.
+    this.plan = [...snapshot.plan];
     this.stepIndex = snapshot.stepIndex;
     this.stepStartedAtMs = snapshot.stepStartedAtMs;
     this.pausedMs = snapshot.pausedMs;
     this.pausedAtMs = snapshot.pausedAtMs;
     this.intention = snapshot.intention;
+    this.pendingFocusRecord = snapshot.pendingFocusRecord;
     this.phase = snapshot.phase;
 
     const step = this.plan[this.stepIndex];
     if (step == null) {
       this.phase = "idle";
-      return;
+      return this.phase;
+    }
+    if (snapshot.phase === "step-done" || snapshot.phase === "loop-done") {
+      return this.phase;
     }
     if (snapshot.pausedAtMs != null) {
       this.pausedMs += this.now() - snapshot.pausedAtMs;
@@ -331,5 +372,6 @@ export class LoopEngine {
     if (this.remainingSeconds() === 0) {
       this.onStepEnd();
     }
+    return this.phase;
   }
 }

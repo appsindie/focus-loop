@@ -6,7 +6,7 @@ import { notifyInterstitialTrigger } from "../ads/adBroker";
 import { markNotificationsAsked, shouldAskForNotifications } from "../notifications/notifAsk";
 import { DisplayMode, Settings } from "../settings/SettingsStore";
 import { EnginePhase, LoopEngine, LoopSnapshot } from "./LoopEngine";
-import { buildLoopPlan } from "./loopPlan";
+import { buildLoopPlan, sameLoopPlan } from "./loopPlan";
 import {
   FocusSession,
   SessionOutcome,
@@ -24,6 +24,8 @@ import {
 import { resolveRhythm } from "./rhythm";
 import { isCloseoutTriggerPoint } from "./triggers";
 import { computeWeekProgress } from "./weeklyGoal";
+import { loadEngineSnapshot, saveEngineSnapshot } from "./engineSnapshot";
+import { trackEvent } from "../analytics/events";
 
 export type LoopRoute =
   | "loading"
@@ -33,6 +35,7 @@ export type LoopRoute =
   | "closeout"
   | "break"
   | "loop-done"
+  | "welcome-back"
   | "settings"
   | "history";
 
@@ -69,23 +72,38 @@ export function useLoopController(
   const [lastSession, setLastSession] = useState<FocusSession | null>(null);
   const [, bump] = useReducer((n: number) => n + 1, 0);
 
-  const rhythm = resolveRhythm(settings.rhythmPresetId, settings.customRhythm);
-  const engineRef = useRef<LoopEngine | null>(null);
+  const rhythm = useMemo(
+    () => resolveRhythm(settings.rhythmPresetId, settings.customRhythm),
+    [settings.rhythmPresetId, settings.customRhythm],
+  );
+  const plan = useMemo(() => buildLoopPlan(rhythm), [rhythm]);
   const routeRef = useRef<LoopRoute>("loading");
   const go = useCallback((next: LoopRoute) => {
     routeRef.current = next;
     setRoute(next);
   }, []);
 
-  const engine = useMemo(() => {
-    // A loop in flight keeps its own plan; a rhythm change builds the next engine.
-    if (engineRef.current == null || engineRef.current.currentPhase === "idle") {
-      engineRef.current = new LoopEngine(buildLoopPlan(rhythm), {
-        autoStartBreaks: settings.autoStartBreaks,
-      });
+  const [engine, setEngine] = useState(
+    () => new LoopEngine(plan, { autoStartBreaks: settings.autoStartBreaks }),
+  );
+
+  // Latest settings for callbacks that must not re-run on every change (CR-06).
+  const settingsRef = useRef(settings);
+  settingsRef.current = settings;
+  const sessionsRef = useRef<FocusSession[]>([]);
+  sessionsRef.current = sessions;
+
+  // A rhythm change swaps the engine BETWEEN loops only — mid-loop the running
+  // engine keeps its plan, and the swap lands when the loop goes terminal (CR-07).
+  // Phase is captured per render; the tick bump re-runs this when it changes, so a
+  // mid-loop change still applies once the loop finishes.
+  useEffect(() => {
+    const phase = engine.currentPhase;
+    const terminal = phase === "idle" || phase === "finished" || phase === "abandoned";
+    if (terminal && !sameLoopPlan(engine.baseSteps, plan)) {
+      setEngine(new LoopEngine(plan, { autoStartBreaks: settings.autoStartBreaks }));
     }
-    return engineRef.current;
-  }, [rhythm, settings.autoStartBreaks]);
+  }, [engine, plan, settings.autoStartBreaks]);
 
   // Settings pushed into the live engine so the P10 toggle takes effect at once.
   useEffect(() => {
@@ -101,18 +119,17 @@ export function useLoopController(
     setParkedThoughts(loadedThoughts);
   }, []);
 
-  // Boot: data in, first-launch decision out.
-  useEffect(() => {
-    if (settingsLoading) {
-      return;
-    }
-    void reloadData().then(() => {
-      go(settings.displayMode == null ? "first-launch" : "home");
-    });
-  }, [settingsLoading, settings.displayMode, reloadData, go]);
-
   const onSessionWritten = useCallback(
     (session: FocusSession) => {
+      trackEvent("focus_session_completed", {
+        partial: session.partial,
+        seconds: session.focusedSeconds,
+      });
+      // J2-R6: the first session of ITS day turns that day into a goal day.
+      const day = new Date(session.endedAt);
+      if (sessionsOnDay(sessionsRef.current, day).length === 0) {
+        trackEvent("goal_day_met", { day: session.endedAt.slice(0, 10) });
+      }
       setLastSession(session);
       setOutcomeDraft(null);
       void reloadData();
@@ -121,6 +138,53 @@ export function useLoopController(
   );
 
   const drainRecord = useSessionWriter(engine, onSessionWritten);
+
+  // J9: the snapshot is written on every state change, never on the tick.
+  const persistSnapshot = useCallback(() => {
+    void saveEngineSnapshot(engine.snapshot());
+  }, [engine]);
+
+  // Boot: data in, then OS-kill recovery BEFORE the first-launch/home default —
+  // a live snapshot outranks the landing route (J9). Runs exactly once — a
+  // settings change (e.g. the Disc/Numbers toggle) must never re-route (CR-06).
+  const bootedRef = useRef(false);
+  useEffect(() => {
+    if (settingsLoading || bootedRef.current) {
+      return;
+    }
+    bootedRef.current = true;
+    void (async () => {
+      await reloadData();
+      const snapshot = await loadEngineSnapshot();
+      if (snapshot == null) {
+        go(settingsRef.current.displayMode == null ? "first-launch" : "home");
+        return;
+      }
+      const wasInFlight = snapshot.phase === "running" || snapshot.phase === "paused";
+      const restored = engine.restore(snapshot);
+      trackEvent("session_recovered", {
+        restoredTo: restored,
+        expiredWhileClosed: wasInFlight && restored !== snapshot.phase,
+      });
+      drainRecord();
+      persistSnapshot();
+      const step = engine.currentStep;
+      if (restored === "running" || restored === "paused") {
+        go(step?.kind === "focus" ? "focus" : "break");
+      } else if (restored === "step-done" || restored === "loop-done") {
+        if (step?.kind === "focus" && wasInFlight) {
+          // Focus expired while the app was closed → P13 confirms it saved (J9-R2).
+          go("welcome-back");
+        } else if (step?.kind === "focus") {
+          go(restored === "loop-done" ? "loop-done" : "closeout");
+        } else {
+          go("break");
+        }
+      } else {
+        go("home");
+      }
+    })();
+  }, [settingsLoading, reloadData, go, engine, persistSnapshot, drainRecord]);
 
   const haptic = useCallback(() => {
     if (settings.vibrationEnabled) {
@@ -144,6 +208,7 @@ export function useLoopController(
       }
       if (before !== after) {
         haptic();
+        persistSnapshot();
       }
       if (after === "step-done") {
         const step = engine.currentStep;
@@ -161,6 +226,7 @@ export function useLoopController(
           go("break");
         }
       } else if (after === "loop-done") {
+        trackEvent("loop_completed", { loopId: engine.currentLoopId });
         go("loop-done");
       } else if (after === "finished") {
         go("home");
@@ -176,7 +242,7 @@ export function useLoopController(
       }
     }, 500);
     return () => clearInterval(timer);
-  }, [engine, go, drainRecord, haptic]);
+  }, [engine, go, drainRecord, haptic, persistSnapshot]);
 
   // ── Actions ──────────────────────────────────────────────────────────────
 
@@ -185,15 +251,17 @@ export function useLoopController(
       // P02: a tap saves the choice AND starts the first focus (J1-R2).
       void save({ displayMode: mode });
       engine.start(intentionDraft.trim() || null);
+      persistSnapshot();
       go("focus");
     },
-    [engine, intentionDraft, go],
+    [engine, intentionDraft, go, persistSnapshot],
   );
 
   const startFocus = useCallback(() => {
     engine.start(intentionDraft.trim() || null);
+    persistSnapshot();
     go("focus");
-  }, [engine, intentionDraft, go]);
+  }, [engine, intentionDraft, go, persistSnapshot]);
 
   const startBreak = useCallback(() => {
     // Leaving P10 = the closeout interstitial trigger point (§5).
@@ -205,16 +273,18 @@ export function useLoopController(
       );
     }
     engine.advance();
+    persistSnapshot();
     go("break");
-  }, [engine, go, settings.firstInstallAt, interstitial]);
+  }, [engine, go, settings.firstInstallAt, interstitial, persistSnapshot]);
 
   const keepGoing = useCallback(() => {
     if (engine.extendFocus(EXTENSION_SECONDS)) {
+      persistSnapshot();
       go("focus");
     } else {
       go("home");
     }
-  }, [engine, go]);
+  }, [engine, go, persistSnapshot]);
 
   const startNextFocus = useCallback(() => {
     // Break still running → skip the rest; break already ended → step-done advance.
@@ -223,13 +293,27 @@ export function useLoopController(
     } else {
       engine.skipBreak();
     }
+    persistSnapshot();
     go("focus");
-  }, [engine, go]);
+  }, [engine, go, persistSnapshot]);
 
   const extendBreak = useCallback(() => {
     engine.extendBreak(5 * 60);
+    persistSnapshot();
     bump();
-  }, [engine]);
+  }, [engine, persistSnapshot]);
+
+  const pauseFocus = useCallback(() => {
+    engine.pause();
+    persistSnapshot();
+    bump();
+  }, [engine, persistSnapshot]);
+
+  const resumeFocus = useCallback(() => {
+    engine.resume();
+    persistSnapshot();
+    bump();
+  }, [engine, persistSnapshot]);
 
   const endEarlySave = useCallback(() => {
     const record = engine.endEarly();
@@ -237,13 +321,15 @@ export function useLoopController(
       engine.clearFocusRecord();
       void recordSession({ ...record, outcome: null }).then(onSessionWritten);
     }
+    persistSnapshot();
     go("home");
-  }, [engine, go, onSessionWritten]);
+  }, [engine, go, onSessionWritten, persistSnapshot]);
 
   const endEarlyDiscard = useCallback(() => {
     engine.discard();
+    persistSnapshot();
     go("home");
-  }, [engine, go]);
+  }, [engine, go, persistSnapshot]);
 
   // §5: leaving P12 is a trigger point only from the second loop on — the first
   // loop ever opens the paywall instead (P14 lands in the Plus slice, J7).
@@ -261,14 +347,28 @@ export function useLoopController(
   const startLongBreak = useCallback(() => {
     leaveLoopDone();
     engine.advance();
+    persistSnapshot();
     go("break");
-  }, [leaveLoopDone, engine, go]);
+  }, [leaveLoopDone, engine, go, persistSnapshot]);
 
   const skipLongBreak = useCallback(() => {
     leaveLoopDone();
     engine.discard();
+    persistSnapshot();
     go("home");
-  }, [leaveLoopDone, engine, go]);
+  }, [leaveLoopDone, engine, go, persistSnapshot]);
+
+  // P13 Welcome back (J9): the focus expired while the app was closed — its record
+  // is already written; the user picks the close-out or skips straight to break.
+  const welcomeHowDidItGo = useCallback(() => {
+    go(engine.currentPhase === "loop-done" ? "loop-done" : "closeout");
+  }, [engine, go]);
+
+  const welcomeSkipToBreak = useCallback(() => {
+    engine.advance();
+    persistSnapshot();
+    go("break");
+  }, [engine, go, persistSnapshot]);
 
   const parkThought = useCallback(
     async (text: string) => {
@@ -312,7 +412,8 @@ export function useLoopController(
 
   const answerNotifAsk = useCallback((allow: boolean) => {
     setNotifAskOpen(false);
-    void markNotificationsAsked();
+    // CR-08: the answer is stored — "allowed" never re-prompts.
+    void markNotificationsAsked(allow ? "allowed" : "declined");
     if (allow) {
       void requestNotificationPermissions();
     }
@@ -369,6 +470,10 @@ export function useLoopController(
     parkThought,
     adoptParked,
     shareWeek,
+    pauseFocus,
+    resumeFocus,
+    welcomeHowDidItGo,
+    welcomeSkipToBreak,
     restoreSnapshot: (snapshot: LoopSnapshot) => engine.restore(snapshot),
   };
 }
