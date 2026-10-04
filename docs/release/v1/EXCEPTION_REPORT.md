@@ -29,16 +29,16 @@
 
 ### RR-01. Native device SIT not run
 
-- **Situation**: E2E verification was run on the Expo web preview (`docs/qa/v1-e2e-test-report.md`). The web preview has known mouse/keyboard interaction regressions that do not affect native builds. No iOS or Android native SIT build has been executed.
-- **Options**: A — run `eas build` plus native QA before Gate 3. B — accept web-preview functional evidence and move to TestFlight/Play Console internal testing after Gate 3.
-- **Recommendation**: A.
+- **Situation**: E2E verification was run on the Expo web preview (`docs/qa/v1-e2e-test-report.md`). **Partial progress**: native iOS Simulator SIT pass done (iPhone 17, iOS 26, debug dev-client) — J1 first-launch + ATT prompt + display pick, J2 focus start/pause/end-early/save, Home (loop summary, weekly goal counter, live AdMob banner), Settings P20, Themes & sounds trial rows, Paywall P14 with fallback prices all verified on-device; three native build defects found and fixed in the pass (widget Info.plist, duplicate ActivityAttributes, expo-store-review `SceneGeometry` patch via patch-package). Remaining for a physical device: haptics, real push delivery, Live Activity on lock screen, IAP sandbox purchase.
+- **Options**: A — run `eas build` plus native QA before Gate 3. B — accept simulator+web evidence and move to TestFlight/Play Console internal testing after Gate 3.
+- **Recommendation**: A — first preview EAS build doubles as the TestFlight artifact.
 - **Default if you say nothing**: blocks Gate 3.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-08-15
 
 ### RR-02. Failure-mode cases not verified
 
-- **Situation**: Cancel regression passed on web preview. Ad load-failure graceful handling, notification permission denial, and offline edge cases have not been exercised on a device.
+- **Situation**: Cancel regression passed on web preview. **Partial progress**: ATT denial path verified on iOS Simulator ("Ask App Not to Track" → non-personalized test banner still loads in the Home slot); store-product fetch failure degrades to fallback prices on the paywall. Still unexercised on device: ad load-failure UI, notification permission denial, offline edge cases, IAP sandbox purchase.
 - **Options**: A — add and run failure-mode cases on native SIT before Gate 3. B — defer to internal testing.
 - **Recommendation**: A.
 - **Default if you say nothing**: blocks Gate 3.
