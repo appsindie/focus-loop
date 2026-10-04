@@ -14,10 +14,10 @@
       "status": "passed"
     },
     "2": {
-      "status": "passed",
-      "signed_by": "justin.nguyen@appsindie.com",
+      "evidence": "Sponsor waived SIT: \"k sit, làm release luôn đi. app mới chưa có user mà sit gì men\" — RR-01/RR-02 waived in docs/release/v1/EXCEPTION_REPORT.md; iOS Simulator pass retained as evidence",
       "signed_at": "2026-10-04",
-      "evidence": "Sponsor waived SIT: \"k sit, làm release luôn đi. app mới chưa có user mà sit gì men\" — RR-01/RR-02 waived in docs/release/v1/EXCEPTION_REPORT.md; iOS Simulator pass retained as evidence"
+      "signed_by": "justin.nguyen@appsindie.com",
+      "status": "passed"
     },
     "3": {
       "status": "open"
@@ -28,11 +28,11 @@
   },
   "hold": false,
   "last_review": {
-    "verdict": "pending",
+    "fired_at": "2026-10-04T13:56:00Z",
+    "round_count": 15,
     "routine": "release",
     "session_url": "https://claude.ai/code/cse_01WriUx1VFjdyHJ7SSEsdHcq",
-    "round_count": 15,
-    "fired_at": "2026-10-04T13:56:00Z"
+    "verdict": "pending"
   },
   "next_action": "Phase 3 release: release PR open (pipeline + docs); next = iOS production build 1.0.0 on sponsor confirmation, then submit internal track, then Android. Gate-3 exceptions RR-04..12,14 remain",
   "open_exceptions": [
