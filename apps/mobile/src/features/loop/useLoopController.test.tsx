@@ -193,4 +193,71 @@ describe("useLoopController", () => {
     // The unwritten record still reaches the log (J9-R3).
     expect(result.current.lastSession?.loopId).toBe("kill-4");
   });
+
+  it("CR-10: non-default rhythm + live snapshot restores into the post-swap engine", async () => {
+    // Saved rhythm is Gentle but the pre-load engine was built on Classic —
+    // the swap must land BEFORE boot restores, or the session strands.
+    const plan = buildLoopPlan({
+      focusMinutes: 15,
+      breakMinutes: 5,
+      rounds: 4,
+      longBreakMinutes: 15,
+    });
+    const snapshot: LoopSnapshot = {
+      loopId: "kill-5",
+      stepIndex: 0,
+      phase: "running",
+      stepStartedAtMs: Date.now() - 60_000,
+      pausedMs: 0,
+      pausedAtMs: null,
+      intention: null,
+      pendingFocusRecord: null,
+      plan,
+    };
+    await saveEngineSnapshot(snapshot);
+
+    const { result, rerender } = await renderHook(
+      ({ settings, loading }: { settings: Settings; loading: boolean }) =>
+        useLoopController(settings, loading),
+      { initialProps: { settings: DEFAULT_SETTINGS, loading: true } },
+    );
+    await act(async () => {
+      await rerender({ settings: { ...SETTINGS, rhythmPresetId: "gentle" }, loading: false });
+      await Promise.resolve();
+      await Promise.resolve();
+    });
+    await flushBoot();
+    expect(result.current.route).toBe("focus");
+    expect(result.current.engine.currentLoopId).toBe("kill-5");
+    expect(result.current.engine.currentPhase).toBe("running");
+    expect(result.current.engine.remainingSeconds()).toBeGreaterThan(800);
+  });
+
+  it("CR-11: a mid-loop rhythm change applies to the next loop", async () => {
+    let settings: Settings = { ...SETTINGS, rhythmPresetId: "classic" };
+    const { result, rerender } = await renderHook(() => useLoopController(settings, false));
+    await flushBoot();
+    await act(async () => {
+      result.current.startFocus();
+      await Promise.resolve();
+    });
+    const runningEngine = result.current.engine;
+    expect(runningEngine.baseSteps[0]?.durationSeconds).toBe(25 * 60);
+
+    // Change the preset mid-loop: the running engine keeps its plan...
+    settings = { ...settings, rhythmPresetId: "gentle" };
+    await act(async () => {
+      await rerender({});
+    });
+    expect(result.current.engine).toBe(runningEngine);
+
+    // ...and once the loop goes terminal, the swap lands — next start uses Gentle.
+    await act(async () => {
+      result.current.endEarlyDiscard();
+      await Promise.resolve();
+    });
+    await flushBoot();
+    expect(result.current.engine).not.toBe(runningEngine);
+    expect(result.current.engine.baseSteps[0]?.durationSeconds).toBe(15 * 60);
+  });
 });

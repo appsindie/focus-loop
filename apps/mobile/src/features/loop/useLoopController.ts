@@ -1,7 +1,12 @@
 import * as Haptics from "expo-haptics";
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { Share } from "react-native";
-import { requestNotificationPermissions } from "../notifications/NotificationScheduler";
+import {
+  cancelStepAlert,
+  clearStepAlertsAtBoot,
+  requestNotificationPermissions,
+  syncStepAlert,
+} from "../notifications/NotificationScheduler";
 import { notifyInterstitialTrigger } from "../ads/adBroker";
 import { markNotificationsAsked, shouldAskForNotifications } from "../notifications/notifAsk";
 import { DisplayMode, Settings } from "../settings/SettingsStore";
@@ -95,15 +100,18 @@ export function useLoopController(
 
   // A rhythm change swaps the engine BETWEEN loops only — mid-loop the running
   // engine keeps its plan, and the swap lands when the loop goes terminal (CR-07).
-  // Phase is captured per render; the tick bump re-runs this when it changes, so a
-  // mid-loop change still applies once the loop finishes.
+  // enginePhase is captured per render so the tick bump re-runs this effect on
+  // every phase change (CR-11); without it a mid-loop rhythm change never landed.
+  const enginePhase = engine.currentPhase;
   useEffect(() => {
-    const phase = engine.currentPhase;
-    const terminal = phase === "idle" || phase === "finished" || phase === "abandoned";
-    if (terminal && !sameLoopPlan(engine.baseSteps, plan)) {
+    const terminal =
+      enginePhase === "idle" || enginePhase === "finished" || enginePhase === "abandoned";
+    // CR-10: while settings are still loading `plan` is the DEFAULT plan — never
+    // build or swap from it.
+    if (!settingsLoading && terminal && !sameLoopPlan(engine.baseSteps, plan)) {
       setEngine(new LoopEngine(plan, { autoStartBreaks: settings.autoStartBreaks }));
     }
-  }, [engine, plan, settings.autoStartBreaks]);
+  }, [engine, enginePhase, plan, settings.autoStartBreaks, settingsLoading]);
 
   // Settings pushed into the live engine so the P10 toggle takes effect at once.
   useEffect(() => {
@@ -144,12 +152,40 @@ export function useLoopController(
     void saveEngineSnapshot(engine.snapshot());
   }, [engine]);
 
+  // P23 step alerts: one pending local notification, resynced from live engine
+  // state. Paused/step-done/terminal phases cancel it — a pending alert that
+  // fires early is worse than none.
+  const syncAlert = useCallback(() => {
+    const step = engine.currentStep;
+    if (engine.currentPhase === "running" && step != null) {
+      void syncStepAlert(
+        step.kind === "focus" ? "focus-end" : "break-end",
+        engine.remainingSeconds(),
+        settingsRef.current.vibrationEnabled,
+      );
+    } else {
+      void cancelStepAlert();
+    }
+  }, [engine]);
+
+  const afterEngineChange = useCallback(() => {
+    persistSnapshot();
+    syncAlert();
+  }, [persistSnapshot, syncAlert]);
+
   // Boot: data in, then OS-kill recovery BEFORE the first-launch/home default —
   // a live snapshot outranks the landing route (J9). Runs exactly once — a
   // settings change (e.g. the Disc/Numbers toggle) must never re-route (CR-06).
   const bootedRef = useRef(false);
   useEffect(() => {
     if (settingsLoading || bootedRef.current) {
+      return;
+    }
+    // CR-10: when settings just loaded with a non-default rhythm, this commit's
+    // swap effect is about to replace the engine. Restoring into THIS engine
+    // would strand the session in the discarded one — wait a render for the
+    // post-swap engine (this effect re-runs because `engine` is a dep).
+    if (!sameLoopPlan(engine.baseSteps, plan)) {
       return;
     }
     bootedRef.current = true;
@@ -161,13 +197,16 @@ export function useLoopController(
         return;
       }
       const wasInFlight = snapshot.phase === "running" || snapshot.phase === "paused";
+      // Pre-kill scheduled alerts are orphaned (ids lived in memory) — wipe the
+      // OS queue; the post-restore sync recreates whatever is still true.
+      await clearStepAlertsAtBoot();
       const restored = engine.restore(snapshot);
       trackEvent("session_recovered", {
         restoredTo: restored,
         expiredWhileClosed: wasInFlight && restored !== snapshot.phase,
       });
       drainRecord();
-      persistSnapshot();
+      afterEngineChange();
       const step = engine.currentStep;
       if (restored === "running" || restored === "paused") {
         go(step?.kind === "focus" ? "focus" : "break");
@@ -184,7 +223,16 @@ export function useLoopController(
         go("home");
       }
     })();
-  }, [settingsLoading, reloadData, go, engine, persistSnapshot, drainRecord]);
+  }, [
+    settingsLoading,
+    reloadData,
+    go,
+    engine,
+    plan,
+    persistSnapshot,
+    drainRecord,
+    afterEngineChange,
+  ]);
 
   const haptic = useCallback(() => {
     if (settings.vibrationEnabled) {
@@ -208,7 +256,7 @@ export function useLoopController(
       }
       if (before !== after) {
         haptic();
-        persistSnapshot();
+        afterEngineChange();
       }
       if (after === "step-done") {
         const step = engine.currentStep;
@@ -242,7 +290,7 @@ export function useLoopController(
       }
     }, 500);
     return () => clearInterval(timer);
-  }, [engine, go, drainRecord, haptic, persistSnapshot]);
+  }, [engine, go, drainRecord, haptic, persistSnapshot, afterEngineChange]);
 
   // ── Actions ──────────────────────────────────────────────────────────────
 
@@ -251,17 +299,17 @@ export function useLoopController(
       // P02: a tap saves the choice AND starts the first focus (J1-R2).
       void save({ displayMode: mode });
       engine.start(intentionDraft.trim() || null);
-      persistSnapshot();
+      afterEngineChange();
       go("focus");
     },
-    [engine, intentionDraft, go, persistSnapshot],
+    [engine, intentionDraft, go, afterEngineChange],
   );
 
   const startFocus = useCallback(() => {
     engine.start(intentionDraft.trim() || null);
-    persistSnapshot();
+    afterEngineChange();
     go("focus");
-  }, [engine, intentionDraft, go, persistSnapshot]);
+  }, [engine, intentionDraft, go, afterEngineChange]);
 
   const startBreak = useCallback(() => {
     // Leaving P10 = the closeout interstitial trigger point (§5).
@@ -273,18 +321,18 @@ export function useLoopController(
       );
     }
     engine.advance();
-    persistSnapshot();
+    afterEngineChange();
     go("break");
-  }, [engine, go, settings.firstInstallAt, interstitial, persistSnapshot]);
+  }, [engine, go, settings.firstInstallAt, interstitial, afterEngineChange]);
 
   const keepGoing = useCallback(() => {
     if (engine.extendFocus(EXTENSION_SECONDS)) {
-      persistSnapshot();
+      afterEngineChange();
       go("focus");
     } else {
       go("home");
     }
-  }, [engine, go, persistSnapshot]);
+  }, [engine, go, afterEngineChange]);
 
   const startNextFocus = useCallback(() => {
     // Break still running → skip the rest; break already ended → step-done advance.
@@ -293,27 +341,27 @@ export function useLoopController(
     } else {
       engine.skipBreak();
     }
-    persistSnapshot();
+    afterEngineChange();
     go("focus");
-  }, [engine, go, persistSnapshot]);
+  }, [engine, go, afterEngineChange]);
 
   const extendBreak = useCallback(() => {
     engine.extendBreak(5 * 60);
-    persistSnapshot();
+    afterEngineChange();
     bump();
-  }, [engine, persistSnapshot]);
+  }, [engine, afterEngineChange]);
 
   const pauseFocus = useCallback(() => {
     engine.pause();
-    persistSnapshot();
+    afterEngineChange();
     bump();
-  }, [engine, persistSnapshot]);
+  }, [engine, afterEngineChange]);
 
   const resumeFocus = useCallback(() => {
     engine.resume();
-    persistSnapshot();
+    afterEngineChange();
     bump();
-  }, [engine, persistSnapshot]);
+  }, [engine, afterEngineChange]);
 
   const endEarlySave = useCallback(() => {
     const record = engine.endEarly();
@@ -321,15 +369,15 @@ export function useLoopController(
       engine.clearFocusRecord();
       void recordSession({ ...record, outcome: null }).then(onSessionWritten);
     }
-    persistSnapshot();
+    afterEngineChange();
     go("home");
-  }, [engine, go, onSessionWritten, persistSnapshot]);
+  }, [engine, go, onSessionWritten, afterEngineChange]);
 
   const endEarlyDiscard = useCallback(() => {
     engine.discard();
-    persistSnapshot();
+    afterEngineChange();
     go("home");
-  }, [engine, go, persistSnapshot]);
+  }, [engine, go, afterEngineChange]);
 
   // §5: leaving P12 is a trigger point only from the second loop on — the first
   // loop ever opens the paywall instead (P14 lands in the Plus slice, J7).
@@ -347,16 +395,16 @@ export function useLoopController(
   const startLongBreak = useCallback(() => {
     leaveLoopDone();
     engine.advance();
-    persistSnapshot();
+    afterEngineChange();
     go("break");
-  }, [leaveLoopDone, engine, go, persistSnapshot]);
+  }, [leaveLoopDone, engine, go, afterEngineChange]);
 
   const skipLongBreak = useCallback(() => {
     leaveLoopDone();
     engine.discard();
-    persistSnapshot();
+    afterEngineChange();
     go("home");
-  }, [leaveLoopDone, engine, go, persistSnapshot]);
+  }, [leaveLoopDone, engine, go, afterEngineChange]);
 
   // P13 Welcome back (J9): the focus expired while the app was closed — its record
   // is already written; the user picks the close-out or skips straight to break.
@@ -366,9 +414,9 @@ export function useLoopController(
 
   const welcomeSkipToBreak = useCallback(() => {
     engine.advance();
-    persistSnapshot();
+    afterEngineChange();
     go("break");
-  }, [engine, go, persistSnapshot]);
+  }, [engine, go, afterEngineChange]);
 
   const parkThought = useCallback(
     async (text: string) => {
@@ -410,14 +458,18 @@ export function useLoopController(
     [lastSession, reloadData],
   );
 
-  const answerNotifAsk = useCallback((allow: boolean) => {
-    setNotifAskOpen(false);
-    // CR-08: the answer is stored — "allowed" never re-prompts.
-    void markNotificationsAsked(allow ? "allowed" : "declined");
-    if (allow) {
-      void requestNotificationPermissions();
-    }
-  }, []);
+  const answerNotifAsk = useCallback(
+    (allow: boolean) => {
+      setNotifAskOpen(false);
+      // CR-08: the answer is stored — "allowed" never re-prompts.
+      void markNotificationsAsked(allow ? "allowed" : "declined");
+      if (allow) {
+        // A focus may already be running — once granted, sync its alert too.
+        void requestNotificationPermissions().then(syncAlert);
+      }
+    },
+    [syncAlert],
+  );
 
   // ── Derived view state ───────────────────────────────────────────────────
 

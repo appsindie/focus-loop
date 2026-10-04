@@ -44,6 +44,7 @@ jest.mock("expo-notifications", () => ({
   requestPermissionsAsync: jest.fn(() => Promise.resolve({ status: 0 })),
   scheduleNotificationAsync: jest.fn(() => Promise.resolve("mock-notification-id")),
   cancelScheduledNotificationAsync: jest.fn(() => Promise.resolve()),
+  cancelAllScheduledNotificationsAsync: jest.fn(() => Promise.resolve()),
   PermissionStatus: {
     GRANTED: "granted",
     DENIED: "denied",
