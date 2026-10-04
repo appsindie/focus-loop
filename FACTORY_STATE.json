@@ -31,7 +31,7 @@
     "session_url": "https://claude.ai/code/cse_01U5QaCa2KjQtCahZZQp1JoV",
     "verdict": "no-verdict"
   },
-  "next_action": "Phase 3 prep: iOS Simulator SIT pass done (RR-01/02 partial — real-device checks remain: haptics, push, Live Activity, IAP sandbox); preview EAS build pending Justin go-ahead; round-14 code-review refire pending routine health",
+  "next_action": "Convention override (sponsor 2026-10-04, verbatim \"release pr riêng\"): cycle PR #4 merges BEFORE Gate 3; release gets its own release PR. Remaining: real-device SIT (RR-01/02 partial via iOS Simulator pass), console products + declarations, release PR at Gate 3",
   "open_exceptions": [
     {
       "blocking": true,
@@ -183,5 +183,5 @@
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-10-04T07:50:00Z"
+  "updated_at": "2026-10-04T13:18:24Z"
 }
