@@ -13,8 +13,21 @@ Merging a `design-sync` PR is the sponsor's approval of that canvas version. New
 | OP-03 | ~~Default of Settings → Show seconds~~ — closed 2026-10-03: sponsor confirmed ("chốt seconds") **default on**, affects Numbers display only. Spec J10-R2.                                                                                                                                                                                          | Closed                              | Sponsor |
 | OP-04 | ~~Streak removed in favour of a weekly goal~~ — closed 2026-10-03: sponsor confirmed ("bỏ streak") **weekly goal, any 4 of 7 days**. North-star tracking = "days focused per week". Spec J2-R6, J6-R1.                                                                                                                                             | Closed                              | Sponsor |
 | OP-05 | ~~Interstitial frequency cap~~ — closed 2026-10-03: frequency and caps are server-side; the design only fixes trigger points (leaving Loop complete; leaving Close-out after the 2nd focus when the loop is not completed). Sponsor 2026-10-03: "admod limit là do admob server config" → AdMob console configuration, no owned backend (ADR-003). | Closed                              | Sponsor |
-| OP-06 | ~~App icon and palette change from Pilot green to ink + ember~~ — closed 2026-10-03: adopted by design sync; sponsor directed shaping to proceed on this canvas. Store assets and splash regenerate during the v2 build.                                                                                                                           | Closed                              | Sponsor |
+| OP-06 | ~~App icon and palette change from Pilot green to ink + ember~~ — closed 2026-10-03: adopted by design sync; sponsor directed shaping to proceed on this canvas. Store assets and splash regenerate during the v1 build.                                                                                                                           | Closed                              | Sponsor |
 | OP-07 | Values set by design without data: weekly goal 4, review prompt after 3rd loop, history 7 days free.                                                                                                                                                                                                                                               | Keep, revisit after 4 weeks of data | Growth  |
+
+## Round 7 — 2026-10-04 · sponsor: single-version build, named v1
+
+Sponsor direction (verbatim): _"dev het slices version nay, chua lên store nên v1 thôi"_ — develop all journeys in this version; since nothing has shipped to a store, the version is named **v1** (the pilot build never reached a store, so this is the first store version).
+
+Applied across the corpus:
+
+- The release-slice/fast-follow split (SR-02/SR-07) is superseded — all journeys J1–J10 ship together; the journey-dependency graph is the build-order guide inside the cycle.
+- Version renamed v2 → v1 everywhere (spec, concept, ARC42, ADR-003); the cycle branch becomes `release/v1` and the shaping checkpoint PR is re-opened on it (PR #3 superseded, review history carried).
+- Kill-criterion reading resolved: Gate 0 "build <= 8 weeks" applies to the whole v1 window; the ~8–9 week estimate sits at the edge — sponsor-accepted with the all-in-one call.
+- The ads-only-slice economics caveat is moot: Plus ships at launch, so the blended figure applies from day one.
+
+Items awaiting sponsor at Gate 1 signature: blended-ARPU guard-rail + Gate 0 economics re-check (the slice-vs-single question is answered above).
 
 ## Round 6 — 2026-10-03 · shaping review on the v2 re-shape (PR #3)
 
@@ -33,7 +46,7 @@ Round-2 re-review (verdict **approve-with-concerns** again): SR-03/04/05 resolve
 
 Round-3 re-review: verdict **APPROVE** — no Blockers, no Majors. The only remaining finding, SR-08 (minor: lock-screen widget sat in both slice and fast-follow buckets), was folded in directly — P24's data line now marks the lock-screen widget fast-follow alongside P23.
 
-Items awaiting sponsor at Gate 1 signature: blended-ARPU guard-rail + Gate 0 economics re-check, the slice/fast-follow split vs single-v2 estimate, and the per-window kill-criterion reading.
+Items awaiting sponsor at Gate 1 signature: blended-ARPU guard-rail + Gate 0 economics re-check, the slice/fast-follow split vs single-version estimate, and the per-window kill-criterion reading. _(Superseded by round 7: sponsor chose the single version, named v1.)_
 
 ## Round 5 — 2026-10-03 · sponsor answers on the shaping re-pass
 

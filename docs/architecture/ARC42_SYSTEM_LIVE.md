@@ -1,4 +1,4 @@
-# Focus Loop — Architecture (arc42-lite), v2 draft
+# Focus Loop — Architecture (arc42-lite), v1 draft
 
 Re-shaped on hi-fi design canvas `1791071241-7cd3` (2026-10-03): the unit is now a **loop** (N × focus+break + long break), streaks are replaced by a **weekly goal**, and monetisation adds **Focus Loop Plus** (IAP) beside ads.
 
@@ -152,12 +152,11 @@ P14 Paywall -> StoreKit / Play Billing sheet
 
 **Transition path**
 
-1. v1 Pilot (done): timer + ads + widget — superseded by the v2.1 canvas.
-2. v2 release slice (ships first): J1–J4 + J9 — loop + breaks, Disc/Numbers, weekly goal (P04/P17/P18), home-screen widget P24, ad trigger points.
-3. v2 fast-follow (gated on the slice's retention signal): J7 Plus, J8 rewarded 24h trials, J5 reminders, J6 share card, J10 full customise, P23 Live Activity, tablet T01–T06.
-4. Later: sync, advanced stats, wearables — re-enters Phase 1 shaping on Gate 4.
+1. Pilot build (done, never shipped): timer + ads + widget — superseded by the canvas re-shape.
+2. v1 (this cycle, single version — sponsor 2026-10-03): all journeys J1–J10 — loop + breaks, Disc/Numbers, weekly goal (P04/P17/P18), home-screen + lock-screen widgets P24, Live Activity P23, ad trigger points, reminders, share card, Plus + rewarded 24h trials, full customise, tablet T01–T06.
+3. Later: sync, advanced stats, wearables — re-enters Phase 1 shaping on Gate 4.
 
-Trigger signal for the fast-follow: the release slice's D7/D30 tracking to Gate 0 `validation_metrics` (see PRODUCT_CONCEPT §3).
+The earlier release-slice/fast-follow staging is superseded; build order inside the cycle follows the journey-dependency graph (PRODUCT_SPEC_LIVE §Part 3).
 
 Day-one invariant for future sync: session log schema includes stable local IDs and timestamps; no foreign-key assumptions that break sync later.
 

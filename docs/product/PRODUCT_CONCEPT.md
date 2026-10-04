@@ -1,4 +1,4 @@
-# Focus Loop — Product Concept (v2.0 re-shape)
+# Focus Loop — Product Concept (v1.0 re-shape)
 
 High-level concept for the I01 opportunity approved at Gate 0. Journey and screen detail lives in `PRODUCT_SPEC_LIVE.md`.
 
@@ -15,7 +15,7 @@ Sources:
 ## North-star metrics
 
 1. **D30 retention >= 42%** — the app must become a daily habit, not a one-off timer. This is the main lever for Month-9 MAU.
-2. **Month-9 Net Monthly Contribution >= $2,000** — derived from 14,686 MAU and $0.2312 Ad ARPU under the Gate 0 model; re-modelled for v2 below (fewer triggers, Plus supplements ads).
+2. **Month-9 Net Monthly Contribution >= $2,000** — derived from 14,686 MAU and $0.2312 Ad ARPU under the Gate 0 model; re-modelled for v1 below (fewer triggers, Plus supplements ads).
 
 Measured via:
 
@@ -25,14 +25,14 @@ Measured via:
 
 Guard-rail:
 
-- **Net blended contribution >= $0.15 / MAU-month by Month 6** — replaces the Gate 0 ad-only guard-rail (ad ARPU +/-20% of $0.23), which the v2 trigger-point design structurally under-shoots; re-baseline flagged for sponsor sign-off at Gate 1 (see re-model below).
-- **Build + validation <= 8 weeks** — hard roadmap constraint from Gate 0; applied per release window under the slice split (see §3).
+- **Net blended contribution >= $0.15 / MAU-month by Month 6** — replaces the Gate 0 ad-only guard-rail (ad ARPU +/-20% of $0.23), which the v1 trigger-point design structurally under-shoots; re-baseline flagged for sponsor sign-off at Gate 1 (see re-model below).
+- **Build + validation <= 8 weeks** — hard roadmap constraint from Gate 0; applied to the whole v1 build window, sponsor-accepted at the 8–9 week estimate edge (see §3).
 
 Rule: every journey and every screen SHALL improve at least one north-star metric — otherwise it is cut.
 
-### v2 monetisation re-model (shaping review SR-01)
+### v1 monetisation re-model (shaping review SR-01)
 
-Gate 0 modelled about 2 interstitials per active day at $0.2312 Ad ARPU. The v2 design yields **at most 1 trigger point per active day** (leaving P12 after a completed loop, or leaving P10 after the 2nd focus of an uncompleted loop; the first weekly P12 exit may show the paywall instead), and Plus removes all ads. Re-model — every figure below is a hypothesis until OP-07 produces data:
+Gate 0 modelled about 2 interstitials per active day at $0.2312 Ad ARPU. The v1 design yields **at most 1 trigger point per active day** (leaving P12 after a completed loop, or leaving P10 after the 2nd focus of an uncompleted loop; the first weekly P12 exit may show the paywall instead), and Plus removes all ads. Re-model — every figure below is a hypothesis until OP-07 produces data:
 
 | Driver              | Assumption                                                                 | Effect                                                    |
 | ------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------- |
@@ -51,10 +51,10 @@ Plus revenue is **net of the 30% store commission** ($19.99/yr → ~$1.17/user-m
 
 Two honest consequences:
 
-- The **release slice earns ads only** — at $0.10–0.15 it can sit at or below the $0.15 kill line on day one, before Plus ships. That is acceptable only if the slice is treated as the retention experiment it is; the kill reading applies to the fast-follow product, not the bare slice.
+- **Plus ships at launch** (single v1 — sponsor, 2026-10-03), so the blended figure applies from day one; there is no ads-only interim state.
 - The **base case barely clears** both the $2,000 target and the $0.15 blended guard-rail; the lower case misses. The Gate 0 economic headroom the v1 model had is gone — halved triggers plus Plus pulling heavy users out of the ad pool.
 
-**Gate 0 re-check — pending sponsor (explicit item at Gate 1 signature):** the v2 design trades ad impressions for retention surface. If the sponsor wants the Gate 0 margin back, the levers are AdMob cap values at build time, the fast-follow shipping early on slice signal, or re-opening the Gate 0 target. This is recorded, not smoothed over: the ±20%-of-$0.23 ad-ARPU guard-rail is retired in favour of **net blended contribution** as the tracked figure.
+**Gate 0 re-check — pending sponsor (explicit item at Gate 1 signature):** the v1 design trades ad impressions for retention surface. If the sponsor wants the Gate 0 margin back, the levers are AdMob cap values at build time, Plus pricing/positioning, or re-opening the Gate 0 target. This is recorded, not smoothed over: the ±20%-of-$0.23 ad-ARPU guard-rail is retired in favour of **net blended contribution** as the tracked figure.
 
 ## 1. Channels — objective, pain/gain
 
@@ -92,14 +92,13 @@ Two honest consequences:
 
 ## 3. Phases
 
-| Phase                              | Goal                                                                                           | Content                                                                                                                   | Exit condition                                                            |
-| ---------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| v1 Pilot (built, superseded)       | Proved core timer + ads pass store review                                                      | Old J1 + widget + stats + rewarded unlock                                                                                 | Done; replaced by the v2.1 canvas re-shape                                |
-| v2 release slice (this cycle)      | Prove the designed core loop earns its retention — the Gate 0 question, still unanswered by v1 | J1–J4 + J9: loop + breaks, both displays, weekly-goal surfaces (P04/P17/P18), ad trigger points, home-screen widget (P24) | Gate 2 SIT on the slice; store release per Phase 3                        |
-| v2 fast-follow (same cycle, gated) | Monetisation + reach surfaces, released once the slice's retention signal lands                | J7 Plus, J8 rewarded trial, J5 reminders, J6 share card (P19), J10 full customise, P23 Live Activity, tablet T01–T06      | Ships when the slice shows D7/D30 tracking to Gate 0 `validation_metrics` |
-| Later                              | Expand value                                                                                   | Cross-device sync, advanced stats, coach/team, wearables                                                                  | Gate 4 review on v2 actuals                                               |
+| Phase                       | Goal                                                                                                | Content                                                                                                                                                        | Exit condition                                                     |
+| --------------------------- | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Pilot build (never shipped) | Proved core timer + ads compile                                                                     | Old J1 + widget + stats + rewarded unlock                                                                                                                      | Done; superseded by the canvas re-shape, never released to a store |
+| v1 (this cycle)             | Prove the designed product earns its retention — the Gate 0 question, still unanswered by the pilot | All journeys J1–J10: loop + breaks, both displays, weekly goal, widgets + Live Activity, reminders, share card, Plus + rewarded trials, full customise, tablet | Gate 2 SIT; store release per Phase 3                              |
+| Later                       | Expand value                                                                                        | Cross-device sync, advanced stats, coach/team, wearables                                                                                                       | Gate 4 review on v1 actuals                                        |
 
-Order is a dependency constraint: monetisation (J7/J8) ships only in the fast-follow, behind the release-slice signal. Build estimate: slice ~4–5 weeks on the v1 Expo skeleton (timer/ads reused); fast-follow ~3–4 weeks — ~7–9 weeks total inside one cycle. **Kill-criterion reading (flagged for sponsor sign-off at Gate 1):** Gate 0's "build <= 8 weeks" is applied per release window (slice, then fast-follow), not to the whole cycle; if the sponsor reads it as whole-cycle, the fast-follow becomes the next cycle. The slice/fast-follow split is shaping-review SR-02's recommended path; the alternative (single v2 with a sponsor-signed <=8-week estimate) is flagged for the sponsor at Gate 1.
+**Single-version build — sponsor decision 2026-10-03:** "dev het slices version nay, chua lên store nên v1 thôi" (develop all journeys in this version; nothing has shipped to a store, so it is named v1). The earlier release-slice/fast-follow split (shaping review SR-02) is superseded; the dependency graph in `PRODUCT_SPEC_LIVE.md` is the build-order guide inside the cycle. Build estimate ~8–9 weeks on the pilot Expo skeleton (timer/ads reused) — at the edge of Gate 0's "build <= 8 weeks" kill criterion, accepted by the sponsor with the all-in-one call.
 
 ## 4. Journey x persona map (priority)
 

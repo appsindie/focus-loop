@@ -6,7 +6,7 @@
 
 ## Context
 
-The v2.1 design fixes _where_ ads may trigger (leaving Loop complete; leaving Close-out after the 2nd focus when the loop is not completed) but says "the server decides whether they show" (frequency caps, new-user grace). The product is local-first with no backend. Separately, v2 adds Focus Loop Plus (yearly + lifetime IAP), which needs an entitlement decision: where does "is Plus" live without an account system?
+The canvas design (v2.1) fixes _where_ ads may trigger (leaving Loop complete; leaving Close-out after the 2nd focus when the loop is not completed) but says "the server decides whether they show" (frequency caps, new-user grace). The product is local-first with no backend. Separately, v1 adds Focus Loop Plus (yearly + lifetime IAP), which needs an entitlement decision: where does "is Plus" live without an account system?
 
 ## Decision
 

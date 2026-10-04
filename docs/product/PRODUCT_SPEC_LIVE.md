@@ -1,4 +1,4 @@
-# Focus Loop — Product Spec (journey & screen level), v2.0 shaping
+# Focus Loop — Product Spec (journey & screen level), v1.0 shaping
 
 Concept, scope cuts, phases, business acceptance criteria and success metrics live in `PRODUCT_CONCEPT.md` and are **not repeated here**.
 Design system and UI/UX standards: `DESIGN.md` (v2.1). Approved screens: `design/SNAPSHOT.md`, canvas `1791071241-7cd3`. Design decisions and sponsor answers: `DESIGN_REVIEW.md`.
@@ -8,10 +8,10 @@ Normative language: **SHALL** = mandatory. Anything not stated as a rule is an i
 ## Document control
 
 - **Document ID**: PRODUCT_SPEC_LIVE.md
-- **Version**: v2.0 draft (re-shaped on canvas `1791071241-7cd3`)
+- **Version**: v1.0 draft (re-shaped on canvas `1791071241-7cd3`)
 - **Status**: draft
 - **Owner**: justin.nguyen@appsindie.com
-- **Last updated (UTC)**: 2026-10-03
+- **Last updated (UTC)**: 2026-10-04
 
 ## Spec contract
 
@@ -36,9 +36,9 @@ Normative language: **SHALL** = mandatory. Anything not stated as a rule is an i
 
 Journey numbering follows the design journey map `design/source/J-Map.dc.html` (rendered `design/png/J-Map.png`). Old spec ids: design J3 was spec J1-R5; J4 was J2; J5 was J3; J6 was J4; J8 was J6; J9 was a J1 variant; J10 was J5.
 
-Release tags (shaping review SR-02/SR-07): **Release slice** ships first and proves the core-loop retention question; **Fast-follow** ships after the slice's signal lands, in the same cycle (see `PRODUCT_CONCEPT.md` §3). All journeys stay specced here — the tag is a build-order marker, not a scope cut.
+All journeys ship together in v1 — sponsor decision 2026-10-03 ("dev het slices version nay, chua lên store nên v1 thôi"), recorded in `DESIGN_REVIEW.md` round 7. An earlier release-slice/fast-follow split (shaping review SR-02/SR-07) is superseded; the dependency graph in Part 3 is the build-order guide inside the cycle.
 
-## J1 — First app open · Release slice
+## J1 — First app open
 
 **Value** — Pain: a distracted user cannot survive onboarding. Gain: the first session is running in ≤ 2 taps, before they can wander. North-star: D1/D30 retention and session start rate.
 
@@ -72,7 +72,7 @@ P01 Splash -> P02 Choose display -> P06/P07 Focus (25 min starts on tap)
 
 ---
 
-## J2 — A daily loop · Release slice
+## J2 — A daily loop
 
 **Value** — Pain: one isolated timer is not a work rhythm. Gain: N × (focus + break) + long break as one guided unit. North-star: D30 retention and interstitial ad show rate.
 
@@ -114,7 +114,7 @@ P04 Home -> P06/P07 Focus -> (SHT-later parked thoughts) -> P10 Close-out
 
 ---
 
-## J3 — Stopping midway · Release slice
+## J3 — Stopping midway
 
 **Value** — Pain: interrupted sessions feel like failure and get quit entirely. Gain: an honest partial record that still counts. North-star: session completion rate; retention via no-shame.
 
@@ -146,13 +146,13 @@ P06/P07 Focus -> Pause -> P09 End-early sheet
 
 ---
 
-## J4 — Start from outside the app · Release slice
+## J4 — Start from outside the app
 
 **Value** — Pain: opening the app is friction when already distracted. Gain: session start without touching Home. North-star: session start rate; target ≥ 10% of sessions widget-initiated (J-Map).
 
 **Entry**
 
-- Home-screen widget (P24 small "Focus 25"; medium "Next up") — release slice. Lock-screen widget and Live Activity (P23) — fast-follow.
+- Home-screen widget (P24 small "Focus 25"; medium "Next up"), lock-screen widget and Live Activity (P23).
 
 **Exit**
 
@@ -163,7 +163,7 @@ P06/P07 Focus -> Pause -> P09 End-early sheet
 
 ```
 P24 Widget "Focus 25" -> P06/P07 Focus (skip Home)
-   -> P23 Live Activity (fast-follow; slice shows the foreground-service notification) + "Break time" notification -> P11 Break
+   -> P23 Live Activity (Android parity: foreground-service notification) + "Break time" notification -> P11 Break
 ```
 
 **Journey rules**
@@ -177,7 +177,7 @@ P24 Widget "Focus 25" -> P06/P07 Focus (skip Home)
 
 ---
 
-## J5 — Scheduled focus reminders · Fast-follow
+## J5 — Scheduled focus reminders
 
 **Value** — Pain: user forgets a planned focus block. Gain: timely nudge back to the app. North-star: active days per month.
 
@@ -207,7 +207,7 @@ P20 Settings -> P22 Reminders -> P23 local notification -> P06/P07 Focus
 
 ---
 
-## J6 — View progress and share it · Release slice + fast-follow
+## J6 — View progress and share it
 
 **Value** — Pain: without feedback, motivation fades. Gain: visible week progress and a shareable card that feeds organic growth. North-star: D30 retention; share card usage.
 
@@ -235,13 +235,11 @@ P04 Home -> P17 Week -> P18 History / P19 Share preview -> system share sheet
 - R5: The share card SHALL offer styles Ink / Paper / Ember, SHALL always carry the app name, and "Show what I worked on" SHALL default to off (privacy).
 - R6: The review prompt SHALL use the store review API after the 3rd completed loop containing at least one "Finished" outcome.
 
-**Slice split**: P17 Week + P18 History ship in the release slice (the weekly-goal surface); P19 Share card, the "Share my week" CTA on P12 and the review prompt (R6) are fast-follow.
-
 **Screens**: SCR-week, SCR-history, SCR-share, SCR-loop-complete
 
 ---
 
-## J7 — Upgrade to Plus · Fast-follow
+## J7 — Upgrade to Plus
 
 **Value** — Pain: free users hit limits (7-day history, locked themes, ads). Gain: revenue without ads for subscribers. North-star: net contribution alongside ad ARPU.
 
@@ -274,7 +272,7 @@ P12 Loop complete (first time) / P20 Settings / P15 locked item
 
 ---
 
-## J8 — Try a theme via rewarded ad · Fast-follow
+## J8 — Try a theme via rewarded ad
 
 **Value** — Pain: free users want personalisation without paying. Gain: rewarded revenue and a Plus upsell path. North-star: ad ARPU and retention.
 
@@ -299,7 +297,7 @@ P12 Loop complete (first time) / P20 Settings / P15 locked item
 
 ---
 
-## J9 — App killed by the OS · Release slice
+## J9 — App killed by the OS
 
 **Value** — Pain: OS kills the timer mid-session and the user loses the run. Gain: seamless recovery with no blame. North-star: session completion rate.
 
@@ -330,7 +328,7 @@ OS kill -> relaunch -> P01 Splash
 
 ---
 
-## J10 — Customise the experience · Fast-follow
+## J10 — Customise the experience
 
 **Value** — Pain: a rigid timer does not fit personal preference. Gain: the user's own rhythm, look and data control. North-star: session completion rate.
 
@@ -531,21 +529,21 @@ Design reference per screen is `design/png/<name>.png` rendered from `design/sou
 - **Data**: times with weekday chips + per-reminder toggle; "Add a reminder"; optional evening goal-day note (off by default).
 - **Design**: `P22-Reminders`.
 
-## P23 — Live Activity & notifications (surface) · Fast-follow
+## P23 — Live Activity & notifications (surface)
 
 - **Intent**: keep the loop visible outside the app.
 - **Data**: follows display choice — disc + intention + "about X min", or numbers + "Break at HH:MM"; Pause action; notifications "Break time", "Back to it", "Time to focus" — no marketing notifications.
 - **Rules**: R1 iOS Live Activity for the running focus/break. R2 Android parity via the foreground-service notification.
 - **Design**: `P23-LockScreen` (board).
 
-## P24 — Widgets (surface) · Release slice
+## P24 — Widgets (surface)
 
 - **Intent**: one-tap focus from the OS surfaces.
-- **Data**: small idle = full disc + "N/G days" + Focus 25; small running = "Focus N of M" + minutes left + break time; medium "Next up" = most recent parked thought + Start — all release slice. Lock screen = circular disc gauge + inline "N of G days" — **fast-follow** (ships with P23, per J4 Entry).
+- **Data**: small idle = full disc + "N/G days" + Focus 25; small running = "Focus N of M" + minutes left + break time; medium "Next up" = most recent parked thought + Start; lock screen = circular disc gauge + inline "N of G days" (ships with P23, per J4 Entry).
 - **Rules**: R1 Actions per J4-R1/R2.
 - **Metric**: widget-initiated session share (target ≥ 10%). **Design**: `P24-Widgets` (board).
 
-## Tablet (T01–T06) · Fast-follow
+## Tablet (T01–T06)
 
 - Rules per `DESIGN.md` §4 Tablet: 48 padding; Home and Week/History two-column; Settings master–detail; Focus landscape split (540px disc left / controls right), portrait Numbers 380px; banner 320×50 right column, free tier only. Every phone screen spec above applies; tablet is a layout of the same screens, not new journeys.
 
@@ -577,7 +575,7 @@ J10 -> J2 (rhythm defines the loop)
 J3, J9 are variants of J2
 ```
 
-J1+J2 are the minimum that must ship first; monetisation and stats ride on them.
+J1+J2 are the minimum the rest builds on; monetisation and stats ride on them.
 
 ## Risks and mitigations
 

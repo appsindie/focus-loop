@@ -1,5 +1,5 @@
 {
-  "active_branch": "release/v2",
+  "active_branch": "release/v1",
   "gates": {
     "0": {
       "evidence": "docs/research/OPPORTUNITY_DECISION.json",
@@ -28,7 +28,7 @@
     "session_url": "https://claude.ai/code/cse_016nQjmcwMo925bGNs5rmrX6",
     "verdict": "APPROVE"
   },
-  "next_action": "v2 re-shape on canvas 1791071241-7cd3: spec/concept/architecture rewritten to design journeys J1-J10, sponsor answers recorded in DESIGN_REVIEW round 5. Gate 1 for v2 = merged design-sync PR #2 + gate-signed on the v2 cycle PR; then Phase 2 build on the approved snapshot, starting with the v2 release slice (J1-J4 + J9, weekly-goal surfaces, widget P24, ad trigger points); J7/J8/J5/J6-share/J10/Live Activity/tablet are the gated fast-follow (QA plan and release evidence need rewriting for the split). Carried v1 RR-* exceptions keep their v1 evidence links; their deadlines are re-baselined at Phase 3 planning for the v2 release.",
+  "next_action": "v1 re-shape on canvas 1791071241-7cd3: spec/concept/architecture rewritten to design journeys J1-J10; sponsor 2026-10-03 (round 7) decided a single version named v1 - all journeys ship together, the slice/fast-follow split is superseded, cycle branch is release/v1. Gate 1 = merged design-sync PR #2 + gate-signed on the v1 cycle PR; then Phase 2 builds all of J1-J10 following the dependency graph, est. 8-9 weeks (edge of the <=8-week kill criterion, sponsor-accepted). Carried RR-* exceptions keep their evidence links; deadlines re-baseline at Phase 3 planning.",
   "open_exceptions": [
     {
       "blocking": true,
@@ -180,5 +180,5 @@
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-10-03T18:20:00Z"
+  "updated_at": "2026-10-04T01:46:18Z"
 }
