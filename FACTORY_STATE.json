@@ -26,9 +26,9 @@
     "round_count": 1,
     "routine": "shaping",
     "session_url": "https://claude.ai/code/cse_011AtNqjcBM2w2Qnm7xWhZ75",
-    "verdict": "pending"
+    "verdict": "APPROVE WITH CORRECTIONS"
   },
-  "next_action": "v2 re-shape on canvas 1791071241-7cd3: spec/concept/architecture rewritten to design journeys J1-J10, sponsor answers recorded in DESIGN_REVIEW round 5. Gate 1 for v2 = merged design-sync PR #2 + gate-signed on the v2 cycle PR; then Phase 2 build on the approved snapshot (QA plan and release evidence need rewriting for J1-J10).",
+  "next_action": "v2 re-shape on canvas 1791071241-7cd3: spec/concept/architecture rewritten to design journeys J1-J10, sponsor answers recorded in DESIGN_REVIEW round 5. Gate 1 for v2 = merged design-sync PR #2 + gate-signed on the v2 cycle PR; then Phase 2 build on the approved snapshot (QA plan and release evidence need rewriting for J1-J10). Carried v1 RR-* exceptions keep their v1 evidence links; their deadlines are re-baselined at Phase 3 planning for the v2 release.",
   "open_exceptions": [
     {
       "blocking": true,
@@ -98,7 +98,7 @@
     },
     {
       "blocking": true,
-      "deadline": "2026-08-18",
+      "deadline": "2026-08-20",
       "default_if_silent": "block",
       "gate": 3,
       "id": "RR-08",

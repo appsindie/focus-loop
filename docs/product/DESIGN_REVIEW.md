@@ -16,6 +16,18 @@ Merging a `design-sync` PR is the sponsor's approval of that canvas version. New
 | OP-06 | ~~App icon and palette change from Pilot green to ink + ember~~ — closed 2026-10-03: adopted by design sync; sponsor directed shaping to proceed on this canvas. Store assets and splash regenerate during the v2 build.                                                                                                                           | Closed                              | Sponsor |
 | OP-07 | Values set by design without data: weekly goal 4, review prompt after 3rd loop, history 7 days free.                                                                                                                                                                                                                                               | Keep, revisit after 4 weeks of data | Growth  |
 
+## Round 6 — 2026-10-03 · shaping review on the v2 re-shape (PR #3)
+
+Claude shaping reviewer, verdict **approve-with-concerns** (session `cse_011AtNqjcBM2w2Qnm7xWhZ75`): 3 Majors, 2 Minors — all applied in PR #3:
+
+- SR-01 (major): monetisation moved (fewer triggers, Plus removes ads) with the Gate 0 basis unchanged → v2 re-model added to the concept: <= 1 trigger/active day, ad ARPU ~$0.10–0.15 hypothesis, Plus conversion ~2% of MAU hypothesis, blended ~$2,140/mo at 14,686 MAU. Ad-ARPU guard-rail re-baselined to **blended ARPU >= $0.15/MAU-month** — flagged for sponsor sign-off at Gate 1.
+- SR-02 (major): all J1–J10 in one cycle before any market signal → v2 split into **release slice** (J1–J4, J9 + trigger points, weekly-goal surfaces) and **fast-follow** (J7 Plus, J8, J5 reminders, J6 share, J10, Live Activity, tablet) gated on the slice's retention signal. Alternative (single v2, <=8-week estimate + sponsor sign-off) flagged for the sponsor at Gate 1.
+- SR-03 (major): weekly goal 4/7 (~17 days/month) vs Gate 0 "20 active days/month" → concept records the in-product goal as a motivational floor; the tracked metric stays >= 20 active days/month; OP-07 gains an instrumented check (share of actives at >= 5 days/week).
+- SR-04 (minor): ADR-003 gaps → new-user grace owned client-side by the Ad Broker (install-age suppression; AdMob caps stay the outer limiter); entitlement re-verified on app start + expiry via store queries, so lapse/refund revokes Plus without user action.
+- SR-05 (minor): RR-08 deadline silently changed → reverted to 2026-08-20; carried RR-* deadlines recorded as re-baselined at Phase 3 planning.
+
+Two items await sponsor at Gate 1 signature: blended-ARPU guard-rail sign-off, and the slice/fast-follow split vs single-v2 estimate.
+
 ## Round 5 — 2026-10-03 · sponsor answers on the shaping re-pass
 
 Sponsor replies to the open points (verbatim): _"chốt giá / chốt seconds / bỏ streak / admod limit là do admob server config"_ — recorded as:
