@@ -6,7 +6,9 @@ import * as Sharing from "expo-sharing";
 import { FocusSession } from "../SessionLog";
 import { WeekProgress } from "../weeklyGoal";
 import { computeWeekTotals } from "../weekStats";
+import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
+import { TABLET_PADDING, useIsTablet } from "../../../shared/layout";
 
 export type ShareCardStyle = "ink" | "paper" | "ember";
 
@@ -39,12 +41,15 @@ function ShareCard({
     <View style={[cardStyles.card, { backgroundColor: c.bg }]}>
       <Text style={[cardStyles.appName, { color: c.muted }]}>FOCUS LOOP</Text>
       <Text style={[cardStyles.headline, { color: c.ink }]}>
-        {week.daysMet} of {week.goalDays} days
+        {t("{daysMet} of {goalDays} days", { daysMet: week.daysMet, goalDays: week.goalDays })}
       </Text>
-      <Text style={[cardStyles.sub, { color: c.muted }]}>focused this week</Text>
+      <Text style={[cardStyles.sub, { color: c.muted }]}>{t("focused this week")}</Text>
       <View style={cardStyles.rule} />
       <Text style={[cardStyles.stat, { color: c.ink }]}>
-        {Math.round(totals.totalSeconds / 60)} min · {totals.finished} finished
+        {t("{minutes} min · {count} finished", {
+          minutes: Math.round(totals.totalSeconds / 60),
+          count: totals.finished,
+        })}
       </Text>
       {showWorkedOn && intentions.length > 0 ? (
         <View style={cardStyles.workedOn}>
@@ -127,7 +132,10 @@ export function ShareScreen({
         height: 1280,
       });
       if (await Sharing.isAvailableAsync()) {
-        await Sharing.shareAsync(uri, { mimeType: "image/png", dialogTitle: "Share your week" });
+        await Sharing.shareAsync(uri, {
+          mimeType: "image/png",
+          dialogTitle: t("Share your week"),
+        });
       }
     } catch {
       // Cancel or capture failure — nothing recorded (J6 exit-failure rule).
@@ -136,19 +144,26 @@ export function ShareScreen({
     }
   };
 
+  const isTablet = useIsTablet();
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.bg }]}>
+    <SafeAreaView
+      style={[
+        styles.root,
+        { backgroundColor: colors.bg },
+        isTablet && { paddingHorizontal: TABLET_PADDING },
+      ]}
+    >
       <View style={styles.header}>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Back"
+          accessibilityLabel={t("Back")}
           onPress={onBack}
           hitSlop={8}
           style={styles.back}
         >
-          <Text style={[styles.backText, { color: colors.ink }]}>Back</Text>
+          <Text style={[styles.backText, { color: colors.ink }]}>{t("Back")}</Text>
         </Pressable>
-        <Text style={[styles.title, { color: colors.ink }]}>Share your week</Text>
+        <Text style={[styles.title, { color: colors.ink }]}>{t("Share your week")}</Text>
         <View style={styles.back} />
       </View>
 
@@ -174,7 +189,7 @@ export function ShareScreen({
               key={name}
               accessibilityRole="button"
               accessibilityState={{ selected }}
-              accessibilityLabel={`Card style ${name}`}
+              accessibilityLabel={t("Card style {name}", { name })}
               onPress={() => setCardStyle(name)}
               style={[
                 styles.styleChip,
@@ -185,7 +200,7 @@ export function ShareScreen({
               ]}
             >
               <Text style={[styles.styleChipText, { color: CARD_STYLES[name].ink }]}>
-                {name.charAt(0).toUpperCase() + name.slice(1)}
+                {t(name.charAt(0).toUpperCase() + name.slice(1))}
               </Text>
             </Pressable>
           );
@@ -193,25 +208,27 @@ export function ShareScreen({
       </View>
 
       <View style={styles.toggleRow}>
-        <Text style={[styles.toggleLabel, { color: colors.ink }]}>Show what I worked on</Text>
+        <Text style={[styles.toggleLabel, { color: colors.ink }]}>
+          {t("Show what I worked on")}
+        </Text>
         <Switch
           value={showWorkedOn}
           onValueChange={setShowWorkedOn}
           trackColor={{ true: colors.focus }}
-          accessibilityLabel="Show what I worked on"
+          accessibilityLabel={t("Show what I worked on")}
         />
       </View>
 
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel="Share image"
+        accessibilityLabel={t("Share image")}
         onPress={() => void shareImage()}
         style={[styles.shareButton, { backgroundColor: colors.ink, opacity: sharing ? 0.6 : 1 }]}
       >
         {sharing ? (
           <ActivityIndicator color={colors.onPrimary} />
         ) : (
-          <Text style={[styles.shareText, { color: colors.onPrimary }]}>Share image</Text>
+          <Text style={[styles.shareText, { color: colors.onPrimary }]}>{t("Share image")}</Text>
         )}
       </Pressable>
 

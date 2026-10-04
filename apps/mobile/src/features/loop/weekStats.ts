@@ -1,3 +1,4 @@
+import { locale, t } from "../../i18n";
 import { FocusSession } from "./SessionLog";
 import { WeekProgress } from "./weeklyGoal";
 
@@ -35,16 +36,21 @@ export function computeWeekTotals(sessions: FocusSession[], week: WeekProgress):
   return totals;
 }
 
-export const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+export function weekdayLabels(): string[] {
+  return [t("Mon"), t("Tue"), t("Wed"), t("Thu"), t("Fri"), t("Sat"), t("Sun")];
+}
 
 // One plain-language insight per J6 SCR-week — a single honest sentence, never
 // a streak. Priority: goal met > best day > most-progress hint > empty week.
 export function weekInsight(week: WeekProgress, totals: WeekTotals, now: Date): string {
   if (week.daysMet === 0) {
-    return "One focused session marks the day — any minute counts.";
+    return t("One focused session marks the day — any minute counts.");
   }
   if (week.goalMet) {
-    return `Goal met — ${week.daysMet} of ${week.goalDays} days focused this week.`;
+    return t("Goal met — {daysMet} of {goalDays} days focused this week.", {
+      daysMet: week.daysMet,
+      goalDays: week.goalDays,
+    });
   }
   const best = week.days.reduce(
     (acc, day) => (day.focusedSeconds > acc.focusedSeconds ? day : acc),
@@ -56,9 +62,14 @@ export function weekInsight(week: WeekProgress, totals: WeekTotals, now: Date): 
     bestDate.getMonth() === now.getMonth() &&
     bestDate.getDate() === now.getDate();
   if (!isToday && best.focusedSeconds > 0) {
-    const label = bestDate.toLocaleDateString("en-US", { weekday: "long" });
-    return `${label} was your deepest day — ${Math.round(best.focusedSeconds / 60)} min focused.`;
+    const label = bestDate.toLocaleDateString(locale(), { weekday: "long" });
+    return t("{day} was your deepest day — {minutes} min focused.", {
+      day: label,
+      minutes: Math.round(best.focusedSeconds / 60),
+    });
   }
   const remaining = week.goalDays - week.daysMet;
-  return `${remaining} more ${remaining === 1 ? "day" : "days"} to hit this week's goal.`;
+  return remaining === 1
+    ? t("1 more day to hit this week's goal.")
+    : t("{remaining} more days to hit this week's goal.", { remaining });
 }

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { View } from "react-native";
 import Svg, { Circle } from "react-native-svg";
+import { t } from "../../../i18n";
 import { Palette } from "../../../shared/theme";
 
 // §3 Disc: conic fill — `focus` for remaining, `track` for elapsed — starting at
@@ -31,7 +32,10 @@ export function FocusDisc({
   );
 
   return (
-    <View accessibilityRole="image" accessibilityLabel={`About ${remainingMinutes} minutes left`}>
+    <View
+      accessibilityRole="image"
+      accessibilityLabel={t("About {minutes} minutes left", { minutes: remainingMinutes })}
+    >
       <Svg width={size} height={size}>
         {/* Remaining time = focus colour */}
         <Circle

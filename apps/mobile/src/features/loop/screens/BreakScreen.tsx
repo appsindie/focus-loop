@@ -1,14 +1,16 @@
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DisplayMode } from "../../settings/SettingsStore";
+import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
+import { TABLET_PADDING, useIsTablet } from "../../../shared/layout";
 import { PrimaryButton, SecondaryButton } from "../../../shared/ui/Buttons";
 import { FocusDisc } from "../ui/FocusDisc";
 
 const SUGGESTIONS = [
-  "Look far away. Let your eyes rest.",
-  "Water. Stand up. Slow breaths.",
-  "No feeds. The loop is still running.",
+  () => t("Look far away. Let your eyes rest."),
+  () => t("Water. Stand up. Slow breaths."),
+  () => t("No feeds. The loop is still running."),
 ];
 
 function formatClock(ms: number): string {
@@ -50,9 +52,22 @@ export function BreakScreen({
     track: "rgba(255,255,255,0.28)",
   };
 
+  const isTablet = useIsTablet();
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.breakBg }]}>
-      <Text style={[styles.kicker, { color: sub }]}>BREAK</Text>
+    <SafeAreaView
+      style={[
+        styles.root,
+        { backgroundColor: colors.breakBg },
+        // T03: the same centered break column, just wider margins.
+        isTablet && {
+          paddingHorizontal: TABLET_PADDING,
+          maxWidth: 640,
+          alignSelf: "center",
+          width: "100%",
+        },
+      ]}
+    >
+      <Text style={[styles.kicker, { color: sub }]}>{t("BREAK")}</Text>
       <View style={styles.timeArea}>
         {displayMode === "disc" ? (
           <FocusDisc
@@ -68,22 +83,24 @@ export function BreakScreen({
           </Text>
         )}
         <Text style={[styles.until, { color: sub }]}>
-          {autoStart ? `Focus starts at ${endsAt}` : `Back at ${endsAt}`}
+          {autoStart
+            ? t("Focus starts at {endsAt}", { endsAt })
+            : t("Back at {endsAt}", { endsAt })}
         </Text>
       </View>
 
       <View style={styles.suggestions}>
-        {SUGGESTIONS.map((s) => (
-          <Text key={s} style={[styles.suggestion, { color: sub }]}>
-            · {s}
+        {SUGGESTIONS.map((suggestion, i) => (
+          <Text key={i} style={[styles.suggestion, { color: sub }]}>
+            · {suggestion()}
           </Text>
         ))}
       </View>
 
       <View style={styles.actions}>
-        <SecondaryButton label="+5 min" onPress={onExtend} colors={{ ...colors, ink }} />
+        <SecondaryButton label={t("+5 min")} onPress={onExtend} colors={{ ...colors, ink }} />
         <PrimaryButton
-          label={`Focus ${nextFocusNumber} now`}
+          label={t("Focus {n} now", { n: nextFocusNumber })}
           onPress={onStartFocus}
           colors={colors}
           variant="light"

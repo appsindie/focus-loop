@@ -4,6 +4,16 @@ import { jest } from "@jest/globals";
 // cold CI worker (seen on ThemesSoundsScreen). 30s headroom, still finite.
 jest.setTimeout(30_000);
 
+// RN's jest window is 750×1334 — above the 600pt tablet breakpoint — so every
+// screen would render its tablet variant in tests. Phone is the default here;
+// tablet tests opt back in with jest.spyOn(layout, "useIsTablet").
+jest.mock("./src/shared/layout", () => ({
+  __esModule: true,
+  ...jest.requireActual<typeof import("./src/shared/layout")>("./src/shared/layout"),
+  useIsTablet: () => false,
+  useIsLandscape: () => false,
+}));
+
 const storage: Record<string, string> = {};
 
 const mockAsyncStorage = {
@@ -41,6 +51,12 @@ const mockAsyncStorage = {
 };
 
 jest.mock("@react-native-async-storage/async-storage", () => mockAsyncStorage);
+
+// Device locale is native-only; tests run the English dictionary. Locale
+// resolution itself is covered in src/i18n/locales.test.ts.
+jest.mock("expo-localization", () => ({
+  getLocales: jest.fn(() => [{ languageTag: "en-US" }]),
+}));
 
 jest.mock("expo-notifications", () => ({
   getPermissionsAsync: jest.fn(() => Promise.resolve({ status: 0 })),

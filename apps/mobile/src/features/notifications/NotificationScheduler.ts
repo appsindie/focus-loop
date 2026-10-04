@@ -1,5 +1,6 @@
 import * as Notifications from "expo-notifications";
 import { PermissionStatus, SchedulableTriggerInputTypes } from "expo-notifications";
+import { t } from "../../i18n";
 
 export async function requestNotificationPermissions(): Promise<boolean> {
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
@@ -18,10 +19,11 @@ export async function requestNotificationPermissions(): Promise<boolean> {
 // own ids when that slice lands — keep them out of this single slot.
 export type StepAlertKind = "focus-end" | "break-end";
 
-const STEP_ALERT_COPY: Record<StepAlertKind, { title: string; body: string }> = {
-  "focus-end": { title: "Break time", body: "Nice focus — time for a break." },
-  "break-end": { title: "Back to it", body: "Break's over — your next focus is ready." },
-};
+function stepAlertCopy(kind: StepAlertKind): { title: string; body: string } {
+  return kind === "focus-end"
+    ? { title: t("Break time"), body: t("Nice focus — time for a break.") }
+    : { title: t("Back to it"), body: t("Break's over — your next focus is ready.") };
+}
 
 // Every step alert posts under one fixed OS identifier. Scheduling replaces the
 // pending request (a second single-slot guarantee after the queue below), and
@@ -75,7 +77,7 @@ export function syncStepAlert(
     scheduledStepAlertId = await Notifications.scheduleNotificationAsync({
       identifier: STEP_ALERT_IDENTIFIER,
       content: {
-        ...STEP_ALERT_COPY[kind],
+        ...stepAlertCopy(kind),
         sound: soundEnabled,
       },
       trigger: {

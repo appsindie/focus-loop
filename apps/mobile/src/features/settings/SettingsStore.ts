@@ -28,6 +28,9 @@ export type Settings = {
   appearance: Appearance;
   soundEnabled: boolean;
   vibrationEnabled: boolean;
+  // T05 canvas row "Keep screen on during focus" — gates the existing
+  // keep-awake behaviour; default true preserves pre-toggle behaviour.
+  keepScreenOn: boolean;
   // ADR-003: install-age ad grace is client-side; anchored to first launch.
   firstInstallAt: string | null;
   // J8: personalisation picks — catalogue ids, normalised on load.
@@ -45,6 +48,7 @@ export const DEFAULT_SETTINGS: Settings = {
   appearance: "system",
   soundEnabled: true,
   vibrationEnabled: true,
+  keepScreenOn: true,
   firstInstallAt: null,
   discColorId: DEFAULT_DISC_COLOR_ID,
   focusSoundId: DEFAULT_FOCUS_SOUND_ID,
@@ -74,7 +78,11 @@ function clamp(value: number, min: number, max: number): number {
 // Stored payloads may carry the pilot's "progress" display value; it folds to
 // "disc" on load (canvas vocabulary). The J8 personalisation keys are optional
 // here — payloads written before J8 simply lack them.
-type StoredSettings = Omit<Settings, "displayMode" | "discColorId" | "focusSoundId"> & {
+type StoredSettings = Omit<
+  Settings,
+  "displayMode" | "discColorId" | "focusSoundId" | "keepScreenOn"
+> & {
+  keepScreenOn?: boolean;
   displayMode: DisplayMode | "progress" | null;
   discColorId?: string;
   focusSoundId?: string;
@@ -109,6 +117,9 @@ function normalizeSettings(settings: StoredSettings): Settings {
       ),
     },
     weeklyGoalDays: clamp(settings.weeklyGoalDays, 1, 7),
+    // Payloads saved before the T05 row predate the key — absent means the
+    // pre-toggle behaviour (screen stays on).
+    keepScreenOn: settings.keepScreenOn ?? true,
     // Older payloads predate the J8 keys; absent or unknown ids fall back to
     // the free defaults rather than failing validation (CR-04 class).
     discColorId: normalizeDiscColorId(settings.discColorId),
@@ -136,6 +147,8 @@ function isSettings(value: unknown): value is StoredSettings {
       candidate["appearance"] === "dark") &&
     typeof candidate["soundEnabled"] === "boolean" &&
     typeof candidate["vibrationEnabled"] === "boolean" &&
+    // Absent on payloads saved before the row existed — normalised below.
+    (candidate["keepScreenOn"] === undefined || typeof candidate["keepScreenOn"] === "boolean") &&
     (candidate["firstInstallAt"] === null || typeof candidate["firstInstallAt"] === "string") &&
     (candidate["discColorId"] === undefined || typeof candidate["discColorId"] === "string") &&
     (candidate["focusSoundId"] === undefined || typeof candidate["focusSoundId"] === "string")

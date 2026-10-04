@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
+import { TABLET_PADDING, useIsTablet } from "../../../shared/layout";
 import { PrimaryButton, TextButton } from "../../../shared/ui/Buttons";
 import { trackEvent } from "../../analytics/events";
 import { buyPlus, restorePlus } from "../purchase";
@@ -9,11 +11,11 @@ import { getDefaultPlusStore, type PlusStore, type StoreProduct } from "../iapPo
 import { type PlusPlan } from "../plusProducts";
 
 const BENEFITS = [
-  "No ads — ever",
-  "All themes & sounds",
-  "Full focus history",
-  "Unlimited share cards",
-  "Support independent work",
+  () => t("No ads — ever"),
+  () => t("All themes & sounds"),
+  () => t("Full focus history"),
+  () => t("Unlimited share cards"),
+  () => t("Support independent work"),
 ] as const;
 
 // P14: five benefits, plan picker (Yearly 7-day trial / Lifetime), prices from
@@ -67,10 +69,10 @@ export function PaywallScreen({
     if (outcome === "purchased") {
       onPurchased();
     } else if (outcome === "pending") {
-      setNotice("Payment is still being approved — Plus turns on when it clears.");
+      setNotice(t("Payment is still being approved — Plus turns on when it clears."));
     } else if (outcome === "failed") {
       // Generic copy per the error registry; the store error is never shown raw.
-      setNotice("We couldn't reach the store. Check your connection and try again.");
+      setNotice(t("We couldn't reach the store. Check your connection and try again."));
     }
   }, [plan, store, onPurchased]);
 
@@ -84,8 +86,8 @@ export function PaywallScreen({
     } else {
       setNotice(
         outcome === "none"
-          ? "No purchases found for this store account."
-          : "We couldn't reach the store. Check your connection and try again.",
+          ? t("No purchases found for this store account.")
+          : t("We couldn't reach the store. Check your connection and try again."),
       );
     }
   }, [store, onRestored]);
@@ -93,12 +95,19 @@ export function PaywallScreen({
   const selectedProduct =
     state.kind === "ready" ? state.products.find((p) => p.plan === plan) : undefined;
 
+  const isTablet = useIsTablet();
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.bg }]}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        { backgroundColor: colors.bg },
+        isTablet && { paddingHorizontal: TABLET_PADDING },
+      ]}
+    >
       <View style={styles.header}>
         <View style={styles.closeSlot} />
         <Pressable
-          accessibilityLabel="Close paywall"
+          accessibilityLabel={t("Close paywall")}
           accessibilityRole="button"
           onPress={onClose}
           hitSlop={8}
@@ -113,9 +122,9 @@ export function PaywallScreen({
           Focus Loop Plus
         </Text>
         <View style={styles.benefits}>
-          {BENEFITS.map((benefit) => (
-            <Text key={benefit} style={[styles.benefit, { color: colors.ink2 }]} allowFontScaling>
-              {benefit}
+          {BENEFITS.map((benefit, i) => (
+            <Text key={i} style={[styles.benefit, { color: colors.ink2 }]} allowFontScaling>
+              {benefit()}
             </Text>
           ))}
         </View>
@@ -126,9 +135,9 @@ export function PaywallScreen({
         {state.kind === "error" ? (
           <View style={styles.errorBox}>
             <Text style={[styles.notice, { color: colors.ink2 }]} allowFontScaling>
-              We couldn't load prices. Check your connection and try again.
+              {t("We couldn't load prices. Check your connection and try again.")}
             </Text>
-            <TextButton label="Try again" onPress={load} colors={colors} />
+            <TextButton label={t("Try again")} onPress={load} colors={colors} />
           </View>
         ) : null}
         {state.kind === "ready" ? (
@@ -152,14 +161,14 @@ export function PaywallScreen({
                   ]}
                 >
                   <Text style={[styles.planName, { color: colors.ink }]} allowFontScaling>
-                    {product.plan === "yearly" ? "Yearly" : "Lifetime"}
+                    {product.plan === "yearly" ? t("Yearly") : t("Lifetime")}
                   </Text>
                   <Text style={[styles.planPrice, { color: colors.ink2 }]} allowFontScaling>
                     {product.priceText}
                   </Text>
                   {product.plan === "yearly" ? (
                     <Text style={[styles.planNote, { color: colors.muted }]} allowFontScaling>
-                      7-day free trial
+                      {t("7-day free trial")}
                     </Text>
                   ) : null}
                 </Pressable>
@@ -178,7 +187,7 @@ export function PaywallScreen({
       <View style={styles.footer}>
         {busy == null && selectedProduct != null ? (
           <PrimaryButton
-            label={plan === "yearly" ? "Start free trial" : "Get Plus"}
+            label={plan === "yearly" ? t("Start free trial") : t("Get Plus")}
             onPress={() => void buy()}
             colors={colors}
           />
@@ -189,7 +198,7 @@ export function PaywallScreen({
         )}
         <View style={styles.legalRow}>
           <TextButton
-            label={busy === "restore" ? "Restoring…" : "Restore purchases"}
+            label={busy === "restore" ? t("Restoring…") : t("Restore purchases")}
             onPress={() => {
               if (busy == null) {
                 void restore();
@@ -198,12 +207,12 @@ export function PaywallScreen({
             colors={colors}
           />
           <TextButton
-            label="Terms"
+            label={t("Terms")}
             onPress={() => void Linking.openURL(TERMS_URL)}
             colors={colors}
           />
           <TextButton
-            label="Privacy"
+            label={t("Privacy")}
             onPress={() => void Linking.openURL(PRIVACY_URL)}
             colors={colors}
           />

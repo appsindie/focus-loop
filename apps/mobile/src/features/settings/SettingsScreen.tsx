@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Linking, Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { t } from "../../i18n";
 import { Palette, radii, spacing, typography } from "../../shared/theme";
+import { TABLET_PADDING, useIsTablet } from "../../shared/layout";
 import { Sheet } from "../../shared/ui/Sheet";
 import { Appearance, DisplayMode, Settings } from "./SettingsStore";
 import { catalogueItem } from "../personalize/catalogue";
@@ -73,7 +75,7 @@ function Stepper({
       <Pressable
         onPress={() => onChange(Math.max(min, value - 1))}
         accessibilityRole="button"
-        accessibilityLabel={`Decrease ${accessibilityLabel}`}
+        accessibilityLabel={t("Decrease {label}", { label: accessibilityLabel })}
         hitSlop={8}
         style={styles.stepButton}
       >
@@ -83,7 +85,7 @@ function Stepper({
       <Pressable
         onPress={() => onChange(Math.min(max, value + 1))}
         accessibilityRole="button"
-        accessibilityLabel={`Increase ${accessibilityLabel}`}
+        accessibilityLabel={t("Increase {label}", { label: accessibilityLabel })}
         hitSlop={8}
         style={styles.stepButton}
       >
@@ -115,7 +117,10 @@ function Segmented<T extends string>({
             key={o.id}
             onPress={() => onChange(o.id)}
             accessibilityRole="button"
-            accessibilityLabel={`${accessibilityLabel}: ${o.label}`}
+            accessibilityLabel={t("{label}: {option}", {
+              label: accessibilityLabel,
+              option: t(o.label),
+            })}
             accessibilityState={{ selected }}
             style={[
               styles.segmentOption,
@@ -129,7 +134,7 @@ function Segmented<T extends string>({
                 selected && { color: colors.ink, fontWeight: "600" },
               ]}
             >
-              {o.label}
+              {t(o.label)}
             </Text>
           </Pressable>
         );
@@ -185,6 +190,19 @@ function Row({
 
 // P20: single place for every preference and legal/data control. Row order is
 // J10-R2; everything saves immediately (R3) — there is no Save button.
+type SectionId = "timer" | "plus" | "data" | "about";
+
+// T05 rail labels — Themes and Reminders route to their own screens on tap
+// (they are journeys of their own, not detail panes).
+const RAIL: { id: SectionId | "themes" | "reminders"; label: string }[] = [
+  { id: "timer", label: "Timer & display" },
+  { id: "themes", label: "Themes & sounds" },
+  { id: "reminders", label: "Reminders" },
+  { id: "plus", label: "Focus Loop Plus" },
+  { id: "data", label: "Your data" },
+  { id: "about", label: "About & legal" },
+];
+
 export function SettingsScreen({
   colors,
   settings,
@@ -207,219 +225,332 @@ export function SettingsScreen({
   onSetAllowTracking,
   version,
 }: SettingsScreenProps) {
+  const isTablet = useIsTablet();
   const rhythm = resolveRhythm(settings.rhythmPresetId, settings.customRhythm);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [adChoicesOpen, setAdChoicesOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<SectionId>("timer");
 
-  const rhythmSummary = `${rhythm.focusMinutes} · ${rhythm.breakMinutes} · long ${rhythm.longBreakMinutes}`;
-  const discName = catalogueItem(settings.discColorId)?.name ?? "Ember";
-  const soundName = catalogueItem(settings.focusSoundId)?.name ?? "Silence";
+  const rhythmSummary = `${rhythm.focusMinutes} · ${rhythm.breakMinutes} · ${t("long")} ${rhythm.longBreakMinutes}`;
+  const discName = t(catalogueItem(settings.discColorId)?.name ?? "Ember");
+  const soundName = t(catalogueItem(settings.focusSoundId)?.name ?? "Silence");
+
+  const timerRows = (
+    <>
+      <Row colors={colors} label={t("Show time as")}>
+        <Segmented<DisplayMode>
+          colors={colors}
+          accessibilityLabel={t("Show time as")}
+          options={[
+            { id: "disc", label: "Disc" },
+            { id: "numbers", label: "Numbers" },
+          ]}
+          value={settings.displayMode ?? "disc"}
+          onChange={(displayMode) => onChange({ displayMode })}
+        />
+      </Row>
+
+      <Row colors={colors} label={t("Appearance")}>
+        <Segmented<Appearance>
+          colors={colors}
+          accessibilityLabel={t("Appearance")}
+          options={[
+            { id: "light", label: "Light" },
+            { id: "dark", label: "Dark" },
+            { id: "system", label: "System" },
+          ]}
+          value={settings.appearance}
+          onChange={(appearance) => onChange({ appearance })}
+        />
+      </Row>
+
+      <Row colors={colors} label={t("Rhythm")} value={rhythmSummary} onPress={onOpenRhythm} />
+
+      <Row colors={colors} label={t("Weekly goal")}>
+        <Stepper
+          colors={colors}
+          accessibilityLabel={t("Weekly goal days")}
+          value={settings.weeklyGoalDays}
+          min={1}
+          max={7}
+          onChange={(weeklyGoalDays) => onChange({ weeklyGoalDays })}
+        />
+      </Row>
+
+      <Row colors={colors} label={t("Start breaks automatically")}>
+        <Switch
+          accessibilityLabel={t("Toggle auto-start breaks")}
+          onValueChange={(value) => onChange({ autoStartBreaks: value })}
+          value={settings.autoStartBreaks}
+        />
+      </Row>
+
+      <Row colors={colors} label={t("Show seconds")}>
+        <Switch
+          accessibilityLabel={t("Toggle show seconds")}
+          onValueChange={(value) => onChange({ showSeconds: value })}
+          value={settings.showSeconds}
+        />
+      </Row>
+
+      <Row colors={colors} label={t("Sound on completion")}>
+        <Switch
+          accessibilityLabel={t("Toggle sound on completion")}
+          onValueChange={(value) => onChange({ soundEnabled: value })}
+          value={settings.soundEnabled}
+        />
+      </Row>
+
+      <Row colors={colors} label={t("Vibrate at the end")}>
+        <Switch
+          accessibilityLabel={t("Toggle vibration on completion")}
+          onValueChange={(value) => onChange({ vibrationEnabled: value })}
+          value={settings.vibrationEnabled}
+        />
+      </Row>
+
+      <Row colors={colors} label={t("Keep screen on during focus")}>
+        <Switch
+          accessibilityLabel={t("Toggle keep screen on during focus")}
+          onValueChange={(value) => onChange({ keepScreenOn: value })}
+          value={settings.keepScreenOn}
+        />
+      </Row>
+    </>
+  );
+
+  const themeRows = (
+    <>
+      <Row
+        colors={colors}
+        label={t("Themes & sounds")}
+        value={`${discName} · ${soundName}`}
+        onPress={onOpenThemes}
+      />
+
+      <Row
+        colors={colors}
+        label={t("Reminders")}
+        value={remindersSummary}
+        onPress={onOpenReminders}
+      />
+    </>
+  );
+
+  const plusCard = (
+    <View style={[styles.plusCard, { backgroundColor: colors.surface, borderColor: colors.rule }]}>
+      <View style={styles.plusHeader}>
+        <View style={styles.plusText}>
+          <Text style={[styles.plusTitle, { color: colors.ink }]} allowFontScaling>
+            Focus Loop Plus
+          </Text>
+          <Text style={[styles.plusBody, { color: colors.muted }]} allowFontScaling>
+            {isPlus
+              ? plusProductId === PLUS_PRODUCT_IDS.lifetime
+                ? t("Lifetime")
+                : plusExpiresAt != null
+                  ? t("Active until {date}", {
+                      date: new Date(plusExpiresAt).toLocaleDateString(),
+                    })
+                  : t("Active")
+              : t("No ads, focus sounds, every theme, full history.")}
+          </Text>
+        </View>
+        {!isPlus ? (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t("Get Focus Loop Plus")}
+            onPress={onUpgrade}
+            hitSlop={8}
+          >
+            <Text style={[styles.linkText, { color: colors.focus }]} allowFontScaling>
+              {t("See Plus")}
+            </Text>
+          </Pressable>
+        ) : null}
+      </View>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t("Restore purchases")}
+        onPress={onRestore}
+        hitSlop={8}
+        style={styles.restoreRow}
+      >
+        <Text style={[styles.linkText, { color: colors.focus }]} allowFontScaling>
+          {t("Restore purchases")}
+        </Text>
+      </Pressable>
+      {restoreMessage != null ? (
+        <Text style={[styles.message, { color: colors.muted }]} allowFontScaling>
+          {restoreMessage}
+        </Text>
+      ) : null}
+    </View>
+  );
+
+  const dataRows = (
+    <>
+      <Text style={[styles.sectionTitle, { color: colors.faint }]} allowFontScaling>
+        {t("Your data")}
+      </Text>
+      <Row colors={colors} label={t("Export sessions (CSV)")} onPress={onExportData} />
+      {exportMessage != null ? (
+        <Text style={[styles.message, { color: colors.muted }]} allowFontScaling>
+          {exportMessage}
+        </Text>
+      ) : null}
+      <Row colors={colors} label={t("Delete all data…")} onPress={() => setConfirmDelete(true)} />
+    </>
+  );
+
+  const aboutRows = (
+    <>
+      <Text style={[styles.sectionTitle, { color: colors.faint }]} allowFontScaling>
+        {t("About")}
+      </Text>
+      {ABOUT_LINKS.map((link) => (
+        <Row
+          key={link.id}
+          colors={colors}
+          label={t(link.label)}
+          onPress={() => openLink(link.url)}
+        />
+      ))}
+      <Row
+        colors={colors}
+        label={t("Ad choices & tracking")}
+        onPress={() => setAdChoicesOpen(true)}
+      />
+    </>
+  );
+
+  const versionFooter = (
+    <View style={styles.footer}>
+      <Text style={[styles.footerText, { color: colors.faint }]} allowFontScaling>
+        {t("Focus Loop · Version {version}", { version })}
+      </Text>
+      <Text style={[styles.footerText, { color: colors.faint }]} allowFontScaling>
+        {t("No account. Your sessions stay on this phone.")}
+      </Text>
+    </View>
+  );
+
+  const detail =
+    activeSection === "timer"
+      ? timerRows
+      : activeSection === "plus"
+        ? plusCard
+        : activeSection === "data"
+          ? dataRows
+          : aboutRows;
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.bg }]}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        { backgroundColor: colors.bg },
+        isTablet && { paddingHorizontal: TABLET_PADDING },
+      ]}
+    >
       <View style={styles.header}>
         <Pressable
-          accessibilityLabel="Back to home"
+          accessibilityLabel={t("Back to home")}
           accessibilityRole="button"
           onPress={onBack}
           hitSlop={8}
           style={styles.backButton}
         >
           <Text style={[styles.backButtonText, { color: colors.ink }]} allowFontScaling>
-            Back
+            {t("Back")}
           </Text>
         </Pressable>
         <Text style={[styles.title, { color: colors.ink }]} allowFontScaling>
-          Settings
+          {t("Settings")}
         </Text>
         <View style={styles.backButton} />
       </View>
 
-      <ScrollView>
-        <Text style={[styles.saveHint, { color: colors.faint }]} allowFontScaling>
-          Changes save as you go.
-        </Text>
-
-        <Row colors={colors} label="Show time as">
-          <Segmented<DisplayMode>
-            colors={colors}
-            accessibilityLabel="Show time as"
-            options={[
-              { id: "disc", label: "Disc" },
-              { id: "numbers", label: "Numbers" },
-            ]}
-            value={settings.displayMode ?? "disc"}
-            onChange={(displayMode) => onChange({ displayMode })}
-          />
-        </Row>
-
-        <Row colors={colors} label="Appearance">
-          <Segmented<Appearance>
-            colors={colors}
-            accessibilityLabel="Appearance"
-            options={[
-              { id: "light", label: "Light" },
-              { id: "dark", label: "Dark" },
-              { id: "system", label: "System" },
-            ]}
-            value={settings.appearance}
-            onChange={(appearance) => onChange({ appearance })}
-          />
-        </Row>
-
-        <Row colors={colors} label="Rhythm" value={rhythmSummary} onPress={onOpenRhythm} />
-
-        <Row colors={colors} label="Weekly goal">
-          <Stepper
-            colors={colors}
-            accessibilityLabel="Weekly goal days"
-            value={settings.weeklyGoalDays}
-            min={1}
-            max={7}
-            onChange={(weeklyGoalDays) => onChange({ weeklyGoalDays })}
-          />
-        </Row>
-
-        <Row colors={colors} label="Start breaks automatically">
-          <Switch
-            accessibilityLabel="Toggle auto-start breaks"
-            onValueChange={(value) => onChange({ autoStartBreaks: value })}
-            value={settings.autoStartBreaks}
-          />
-        </Row>
-
-        <Row colors={colors} label="Show seconds">
-          <Switch
-            accessibilityLabel="Toggle show seconds"
-            onValueChange={(value) => onChange({ showSeconds: value })}
-            value={settings.showSeconds}
-          />
-        </Row>
-
-        <Row colors={colors} label="Sound on completion">
-          <Switch
-            accessibilityLabel="Toggle sound on completion"
-            onValueChange={(value) => onChange({ soundEnabled: value })}
-            value={settings.soundEnabled}
-          />
-        </Row>
-
-        <Row colors={colors} label="Vibrate at the end">
-          <Switch
-            accessibilityLabel="Toggle vibration on completion"
-            onValueChange={(value) => onChange({ vibrationEnabled: value })}
-            value={settings.vibrationEnabled}
-          />
-        </Row>
-
-        <Row
-          colors={colors}
-          label="Themes & sounds"
-          value={`${discName} · ${soundName}`}
-          onPress={onOpenThemes}
-        />
-
-        <Row colors={colors} label="Reminders" value={remindersSummary} onPress={onOpenReminders} />
-
-        <View
-          style={[styles.plusCard, { backgroundColor: colors.surface, borderColor: colors.rule }]}
-        >
-          <View style={styles.plusHeader}>
-            <View style={styles.plusText}>
-              <Text style={[styles.plusTitle, { color: colors.ink }]} allowFontScaling>
-                Focus Loop Plus
-              </Text>
-              <Text style={[styles.plusBody, { color: colors.muted }]} allowFontScaling>
-                {isPlus
-                  ? plusProductId === PLUS_PRODUCT_IDS.lifetime
-                    ? "Lifetime"
-                    : plusExpiresAt != null
-                      ? `Active until ${new Date(plusExpiresAt).toLocaleDateString()}`
-                      : "Active"
-                  : "No ads, focus sounds, every theme, full history."}
+      {isTablet ? (
+        // T05 master–detail: section rail left, the chosen section right.
+        <View style={styles.mdRow}>
+          <View style={styles.rail}>
+            {RAIL.map((item) => {
+              const isRoute = item.id === "themes" || item.id === "reminders";
+              const selected = !isRoute && item.id === activeSection;
+              return (
+                <Pressable
+                  key={item.id}
+                  accessibilityRole="button"
+                  accessibilityLabel={t(item.label)}
+                  accessibilityState={{ selected }}
+                  onPress={() => {
+                    if (item.id === "themes") {
+                      onOpenThemes();
+                    } else if (item.id === "reminders") {
+                      onOpenReminders();
+                    } else {
+                      setActiveSection(item.id);
+                    }
+                  }}
+                  style={[
+                    styles.railItem,
+                    selected && { backgroundColor: colors.chip, borderRadius: radii.md },
+                  ]}
+                >
+                  <Text
+                    style={[styles.railItemText, { color: selected ? colors.ink : colors.ink2 }]}
+                    allowFontScaling
+                  >
+                    {t(item.label)}
+                  </Text>
+                </Pressable>
+              );
+            })}
+            <View style={styles.railFooter}>
+              <Text style={[styles.footerText, { color: colors.faint }]} allowFontScaling>
+                {t("Version {version}", { version })}
               </Text>
             </View>
-            {!isPlus ? (
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="Get Focus Loop Plus"
-                onPress={onUpgrade}
-                hitSlop={8}
-              >
-                <Text style={[styles.linkText, { color: colors.focus }]} allowFontScaling>
-                  See Plus
-                </Text>
-              </Pressable>
-            ) : null}
           </View>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Restore purchases"
-            onPress={onRestore}
-            hitSlop={8}
-            style={styles.restoreRow}
-          >
-            <Text style={[styles.linkText, { color: colors.focus }]} allowFontScaling>
-              Restore purchases
+          <ScrollView style={styles.detail}>
+            <Text style={[styles.saveHint, { color: colors.faint }]} allowFontScaling>
+              {t("Changes save as you go.")}
             </Text>
-          </Pressable>
-          {restoreMessage != null ? (
-            <Text style={[styles.message, { color: colors.muted }]} allowFontScaling>
-              {restoreMessage}
-            </Text>
-          ) : null}
+            {detail}
+          </ScrollView>
         </View>
-
-        <Text style={[styles.sectionTitle, { color: colors.faint }]} allowFontScaling>
-          Your data
-        </Text>
-        <Row colors={colors} label="Export sessions (CSV)" onPress={onExportData} />
-        {exportMessage != null ? (
-          <Text style={[styles.message, { color: colors.muted }]} allowFontScaling>
-            {exportMessage}
+      ) : (
+        <ScrollView>
+          <Text style={[styles.saveHint, { color: colors.faint }]} allowFontScaling>
+            {t("Changes save as you go.")}
           </Text>
-        ) : null}
-        <Row colors={colors} label="Delete all data…" onPress={() => setConfirmDelete(true)} />
 
-        <Text style={[styles.sectionTitle, { color: colors.faint }]} allowFontScaling>
-          About
-        </Text>
-        {ABOUT_LINKS.map((link) => (
-          <Row
-            key={link.id}
-            colors={colors}
-            label={link.label}
-            onPress={() => openLink(link.url)}
-          />
-        ))}
-        <Row colors={colors} label="Ad choices & tracking" onPress={() => setAdChoicesOpen(true)} />
-
-        <View style={styles.footer}>
-          <Text style={[styles.footerText, { color: colors.faint }]} allowFontScaling>
-            Focus Loop · Version {version}
-          </Text>
-          <Text style={[styles.footerText, { color: colors.faint }]} allowFontScaling>
-            No account. Your sessions stay on this phone.
-          </Text>
-        </View>
-      </ScrollView>
+          {timerRows}
+          {themeRows}
+          {plusCard}
+          {dataRows}
+          {aboutRows}
+          {versionFooter}
+        </ScrollView>
+      )}
 
       <Sheet
         visible={confirmDelete}
         onDismiss={() => setConfirmDelete(false)}
         colors={colors}
-        accessibilityLabel="Delete all data"
+        accessibilityLabel={t("Delete all data")}
       >
         <Text style={[styles.sheetTitle, { color: colors.ink }]} allowFontScaling>
-          Delete all data?
+          {t("Delete all data?")}
         </Text>
         <Text style={[styles.sheetBody, { color: colors.muted }]} allowFontScaling>
-          This removes every session, setting and trial on this phone. Plus purchases can be
-          restored afterwards. This cannot be undone.
+          {t(
+            "This removes every session, setting and trial on this phone. Plus purchases can be restored afterwards. This cannot be undone.",
+          )}
         </Text>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Confirm delete all data"
+          accessibilityLabel={t("Confirm delete all data")}
           onPress={() => {
             setConfirmDelete(false);
             onDeleteAll();
@@ -427,18 +558,18 @@ export function SettingsScreen({
           style={[styles.dangerButton, { backgroundColor: colors.danger }]}
         >
           <Text style={[styles.dangerButtonText, { color: colors.onPrimary }]} allowFontScaling>
-            Delete everything
+            {t("Delete everything")}
           </Text>
         </Pressable>
         <Pressable
           accessibilityRole="button"
-          accessibilityLabel="Keep my data"
+          accessibilityLabel={t("Keep my data")}
           onPress={() => setConfirmDelete(false)}
           hitSlop={8}
           style={styles.sheetSecondary}
         >
           <Text style={[styles.sheetSecondaryText, { color: colors.ink }]} allowFontScaling>
-            Keep my data
+            {t("Keep my data")}
           </Text>
         </Pressable>
       </Sheet>
@@ -447,21 +578,22 @@ export function SettingsScreen({
         visible={adChoicesOpen}
         onDismiss={() => setAdChoicesOpen(false)}
         colors={colors}
-        accessibilityLabel="Ad choices and tracking"
+        accessibilityLabel={t("Ad choices and tracking")}
       >
         <Text style={[styles.sheetTitle, { color: colors.ink }]} allowFontScaling>
-          Ad choices & tracking
+          {t("Ad choices & tracking")}
         </Text>
         <Text style={[styles.sheetBody, { color: colors.muted }]} allowFontScaling>
-          Focus Loop shows ads from Google AdMob. Turning this off asks AdMob for non-personalised
-          ads only — ads still appear, they just don't use cross-app tracking.
+          {t(
+            "Focus Loop shows ads from Google AdMob. Turning this off asks AdMob for non-personalised ads only — ads still appear, they just don't use cross-app tracking.",
+          )}
         </Text>
         <View style={styles.adChoiceRow}>
           <Text style={[styles.adChoiceLabel, { color: colors.ink }]} allowFontScaling>
-            Allow ad tracking
+            {t("Allow ad tracking")}
           </Text>
           <Switch
-            accessibilityLabel="Toggle ad tracking"
+            accessibilityLabel={t("Toggle ad tracking")}
             onValueChange={onSetAllowTracking}
             value={allowTracking === true}
           />
@@ -483,6 +615,12 @@ const styles = StyleSheet.create({
   backButtonText: { ...typography.body },
   title: { ...typography.title },
   saveHint: { ...typography.caption, marginBottom: spacing.md },
+  mdRow: { flex: 1, flexDirection: "row", gap: spacing.xl },
+  rail: { width: 240, gap: 2 },
+  railItem: { minHeight: 52, justifyContent: "center", paddingHorizontal: spacing.md },
+  railItemText: { ...typography.body },
+  railFooter: { marginTop: "auto", paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
+  detail: { flex: 1 },
   sectionTitle: { ...typography.label, marginTop: spacing.lg, marginBottom: spacing.sm },
   row: {
     flexDirection: "row",

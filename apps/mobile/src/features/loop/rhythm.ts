@@ -1,3 +1,5 @@
+import { t } from "../../i18n";
+
 export type Rhythm = {
   focusMinutes: number;
   breakMinutes: number;
@@ -57,5 +59,11 @@ function formatMinutes(totalMinutes: number): string {
 // The P21 live label: "One loop = 25/5 ×4 + 15 ≈ 2h 10m".
 export function loopSummary(rhythm: Rhythm): string {
   const totalMinutes = Math.round(loopDurationSeconds(rhythm) / 60);
-  return `One loop = ${rhythm.focusMinutes}/${rhythm.breakMinutes} ×${rhythm.rounds} + ${rhythm.longBreakMinutes} ≈ ${formatMinutes(totalMinutes)}`;
+  return t("One loop = {focus}/{brk} ×{rounds} + {long} ≈ {total}", {
+    focus: rhythm.focusMinutes,
+    brk: rhythm.breakMinutes,
+    rounds: rhythm.rounds,
+    long: rhythm.longBreakMinutes,
+    total: formatMinutes(totalMinutes),
+  });
 }

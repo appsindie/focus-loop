@@ -13,6 +13,9 @@ struct FocusLoopActivityAttributes: ActivityAttributes {
     }
     var stepKind: String
     var displayMode: String
+    // Localized copy piped from the app — the extension has no string
+    // catalog, so fixed labels arrive through the attributes.
+    var strings: [String: String]
 }
 
 // ── Shared widget data ─────────────────────────────────────────────────────
@@ -35,6 +38,9 @@ struct WidgetSnapshot: Codable {
     var nextParkedText: String?
     var focusMinutes: Int
     var running: Running?
+    // Localized {placeholder} templates piped from the app (managed workflow
+    // gives the extension no string catalog of its own).
+    var strings: [String: String]?
 }
 
 func loadWidgetSnapshot() -> WidgetSnapshot {
@@ -43,7 +49,7 @@ func loadWidgetSnapshot() -> WidgetSnapshot {
         let data = json.data(using: .utf8),
         let snapshot = try? JSONDecoder().decode(WidgetSnapshot.self, from: data)
     else {
-        return WidgetSnapshot(weekDaysMet: 0, weekGoalDays: 4, nextParkedText: nil, focusMinutes: 25, running: nil)
+        return WidgetSnapshot(weekDaysMet: 0, weekGoalDays: 4, nextParkedText: nil, focusMinutes: 25, running: nil, strings: nil)
     }
     return snapshot
 }
@@ -67,6 +73,21 @@ extension View {
 private func startURL() -> URL { URL(string: "focusloop://start")! }
 private func pauseURL() -> URL { URL(string: "focusloop://pause")! }
 
+// Resolve a snapshot-piped template ({name} placeholders) against vars, with
+// the English literal as the fallback when the app hasn't published strings
+// yet (older JS, wiped storage).
+private func tr(_ snapshot: WidgetSnapshot, _ key: String, _ fallback: String, _ vars: [String: String] = [:]) -> String {
+    var text = snapshot.strings?[key] ?? fallback
+    for (name, value) in vars {
+        text = text.replacingOccurrences(of: "{\(name)}", with: value)
+    }
+    return text
+}
+
+private func tra(_ attrs: FocusLoopActivityAttributes, _ key: String, _ fallback: String) -> String {
+    attrs.strings[key] ?? fallback
+}
+
 // ── Timeline provider ──────────────────────────────────────────────────────
 
 struct FocusLoopEntry: TimelineEntry {
@@ -76,7 +97,7 @@ struct FocusLoopEntry: TimelineEntry {
 
 struct FocusLoopProvider: TimelineProvider {
     func placeholder(in context: Context) -> FocusLoopEntry {
-        FocusLoopEntry(date: Date(), snapshot: WidgetSnapshot(weekDaysMet: 2, weekGoalDays: 4, nextParkedText: nil, focusMinutes: 25, running: nil))
+        FocusLoopEntry(date: Date(), snapshot: WidgetSnapshot(weekDaysMet: 2, weekGoalDays: 4, nextParkedText: nil, focusMinutes: 25, running: nil, strings: nil))
     }
 
     func getSnapshot(in context: Context, completion: @escaping (FocusLoopEntry) -> Void) {
@@ -120,22 +141,22 @@ struct FocusLoopHomeWidgetView: View {
                 .foregroundColor(emberColor)
                 .kerning(1)
             if let running = liveRunning(entry.snapshot, at: entry.date) {
-                Text(running.kind == "focus" ? "Focus \(running.currentFocusNumber) of \(running.totalFocusCount)" : "Break")
+                Text(running.kind == "focus" ? tr(entry.snapshot, "focusCounter", "Focus {n} of {total}", ["n": "\(running.currentFocusNumber)", "total": "\(running.totalFocusCount)"]) : tr(entry.snapshot, "breakLabel", "Break"))
                     .font(.system(size: 17, weight: .bold))
                     .foregroundColor(inkColor)
-                Text(running.paused ? "Paused" : "\(max(1, Int(running.endsAtMs / 1000 - entry.date.timeIntervalSince1970) / 60)) min left")
+                Text(running.paused ? tr(entry.snapshot, "pausedLabel", "Paused") : tr(entry.snapshot, "minLeft", "{minutes} min left", ["minutes": "\(max(1, Int(running.endsAtMs / 1000 - entry.date.timeIntervalSince1970) / 60))"]))
                     .font(.system(size: 12))
                     .foregroundColor(inkColor.opacity(0.6))
             } else {
-                Text("Focus \(entry.snapshot.focusMinutes)")
+                Text(tr(entry.snapshot, "focusStart", "Focus {minutes}", ["minutes": "\(entry.snapshot.focusMinutes)"]))
                     .font(.system(size: 17, weight: .bold))
                     .foregroundColor(inkColor)
-                Text("Tap to start")
+                Text(tr(entry.snapshot, "tapToStart", "Tap to start"))
                     .font(.system(size: 12))
                     .foregroundColor(inkColor.opacity(0.6))
             }
             Spacer(minLength: 0)
-            Text("\(entry.snapshot.weekDaysMet) of \(entry.snapshot.weekGoalDays) days this week")
+            Text(tr(entry.snapshot, "daysThisWeek", "{daysMet} of {goalDays} days this week", ["daysMet": "\(entry.snapshot.weekDaysMet)", "goalDays": "\(entry.snapshot.weekGoalDays)"]))
                 .font(.system(size: 11, weight: .medium))
                 .foregroundColor(emberColor)
         }
@@ -165,7 +186,7 @@ struct FocusLoopNextWidgetView: View {
     var body: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("\(entry.snapshot.weekDaysMet) of \(entry.snapshot.weekGoalDays) days this week")
+                Text(tr(entry.snapshot, "daysThisWeek", "{daysMet} of {goalDays} days this week", ["daysMet": "\(entry.snapshot.weekDaysMet)", "goalDays": "\(entry.snapshot.weekGoalDays)"]))
                     .font(.system(size: 12, weight: .medium))
                     .foregroundColor(emberColor)
                 Text(nextLine)
@@ -175,7 +196,7 @@ struct FocusLoopNextWidgetView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             Link(destination: startURL()) {
-                Text("Start")
+                Text(tr(entry.snapshot, "startLabel", "Start"))
                     .font(.system(size: 14, weight: .bold))
                     .foregroundColor(canvasColor)
                     .padding(.horizontal, 16)
@@ -189,12 +210,14 @@ struct FocusLoopNextWidgetView: View {
 
     private var nextLine: String {
         if let running = liveRunning(entry.snapshot, at: entry.date) {
-            return running.kind == "focus" ? "Focusing now" : "On a break"
+            return running.kind == "focus"
+                ? tr(entry.snapshot, "focusingNow", "Focusing now")
+                : tr(entry.snapshot, "onABreak", "On a break")
         }
         if let parked = entry.snapshot.nextParkedText, !parked.isEmpty {
-            return "Next up: \(parked)"
+            return tr(entry.snapshot, "nextUp", "Next up: {text}", ["text": parked])
         }
-        return "Next up: Focus \(entry.snapshot.focusMinutes)"
+        return tr(entry.snapshot, "nextUpFocus", "Next up: Focus {minutes}", ["minutes": "\(entry.snapshot.focusMinutes)"])
     }
 }
 
@@ -249,14 +272,14 @@ struct FocusLoopLiveActivityWidget: Widget {
                 Image(systemName: context.attributes.stepKind == "focus" ? "circle.hexagongrid.fill" : "cup.and.saucer.fill")
                     .font(.title2)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(context.attributes.stepKind == "focus" ? "Focusing" : "Break")
+                    Text(context.attributes.stepKind == "focus" ? tra(context.attributes, "focusingLabel", "Focusing") : tra(context.attributes, "breakLabel", "Break"))
                         .font(.system(size: 16, weight: .bold))
                     if context.state.paused {
-                        Text("Paused")
+                        Text(tra(context.attributes, "pausedLabel", "Paused"))
                             .font(.system(size: 13))
                             .foregroundStyle(.secondary)
                     } else {
-                        countdownLabel(context.state)
+                        countdownLabel(context)
                             .font(.system(size: 13, weight: .medium))
                             .foregroundStyle(.secondary)
                     }
@@ -274,13 +297,13 @@ struct FocusLoopLiveActivityWidget: Widget {
         } dynamicIsland: { context in
             DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    Label(context.attributes.stepKind == "focus" ? "Focus" : "Break", systemImage: context.attributes.stepKind == "focus" ? "circle.hexagongrid.fill" : "cup.and.saucer.fill")
+                    Label(context.attributes.stepKind == "focus" ? tra(context.attributes, "focusLabel", "Focus") : tra(context.attributes, "breakLabel", "Break"), systemImage: context.attributes.stepKind == "focus" ? "circle.hexagongrid.fill" : "cup.and.saucer.fill")
                 }
                 DynamicIslandExpandedRegion(.trailing) {
                     if context.state.paused {
-                        Text("Paused")
+                        Text(tra(context.attributes, "pausedLabel", "Paused"))
                     } else {
-                        countdownLabel(context.state)
+                        countdownLabel(context)
                             .multilineTextAlignment(.trailing)
                             .frame(width: 60)
                     }
@@ -288,7 +311,7 @@ struct FocusLoopLiveActivityWidget: Widget {
                 DynamicIslandExpandedRegion(.bottom) {
                     if context.attributes.stepKind == "focus" {
                         Link(destination: pauseURL()) {
-                            Label("Pause", systemImage: "pause.fill")
+                            Label(tra(context.attributes, "pauseLabel", "Pause"), systemImage: "pause.fill")
                         }
                     }
                 }
@@ -298,7 +321,7 @@ struct FocusLoopLiveActivityWidget: Widget {
                 if context.state.paused {
                     Image(systemName: "pause.fill")
                 } else {
-                    countdownLabel(context.state)
+                    countdownLabel(context)
                         .frame(width: 44)
                 }
             } minimal: {
@@ -315,10 +338,10 @@ struct FocusLoopLiveActivityWidget: Widget {
     // past (the activity outlives the suspended app). Past the end we render
     // "Done" instead; staleDate in the pushed state also marks it stale.
     @ViewBuilder
-    private func countdownLabel(_ state: FocusLoopActivityAttributes.ContentState) -> some View {
-        let end = endsAt(state)
+    private func countdownLabel(_ context: ActivityViewContext<FocusLoopActivityAttributes>) -> some View {
+        let end = endsAt(context.state)
         if end <= Date() {
-            Text("Done")
+            Text(tra(context.attributes, "doneLabel", "Done"))
         } else {
             Text(timerInterval: Date()...end, countsDown: true)
         }

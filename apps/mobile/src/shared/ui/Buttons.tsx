@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { t } from "../../i18n";
 import { Palette, radii, typography } from "../theme";
 
 // §3 buttons: primary 64h pill ink fill (may carry a right-aligned duration in
@@ -110,7 +111,7 @@ export function DisplayToggle({
       <Pressable
         onPress={() => onChange("disc")}
         accessibilityRole="button"
-        accessibilityLabel="Show time as a disc"
+        accessibilityLabel={t("Show time as a disc")}
         accessibilityState={{ selected: mode === "disc" }}
         style={[styles.segment, mode === "disc" && { backgroundColor: colors.chip }]}
       >
@@ -121,7 +122,7 @@ export function DisplayToggle({
       <Pressable
         onPress={() => onChange("numbers")}
         accessibilityRole="button"
-        accessibilityLabel="Show time as numbers"
+        accessibilityLabel={t("Show time as numbers")}
         accessibilityState={{ selected: mode === "numbers" }}
         style={[styles.segment, mode === "numbers" && { backgroundColor: colors.chip }]}
       >

@@ -23,9 +23,13 @@ public struct FocusLoopActivityAttributes: ActivityAttributes {
     // ends the activity and requests a new one.
     public var stepKind: String      // "focus" | "break" | "longBreak"
     public var displayMode: String   // "disc" | "numbers"
+    // Localized copy for the activity's fixed labels — the extension has no
+    // string catalog, so the app pipes its locale through the attributes.
+    public var strings: [String: String]
 
-    public init(stepKind: String, displayMode: String) {
+    public init(stepKind: String, displayMode: String, strings: [String: String] = [:]) {
         self.stepKind = stepKind
         self.displayMode = displayMode
+        self.strings = strings
     }
 }

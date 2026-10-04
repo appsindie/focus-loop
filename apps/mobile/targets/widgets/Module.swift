@@ -30,9 +30,10 @@ public class ReactNativeWidgetExtensionModule: Module {
         }
 
         Function("startActivity") {
-            (stepKind: String, displayMode: String, endsAtMs: Double, remainingSeconds: Int, paused: Bool) in
+            (stepKind: String, displayMode: String, endsAtMs: Double, remainingSeconds: Int, paused: Bool, stringsJson: String) in
             if #available(iOS 16.2, *) {
-                let attributes = FocusLoopActivityAttributes(stepKind: stepKind, displayMode: displayMode)
+                let strings = (try? JSONDecoder().decode([String: String].self, from: stringsJson.data(using: .utf8) ?? Data())) ?? [:]
+                let attributes = FocusLoopActivityAttributes(stepKind: stepKind, displayMode: displayMode, strings: strings)
                 let state = FocusLoopActivityAttributes.ContentState(
                     remainingSeconds: remainingSeconds,
                     endsAtMs: endsAtMs,

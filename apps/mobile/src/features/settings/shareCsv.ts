@@ -1,4 +1,5 @@
 import * as Sharing from "expo-sharing";
+import { t } from "../../i18n";
 
 // expo-file-system's modern File API is loaded lazily — same pattern as the
 // rewarded-ad port, so jest and Expo Go keep working without the native module.
@@ -41,7 +42,10 @@ export async function shareCsvFile(
     if (!(await Sharing.isAvailableAsync())) {
       return "unavailable";
     }
-    await Sharing.shareAsync(file.uri, { mimeType: "text/csv", dialogTitle: "Export sessions" });
+    await Sharing.shareAsync(file.uri, {
+      mimeType: "text/csv",
+      dialogTitle: t("Export sessions"),
+    });
     return "shared";
   } catch {
     return "unavailable";

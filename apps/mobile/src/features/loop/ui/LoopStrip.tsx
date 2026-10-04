@@ -1,5 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { LoopStep } from "../loopPlan";
+import { t } from "../../../i18n";
 import { Palette } from "../../../shared/theme";
 
 // §3: one segment per focus/break, width ∝ duration, 3px gap.
@@ -19,7 +20,7 @@ export function LoopStrip({
 }) {
   const total = steps.reduce((sum, s) => sum + s.durationSeconds, 0);
   return (
-    <View style={[styles.row, { height }]} accessibilityLabel="Loop progress">
+    <View style={[styles.row, { height }]} accessibilityLabel={t("Loop progress")}>
       {steps.map((step, i) => {
         const isDone = i < currentIndex;
         const isCurrent = i === currentIndex;

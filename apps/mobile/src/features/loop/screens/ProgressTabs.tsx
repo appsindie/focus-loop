@@ -1,4 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
 
 // P17/P18 share a segmented header — "Week | History" per J6 internal nav.
@@ -20,7 +21,7 @@ export function ProgressTabs({
         key={key}
         accessibilityRole="button"
         accessibilityState={{ selected }}
-        accessibilityLabel={`${label} tab`}
+        accessibilityLabel={t("{label} tab", { label })}
         onPress={onPress}
         style={[
           styles.tab,
@@ -37,8 +38,8 @@ export function ProgressTabs({
   };
   return (
     <View style={[styles.track, { backgroundColor: colors.chip }]} accessibilityRole="tablist">
-      {tab("week", "Week", onWeek)}
-      {tab("history", "History", onHistory)}
+      {tab("week", t("Week"), onWeek)}
+      {tab("history", t("History"), onHistory)}
     </View>
   );
 }

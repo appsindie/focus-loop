@@ -1,6 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { t } from "../../i18n";
 import { Palette, radii, spacing, typography } from "../../shared/theme";
+import { TABLET_PADDING, useIsTablet } from "../../shared/layout";
 import {
   RHYTHM_BOUNDS,
   RHYTHM_PRESET_LABELS,
@@ -23,10 +25,10 @@ type RhythmScreenProps = {
 
 const PRESET_ORDER: Exclude<RhythmPresetId, "custom">[] = ["classic", "gentle", "deep-work"];
 
-const PRESET_SUB: Record<Exclude<RhythmPresetId, "custom">, string> = {
-  classic: "25 focus · 5 break · 4 rounds",
-  gentle: "15 focus · 5 break · good for hard days",
-  "deep-work": "50 focus · 10 break · 3 rounds",
+const PRESET_SUB: Record<Exclude<RhythmPresetId, "custom">, () => string> = {
+  classic: () => t("25 focus · 5 break · 4 rounds"),
+  gentle: () => t("15 focus · 5 break · good for hard days"),
+  "deep-work": () => t("50 focus · 10 break · 3 rounds"),
 };
 
 function StepperRow({
@@ -55,7 +57,7 @@ function StepperRow({
         <Pressable
           onPress={() => onChange(Math.max(min, value - 1))}
           accessibilityRole="button"
-          accessibilityLabel={`Decrease ${label}`}
+          accessibilityLabel={t("Decrease {label}", { label })}
           hitSlop={8}
           style={styles.stepButton}
         >
@@ -67,7 +69,7 @@ function StepperRow({
         <Pressable
           onPress={() => onChange(Math.min(max, value + 1))}
           accessibilityRole="button"
-          accessibilityLabel={`Increase ${label}`}
+          accessibilityLabel={t("Increase {label}", { label })}
           hitSlop={8}
           style={styles.stepButton}
         >
@@ -95,22 +97,29 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
     });
   };
 
+  const isTablet = useIsTablet();
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.bg }]}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        { backgroundColor: colors.bg },
+        isTablet && { paddingHorizontal: TABLET_PADDING },
+      ]}
+    >
       <View style={styles.header}>
         <Pressable
-          accessibilityLabel="Back to settings"
+          accessibilityLabel={t("Back to settings")}
           accessibilityRole="button"
           onPress={onBack}
           hitSlop={8}
           style={styles.backButton}
         >
           <Text style={[styles.backButtonText, { color: colors.ink }]} allowFontScaling>
-            Back
+            {t("Back")}
           </Text>
         </Pressable>
         <Text style={[styles.title, { color: colors.ink }]} allowFontScaling>
-          Rhythm
+          {t("Rhythm")}
         </Text>
         <View style={styles.backButton} />
       </View>
@@ -122,7 +131,9 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
             key={id}
             onPress={() => pickPreset(id)}
             accessibilityRole="button"
-            accessibilityLabel={`Rhythm preset ${RHYTHM_PRESET_LABELS[id]}`}
+            accessibilityLabel={t("Rhythm preset {name}", {
+              name: RHYTHM_PRESET_LABELS[id],
+            })}
             accessibilityState={{ selected }}
             style={[
               styles.presetRow,
@@ -133,10 +144,10 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
             ]}
           >
             <Text style={[styles.presetName, { color: colors.ink }]} allowFontScaling>
-              {RHYTHM_PRESET_LABELS[id].replace(/ [\d/× \d]+$/, "")}
+              {t(RHYTHM_PRESET_LABELS[id].replace(/ [\d/× \d]+$/, ""))}
             </Text>
             <Text style={[styles.presetSub, { color: colors.muted }]} allowFontScaling>
-              {PRESET_SUB[id]}
+              {PRESET_SUB[id]()}
             </Text>
           </Pressable>
         );
@@ -144,7 +155,7 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
       <Pressable
         onPress={() => pickPreset("custom")}
         accessibilityRole="button"
-        accessibilityLabel="Rhythm preset Custom"
+        accessibilityLabel={t("Rhythm preset {name}", { name: t("Custom") })}
         accessibilityState={{ selected: settings.rhythmPresetId === "custom" }}
         style={[
           styles.presetRow,
@@ -155,24 +166,24 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
         ]}
       >
         <Text style={[styles.presetName, { color: colors.ink }]} allowFontScaling>
-          Custom
+          {t("Custom")}
         </Text>
         <Text style={[styles.presetSub, { color: colors.muted }]} allowFontScaling>
-          Your own focus, breaks and rounds
+          {t("Your own focus, breaks and rounds")}
         </Text>
       </Pressable>
 
       <View
         style={[styles.fineTune, { backgroundColor: colors.surface, borderColor: colors.rule }]}
-        accessibilityLabel="Fine-tune rhythm"
+        accessibilityLabel={t("Fine-tune rhythm")}
       >
         <Text style={[styles.fineTuneTitle, { color: colors.ink }]} allowFontScaling>
-          Fine-tune
+          {t("Fine-tune")}
         </Text>
         <StepperRow
           colors={colors}
-          label="Focus"
-          unit="min"
+          label={t("Focus")}
+          unit={t("min")}
           value={rhythm.focusMinutes}
           min={RHYTHM_BOUNDS.focusMinutes.min}
           max={RHYTHM_BOUNDS.focusMinutes.max}
@@ -180,8 +191,8 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
         />
         <StepperRow
           colors={colors}
-          label="Break"
-          unit="min"
+          label={t("Break")}
+          unit={t("min")}
           value={rhythm.breakMinutes}
           min={RHYTHM_BOUNDS.breakMinutes.min}
           max={RHYTHM_BOUNDS.breakMinutes.max}
@@ -189,8 +200,8 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
         />
         <StepperRow
           colors={colors}
-          label="Long break"
-          unit="min"
+          label={t("Long break")}
+          unit={t("min")}
           value={rhythm.longBreakMinutes}
           min={RHYTHM_BOUNDS.longBreakMinutes.min}
           max={RHYTHM_BOUNDS.longBreakMinutes.max}
@@ -198,7 +209,7 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
         />
         <StepperRow
           colors={colors}
-          label="Rounds per loop"
+          label={t("Rounds per loop")}
           unit=""
           value={rhythm.rounds}
           min={RHYTHM_BOUNDS.rounds.min}
@@ -207,7 +218,8 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
         />
         <LoopStrip colors={colors} steps={buildLoopPlan(rhythm)} currentIndex={-1} />
         <Text style={[styles.loopSummary, { color: colors.ink }]} allowFontScaling>
-          {loopSummary(rhythm)} · {totalFocusMinutes} min of focus · {loopMinutes} min total
+          {loopSummary(rhythm)} · {t("{focusMin} min of focus", { focusMin: totalFocusMinutes })} ·{" "}
+          {t("{total} min total", { total: loopMinutes })}
         </Text>
       </View>
     </SafeAreaView>

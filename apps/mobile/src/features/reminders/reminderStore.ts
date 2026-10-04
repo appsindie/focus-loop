@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { t } from "../../i18n";
 
 const REMINDERS_KEY = "focus-loop/v1/reminders";
 
@@ -92,7 +93,9 @@ export async function saveReminderPrefs(prefs: ReminderPrefs): Promise<void> {
   );
 }
 
-const DAY_LETTERS = ["M", "T", "W", "T", "F", "S", "S"] as const;
+function dayLetters(): string[] {
+  return [t("M"), t("T"), t("W"), t("T"), t("F"), t("S"), t("S")];
+}
 
 function sameSet(a: number[], b: number[]): boolean {
   return a.length === b.length && a.every((d) => b.includes(d));
@@ -101,20 +104,21 @@ function sameSet(a: number[], b: number[]): boolean {
 // Settings-row summary for one reminder, e.g. "Weekdays 9:00" / "M·W·F 14:30".
 export function reminderDaysLabel(days: number[]): string {
   if (days.length === 0) {
-    return "No days";
+    return t("No days");
   }
   if (sameSet(days, [1, 2, 3, 4, 5])) {
-    return "Weekdays";
+    return t("Weekdays");
   }
   if (sameSet(days, [6, 7])) {
-    return "Weekends";
+    return t("Weekends");
   }
   if (days.length === 7) {
-    return "Daily";
+    return t("Daily");
   }
+  const letters = dayLetters();
   return [...days]
     .sort()
-    .map((d) => DAY_LETTERS[d - 1])
+    .map((d) => letters[d - 1])
     .join("·");
 }
 

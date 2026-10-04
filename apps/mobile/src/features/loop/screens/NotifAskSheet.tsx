@@ -1,4 +1,5 @@
 import { StyleSheet, Text } from "react-native";
+import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
 import { PrimaryButton, TextButton } from "../../../shared/ui/Buttons";
 import { Sheet } from "../../../shared/ui/Sheet";
@@ -22,17 +23,21 @@ export function NotifAskSheet({
       visible={visible}
       onDismiss={onNotNow}
       colors={colors}
-      accessibilityLabel="Turn on notifications"
+      accessibilityLabel={t("Turn on notifications")}
     >
-      <Text style={[styles.title, { color: colors.ink }]}>A nudge, only when it helps</Text>
-      <Text style={[styles.item, { color: colors.ink2 }]}>· Break time — when a focus ends</Text>
-      <Text style={[styles.item, { color: colors.ink2 }]}>· Back to it — when a break ends</Text>
+      <Text style={[styles.title, { color: colors.ink }]}>{t("A nudge, only when it helps")}</Text>
       <Text style={[styles.item, { color: colors.ink2 }]}>
-        · Time to focus — a reminder you set
+        {t("· Break time — when a focus ends")}
       </Text>
-      <Text style={[styles.note, { color: colors.muted }]}>Nothing else. No marketing.</Text>
-      <PrimaryButton label="Turn on notifications" onPress={onAllow} colors={colors} />
-      <TextButton label="Not now" onPress={onNotNow} colors={colors} />
+      <Text style={[styles.item, { color: colors.ink2 }]}>
+        {t("· Back to it — when a break ends")}
+      </Text>
+      <Text style={[styles.item, { color: colors.ink2 }]}>
+        {t("· Time to focus — a reminder you set")}
+      </Text>
+      <Text style={[styles.note, { color: colors.muted }]}>{t("Nothing else. No marketing.")}</Text>
+      <PrimaryButton label={t("Turn on notifications")} onPress={onAllow} colors={colors} />
+      <TextButton label={t("Not now")} onPress={onNotNow} colors={colors} />
     </Sheet>
   );
 }

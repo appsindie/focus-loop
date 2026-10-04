@@ -2,13 +2,15 @@ import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SessionOutcome } from "../SessionLog";
 import { LoopStep } from "../loopPlan";
+import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
+import { TABLET_PADDING, useIsTablet } from "../../../shared/layout";
 import { PrimaryButton, TextButton } from "../../../shared/ui/Buttons";
 
-const OUTCOMES: { id: SessionOutcome; label: string }[] = [
-  { id: "finished", label: "Finished it" },
-  { id: "moved-forward", label: "Moved it forward" },
-  { id: "got-stuck", label: "Got stuck — still counts" },
+const OUTCOMES: { id: SessionOutcome; label: () => string }[] = [
+  { id: "finished", label: () => t("Finished it") },
+  { id: "moved-forward", label: () => t("Moved it forward") },
+  { id: "got-stuck", label: () => t("Got stuck — still counts") },
 ];
 
 // P10: header FOCUS N DONE · MIN, optional single-choice outcome, auto-break
@@ -41,15 +43,24 @@ export function CloseoutScreen({
   const minutes = Math.round(focusedSeconds / 60);
   const breakLabel =
     nextStep?.kind === "break"
-      ? `Start break ${Math.floor(nextStep.durationSeconds / 60)}:${String(
-          nextStep.durationSeconds % 60,
-        ).padStart(2, "0")}`
-      : "Continue";
+      ? t("Start break {duration}", {
+          duration: `${Math.floor(nextStep.durationSeconds / 60)}:${String(
+            nextStep.durationSeconds % 60,
+          ).padStart(2, "0")}`,
+        })
+      : t("Continue");
 
+  const isTablet = useIsTablet();
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.bg }]}>
+    <SafeAreaView
+      style={[
+        styles.root,
+        { backgroundColor: colors.bg },
+        isTablet && { paddingHorizontal: TABLET_PADDING },
+      ]}
+    >
       <Text style={[styles.kicker, { color: colors.focusText }]}>
-        FOCUS {focusNumber} DONE · {minutes} MIN
+        {t("FOCUS {n} DONE · {minutes} MIN", { n: focusNumber, minutes })}
       </Text>
       {intention != null && intention !== "" ? (
         <Text style={[styles.intention, { color: colors.ink2 }]} numberOfLines={2}>
@@ -57,16 +68,17 @@ export function CloseoutScreen({
         </Text>
       ) : null}
 
-      <Text style={[styles.prompt, { color: colors.ink }]}>How did it go?</Text>
+      <Text style={[styles.prompt, { color: colors.ink }]}>{t("How did it go?")}</Text>
       <View style={styles.outcomes}>
         {OUTCOMES.map((o) => {
           const selected = outcome === o.id;
+          const label = o.label();
           return (
             <Pressable
               key={o.id}
               onPress={() => onOutcome(selected ? null : o.id)}
               accessibilityRole="button"
-              accessibilityLabel={o.label}
+              accessibilityLabel={label}
               accessibilityState={{ selected }}
               style={[
                 styles.outcomeRow,
@@ -76,18 +88,20 @@ export function CloseoutScreen({
                 },
               ]}
             >
-              <Text style={[styles.outcomeLabel, { color: colors.ink }]}>{o.label}</Text>
+              <Text style={[styles.outcomeLabel, { color: colors.ink }]}>{label}</Text>
             </Pressable>
           );
         })}
       </View>
 
       <View style={[styles.toggleRow, { borderTopColor: colors.rule }]}>
-        <Text style={[styles.toggleLabel, { color: colors.ink }]}>Start breaks automatically</Text>
+        <Text style={[styles.toggleLabel, { color: colors.ink }]}>
+          {t("Start breaks automatically")}
+        </Text>
         <Switch
           value={autoStartBreaks}
           onValueChange={onAutoStartBreaks}
-          accessibilityLabel="Start breaks automatically"
+          accessibilityLabel={t("Start breaks automatically")}
           trackColor={{ true: colors.break, false: colors.track }}
           thumbColor="#FFFFFF"
         />
@@ -95,7 +109,11 @@ export function CloseoutScreen({
 
       <View style={styles.actions}>
         <PrimaryButton label={breakLabel} onPress={onStartBreak} colors={colors} variant="break" />
-        <TextButton label="Keep going, 10 more minutes" onPress={onKeepGoing} colors={colors} />
+        <TextButton
+          label={t("Keep going, 10 more minutes")}
+          onPress={onKeepGoing}
+          colors={colors}
+        />
       </View>
     </SafeAreaView>
   );

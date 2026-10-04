@@ -1,4 +1,5 @@
 import { FlexWidget, TextWidget } from "react-native-android-widget";
+import { t } from "../../../i18n";
 import { formatEndTime, liveRunning, type WidgetSnapshot } from "../../surfaces/widgetData";
 import { widgetPalette } from "./widgetPalette";
 
@@ -12,17 +13,17 @@ export function FocusStartWidget({ snapshot }: { snapshot: WidgetSnapshot }) {
   const running = liveRunning(snapshot);
   const headline =
     running == null
-      ? `Focus ${snapshot.focusMinutes}`
+      ? t("Focus {minutes}", { minutes: snapshot.focusMinutes })
       : running.kind === "focus"
         ? running.paused
-          ? `Paused · ${snapshot.focusMinutes}m`
-          : `Focusing · until ${formatEndTime(running.endsAtMs)}`
-        : `On a break · until ${formatEndTime(running.endsAtMs)}`;
+          ? t("Paused · {minutes}m", { minutes: snapshot.focusMinutes })
+          : t("Focusing · until {endsAt}", { endsAt: formatEndTime(running.endsAtMs) })
+        : t("On a break · until {endsAt}", { endsAt: formatEndTime(running.endsAtMs) });
   return (
     <FlexWidget
       clickAction="OPEN_URI"
       clickActionData={{ uri: "focusloop://start" }}
-      accessibilityLabel="Start a focus session"
+      accessibilityLabel={t("Start a focus session")}
       style={{
         flex: 1,
         flexDirection: "column",
@@ -44,8 +45,14 @@ export function FocusStartWidget({ snapshot }: { snapshot: WidgetSnapshot }) {
       <TextWidget
         text={
           running == null
-            ? `${snapshot.weekDaysMet} of ${snapshot.weekGoalDays} days this week · tap to start`
-            : `${snapshot.weekDaysMet} of ${snapshot.weekGoalDays} days this week`
+            ? t("{daysMet} of {goalDays} days this week · tap to start", {
+                daysMet: snapshot.weekDaysMet,
+                goalDays: snapshot.weekGoalDays,
+              })
+            : t("{daysMet} of {goalDays} days this week", {
+                daysMet: snapshot.weekDaysMet,
+                goalDays: snapshot.weekGoalDays,
+              })
         }
         style={{ color: widgetPalette.accent, fontSize: 12, marginTop: 4 }}
       />

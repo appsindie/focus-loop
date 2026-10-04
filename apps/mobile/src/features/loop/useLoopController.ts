@@ -35,7 +35,11 @@ import { trackEvent } from "../analytics/events";
 import type { FocusLoopIntent } from "../../linking";
 import { publishWidgetSnapshot } from "../surfaces/surfaceBridge";
 import { syncLiveSurface } from "../surfaces/liveSurface";
-import { buildWidgetSnapshot, type RunningStepSurface } from "../surfaces/widgetData";
+import {
+  buildWidgetSnapshot,
+  widgetSurfaceStrings,
+  type RunningStepSurface,
+} from "../surfaces/widgetData";
 
 export type LoopRoute =
   | "loading"
@@ -628,7 +632,7 @@ export function useLoopController(
       return;
     }
     lastLiveSignatureRef.current = liveSurfaceSignature;
-    syncLiveSurface(runningSurface);
+    syncLiveSurface(runningSurface, widgetSurfaceStrings());
   });
 
   const focusStepMinutes = Math.round(
@@ -655,6 +659,7 @@ export function useLoopController(
         nextParkedText,
         focusMinutes: focusStepMinutes,
         running: runningSurface,
+        strings: widgetSurfaceStrings(),
       }),
     );
   });

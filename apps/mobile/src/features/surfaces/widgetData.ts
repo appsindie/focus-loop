@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { t } from "../../i18n";
 import type { DisplayMode } from "../settings/SettingsStore";
 import type { LoopStepKind } from "../loop/loopPlan";
 
@@ -27,6 +28,10 @@ export type WidgetSnapshot = {
   // focus step length in minutes (Classic → 25).
   focusMinutes: number;
   running: RunningStepSurface | null;
+  // Localized templates for the native iOS widget extension — Swift cannot
+  // call t() and has no string catalog in managed workflow, so the app pipes
+  // pre-localized {placeholder} templates through the App Group snapshot.
+  strings?: Record<string, string>;
 };
 
 export const WIDGET_DATA_KEY = "focus-loop/v1/widget-data";
@@ -46,8 +51,32 @@ export function buildWidgetSnapshot(input: {
   nextParkedText: string | null;
   focusMinutes: number;
   running: RunningStepSurface | null;
+  strings?: Record<string, string>;
 }): WidgetSnapshot {
   return { schemaVersion: 1, ...input };
+}
+
+// The full template set the iOS widget extension + Live Activity resolve.
+// Android widgets and the ongoing notification call t() at render instead.
+export function widgetSurfaceStrings(): Record<string, string> {
+  return {
+    focusCounter: t("Focus {n} of {total}"),
+    breakLabel: t("Break"),
+    pausedLabel: t("Paused"),
+    minLeft: t("{minutes} min left"),
+    focusStart: t("Focus {minutes}"),
+    tapToStart: t("Tap to start"),
+    daysThisWeek: t("{daysMet} of {goalDays} days this week"),
+    focusingNow: t("Focusing now"),
+    onABreak: t("On a break"),
+    nextUp: t("Next up: {text}"),
+    nextUpFocus: t("Next up: Focus {minutes}"),
+    startLabel: t("Start"),
+    focusLabel: t("Focus"),
+    focusingLabel: t("Focusing"),
+    pauseLabel: t("Pause"),
+    doneLabel: t("Done"),
+  };
 }
 
 // CR-19: a running state only counts while endsAt is still ahead of render
@@ -99,6 +128,9 @@ export async function loadWidgetSnapshot(): Promise<WidgetSnapshot> {
       nextParkedText: typeof parsed.nextParkedText === "string" ? parsed.nextParkedText : null,
       focusMinutes: parsed.focusMinutes,
       running: parsed.running ?? null,
+      ...(parsed.strings != null && typeof parsed.strings === "object"
+        ? { strings: parsed.strings }
+        : {}),
     };
   } catch {
     return DEFAULT_WIDGET_SNAPSHOT;

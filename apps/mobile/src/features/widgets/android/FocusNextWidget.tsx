@@ -1,4 +1,5 @@
 import { FlexWidget, TextWidget } from "react-native-android-widget";
+import { t } from "../../../i18n";
 import { formatEndTime, liveRunning, type WidgetSnapshot } from "../../surfaces/widgetData";
 import { widgetPalette } from "./widgetPalette";
 
@@ -10,11 +11,11 @@ export function FocusNextWidget({ snapshot }: { snapshot: WidgetSnapshot }) {
   const nextLine =
     running != null
       ? running.kind === "focus"
-        ? `Focusing until ${formatEndTime(running.endsAtMs)}`
-        : `On a break until ${formatEndTime(running.endsAtMs)}`
+        ? t("Focusing until {endsAt}", { endsAt: formatEndTime(running.endsAtMs) })
+        : t("On a break until {endsAt}", { endsAt: formatEndTime(running.endsAtMs) })
       : snapshot.nextParkedText != null
-        ? `Next up: ${snapshot.nextParkedText}`
-        : `Next up: Focus ${snapshot.focusMinutes}`;
+        ? t("Next up: {text}", { text: snapshot.nextParkedText })
+        : t("Next up: Focus {minutes}", { minutes: snapshot.focusMinutes });
   return (
     <FlexWidget
       clickAction="OPEN_APP"
@@ -29,7 +30,10 @@ export function FocusNextWidget({ snapshot }: { snapshot: WidgetSnapshot }) {
     >
       <FlexWidget style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}>
         <TextWidget
-          text={`${snapshot.weekDaysMet} of ${snapshot.weekGoalDays} days this week`}
+          text={t("{daysMet} of {goalDays} days this week", {
+            daysMet: snapshot.weekDaysMet,
+            goalDays: snapshot.weekGoalDays,
+          })}
           style={{ color: widgetPalette.accent, fontSize: 12 }}
         />
         <TextWidget
@@ -42,7 +46,7 @@ export function FocusNextWidget({ snapshot }: { snapshot: WidgetSnapshot }) {
       <FlexWidget
         clickAction="OPEN_URI"
         clickActionData={{ uri: "focusloop://start" }}
-        accessibilityLabel="Start"
+        accessibilityLabel={t("Start")}
         style={{
           justifyContent: "center",
           paddingHorizontal: 18,
@@ -52,7 +56,7 @@ export function FocusNextWidget({ snapshot }: { snapshot: WidgetSnapshot }) {
         }}
       >
         <TextWidget
-          text="Start"
+          text={t("Start")}
           style={{ color: widgetPalette.bg, fontSize: 14, fontWeight: "bold" }}
         />
       </FlexWidget>

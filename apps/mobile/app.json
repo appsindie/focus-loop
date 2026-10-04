@@ -3,7 +3,7 @@
     "name": "Focus Loop",
     "slug": "focus-loop",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
     "scheme": "focusloop",
@@ -49,7 +49,7 @@
           "widgets": [
             {
               "name": "FocusStart",
-              "label": "Focus Loop — Start",
+              "label": "Focus Loop \u2014 Start",
               "description": "Start a focus session with your last-used rhythm",
               "minWidth": "110dp",
               "minHeight": "40dp",
@@ -60,7 +60,7 @@
             },
             {
               "name": "FocusNext",
-              "label": "Focus Loop — Next up",
+              "label": "Focus Loop \u2014 Next up",
               "description": "Week progress and your next focus",
               "minWidth": "250dp",
               "minHeight": "110dp",
@@ -138,12 +138,34 @@
           "microphonePermission": false,
           "recordAudioAndroid": false
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "extra": {
       "eas": {
         "projectId": "592916ef-5e3c-4257-b853-cbcf0d21aa78"
       }
+    },
+    "locales": {
+      "en": "./src/i18n/native/en.strings.json",
+      "es": "./src/i18n/native/es.strings.json",
+      "pt-BR": "./src/i18n/native/pt-BR.strings.json",
+      "de": "./src/i18n/native/de.strings.json",
+      "fr": "./src/i18n/native/fr.strings.json",
+      "it": "./src/i18n/native/it.strings.json",
+      "ja": "./src/i18n/native/ja.strings.json",
+      "ko": "./src/i18n/native/ko.strings.json",
+      "zh-Hans": "./src/i18n/native/zh-Hans.strings.json",
+      "zh-Hant": "./src/i18n/native/zh-Hant.strings.json",
+      "ru": "./src/i18n/native/ru.strings.json",
+      "tr": "./src/i18n/native/tr.strings.json",
+      "id": "./src/i18n/native/id.strings.json",
+      "vi": "./src/i18n/native/vi.strings.json",
+      "th": "./src/i18n/native/th.strings.json",
+      "pl": "./src/i18n/native/pl.strings.json",
+      "nl": "./src/i18n/native/nl.strings.json",
+      "ar": "./src/i18n/native/ar.strings.json",
+      "hi": "./src/i18n/native/hi.strings.json"
     },
     "owner": "appsindie"
   }

@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DisplayMode } from "../../settings/SettingsStore";
 import { ParkedThought } from "../parkedThoughts";
 import { LoopStep } from "../loopPlan";
+import { t } from "../../../i18n";
 import { Palette, fonts, typography } from "../../../shared/theme";
 import {
   DisplayToggle,
@@ -14,6 +15,7 @@ import {
 import { Sheet } from "../../../shared/ui/Sheet";
 import { FocusDisc } from "../ui/FocusDisc";
 import { LoopStrip } from "../ui/LoopStrip";
+import { useIsLandscape, useIsTablet, TABLET_PADDING } from "../../../shared/layout";
 
 function fmtMMSS(totalSeconds: number): { minutes: string; seconds: string } {
   const m = Math.floor(totalSeconds / 60);
@@ -74,6 +76,9 @@ export function FocusScreen({
   onEndEarlySave: () => void;
   onEndEarlyDiscard: () => void;
 }) {
+  const isTablet = useIsTablet();
+  const isLandscape = useIsLandscape();
+  const tabletSplit = isTablet && isLandscape;
   const [laterOpen, setLaterOpen] = useState(false);
   const [endEarlyOpen, setEndEarlyOpen] = useState(false);
   const [draft, setDraft] = useState("");
@@ -83,10 +88,14 @@ export function FocusScreen({
   const mmss = fmtMMSS(remainingSeconds);
   const nextLabel =
     nextStep?.kind === "break"
-      ? `Next: ${Math.round(nextStep.durationSeconds / 60)} min break`
+      ? t("Next: {minutes} min break", {
+          minutes: Math.round(nextStep.durationSeconds / 60),
+        })
       : nextStep?.kind === "longBreak"
-        ? `Next: ${Math.round(nextStep.durationSeconds / 60)} min long break`
-        : "Next: loop done";
+        ? t("Next: {minutes} min long break", {
+            minutes: Math.round(nextStep.durationSeconds / 60),
+          })
+        : t("Next: loop done");
 
   const openEndEarly = () => {
     onPause(); // P09: the sheet pauses the timer while open.
@@ -112,91 +121,163 @@ export function FocusScreen({
     setLaterOpen(false);
   };
 
-  return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.bg }]}>
-      <View style={styles.header}>
-        <Text style={[styles.kicker, { color: colors.focusText }]}>
-          FOCUS {focusNumber} OF {totalFocus}
-        </Text>
-        <DisplayToggle mode={displayMode} onChange={onDisplayModeChange} colors={colors} />
-      </View>
-      {intention != null && intention !== "" ? (
-        <Text style={[styles.intention, { color: colors.ink2 }]} numberOfLines={2}>
-          {intention}
-        </Text>
-      ) : null}
+  // T02 (landscape): 540px disc left; intention, time, strip, parked list and
+  // controls right. T06 (portrait numbers): the minutes readout grows to 380pt.
+  const tabletMinutesSize = isTablet ? (isLandscape ? 200 : 380) : undefined;
+  const tabletSecondsSize = isTablet ? (isLandscape ? 96 : 200) : undefined;
 
-      <View style={styles.timeArea}>
-        {displayMode === "disc" ? (
-          <>
-            <FocusDisc
-              progress={progress}
-              remainingMinutes={formatMinutesLeft(remainingSeconds)}
-              colors={colors}
-            />
-            <Text style={[styles.about, { color: colors.muted }]}>
-              about {formatMinutesLeft(remainingSeconds)} min left
-            </Text>
-          </>
-        ) : (
-          <View style={styles.numbersWrap}>
-            <View style={styles.numbersRow}>
-              <Text style={[styles.minutes, { color: colors.ink }]} maxFontSizeMultiplier={1.3}>
-                {mmss.minutes}
-              </Text>
-              {showSeconds ? (
-                <Text style={[styles.seconds, { color: colors.faint }]}>{mmss.seconds}</Text>
-              ) : null}
-            </View>
-            <Text style={[styles.about, { color: colors.muted }]}>
-              {formatMinutesLeft(remainingSeconds)} minutes left · ends {formatClock(endsAtMs)}
-            </Text>
-          </View>
-        )}
-      </View>
+  const headerBlock = (
+    <View style={styles.header}>
+      <Text style={[styles.kicker, { color: colors.focusText }]}>
+        {t("FOCUS {n} OF {total}", { n: focusNumber, total: totalFocus })}
+      </Text>
+      <DisplayToggle mode={displayMode} onChange={onDisplayModeChange} colors={colors} />
+    </View>
+  );
 
-      <View style={styles.stripArea}>
-        <LoopStrip
-          steps={steps}
-          currentIndex={currentIndex}
-          currentProgress={progress}
+  const intentionBlock =
+    intention != null && intention !== "" ? (
+      <Text style={[styles.intention, { color: colors.ink2 }]} numberOfLines={2}>
+        {intention}
+      </Text>
+    ) : null;
+
+  const timeBlock =
+    displayMode === "disc" ? (
+      <>
+        <FocusDisc
+          progress={progress}
+          remainingMinutes={formatMinutesLeft(remainingSeconds)}
           colors={colors}
+          {...(tabletSplit ? { size: 540 } : {})}
         />
-        <Text style={[styles.next, { color: colors.muted }]}>{nextLabel}</Text>
+        <Text style={[styles.about, { color: colors.muted }]}>
+          {t("about {minutes} min left", { minutes: formatMinutesLeft(remainingSeconds) })}
+        </Text>
+      </>
+    ) : (
+      <View style={styles.numbersWrap}>
+        <View style={styles.numbersRow}>
+          <Text
+            style={[
+              styles.minutes,
+              { color: colors.ink },
+              tabletMinutesSize != null ? { fontSize: tabletMinutesSize } : null,
+            ]}
+            maxFontSizeMultiplier={1.3}
+          >
+            {mmss.minutes}
+          </Text>
+          {showSeconds ? (
+            <Text
+              style={[
+                styles.seconds,
+                { color: colors.faint },
+                tabletSecondsSize != null ? { fontSize: tabletSecondsSize } : null,
+              ]}
+            >
+              {mmss.seconds}
+            </Text>
+          ) : null}
+        </View>
+        <Text style={[styles.about, { color: colors.muted }]}>
+          {t("{minutes} minutes left · ends {endsAt}", {
+            minutes: formatMinutesLeft(remainingSeconds),
+            endsAt: formatClock(endsAtMs),
+          })}
+        </Text>
       </View>
+    );
 
-      <View style={styles.controls}>
-        {paused ? (
-          <SecondaryButton label="Resume" onPress={onResume} colors={colors} />
-        ) : (
-          <SecondaryButton label="Pause" onPress={onPause} colors={colors} />
-        )}
-        <TextButton label="End early…" onPress={openEndEarly} colors={colors} />
-        <Pressable
-          onPress={() => setLaterOpen(true)}
-          accessibilityRole="button"
-          accessibilityLabel="Park a thought for later — the timer keeps running"
-          hitSlop={8}
-          style={styles.laterLink}
-        >
-          <Text style={[styles.laterText, { color: colors.muted }]}>Later, not now…</Text>
-        </Pressable>
+  const stripBlock = (
+    <View style={styles.stripArea}>
+      <LoopStrip
+        steps={steps}
+        currentIndex={currentIndex}
+        currentProgress={progress}
+        colors={colors}
+      />
+      <Text style={[styles.next, { color: colors.muted }]}>{nextLabel}</Text>
+    </View>
+  );
+
+  const controlsBlock = (
+    <View style={styles.controls}>
+      {paused ? (
+        <SecondaryButton label={t("Resume")} onPress={onResume} colors={colors} />
+      ) : (
+        <SecondaryButton label={t("Pause")} onPress={onPause} colors={colors} />
+      )}
+      <TextButton label={t("End early…")} onPress={openEndEarly} colors={colors} />
+      <Pressable
+        onPress={() => setLaterOpen(true)}
+        accessibilityRole="button"
+        accessibilityLabel={t("Park a thought for later — the timer keeps running")}
+        hitSlop={8}
+        style={styles.laterLink}
+      >
+        <Text style={[styles.laterText, { color: colors.muted }]}>{t("Later, not now…")}</Text>
+      </Pressable>
+    </View>
+  );
+
+  // T02 right column shows the parked list inline (phone: inside the sheet).
+  const parkedPanel =
+    tabletSplit && parkedThoughts.length > 0 ? (
+      <View style={styles.parkedPanel}>
+        <Text style={[styles.parkedPanelTitle, { color: colors.faint }]}>{t("PARKED")}</Text>
+        {parkedThoughts.slice(-3).map((thought) => (
+          <Text
+            key={thought.id}
+            style={[styles.parkedPanelItem, { color: colors.ink2 }]}
+            numberOfLines={1}
+          >
+            {thought.text}
+          </Text>
+        ))}
       </View>
+    ) : null;
+
+  return (
+    <SafeAreaView
+      style={[styles.root, { backgroundColor: colors.bg }, isTablet && { padding: TABLET_PADDING }]}
+    >
+      {tabletSplit ? (
+        <View style={styles.splitRow}>
+          <View style={styles.splitLeft}>{timeBlock}</View>
+          <ScrollView style={styles.splitRight} contentContainerStyle={styles.splitRightContent}>
+            {headerBlock}
+            {intentionBlock}
+            {displayMode === "numbers" ? timeBlock : null}
+            {stripBlock}
+            {parkedPanel}
+            {controlsBlock}
+          </ScrollView>
+        </View>
+      ) : (
+        <>
+          {headerBlock}
+          {intentionBlock}
+          <View style={styles.timeArea}>{timeBlock}</View>
+          {stripBlock}
+          {controlsBlock}
+        </>
+      )}
 
       {/* P08 SHT-later: one field, parked list, Cancel / Park it. Timer keeps running. */}
       <Sheet
         visible={laterOpen}
         onDismiss={() => setLaterOpen(false)}
         colors={colors}
-        accessibilityLabel="Park a thought"
+        accessibilityLabel={t("Park a thought")}
       >
-        <Text style={[styles.sheetTitle, { color: colors.ink }]}>Park it for later</Text>
+        <Text style={[styles.sheetTitle, { color: colors.ink }]}>{t("Park it for later")}</Text>
         <TextInput
           value={draft}
           onChangeText={setDraft}
-          placeholder="What popped into your head?"
+          placeholder={t("What popped into your head?")}
           placeholderTextColor={colors.faint}
-          accessibilityLabel="What popped into your head?"
+          accessibilityLabel={t("What popped into your head?")}
           autoFocus
           style={[
             styles.sheetInput,
@@ -207,19 +288,19 @@ export function FocusScreen({
         />
         {parkedThoughts.length > 0 ? (
           <View style={styles.parkedList}>
-            {parkedThoughts.slice(0, 5).map((t) => (
+            {parkedThoughts.slice(0, 5).map((thought) => (
               <Text
-                key={t.id}
+                key={thought.id}
                 style={[styles.parkedItem, { color: colors.ink2 }]}
                 numberOfLines={1}
               >
-                {t.text}
+                {thought.text}
               </Text>
             ))}
           </View>
         ) : null}
-        <PrimaryButton label="Park it" onPress={parkDraft} colors={colors} />
-        <TextButton label="Cancel" onPress={() => setLaterOpen(false)} colors={colors} />
+        <PrimaryButton label={t("Park it")} onPress={parkDraft} colors={colors} />
+        <TextButton label={t("Cancel")} onPress={() => setLaterOpen(false)} colors={colors} />
       </Sheet>
 
       {/* P09 SHT-end-early: pauses while open; Keep going / End and save N / Discard. */}
@@ -227,21 +308,26 @@ export function FocusScreen({
         visible={endEarlyOpen}
         onDismiss={() => closeEndEarly("keep")}
         colors={colors}
-        accessibilityLabel="End this focus early"
+        accessibilityLabel={t("End this focus early")}
       >
-        <Text style={[styles.sheetTitle, { color: colors.ink }]}>End early?</Text>
+        <Text style={[styles.sheetTitle, { color: colors.ink }]}>{t("End early?")}</Text>
         <Text style={[styles.sheetBody, { color: colors.muted }]}>
-          You've focused {Math.floor(elapsedSeconds / 60)} min — ending early still counts toward
-          your week.
+          {t("You've focused {minutes} min — ending early still counts toward your week.", {
+            minutes: Math.floor(elapsedSeconds / 60),
+          })}
         </Text>
-        <PrimaryButton label="Keep going" onPress={() => closeEndEarly("keep")} colors={colors} />
+        <PrimaryButton
+          label={t("Keep going")}
+          onPress={() => closeEndEarly("keep")}
+          colors={colors}
+        />
         <SecondaryButton
-          label={`End and save ${Math.floor(elapsedSeconds / 60)} min`}
+          label={t("End and save {minutes} min", { minutes: Math.floor(elapsedSeconds / 60) })}
           onPress={() => closeEndEarly("save")}
           colors={colors}
         />
         <TextButton
-          label="Discard this session"
+          label={t("Discard this session")}
           onPress={() => closeEndEarly("discard")}
           colors={colors}
         />
@@ -274,6 +360,13 @@ const styles = StyleSheet.create({
   },
   stripArea: { gap: 10 },
   next: { ...typography.caption, fontSize: 14 },
+  splitRow: { flex: 1, flexDirection: "row", alignItems: "center", gap: 32 },
+  splitLeft: { alignItems: "center", justifyContent: "center" },
+  splitRight: { flex: 1, alignSelf: "stretch" },
+  splitRightContent: { gap: 14, justifyContent: "center", flexGrow: 1 },
+  parkedPanel: { gap: 4, marginTop: 4 },
+  parkedPanelTitle: { ...typography.caption, fontWeight: "600", letterSpacing: 1 },
+  parkedPanelItem: { ...typography.body, fontSize: 15 },
   controls: { gap: 4, marginTop: 16 },
   laterLink: { alignSelf: "center", minHeight: 44, justifyContent: "center" },
   laterText: { ...typography.body },

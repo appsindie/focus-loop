@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
+import { TABLET_PADDING, useIsTablet } from "../../../shared/layout";
 import { PrimaryButton, TextButton } from "../../../shared/ui/Buttons";
 
 type Props = {
@@ -14,25 +16,32 @@ type Props = {
 // closed. Confirm the session was saved with zero blame copy, then route on.
 export function WelcomeBackScreen({ colors, focusedSeconds, onHowDidItGo, onSkipToBreak }: Props) {
   const minutes = Math.max(1, Math.round(focusedSeconds / 60));
+  const isTablet = useIsTablet();
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.bg }]}>
+    <SafeAreaView
+      style={[
+        styles.root,
+        { backgroundColor: colors.bg },
+        isTablet && { paddingHorizontal: TABLET_PADDING },
+      ]}
+    >
       <View style={styles.center}>
-        <Text style={[styles.kicker, { color: colors.muted }]}>WELCOME BACK</Text>
+        <Text style={[styles.kicker, { color: colors.muted }]}>{t("WELCOME BACK")}</Text>
         <Text style={[styles.headline, { color: colors.ink }]}>
-          Your {minutes}-minute focus was saved.
+          {t("Your {minutes}-minute focus was saved.", { minutes })}
         </Text>
         <Text style={[styles.body, { color: colors.ink2 }]}>
-          The app closed, but the time you put in still counts.
+          {t("The app closed, but the time you put in still counts.")}
         </Text>
       </View>
       <View style={styles.actions}>
         <PrimaryButton
-          label="How did it go?"
+          label={t("How did it go?")}
           onPress={onHowDidItGo}
           variant="ink"
           colors={colors}
         />
-        <TextButton label="Skip to break" onPress={onSkipToBreak} colors={colors} />
+        <TextButton label={t("Skip to break")} onPress={onSkipToBreak} colors={colors} />
       </View>
     </SafeAreaView>
   );

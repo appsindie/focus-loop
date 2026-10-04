@@ -2,6 +2,7 @@ import * as Notifications from "expo-notifications";
 import { PermissionStatus, SchedulableTriggerInputTypes } from "expo-notifications";
 import { eveningNoteDates, eveningNoteIdentifier } from "./eveningNote";
 import { Reminder, ReminderPrefs } from "./reminderStore";
+import { t } from "../../i18n";
 
 // J5 reminders live under their own identifier family — step alerts
 // (focus-loop-step-alert) are owned by NotificationScheduler and must never be
@@ -23,18 +24,22 @@ function reminderContent(reminder: Reminder): Notifications.NotificationContentI
   const hh = String(reminder.hour).padStart(2, "0");
   const mm = String(reminder.minute).padStart(2, "0");
   return {
-    title: "Focus time",
-    body: `Your ${hh}:${mm} focus is planned — tap to start your rhythm.`,
+    title: t("Focus time"),
+    body: t("Your {time} focus is planned — tap to start your rhythm.", {
+      time: `${hh}:${mm}`,
+    }),
     // The tap routes through the same deep-link intent as the J4 widgets.
     data: { url: "focusloop://start" },
   };
 }
 
-const EVENING_NOTE_CONTENT: Notifications.NotificationContentInput = {
-  title: "Still time to focus",
-  body: "Goal day — a short focus still counts for your week.",
-  data: { url: "focusloop://start" },
-};
+function eveningNoteContent(): Notifications.NotificationContentInput {
+  return {
+    title: t("Still time to focus"),
+    body: t("Goal day — a short focus still counts for your week."),
+    data: { url: "focusloop://start" },
+  };
+}
 
 // Serialise schedule mutations the same way step alerts do — reconciles fire
 // from settings writes, foregrounding and session writes, so check→cancel→
@@ -137,7 +142,7 @@ export function syncReminderSchedules(prefs: ReminderPrefs, context: SyncContext
         }
         await Notifications.scheduleNotificationAsync({
           identifier,
-          content: EVENING_NOTE_CONTENT,
+          content: eveningNoteContent(),
           trigger: { type: SchedulableTriggerInputTypes.DATE, date },
         });
       }

@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
 import { PrimaryButton } from "../../../shared/ui/Buttons";
 
@@ -19,25 +20,25 @@ export function PlusWelcomeScreen({
           ✦
         </Text>
         <Text style={[styles.title, { color: colors.ink }]} allowFontScaling>
-          Welcome to Plus
+          {t("Welcome to Plus")}
         </Text>
         <Text style={[styles.line, { color: colors.ink2 }]} allowFontScaling>
-          Ads are gone for good.
+          {t("Ads are gone for good.")}
         </Text>
         <View style={styles.unlocks}>
           <Text style={[styles.unlock, { color: colors.ink2 }]} allowFontScaling>
-            Full focus history
+            {t("Full focus history")}
           </Text>
           <Text style={[styles.unlock, { color: colors.ink2 }]} allowFontScaling>
-            All themes & sounds
+            {t("All themes & sounds")}
           </Text>
           <Text style={[styles.unlock, { color: colors.ink2 }]} allowFontScaling>
-            Unlimited share cards
+            {t("Unlimited share cards")}
           </Text>
         </View>
       </View>
       <View style={styles.footer}>
-        <PrimaryButton label="Back to my loop" onPress={onContinue} colors={colors} />
+        <PrimaryButton label={t("Back to my loop")} onPress={onContinue} colors={colors} />
       </View>
     </SafeAreaView>
   );

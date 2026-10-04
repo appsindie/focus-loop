@@ -3,14 +3,16 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { FocusSession } from "../SessionLog";
 import { LoopStep } from "../loopPlan";
 import { WeekProgress } from "../weeklyGoal";
+import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
+import { TABLET_PADDING, useIsTablet } from "../../../shared/layout";
 import { PrimaryButton, SecondaryButton } from "../../../shared/ui/Buttons";
 import { LoopStrip } from "../ui/LoopStrip";
 
-const OUTCOME_LABEL: Record<string, string> = {
-  finished: "Finished",
-  "moved-forward": "Moved forward",
-  "got-stuck": "Got stuck",
+const OUTCOME_LABEL: Record<string, () => string> = {
+  finished: () => t("Finished"),
+  "moved-forward": () => t("Moved forward"),
+  "got-stuck": () => t("Got stuck"),
 };
 
 // P12: total focus minutes, full strip, one row per focus (intention + outcome),
@@ -40,10 +42,19 @@ export function LoopDoneScreen({
   );
   const lb = `${Math.floor(longBreakSeconds / 60)}:${String(longBreakSeconds % 60).padStart(2, "0")}`;
 
+  const isTablet = useIsTablet();
   return (
-    <SafeAreaView style={[styles.root, { backgroundColor: colors.bg }]}>
-      <Text style={[styles.kicker, { color: colors.break }]}>LOOP COMPLETE</Text>
-      <Text style={[styles.headline, { color: colors.ink }]}>{totalMinutes} min of focus</Text>
+    <SafeAreaView
+      style={[
+        styles.root,
+        { backgroundColor: colors.bg },
+        isTablet && { paddingHorizontal: TABLET_PADDING },
+      ]}
+    >
+      <Text style={[styles.kicker, { color: colors.break }]}>{t("LOOP COMPLETE")}</Text>
+      <Text style={[styles.headline, { color: colors.ink }]}>
+        {t("{minutes} min of focus", { minutes: totalMinutes })}
+      </Text>
       <LoopStrip steps={steps} currentIndex={steps.length} colors={colors} />
 
       <View style={styles.rows}>
@@ -54,31 +65,34 @@ export function LoopDoneScreen({
           >
             <Text style={[styles.rowIndex, { color: colors.faint }]}>{i + 1}</Text>
             <Text style={[styles.rowIntention, { color: colors.ink }]} numberOfLines={1}>
-              {s.intention ?? "No note"}
+              {s.intention ?? t("No note")}
             </Text>
             <Text style={[styles.rowOutcome, { color: colors.muted }]}>
-              {OUTCOME_LABEL[s.outcome ?? ""] ?? ""}
+              {OUTCOME_LABEL[s.outcome ?? ""]?.() ?? ""}
             </Text>
           </View>
         ))}
       </View>
 
       <Text style={[styles.weekLine, { color: colors.muted }]}>
-        {week.daysMet} of {week.goalDays} days this week
-        {week.goalMet ? " — goal met" : ""}
+        {t("{daysMet} of {goalDays} days this week", {
+          daysMet: week.daysMet,
+          goalDays: week.goalDays,
+        })}
+        {week.goalMet ? t(" — goal met") : ""}
       </Text>
 
       <View style={styles.actions}>
         <PrimaryButton
-          label={`Long break ${lb}`}
+          label={t("Long break {duration}", { duration: lb })}
           onPress={onStartLongBreak}
           colors={colors}
           variant="break"
         />
-        <SecondaryButton label="Share my week" onPress={onShareWeek} colors={colors} />
+        <SecondaryButton label={t("Share my week")} onPress={onShareWeek} colors={colors} />
       </View>
       <Text style={[styles.skip, { color: colors.muted }]} onPress={onSkipLongBreak}>
-        Done for now
+        {t("Done for now")}
       </Text>
     </SafeAreaView>
   );

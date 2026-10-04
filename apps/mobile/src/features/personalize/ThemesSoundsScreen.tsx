@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { t } from "../../i18n";
 import { Palette, radii, spacing, typography } from "../../shared/theme";
+import { TABLET_PADDING, useIsTablet } from "../../shared/layout";
 import { PrimaryButton, SecondaryButton, TextButton } from "../../shared/ui/Buttons";
 import { Sheet } from "../../shared/ui/Sheet";
 import { trackEvent } from "../analytics/events";
@@ -35,13 +37,15 @@ type AdState = "idle" | "loading" | "failed";
 
 function lockHint(item: CatalogueItem, trialEnds: Date | null): string | null {
   if (trialEnds != null) {
-    return `trial until ${trialEnds.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+    return t("trial until {time}", {
+      time: trialEnds.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    });
   }
   if (item.tier === "plus") {
-    return "Plus";
+    return t("Plus");
   }
   if (item.tier === "trial") {
-    return "24h trial";
+    return t("24h trial");
   }
   return null;
 }
@@ -106,7 +110,9 @@ export function ThemesSoundsScreen({
         key={item.id}
         onPress={() => pickItem(item)}
         accessibilityRole="button"
-        accessibilityLabel={`${item.name}${unlocked ? "" : ` — locked, ${hint ?? "Plus"}`}`}
+        accessibilityLabel={
+          t(item.name) + (unlocked ? "" : t(" — locked, {hint}", { hint: hint ?? t("Plus") }))
+        }
         accessibilityState={{ selected }}
         style={({ pressed }) => [
           styles.soundRow,
@@ -115,7 +121,7 @@ export function ThemesSoundsScreen({
         ]}
       >
         <Text style={[styles.rowName, { color: colors.ink }]} allowFontScaling>
-          {item.name}
+          {t(item.name)}
         </Text>
         {selected ? (
           <Text style={[styles.rowStatus, { color: colors.ink }]}>✓</Text>
@@ -130,29 +136,36 @@ export function ThemesSoundsScreen({
     );
   };
 
+  const isTablet = useIsTablet();
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.bg }]}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        { backgroundColor: colors.bg },
+        isTablet && { paddingHorizontal: TABLET_PADDING },
+      ]}
+    >
       <View style={styles.header}>
         <Pressable
-          accessibilityLabel="Back to settings"
+          accessibilityLabel={t("Back to settings")}
           accessibilityRole="button"
           onPress={onBack}
           hitSlop={8}
           style={styles.backButton}
         >
           <Text style={[styles.backButtonText, { color: colors.ink }]} allowFontScaling>
-            Back
+            {t("Back")}
           </Text>
         </Pressable>
         <Text style={[styles.title, { color: colors.ink }]} allowFontScaling>
-          Themes & sounds
+          {t("Themes & sounds")}
         </Text>
         <View style={styles.backButton} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll}>
         <Text style={[styles.sectionTitle, { color: colors.ink }]} allowFontScaling>
-          Disc colour
+          {t("Disc colour")}
         </Text>
         <View style={styles.swatchRow}>
           {DISC_COLORS.map((item) => {
@@ -164,7 +177,10 @@ export function ThemesSoundsScreen({
                 key={item.id}
                 onPress={() => pickItem(item)}
                 accessibilityRole="button"
-                accessibilityLabel={`${item.name}${unlocked ? "" : ` — locked, ${hint ?? "Plus"}`}`}
+                accessibilityLabel={
+                  t(item.name) +
+                  (unlocked ? "" : t(" — locked, {hint}", { hint: hint ?? t("Plus") }))
+                }
                 accessibilityState={{ selected }}
                 style={({ pressed }) => [styles.swatchWrap, pressed && { opacity: 0.75 }]}
               >
@@ -179,7 +195,7 @@ export function ThemesSoundsScreen({
                   style={[styles.swatchName, { color: selected ? colors.ink : colors.muted }]}
                   allowFontScaling
                 >
-                  {item.name}
+                  {t(item.name)}
                 </Text>
                 {hint != null ? (
                   <Text style={[styles.swatchHint, { color: colors.muted }]} allowFontScaling>
@@ -192,7 +208,7 @@ export function ThemesSoundsScreen({
         </View>
 
         <Text style={[styles.sectionTitle, { color: colors.ink }]} allowFontScaling>
-          Focus sound
+          {t("Focus sound")}
         </Text>
         <View style={styles.soundList}>{FOCUS_SOUNDS.map(itemRow)}</View>
 
@@ -200,7 +216,7 @@ export function ThemesSoundsScreen({
           <Pressable
             onPress={onUpgrade}
             accessibilityRole="button"
-            accessibilityLabel="Get Focus Loop Plus"
+            accessibilityLabel={t("Get Focus Loop Plus")}
             style={({ pressed }) => [
               styles.plusCard,
               { backgroundColor: colors.surface, borderColor: colors.rule },
@@ -208,10 +224,10 @@ export function ThemesSoundsScreen({
             ]}
           >
             <Text style={[styles.plusTitle, { color: colors.ink }]} allowFontScaling>
-              Get Plus
+              {t("Get Plus")}
             </Text>
             <Text style={[styles.plusBody, { color: colors.muted }]} allowFontScaling>
-              Keep every colour and sound forever
+              {t("Keep every colour and sound forever")}
             </Text>
           </Pressable>
         )}
@@ -222,28 +238,30 @@ export function ThemesSoundsScreen({
         visible={trialItem != null}
         onDismiss={() => setTrialItem(null)}
         colors={colors}
-        accessibilityLabel={`Try ${trialItem?.name ?? "item"} for 24 hours`}
+        accessibilityLabel={t("Try {name} for 24 hours", {
+          name: trialItem != null ? t(trialItem.name) : t("item"),
+        })}
       >
         {trialItem != null ? (
           <>
             <Text style={[styles.sheetTitle, { color: colors.ink }]} allowFontScaling>
-              Try {trialItem.name} for 24 hours
+              {t("Try {name} for 24 hours", { name: t(trialItem.name) })}
             </Text>
             <Text style={[styles.sheetBody, { color: colors.muted }]} allowFontScaling>
-              Watch one short video. Or keep it forever with Plus.
+              {t("Watch one short video. Or keep it forever with Plus.")}
             </Text>
             {adState === "failed" ? (
               <Text style={[styles.adError, { color: colors.danger }]} allowFontScaling>
-                Couldn't load the video. Try again
+                {t("Couldn't load the video. Try again")}
               </Text>
             ) : null}
             <PrimaryButton
               label={
                 adState === "loading"
-                  ? "Loading video…"
+                  ? t("Loading video…")
                   : adState === "failed"
-                    ? "Try again"
-                    : "Watch video"
+                    ? t("Try again")
+                    : t("Watch video")
               }
               onPress={() => {
                 if (adState !== "loading") {
@@ -253,14 +271,14 @@ export function ThemesSoundsScreen({
               colors={colors}
             />
             <SecondaryButton
-              label="Get Plus"
+              label={t("Get Plus")}
               onPress={() => {
                 setTrialItem(null);
                 onUpgrade();
               }}
               colors={colors}
             />
-            <TextButton label="Not now" onPress={() => setTrialItem(null)} colors={colors} />
+            <TextButton label={t("Not now")} onPress={() => setTrialItem(null)} colors={colors} />
           </>
         ) : null}
       </Sheet>

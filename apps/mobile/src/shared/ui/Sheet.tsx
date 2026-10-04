@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Modal, Pressable, StyleSheet, View } from "react-native";
+import { t } from "../../i18n";
 import { Palette, radii } from "../theme";
 
 // §3 Sheet: bottom sheet, radius 24 top, `surface`, over `scrim`.
@@ -29,7 +30,7 @@ export function Sheet({
         <Pressable
           style={[StyleSheet.absoluteFill, { backgroundColor: colors.scrim }]}
           onPress={onDismiss}
-          accessibilityLabel="Dismiss"
+          accessibilityLabel={t("Dismiss")}
         />
         <View style={[styles.card, { backgroundColor: colors.surface }]}>{children}</View>
       </View>

@@ -66,6 +66,8 @@ import { WeekScreen } from "./src/features/loop/screens/WeekScreen";
 import { WelcomeBackScreen } from "./src/features/loop/screens/WelcomeBackScreen";
 import { parseFocusLoopUrl, type FocusLoopIntent } from "./src/linking";
 import { palette, typography, usePalette } from "./src/shared/theme";
+import { useIsTablet } from "./src/shared/layout";
+import { t } from "./src/i18n";
 
 function KeepAwakeActivator() {
   useKeepAwake();
@@ -284,6 +286,26 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
     await saveReminderPrefs(prefs);
   }, []);
   const focusedToday = sessionsOnDay(sessions, new Date()).length > 0;
+  const todayFocusCount = sessionsOnDay(sessions, new Date()).length;
+  // DESIGN.md §4: phones stay portrait; tablets may rotate to reach the
+  // T02 landscape layout (app.json orientation moved to "default").
+  const isTablet = useIsTablet();
+  useEffect(() => {
+    try {
+      /* eslint-disable @typescript-eslint/no-require-imports -- lazy require: the
+         module is native-only; a top-level import breaks jest and web preview. */
+      const ScreenOrientation =
+        require("expo-screen-orientation") as typeof import("expo-screen-orientation");
+      /* eslint-enable @typescript-eslint/no-require-imports */
+      void ScreenOrientation.lockAsync(
+        isTablet
+          ? ScreenOrientation.OrientationLock.ALL
+          : ScreenOrientation.OrientationLock.PORTRAIT_UP,
+      );
+    } catch {
+      // Module absent (jest / web preview): OS lock from app.json still applies.
+    }
+  }, [isTablet]);
   const goalUnmet = week.daysMet < settings.weeklyGoalDays;
   useEffect(() => {
     void syncReminderSchedules(reminderPrefs, {
@@ -323,7 +345,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
   // P20: a row's one-line summary for the first enabled reminder.
   const remindersSummary = useMemo(() => {
     const first = reminderPrefs.reminders.find((r) => r.enabled);
-    return first == null ? "Off" : reminderSummaryLine(first);
+    return first == null ? t("Off") : reminderSummaryLine(first);
   }, [reminderPrefs]);
 
   // P20 "Export sessions (CSV)" — generic failure copy only (no native error).
@@ -331,7 +353,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
   const onExportData = useCallback(() => {
     void (async () => {
       const result = await shareCsvFile(sessionsToCsv(sessions));
-      setExportMessage(result === "shared" ? null : "Couldn't export right now. Try again.");
+      setExportMessage(result === "shared" ? null : t("Couldn't export right now. Try again."));
     })();
   }, [sessions]);
 
@@ -353,7 +375,9 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
   }, [persistSettings, resetAllData]);
 
   const keepAwake =
-    (route === "focus" || route === "break") && (phase === "running" || phase === "paused");
+    (route === "focus" || route === "break") &&
+    (phase === "running" || phase === "paused") &&
+    settings.keepScreenOn;
   const darkStatus = route === "break" || colors === palette.dark;
 
   return (
@@ -377,18 +401,28 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           intention={intentionDraft}
           onIntentionChange={setIntentionDraft}
           parked={mostRecentUnused(parkedThoughts)}
+          parkedThoughts={parkedThoughts}
           onUseParkedThought={(t) => void adoptParked(t)}
           week={week}
           todayMinutes={todayMinutes}
+          todayFocusCount={todayFocusCount}
           isNewWeek={isNewWeek}
           onStart={startFocus}
           onOpenSettings={() => go("settings")}
           onOpenWeek={() => go("week")}
+          bannerSlot={
+            isTablet ? (
+              <View style={[styles.bannerSlot, { backgroundColor: colors.bg }]}>
+                <Banner hasAdsRemoval={hasAdsRemoval} />
+              </View>
+            ) : undefined
+          }
         />
       ) : null}
-      {route === "home" ? (
+      {route === "home" && !isTablet ? (
         // P04 free-tier banner, 320x50 pinned to the bottom of Home. Hidden
         // until the entitlement read lands so Plus never flashes an ad (CR-25).
+        // On tablet the same banner sits in Home's right column (T01).
         entitlementLoaded ? (
           <View style={[styles.bannerSlot, { backgroundColor: colors.bg }]}>
             <Banner hasAdsRemoval={hasAdsRemoval} />
@@ -501,8 +535,8 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
               } else {
                 setRestoreMessage(
                   outcome === "none"
-                    ? "No purchases found for this store account."
-                    : "We couldn't reach the store. Check your connection and try again.",
+                    ? t("No purchases found for this store account.")
+                    : t("We couldn't reach the store. Check your connection and try again."),
                 );
               }
             });
@@ -524,6 +558,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
         <WeekScreen
           sessions={sessions}
           week={week}
+          isPlus={hasAdsRemoval /* same validity window as ad removal (J7-R3) */}
           now={new Date()}
           onBack={() => go("home")}
           onHistory={() => go("history")}
@@ -534,6 +569,8 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
       {route === "history" ? (
         <HistoryScreen
           sessions={sessions}
+          week={week}
+          now={new Date()}
           isPlus={hasAdsRemoval /* same validity window as ad removal (J7-R3) */}
           onBack={() => go("home")}
           onWeek={() => go("week")}

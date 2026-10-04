@@ -13,6 +13,7 @@ type LiveActivityModule = {
     endsAtMs: number,
     remainingSeconds: number,
     paused: boolean,
+    stringsJson: string,
   ): void;
   updateActivity(remainingSeconds: number, endsAtMs: number, paused: boolean): void;
   endActivity(): void;
@@ -28,7 +29,10 @@ function loadModule(): LiveActivityModule | null {
 
 let activeAttributes: { stepKind: string; displayMode: string } | null = null;
 
-export function syncLiveSurface(state: RunningStepSurface | null): void {
+export function syncLiveSurface(
+  state: RunningStepSurface | null,
+  strings: Record<string, string> = {},
+): void {
   const mod = loadModule();
   try {
     if (mod == null || !mod.areActivitiesEnabled()) {
@@ -56,6 +60,7 @@ export function syncLiveSurface(state: RunningStepSurface | null): void {
         state.endsAtMs,
         state.remainingSeconds,
         state.paused,
+        JSON.stringify(strings),
       );
       activeAttributes = { stepKind: state.kind, displayMode: state.displayMode };
     } else {

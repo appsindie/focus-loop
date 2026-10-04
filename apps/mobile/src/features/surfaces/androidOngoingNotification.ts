@@ -1,4 +1,5 @@
 import * as Notifications from "expo-notifications";
+import { t } from "../../i18n";
 import type { RunningStepSurface } from "./widgetData";
 
 // Android running-session surface (J4-R3 parity / P23): an ongoing, non-
@@ -18,13 +19,22 @@ function formatUntil(endsAtMs: number): string {
 function copyFor(state: RunningStepSurface): { title: string; body: string } {
   const label =
     state.kind === "focus"
-      ? `Focus ${state.currentFocusNumber} of ${state.totalFocusCount}`
-      : "Break";
+      ? t("Focus {n} of {total}", {
+          n: state.currentFocusNumber,
+          total: state.totalFocusCount,
+        })
+      : t("Break");
   if (state.paused) {
-    return { title: label, body: "Paused" };
+    return { title: label, body: t("Paused") };
   }
   const minutes = Math.max(1, Math.ceil(state.remainingSeconds / 60));
-  return { title: label, body: `~${minutes} min left · until ${formatUntil(state.endsAtMs)}` };
+  return {
+    title: label,
+    body: t("~{minutes} min left · until {endsAt}", {
+      minutes,
+      endsAt: formatUntil(state.endsAtMs),
+    }),
+  };
 }
 
 export async function syncLiveSurface(state: RunningStepSurface | null): Promise<void> {
@@ -37,7 +47,7 @@ export async function syncLiveSurface(state: RunningStepSurface | null): Promise
       return;
     }
     await Notifications.setNotificationChannelAsync(LIVE_CHANNEL_ID, {
-      name: "Focus Loop — in progress",
+      name: t("Focus Loop — in progress"),
       importance: Notifications.AndroidImportance.LOW,
     });
     const { title, body } = copyFor(state);
