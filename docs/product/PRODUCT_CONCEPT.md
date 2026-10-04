@@ -25,8 +25,8 @@ Measured via:
 
 Guard-rail:
 
-- **Ad ARPU within +/-20% of $0.23 by Month 6** — if monetisation collapses, the economics do not support the slot even with good retention.
-- **Build + validation <= 8 weeks** — hard roadmap constraint from Gate 0.
+- **Net blended contribution >= $0.15 / MAU-month by Month 6** — replaces the Gate 0 ad-only guard-rail (ad ARPU +/-20% of $0.23), which the v2 trigger-point design structurally under-shoots; re-baseline flagged for sponsor sign-off at Gate 1 (see re-model below).
+- **Build + validation <= 8 weeks** — hard roadmap constraint from Gate 0; applied per release window under the slice split (see §3).
 
 Rule: every journey and every screen SHALL improve at least one north-star metric — otherwise it is cut.
 
@@ -34,16 +34,27 @@ Rule: every journey and every screen SHALL improve at least one north-star metri
 
 Gate 0 modelled about 2 interstitials per active day at $0.2312 Ad ARPU. The v2 design yields **at most 1 trigger point per active day** (leaving P12 after a completed loop, or leaving P10 after the 2nd focus of an uncompleted loop; the first weekly P12 exit may show the paywall instead), and Plus removes all ads. Re-model — every figure below is a hypothesis until OP-07 produces data:
 
-| Driver              | Assumption                                                                 | Effect                           |
-| ------------------- | -------------------------------------------------------------------------- | -------------------------------- |
-| Interstitial volume | <= 1 trigger per active day (model assumed ~2); AdMob caps can cut further | Ad ARPU ~ $0.10–0.15 / MAU-month |
-| Plus conversion     | ~2% of MAU buy Yearly $19.99 (no willingness-to-pay evidence yet)          | ~$0.033 / MAU-month IAP revenue  |
-| Ad loss to Plus     | Plus users (~2% of MAU) leave the ad pool                                  | ~-2% of ad ARPU                  |
-| Lifetime buyers     | Small one-off $49.99 tail; not modelled                                    | upside only                      |
+| Driver              | Assumption                                                                 | Effect                                                    |
+| ------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Interstitial volume | <= 1 trigger per active day (model assumed ~2); AdMob caps can cut further | Ad ARPU ~ $0.10–0.15 / MAU-month                          |
+| Plus conversion     | ~2% of MAU buy Yearly $19.99 (no willingness-to-pay evidence yet)          | ~$0.023 / MAU-month net IAP revenue (after 30% store fee) |
+| Ad loss to Plus     | Plus users (~2% of MAU) leave the ad pool                                  | ~-2% of ad ARPU                                           |
+| Lifetime buyers     | Small one-off $49.99 tail; not modelled                                    | upside only                                               |
 
-Blended at 14,686 MAU: ~$1,650 ads + ~$490 Plus = **~$2,140/month** — clears the $2,000 target at ~1.5%+ conversion; misses it if ad ARPU lands near $0.10 with <1% conversion. The margin is thin enough that Plus conversion and ad fill are the two numbers OP-07 must measure first.
+Plus revenue is **net of the 30% store commission** ($19.99/yr → ~$1.17/user-month; ~$1.42 at the 15% small-business tier).
 
-**Re-baselined guard-rail (flagged for sponsor sign-off at Gate 1):** the +/-20%-of-$0.23 _ad-ARPU_ guard-rail is designed down by the trigger-point count, so it becomes a **blended ARPU (ads + Plus IAP) >= $0.15 / MAU-month** guard-rail. The Month-6 kill criterion ($0.15) carries over to blended ARPU.
+| Case  | Ad ARPU | Plus conversion of MAU | Blended net / month       | Blended ARPU | vs $2,000           |
+| ----- | ------- | ---------------------- | ------------------------- | ------------ | ------------------- |
+| Lower | $0.10   | 1% (~147 subs)         | ~$1,469 + ~$171 = ~$1,640 | ~$0.11       | miss                |
+| Base  | $0.13   | 2% (~294 subs)         | ~$1,909 + ~$343 = ~$2,250 | ~$0.15       | pass, ~12% headroom |
+| Upper | $0.15   | 3% (~441 subs)         | ~$2,203 + ~$514 = ~$2,720 | ~$0.19       | pass                |
+
+Two honest consequences:
+
+- The **release slice earns ads only** — at $0.10–0.15 it can sit at or below the $0.15 kill line on day one, before Plus ships. That is acceptable only if the slice is treated as the retention experiment it is; the kill reading applies to the fast-follow product, not the bare slice.
+- The **base case barely clears** both the $2,000 target and the $0.15 blended guard-rail; the lower case misses. The Gate 0 economic headroom the v1 model had is gone — halved triggers plus Plus pulling heavy users out of the ad pool.
+
+**Gate 0 re-check — pending sponsor (explicit item at Gate 1 signature):** the v2 design trades ad impressions for retention surface. If the sponsor wants the Gate 0 margin back, the levers are AdMob cap values at build time, the fast-follow shipping early on slice signal, or re-opening the Gate 0 target. This is recorded, not smoothed over: the ±20%-of-$0.23 ad-ARPU guard-rail is retired in favour of **net blended contribution** as the tracked figure.
 
 ## 1. Channels — objective, pain/gain
 
@@ -88,7 +99,7 @@ Blended at 14,686 MAU: ~$1,650 ads + ~$490 Plus = **~$2,140/month** — clears t
 | v2 fast-follow (same cycle, gated) | Monetisation + reach surfaces, released once the slice's retention signal lands                | J7 Plus, J8 rewarded trial, J5 reminders, J6 share card (P19), J10 full customise, P23 Live Activity, tablet T01–T06      | Ships when the slice shows D7/D30 tracking to Gate 0 `validation_metrics` |
 | Later                              | Expand value                                                                                   | Cross-device sync, advanced stats, coach/team, wearables                                                                  | Gate 4 review on v2 actuals                                               |
 
-Order is a dependency constraint: monetisation (J7/J8) ships only in the fast-follow, behind the release-slice signal. Build estimate: slice ~4–5 weeks on the v1 Expo skeleton (timer/ads reused); fast-follow ~3–4 weeks — each inside the 8-week kill criterion. The slice/fast-follow split is shaping-review SR-02's recommended path; the alternative (single v2 with a sponsor-signed <=8-week estimate) is flagged for the sponsor at Gate 1.
+Order is a dependency constraint: monetisation (J7/J8) ships only in the fast-follow, behind the release-slice signal. Build estimate: slice ~4–5 weeks on the v1 Expo skeleton (timer/ads reused); fast-follow ~3–4 weeks — ~7–9 weeks total inside one cycle. **Kill-criterion reading (flagged for sponsor sign-off at Gate 1):** Gate 0's "build <= 8 weeks" is applied per release window (slice, then fast-follow), not to the whole cycle; if the sponsor reads it as whole-cycle, the fast-follow becomes the next cycle. The slice/fast-follow split is shaping-review SR-02's recommended path; the alternative (single v2 with a sponsor-signed <=8-week estimate) is flagged for the sponsor at Gate 1.
 
 ## 4. Journey x persona map (priority)
 

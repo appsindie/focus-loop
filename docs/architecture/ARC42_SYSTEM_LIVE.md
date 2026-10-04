@@ -153,10 +153,11 @@ P14 Paywall -> StoreKit / Play Billing sheet
 **Transition path**
 
 1. v1 Pilot (done): timer + ads + widget — superseded by the v2.1 canvas.
-2. v2 (this cycle): full loop J1–J10 — loop + breaks, Disc/Numbers, weekly goal, widgets/Live Activity, share card, Plus IAP + rewarded 24h trials, tablet.
-3. Later: sync, advanced stats, wearables — re-enters Phase 1 shaping on Gate 4.
+2. v2 release slice (ships first): J1–J4 + J9 — loop + breaks, Disc/Numbers, weekly goal (P04/P17/P18), home-screen widget P24, ad trigger points.
+3. v2 fast-follow (gated on the slice's retention signal): J7 Plus, J8 rewarded 24h trials, J5 reminders, J6 share card, J10 full customise, P23 Live Activity, tablet T01–T06.
+4. Later: sync, advanced stats, wearables — re-enters Phase 1 shaping on Gate 4.
 
-Trigger signal for transition: D7 >= 45% and ad ARPU within +/-20% of $0.23 at Month 3.
+Trigger signal for the fast-follow: the release slice's D7/D30 tracking to Gate 0 `validation_metrics` (see PRODUCT_CONCEPT §3).
 
 Day-one invariant for future sync: session log schema includes stable local IDs and timestamps; no foreign-key assumptions that break sync later.
 

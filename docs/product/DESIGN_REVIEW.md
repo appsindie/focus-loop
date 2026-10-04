@@ -26,7 +26,12 @@ Claude shaping reviewer, verdict **approve-with-concerns** (session `cse_011AtNq
 - SR-04 (minor): ADR-003 gaps → new-user grace owned client-side by the Ad Broker (install-age suppression; AdMob caps stay the outer limiter); entitlement re-verified on app start + expiry via store queries, so lapse/refund revokes Plus without user action.
 - SR-05 (minor): RR-08 deadline silently changed → reverted to 2026-08-20; carried RR-* deadlines recorded as re-baselined at Phase 3 planning.
 
-Two items await sponsor at Gate 1 signature: blended-ARPU guard-rail sign-off, and the slice/fast-follow split vs single-v2 estimate.
+Round-2 re-review (verdict **approve-with-concerns** again): SR-03/04/05 resolved; two follow-up findings, both applied:
+
+- SR-06 (major): the first re-model's own base case (~$0.146 blended, gross Plus figure) sat under its proposed $0.15 guard-rail, and the old ±20%-of-$0.23 guard-rail was still in the document → re-model rewritten net of the 30% store fee with lower/base/upper cases (~$1,640 / ~$2,250 / ~$2,720 per month at 14,686 MAU); the ad-only guard-rail is retired for **net blended contribution >= $0.15/MAU-month**; the thin margin and the ads-only slice are recorded as an explicit **Gate 0 re-check for the sponsor**, not smoothed over.
+- SR-07 (major): the slice split lived only in the concept → spec journeys retagged Release slice / Fast-follow (with surface-level splits inside J4/J6, P23/P24, tablet), ARC42 transition path rewritten to match, `next_action` points at the slice-first build. The 8-week kill-criterion reading (per release window, ~7–9 weeks total) is stated and flagged for sign-off.
+
+Items awaiting sponsor at Gate 1 signature: blended-ARPU guard-rail + Gate 0 economics re-check, the slice/fast-follow split vs single-v2 estimate, and the per-window kill-criterion reading.
 
 ## Round 5 — 2026-10-03 · sponsor answers on the shaping re-pass
 

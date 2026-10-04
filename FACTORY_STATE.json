@@ -28,7 +28,7 @@
     "session_url": "https://claude.ai/code/cse_01XWqVrha4RKPxyY4b5LP45X",
     "verdict": "pending"
   },
-  "next_action": "v2 re-shape on canvas 1791071241-7cd3: spec/concept/architecture rewritten to design journeys J1-J10, sponsor answers recorded in DESIGN_REVIEW round 5. Gate 1 for v2 = merged design-sync PR #2 + gate-signed on the v2 cycle PR; then Phase 2 build on the approved snapshot (QA plan and release evidence need rewriting for J1-J10). Carried v1 RR-* exceptions keep their v1 evidence links; their deadlines are re-baselined at Phase 3 planning for the v2 release.",
+  "next_action": "v2 re-shape on canvas 1791071241-7cd3: spec/concept/architecture rewritten to design journeys J1-J10, sponsor answers recorded in DESIGN_REVIEW round 5. Gate 1 for v2 = merged design-sync PR #2 + gate-signed on the v2 cycle PR; then Phase 2 build on the approved snapshot, starting with the v2 release slice (J1-J4 + J9, weekly-goal surfaces, widget P24, ad trigger points); J7/J8/J5/J6-share/J10/Live Activity/tablet are the gated fast-follow (QA plan and release evidence need rewriting for the split). Carried v1 RR-* exceptions keep their v1 evidence links; their deadlines are re-baselined at Phase 3 planning for the v2 release.",
   "open_exceptions": [
     {
       "blocking": true,
