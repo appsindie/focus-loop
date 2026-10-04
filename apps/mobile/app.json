@@ -132,7 +132,13 @@
       ],
       "expo-sharing",
       "expo-iap",
-      "expo-audio"
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ]
     ],
     "extra": {
       "eas": {
