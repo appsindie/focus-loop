@@ -9,6 +9,7 @@ import { trackEvent } from "../../analytics/events";
 import { buyPlus, restorePlus } from "../purchase";
 import { getDefaultPlusStore, type PlusStore, type StoreProduct } from "../iapPort";
 import { type PlusPlan } from "../plusProducts";
+import { PRIVACY_URL, TERMS_URL } from "../../settings/about";
 
 const BENEFITS = [
   () => t("No ads — ever"),
@@ -221,9 +222,6 @@ export function PaywallScreen({
     </SafeAreaView>
   );
 }
-
-const TERMS_URL = "https://appsindie.com/focus-loop/terms";
-const PRIVACY_URL = "https://appsindie.com/focus-loop/privacy";
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: 20 },
