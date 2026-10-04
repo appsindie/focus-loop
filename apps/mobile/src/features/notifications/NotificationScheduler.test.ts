@@ -4,13 +4,14 @@ import {
   cancelStepAlert,
   clearStepAlertsAtBoot,
   requestNotificationPermissions,
+  STEP_ALERT_IDENTIFIER,
   syncStepAlert,
 } from "./NotificationScheduler";
 
 const getPermissions = jest.mocked(Notifications.getPermissionsAsync);
 const schedule = jest.mocked(Notifications.scheduleNotificationAsync);
 const cancelOne = jest.mocked(Notifications.cancelScheduledNotificationAsync);
-const cancelAll = jest.mocked(Notifications.cancelAllScheduledNotificationsAsync);
+const getAll = jest.mocked(Notifications.getAllScheduledNotificationsAsync);
 
 const granted = { status: "granted" } as unknown as Awaited<
   ReturnType<typeof Notifications.getPermissionsAsync>
@@ -19,7 +20,8 @@ const granted = { status: "granted" } as unknown as Awaited<
 beforeEach(async () => {
   jest.clearAllMocks();
   getPermissions.mockResolvedValue({ status: 0 } as never);
-  await clearStepAlertsAtBoot(); // also resets the module's single-slot id
+  getAll.mockResolvedValue([]);
+  await clearStepAlertsAtBoot(); // drains the queue + resets the module's slot
 });
 
 describe("step alerts (P23)", () => {
@@ -33,6 +35,7 @@ describe("step alerts (P23)", () => {
     await syncStepAlert("focus-end", 300, true);
     expect(schedule).toHaveBeenCalledTimes(1);
     expect(schedule).toHaveBeenCalledWith({
+      identifier: STEP_ALERT_IDENTIFIER,
       content: { title: "Break time", body: expect.any(String), sound: true },
       trigger: { type: "timeInterval", seconds: 300 },
     });
@@ -42,6 +45,7 @@ describe("step alerts (P23)", () => {
     getPermissions.mockResolvedValue(granted);
     await syncStepAlert("break-end", 120, false);
     expect(schedule).toHaveBeenCalledWith({
+      identifier: STEP_ALERT_IDENTIFIER,
       content: { title: "Back to it", body: expect.any(String), sound: false },
       trigger: { type: "timeInterval", seconds: 120 },
     });
@@ -76,9 +80,40 @@ describe("step alerts (P23)", () => {
     expect(cancelOne).not.toHaveBeenCalled();
   });
 
-  it("boot clears the whole OS queue (pre-kill ids were lost)", async () => {
+  // CR-12: overlapping fire-and-forget calls must serialise — a cancel racing a
+  // half-done sync used to read a null slot and orphan the scheduled request.
+  it("an overlapping sync-then-cancel leaves nothing scheduled", async () => {
+    getPermissions.mockResolvedValue(granted);
+    const pending = syncStepAlert("focus-end", 300, true);
+    const cancel = cancelStepAlert();
+    await Promise.all([pending, cancel]);
+    expect(schedule).toHaveBeenCalledTimes(1);
+    expect(cancelOne).toHaveBeenCalledWith("mock-notification-id");
+  });
+
+  it("overlapping syncs leave exactly one pending alert", async () => {
+    getPermissions.mockResolvedValue(granted);
+    const first = syncStepAlert("focus-end", 300, true);
+    const second = syncStepAlert("break-end", 120, true);
+    await Promise.all([first, second]);
+    expect(schedule).toHaveBeenCalledTimes(2);
+    // First alert was cancelled by the second sync — exactly one stays pending.
+    expect(cancelOne).toHaveBeenCalledTimes(1);
+    expect(schedule).toHaveBeenLastCalledWith({
+      identifier: STEP_ALERT_IDENTIFIER,
+      content: { title: "Back to it", body: expect.any(String), sound: true },
+      trigger: { type: "timeInterval", seconds: 120 },
+    });
+  });
+
+  it("boot cancels only step-alert requests — other identifiers survive", async () => {
+    getAll.mockResolvedValue([
+      { identifier: STEP_ALERT_IDENTIFIER },
+      { identifier: "j5-weekly-reminder" },
+    ] as never);
     await clearStepAlertsAtBoot();
-    expect(cancelAll).toHaveBeenCalledTimes(2); // beforeEach + this call
+    expect(cancelOne).toHaveBeenCalledTimes(1);
+    expect(cancelOne).toHaveBeenCalledWith(STEP_ALERT_IDENTIFIER);
   });
 });
 

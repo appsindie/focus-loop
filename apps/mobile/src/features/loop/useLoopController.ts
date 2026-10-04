@@ -191,15 +191,16 @@ export function useLoopController(
     bootedRef.current = true;
     void (async () => {
       await reloadData();
+      // Pre-kill scheduled alerts are orphaned (their in-memory slot is gone).
+      // Clear before the no-snapshot early return so a dropped/corrupt snapshot
+      // still clears them; the post-restore sync recreates what is still true.
+      await clearStepAlertsAtBoot();
       const snapshot = await loadEngineSnapshot();
       if (snapshot == null) {
         go(settingsRef.current.displayMode == null ? "first-launch" : "home");
         return;
       }
       const wasInFlight = snapshot.phase === "running" || snapshot.phase === "paused";
-      // Pre-kill scheduled alerts are orphaned (ids lived in memory) — wipe the
-      // OS queue; the post-restore sync recreates whatever is still true.
-      await clearStepAlertsAtBoot();
       const restored = engine.restore(snapshot);
       trackEvent("session_recovered", {
         restoredTo: restored,
