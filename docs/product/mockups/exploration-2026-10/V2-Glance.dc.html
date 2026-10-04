@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lock screen and widgets</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#FF8A5B}a:hover{color:#FFB08F}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 64px 20px 28px; background: #000000; color: #F2EFEA; font-family: 'Host Grotesk', system-ui, sans-serif; font-feature-settings: 'tnum'; display: flex; flex-direction: column; align-items: center">
+  <div style="font-size: 17px; color: #C9C4BD">Thursday 2 October</div>
+  <div style="font-size: 88px; font-weight: 600; letter-spacing: -0.04em; line-height: 1">14:32</div>
+
+  <div style="margin-top: 22px; align-self: flex-start; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #8E8A85">Live Activity · Disc</div>
+  <div style="margin-top: 6px; width: 100%; box-sizing: border-box; padding: 14px 16px; border-radius: 22px; background: #141414; display: flex; align-items: center; gap: 14px">
+    <div style="width: 52px; height: 52px; border-radius: 26px; background: conic-gradient(#FF6A2B 0deg 270deg, #2A2724 270deg 360deg)" aria-hidden="true"></div>
+    <div style="display: flex; flex-direction: column; gap: 2px; flex-grow: 1">
+      <div style="font-size: 16px; font-weight: 600">Draft the intro for the Q4 report</div>
+      <div style="font-size: 14px; color: #8E8A85">about 18 min · Focus 2 of 4</div>
+    </div>
+  </div>
+
+  <div style="margin-top: 14px; align-self: flex-start; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #8E8A85">Live Activity · Numbers</div>
+  <div style="margin-top: 6px; width: 100%; box-sizing: border-box; padding: 14px 16px; border-radius: 22px; background: #141414; display: flex; align-items: center; justify-content: space-between">
+    <div style="display: flex; flex-direction: column; gap: 2px">
+      <div style="font-size: 16px; font-weight: 600">Focus 2 of 4</div>
+      <div style="font-size: 14px; color: #8E8A85">Break at 14:51</div>
+    </div>
+    <div style="font-size: 40px; font-weight: 600; letter-spacing: -0.03em; color: #FF8A5B">18:42</div>
+  </div>
+
+  <div style="margin-top: 26px; align-self: flex-start; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #8E8A85">Home-screen widgets</div>
+  <div style="margin-top: 6px; width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+    <div style="aspect-ratio: 1; box-sizing: border-box; padding: 14px; border-radius: 24px; background: #141414; display: flex; flex-direction: column; justify-content: space-between">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start">
+        <div style="width: 52px; height: 52px; border-radius: 26px; background: conic-gradient(#FF6A2B 0deg 150deg, #2A2724 150deg 360deg)" aria-hidden="true"></div>
+        <div style="text-align: right"><div style="font-size: 20px; font-weight: 700">4/4</div><div style="font-size: 12px; color: #8E8A85">days</div></div>
+      </div>
+      <a href="#" style="height: 44px; border-radius: 22px; background: #FF6A2B; color: #000000; font-size: 16px; font-weight: 700; text-decoration: none; display: flex; align-items: center; justify-content: center">Focus 25</a>
+    </div>
+    <div style="aspect-ratio: 1; box-sizing: border-box; padding: 14px; border-radius: 24px; background: #141414; display: flex; flex-direction: column; justify-content: space-between">
+      <div style="font-size: 13px; color: #8E8A85">Next up</div>
+      <div style="font-size: 17px; font-weight: 600; line-height: 1.25">Book the dentist</div>
+      <a href="#" style="height: 44px; border-radius: 22px; border: 1px solid #3A3733; color: #F2EFEA; font-size: 16px; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center">Start</a>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Focus Loop — UX audit</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;family=Be+Vietnam+Pro:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#C2410C}a:hover{color:#9A3412}
+</style>
+</helmet>
+<div style="width: 1440px; height: 1280px; box-sizing: border-box; padding: 64px 72px; background: #F3EEE5; color: #1C1915; font-family: 'Be Vietnam Pro', system-ui, sans-serif; display: flex; flex-direction: column">
+
+  <div style="display: flex; justify-content: space-between; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: #4A443C; padding-bottom: 14px; border-bottom: 1px solid #1C1915">
+    <div>Focus Loop · UX &amp; concept review</div>
+    <div>Pilot build · apps/mobile · 02.10.2026</div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 820px minmax(0, 1fr); column-gap: 72px; padding: 36px 0 32px; border-bottom: 1px solid #D8D0C2">
+    <h1 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 500; font-size: 68px; line-height: 1.02; letter-spacing: -0.02em">Một bộ đếm giờ tốt.<br>Chưa phải một vòng lặp.</h1>
+    <p style="margin: 0; align-self: end; font-size: 16px; line-height: 1.6; color: #4A443C">Những gì spec hứa đều làm được: một chạm để bắt đầu, không tài khoản, màn đếm giờ không có quảng cáo. Nhưng những thứ giữ chân người dùng ADHD thì chưa có: nhịp nghỉ, cảm nhận thời gian đang trôi, và cảm giác an toàn khi bấm nhầm.</p>
+  </div>
+
+  <div style="display: grid; grid-template-columns: 900px minmax(0, 1fr); column-gap: 56px; padding-top: 32px; flex-grow: 1">
+    <div style="display: flex; flex-direction: column; gap: 32px">
+      <div style="display: flex; gap: 30px">
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 12px">
+          <div style="position: relative; width: 280px; height: 490px">
+            <img src="/_blob/4098256584ea0d3a3e480eec5e3ff8b9" alt="Màn Home hiện tại" style="width: 280px; height: 490px; border-radius: 28px; display: block; object-fit: cover; box-shadow: 0 0 0 1px #D8D0C2">
+            <div style="position: absolute; top: 176px; left: -13px; width: 26px; height: 26px; border-radius: 13px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">5</div>
+            <div style="position: absolute; top: 384px; left: -13px; width: 26px; height: 26px; border-radius: 13px; background: #FFFFFF; border: 2px solid #C2410C; box-sizing: border-box; color: #C2410C; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">7</div>
+            <div style="position: absolute; top: 50px; right: -13px; width: 26px; height: 26px; border-radius: 13px; background: #FFFFFF; border: 2px solid #8A8175; box-sizing: border-box; color: #4A443C; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">10</div>
+          </div>
+          <figcaption style="font-size: 13px; color: #4A443C"><span style="font-weight: 600; color: #1C1915">S1.1 Home.</span> Câu đầu tiên app nói là một câu hỏi.</figcaption>
+        </figure>
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 12px">
+          <div style="position: relative; width: 280px; height: 490px">
+            <img src="/_blob/91886bf7da7691c41c0fcd80c9289c5c" alt="Màn Timer hiện tại" style="width: 280px; height: 490px; border-radius: 28px; display: block; object-fit: cover; box-shadow: 0 0 0 1px #D8D0C2">
+            <div style="position: absolute; top: 120px; right: -13px; width: 26px; height: 26px; border-radius: 13px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">2</div>
+            <div style="position: absolute; top: 390px; right: -13px; width: 26px; height: 26px; border-radius: 13px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">3</div>
+            <div style="position: absolute; top: 390px; left: -13px; width: 26px; height: 26px; border-radius: 13px; background: #FFFFFF; border: 2px solid #8A8175; box-sizing: border-box; color: #4A443C; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">8</div>
+          </div>
+          <figcaption style="font-size: 13px; color: #4A443C"><span style="font-weight: 600; color: #1C1915">S1.2 Timer.</span> Vòng tròn chỉ để trang trí.</figcaption>
+        </figure>
+        <figure style="margin: 0; display: flex; flex-direction: column; gap: 12px">
+          <div style="position: relative; width: 280px; height: 490px">
+            <img src="/_blob/e4dcc807e67f231c2343d758f3606b77" alt="Màn Summary hiện tại" style="width: 280px; height: 490px; border-radius: 28px; display: block; object-fit: cover; box-shadow: 0 0 0 1px #D8D0C2">
+            <div style="position: absolute; top: 36px; right: -13px; width: 26px; height: 26px; border-radius: 13px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">4</div>
+            <div style="position: absolute; top: 226px; left: -13px; width: 26px; height: 26px; border-radius: 13px; background: #FFFFFF; border: 2px solid #C2410C; box-sizing: border-box; color: #C2410C; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">6</div>
+            <div style="position: absolute; top: 400px; right: -13px; width: 26px; height: 26px; border-radius: 13px; background: #C2410C; color: #FFFFFF; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">1</div>
+          </div>
+          <figcaption style="font-size: 13px; color: #4A443C"><span style="font-weight: 600; color: #1C1915">S1.4 Summary.</span> Trên thực tế, quảng cáo hiện ra trước màn này.</figcaption>
+        </figure>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: 32px; padding-top: 24px; border-top: 1px solid #1C1915">
+        <div style="grid-column: 1 / 4; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: #4A443C; margin-bottom: 14px">Về app concept</div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; font-weight: 500; line-height: 1.2">Wedge mới là định vị bằng phủ định</div>
+          <div style="font-size: 14px; line-height: 1.55; color: #4A443C">“Không trẻ con như Forest, không rối như Focus To-Do” nói app không phải là gì. Chưa có hành vi nào dành riêng cho người ADHD.</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; font-weight: 500; line-height: 1.2">Retention đặt cược vào streak</div>
+          <div style="font-size: 14px; line-height: 1.55; color: #4A443C">Streak bị đứt là lý do phổ biến khiến người ADHD bỏ app. Widget lại là kênh P0 nhưng chưa có trong build.</div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px">
+          <div style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; font-weight: 500; line-height: 1.2">Interstitial sau mỗi phiên</div>
+          <div style="font-size: 14px; line-height: 1.55; color: #4A443C">Đây là giả thuyết V1, chưa được kiểm chứng. Nếu dời ra cuối vòng thì số lần hiển thị ít hơn nhưng không phá lời hứa “calm”.</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-direction: column">
+      <div style="display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid #1C1915">
+        <div style="font-family: 'Newsreader', Georgia, serif; font-size: 26px; font-weight: 500">11 vấn đề</div>
+        <div style="display: flex; gap: 14px; font-size: 12px; color: #4A443C">
+          <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 5px; background: #C2410C"></span>Cao</span>
+          <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 5px; border: 2px solid #C2410C; box-sizing: border-box"></span>Trung bình</span>
+          <span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 5px; border: 2px solid #8A8175; box-sizing: border-box"></span>Thấp</span>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 13.5px; line-height: 1.45"><div style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; line-height: 1; color: #C2410C">1</div><div><div style="font-weight: 600">Không có break nên không có “loop”</div><div style="color: #4A443C">Notification bảo nghỉ nhưng app không có break. “Start another” đưa người dùng về Home.</div></div></div>
+      <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 13.5px; line-height: 1.45"><div style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; line-height: 1; color: #C2410C">2</div><div><div style="font-weight: 600">Vòng tròn không chạy</div><div style="color: #4A443C">Chỉ là một border cố định (TimerScreen styles.ring), không cho thấy thời gian trôi.</div></div></div>
+      <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 13.5px; line-height: 1.45"><div style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; line-height: 1; color: #C2410C">3</div><div><div style="font-weight: 600">Một chạm là mất phiên</div><div style="color: #4A443C">Cancel đỏ, to bằng Pause và không hỏi lại, sai với spec J1-R5.</div></div></div>
+      <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 13.5px; line-height: 1.45"><div style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; line-height: 1; color: #C2410C">4</div><div><div style="font-weight: 600">Quảng cáo chặn đúng lúc được khen</div><div style="color: #4A443C">useInterstitialAd() chạy ngay khi Summary vừa mở.</div></div></div>
+      <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 13.5px; line-height: 1.45"><div style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; line-height: 1; color: #C2410C">11</div><div><div style="font-weight: 600">Widget P0 chưa có</div><div style="color: #4A443C">Kênh retention chính trong concept nhưng chưa được build.</div></div></div>
+      <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 13.5px; line-height: 1.45"><div style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; line-height: 1; color: #1C1915">5</div><div><div style="font-weight: 600">Mỗi lần mở app là một lần quyết định</div><div style="color: #4A443C">Màn Home luôn hỏi độ dài phiên. Build thiếu 60 phút và custom như spec.</div></div></div>
+      <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 13.5px; line-height: 1.45"><div style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; line-height: 1; color: #1C1915">6</div><div><div style="font-weight: 600">Summary chỉ có một con số</div><div style="color: #4A443C">Spec yêu cầu thêm số phiên hôm nay và streak.</div></div></div>
+      <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 13.5px; line-height: 1.45"><div style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; line-height: 1; color: #1C1915">7</div><div><div style="font-weight: 600">“0 day streak” ở lần mở đầu tiên</div><div style="color: #4A443C">Người dùng thấy mình thua ngay khi chưa bắt đầu.</div></div></div>
+      <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 13.5px; line-height: 1.45"><div style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; line-height: 1; color: #8A8175">8</div><div><div style="font-weight: 600">Ba màu mạnh trên màn cần tập trung</div><div style="color: #4A443C">Xanh, cam và đỏ cùng lúc, trái với nguyên tắc “Calm focus”.</div></div></div>
+      <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; padding: 11px 0; border-bottom: 1px solid #D8D0C2; font-size: 13.5px; line-height: 1.45"><div style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; line-height: 1; color: #8A8175">9</div><div><div style="font-weight: 600">Settings phải bấm Save</div><div style="color: #4A443C">Bấm Back mà quên Save thì mất thay đổi, không có cảnh báo.</div></div></div>
+      <div style="display: grid; grid-template-columns: 34px minmax(0, 1fr); column-gap: 10px; padding: 11px 0; font-size: 13.5px; line-height: 1.45"><div style="font-family: 'Newsreader', Georgia, serif; font-size: 22px; line-height: 1; color: #8A8175">10</div><div><div style="font-weight: 600">Header absolute, điều hướng bằng text</div><div style="color: #4A443C">Dễ đè nội dung khi tăng cỡ chữ. Chưa có tab Stats như spec.</div></div></div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1280}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

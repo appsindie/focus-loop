@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Your week</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Host+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 20px 24px 28px; background: {{c.bg}}; color: {{c.ink}}; font-family: 'Host Grotesk', system-ui, sans-serif; font-feature-settings: 'tnum'; display: flex; flex-direction: column">
+  <div style="display: flex; justify-content: space-between; align-items: center">
+    <button type="button" aria-label="Back" style="width: 44px; height: 44px; margin-left: -10px; border: none; background: transparent; color: {{c.ink}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button>
+    <div role="tablist" aria-label="View" style="display: flex; padding: 2px; border-radius: 22px; background: {{c.chip}}">
+      <button type="button" role="tab" aria-selected="true" style="height: 40px; padding: 0 16px; border: none; border-radius: 20px; background: {{c.surface}}; color: {{c.ink}}; font-family: inherit; font-size: 14px; font-weight: 600">Week</button>
+      <button type="button" role="tab" aria-selected="false" style="height: 40px; padding: 0 16px; border: none; border-radius: 20px; background: transparent; color: {{c.ink2}}; font-family: inherit; font-size: 14px">History</button>
+    </div>
+  </div>
+  <div style="margin-top: 16px; font-size: 14px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: {{c.muted}}">29 Sep to 5 Oct</div>
+  <h1 style="margin: 10px 0 0; font-size: 44px; line-height: 1; font-weight: 600; letter-spacing: -0.03em">4 of 4 days.<br><span style="color: {{c.brkT}}">Goal met.</span></h1>
+
+  <div style="margin-top: 32px; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; align-items: end; height: 150px" aria-label="Minutes per day: Mon 50, Tue 100, Wed 25, Thu 100, Fri to Sun none yet">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><div style="width: 100%; height: 60px; background: {{c.focus}}"></div><span style="font-size: 13px; color: {{c.ink2}}">M</span></div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><div style="width: 100%; height: 120px; background: {{c.focus}}"></div><span style="font-size: 13px; color: {{c.ink2}}">T</span></div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><div style="width: 100%; height: 30px; background: {{c.focus}}"></div><span style="font-size: 13px; color: {{c.ink2}}">W</span></div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><div style="width: 100%; height: 120px; background: {{c.focus}}"></div><span style="font-size: 13px; font-weight: 700">T</span></div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><div style="width: 100%; height: 4px; background: {{c.rule}}"></div><span style="font-size: 13px; color: {{c.ink2}}">F</span></div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><div style="width: 100%; height: 4px; background: {{c.rule}}"></div><span style="font-size: 13px; color: {{c.ink2}}">S</span></div>
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 8px"><div style="width: 100%; height: 4px; background: {{c.rule}}"></div><span style="font-size: 13px; color: {{c.ink2}}">S</span></div>
+  </div>
+
+  <div style="margin-top: 28px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 1.5px solid {{c.ink}}">
+    <div style="padding: 14px 0"><div style="font-size: 28px; font-weight: 600">275</div><div style="font-size: 13px; color: {{c.ink2}}">minutes</div></div>
+    <div style="padding: 14px 0"><div style="font-size: 28px; font-weight: 600">5</div><div style="font-size: 13px; color: {{c.ink2}}">finished</div></div>
+    <div style="padding: 14px 0"><div style="font-size: 28px; font-weight: 600">6</div><div style="font-size: 13px; color: {{c.ink2}}">moved forward</div></div>
+  </div>
+
+  <div style="margin-top: 8px; padding-top: 14px; border-top: 1px solid {{c.rule}}; font-size: 15px; line-height: 1.5; color: {{c.ink2}}">You focus most on Tuesdays and Thursdays. Missing a day doesn’t reset anything here.</div>
+
+  <button type="button" style="margin-top: auto; height: 56px; border: none; border-radius: 28px; background: {{c.btn}}; color: {{c.onBtn}}; font-family: inherit; font-size: 17px; font-weight: 600">Share my week</button>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const T = {
+      light: { bg: '#F6F3EE', surface: '#FFFFFF', ink: '#141210', ink2: '#4A443C', muted: '#6B645B', faint: '#8A8175', rule: '#DDD6CB', track: '#E9DFD3', trackB: '#D3E3D8', focus: '#D9480F', focusT: '#B93C0A', brk: '#2F7D4F', brkT: '#2F7D4F', onBrk: '#FFFFFF', btn: '#141210', onBtn: '#F6F3EE', chip: '#ECE5DA', scrim: 'rgba(20,18,16,0.45)', breakBg: '#2F7D4F', accentSoft: '#F0A27F' },
+      dark: { bg: '#0B0A09', surface: '#191715', ink: '#F2EEE8', ink2: '#C9C2B8', muted: '#9A9289', faint: '#7A7269', rule: '#2C2926', track: '#2A2420', trackB: '#1C2A22', focus: '#FF6A2B', focusT: '#FF8A5B', brk: '#3FA66A', brkT: '#6CC892', onBrk: '#0B0A09', btn: '#F2EEE8', onBtn: '#0B0A09', chip: '#221F1C', scrim: 'rgba(0,0,0,0.6)', breakBg: '#173D28', accentSoft: '#B93C0A' }
+    };
+    return { c: T[this.props.theme === 'dark' ? 'dark' : 'light'] };
+  }
+}
+</script>
+</body>
+</html>

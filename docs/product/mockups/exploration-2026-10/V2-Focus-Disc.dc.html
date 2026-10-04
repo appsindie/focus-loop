@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Focus — running</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&amp;family=Host+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#141210}a:hover{color:#B93C0A}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; box-sizing: border-box; padding: 60px 24px 28px; background: #F6F3EE; color: #141210; font-family: 'Host Grotesk', system-ui, sans-serif; font-feature-settings: 'tnum'; display: flex; flex-direction: column; overflow: hidden">
+  <div style="display: flex; justify-content: space-between; align-items: center">
+    <div style="font-size: 14px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #B93C0A">Focus 2 of 4</div>
+    <div role="group" aria-label="Display" style="display: flex; padding: 2px; border-radius: 24px; background: #ECE5DA">
+      <button type="button" aria-label="Show time as a disc" aria-pressed="{{isDisc}}" onClick="{{setDisc}}" style="width: 52px; height: 44px; border: none; border-radius: 22px; background: {{discBg}}; color: #141210; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"></circle><path d="M10 10V1.5A8.5 8.5 0 0 1 18.1 12.6z" fill="currentColor"></path></svg></button>
+      <button type="button" aria-label="Show time as numbers" aria-pressed="{{isNumbers}}" onClick="{{setNumbers}}" style="width: 52px; height: 44px; border: none; border-radius: 22px; background: {{numBg}}; color: #141210; font-family: inherit; font-size: 14px; font-weight: 700">18:42</button>
+    </div>
+  </div>
+
+  <div style="margin-top: 28px; font-family: 'Newsreader', Georgia, serif; font-size: 26px; line-height: 1.15">Draft the intro for the Q4 report</div>
+
+  <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center">
+    <sc-if value="{{isDisc}}" hint-placeholder-val="{{true}}">
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 18px">
+        <div role="img" aria-label="About {{minsLeft}} minutes left" style="width: 280px; height: 280px; border-radius: 140px; background: conic-gradient(#D9480F 0deg {{deg}}deg, #E9DFD3 {{deg}}deg 360deg)"></div>
+        <div style="font-size: 17px; color: #4A443C">about {{minsLeft}} min left</div>
+      </div>
+    </sc-if>
+    <sc-if value="{{isNumbers}}" hint-placeholder-val="{{false}}">
+      <div style="display: flex; flex-direction: column">
+        <div style="display: flex; align-items: baseline">
+          <span style="font-size: 200px; line-height: 0.85; font-weight: 600; letter-spacing: -0.06em">{{mm}}</span>
+          <span style="font-size: 56px; font-weight: 500; color: #A39B90; letter-spacing: -0.02em">:{{ss}}</span>
+        </div>
+        <div style="margin-top: 12px; font-size: 17px; color: #4A443C">minutes left</div>
+      </div>
+    </sc-if>
+  </div>
+
+  <div>
+    <div style="display: flex; gap: 3px; height: 8px" aria-hidden="true">
+      <div style="flex-grow: 25; background: #D9480F"></div>
+      <div style="flex-grow: 5; background: #2F7D4F"></div>
+      <div style="flex-grow: 25; background: #E9DFD3"><div style="width: {{pct}}%; height: 8px; background: #D9480F"></div></div>
+      <div style="flex-grow: 5; background: #D3E3D8"></div>
+      <div style="flex-grow: 25; background: #E9DFD3"></div>
+      <div style="flex-grow: 5; background: #D3E3D8"></div>
+      <div style="flex-grow: 25; background: #E9DFD3"></div>
+      <div style="flex-grow: 15; background: #D3E3D8"></div>
+    </div>
+    <div style="margin-top: 8px; font-size: 13px; color: #6B645B">Next: 5 min break</div>
+  </div>
+
+  <button type="button" style="margin-top: 20px; height: 52px; padding: 0 16px; border: 1px solid #DDD6CB; border-radius: 26px; background: transparent; display: flex; align-items: center; gap: 10px; font-family: 'Newsreader', Georgia, serif; font-style: italic; font-size: 18px; color: #4A443C; text-align: left"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Later, not now…</button>
+
+  <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+    <button type="button" onClick="{{togglePause}}" style="height: 56px; border-radius: 28px; border: 1.5px solid #141210; background: transparent; color: #141210; font-family: inherit; font-size: 17px; font-weight: 600">{{pauseLabel}}</button>
+    <button type="button" onClick="{{askEnd}}" style="height: 56px; border: none; background: transparent; color: #6B645B; font-family: inherit; font-size: 17px">End early…</button>
+  </div>
+
+  <sc-if value="{{ending}}" hint-placeholder-val="{{false}}">
+    <div style="position: absolute; top: 0; left: 0; width: 390px; height: 844px; background: rgba(20,18,16,0.45); display: flex; flex-direction: column; justify-content: flex-end">
+      <div role="dialog" aria-label="End this session?" style="padding: 28px 24px 32px; border-radius: 24px 24px 0 0; background: #FFFFFF; display: flex; flex-direction: column; gap: 10px">
+        <div style="font-size: 24px; font-weight: 600">End this session?</div>
+        <div style="font-size: 16px; line-height: 1.5; color: #4A443C">You focused {{elapsedMin}} minutes. That still counts toward your week.</div>
+        <button type="button" onClick="{{cancelEnd}}" style="margin-top: 12px; height: 56px; border: none; border-radius: 28px; background: #141210; color: #F6F3EE; font-family: inherit; font-size: 17px; font-weight: 600">Keep going</button>
+        <button type="button" onClick="{{confirmEnd}}" style="height: 52px; border: 1.5px solid #DDD6CB; border-radius: 26px; background: transparent; color: #141210; font-family: inherit; font-size: 16px">End and save {{elapsedMin}} min</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"display":{"editor":"enum","options":["disc","numbers"],"default":"disc"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { mode: null, remaining: 1122, paused: false, ending: false };
+  }
+  componentDidMount() {
+    this.tick = setInterval(() => {
+      if (!this.state.paused && !this.state.ending && this.state.remaining > 0) {
+        this.setState({ remaining: this.state.remaining - 1 });
+      }
+    }, 1000);
+  }
+  componentWillUnmount() {
+    clearInterval(this.tick);
+  }
+  renderVals() {
+    const total = 1500;
+    const r = this.state.remaining;
+    const mode = this.state.mode ?? this.props.display ?? 'disc';
+    const isDisc = mode === 'disc';
+    return {
+      isDisc: isDisc,
+      isNumbers: !isDisc,
+      discBg: isDisc ? '#FFFFFF' : 'transparent',
+      numBg: isDisc ? 'transparent' : '#FFFFFF',
+      mm: String(Math.floor(r / 60)),
+      ss: String(r % 60).padStart(2, '0'),
+      minsLeft: String(Math.max(1, Math.round(r / 60))),
+      deg: (r / total * 360).toFixed(1),
+      pct: ((total - r) / total * 100).toFixed(1),
+      elapsedMin: String(Math.floor((total - r) / 60)),
+      pauseLabel: this.state.paused ? 'Resume' : 'Pause',
+      ending: this.state.ending,
+      setDisc: () => this.setState({ mode: 'disc' }),
+      setNumbers: () => this.setState({ mode: 'numbers' }),
+      togglePause: () => this.setState({ paused: !this.state.paused }),
+      askEnd: () => this.setState({ ending: true }),
+      cancelEnd: () => this.setState({ ending: false }),
+      confirmEnd: () => this.setState({ ending: false, remaining: total })
+    };
+  }
+}
+</script>
+</body>
+</html>

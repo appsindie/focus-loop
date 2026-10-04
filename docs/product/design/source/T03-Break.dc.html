@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tablet — Break</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Host+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 1194px; height: 834px; box-sizing: border-box; padding: 40px 48px 36px; background: {{c.breakBg}}; color: #FFFFFF; font-family: 'Host Grotesk', system-ui, sans-serif; font-feature-settings: 'tnum'; display: grid; grid-template-columns: minmax(0, 1fr) 420px; column-gap: 64px">
+  <div style="display: flex; flex-direction: column">
+    <div style="font-size: 15px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase">Break · then Focus 3</div>
+    <div style="margin-top: 48px; display: flex; align-items: baseline"><span style="font-size: 300px; line-height: 0.82; font-weight: 600; letter-spacing: -0.06em">3</span><span style="font-size: 84px; font-weight: 500; color: #A8D1B6">:48</span></div>
+    <div style="margin-top: 20px; font-size: 24px; color: #E3F1E7">minutes of rest</div>
+    <div style="margin-top: auto; display: flex; gap: 16px">
+      <button type="button" style="width: 160px; height: 60px; border-radius: 30px; border: 1.5px solid #FFFFFF; background: transparent; color: #FFFFFF; font-family: inherit; font-size: 18px; font-weight: 600">+5 min</button>
+      <button type="button" style="width: 260px; height: 60px; border-radius: 30px; border: none; background: #FFFFFF; color: #173D28; font-family: inherit; font-size: 18px; font-weight: 600">Focus 3 now</button>
+    </div>
+  </div>
+  <div style="display: flex; flex-direction: column; justify-content: center">
+    <div style="font-size: 14px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: #CFE5D7">Off the screen</div>
+    <div style="margin-top: 10px; border-top: 1.5px solid #FFFFFF">
+      <div style="height: 64px; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.28); font-size: 22px">Stand up, stretch your back</div>
+      <div style="height: 64px; display: flex; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.28); font-size: 22px">Refill your water</div>
+      <div style="height: 64px; display: flex; align-items: center; font-size: 22px">Look at something far away</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":1194,"height":834}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const T = {
+      light: { bg: '#F6F3EE', surface: '#FFFFFF', ink: '#141210', ink2: '#4A443C', muted: '#6B645B', faint: '#8A8175', rule: '#DDD6CB', track: '#E9DFD3', trackB: '#D3E3D8', focus: '#D9480F', focusT: '#B93C0A', brk: '#2F7D4F', brkT: '#2F7D4F', onBrk: '#FFFFFF', btn: '#141210', onBtn: '#F6F3EE', chip: '#ECE5DA', scrim: 'rgba(20,18,16,0.45)', breakBg: '#2F7D4F', accentSoft: '#F0A27F' },
+      dark: { bg: '#0B0A09', surface: '#191715', ink: '#F2EEE8', ink2: '#C9C2B8', muted: '#9A9289', faint: '#7A7269', rule: '#2C2926', track: '#2A2420', trackB: '#1C2A22', focus: '#FF6A2B', focusT: '#FF8A5B', brk: '#3FA66A', brkT: '#6CC892', onBrk: '#0B0A09', btn: '#F2EEE8', onBtn: '#0B0A09', chip: '#221F1C', scrim: 'rgba(0,0,0,0.6)', breakBg: '#173D28', accentSoft: '#B93C0A' }
+    };
+    return { c: T[this.props.theme === 'dark' ? 'dark' : 'light'] };
+  }
+}
+</script>
+</body>
+</html>

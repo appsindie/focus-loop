@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Reminders</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Host+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; padding: 20px 24px 28px; background: {{c.bg}}; color: {{c.ink}}; font-family: 'Host Grotesk', system-ui, sans-serif; font-feature-settings: 'tnum'; display: flex; flex-direction: column">
+  <button type="button" aria-label="Back" style="width: 44px; height: 44px; margin-left: -10px; border: none; background: transparent; color: {{c.ink}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></button>
+  <h1 style="margin: 8px 0 0; font-size: 36px; font-weight: 600; letter-spacing: -0.03em">Reminders</h1>
+  <p style="margin: 8px 0 0; font-size: 15px; line-height: 1.5; color: {{c.ink2}}">A nudge at the times you plan to focus. Tapping it starts your rhythm right away.</p>
+
+  <div style="margin-top: 20px; border-top: 1.5px solid {{c.ink}}">
+    <div style="padding: 14px 0; border-bottom: 1px solid {{c.rule}}; display: flex; align-items: center; justify-content: space-between">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 32px; font-weight: 600; letter-spacing: -0.02em">9:00</span>
+        <span style="display: flex; gap: 4px" aria-label="Monday to Friday">
+          <span style="width: 26px; height: 26px; border-radius: 13px; background: {{c.btn}}; color: {{c.onBtn}}; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">M</span><span style="width: 26px; height: 26px; border-radius: 13px; background: {{c.btn}}; color: {{c.onBtn}}; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">T</span><span style="width: 26px; height: 26px; border-radius: 13px; background: {{c.btn}}; color: {{c.onBtn}}; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">W</span><span style="width: 26px; height: 26px; border-radius: 13px; background: {{c.btn}}; color: {{c.onBtn}}; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">T</span><span style="width: 26px; height: 26px; border-radius: 13px; background: {{c.btn}}; color: {{c.onBtn}}; font-size: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center">F</span><span style="width: 26px; height: 26px; border-radius: 13px; border: 1px solid {{c.rule}}; box-sizing: border-box; color: {{c.muted}}; font-size: 12px; display: flex; align-items: center; justify-content: center">S</span><span style="width: 26px; height: 26px; border-radius: 13px; border: 1px solid {{c.rule}}; box-sizing: border-box; color: {{c.muted}}; font-size: 12px; display: flex; align-items: center; justify-content: center">S</span>
+        </span>
+      </div>
+      <label style="min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: flex-end"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden">9:00 reminder on</span><input type="checkbox" checked style="width: 22px; height: 22px; accent-color: {{c.ink}}"></label>
+    </div>
+    <div style="padding: 14px 0; border-bottom: 1px solid {{c.rule}}; display: flex; align-items: center; justify-content: space-between">
+      <div style="display: flex; flex-direction: column; gap: 6px">
+        <span style="font-size: 32px; font-weight: 600; letter-spacing: -0.02em; color: {{c.muted}}">14:00</span>
+        <span style="font-size: 14px; color: {{c.muted}}">Weekdays · off</span>
+      </div>
+      <label style="min-width: 44px; min-height: 44px; display: flex; align-items: center; justify-content: flex-end"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden">14:00 reminder off</span><input type="checkbox" style="width: 22px; height: 22px; accent-color: {{c.ink}}"></label>
+    </div>
+    <button type="button" style="width: 100%; min-height: 56px; padding: 0; border: none; background: transparent; display: flex; align-items: center; gap: 10px; font-family: inherit; font-size: 16px; color: {{c.ink}}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Add a reminder</button>
+  </div>
+
+  <div style="margin-top: 20px; padding: 16px; border-radius: 16px; background: {{c.surface}}; font-size: 14px; line-height: 1.5; color: {{c.ink2}}">If you haven’t focused by 20:00 on a goal day, we can send one gentle note. <a href="#" style="color: {{c.ink}}; font-weight: 600">Turn on</a></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const T = {
+      light: { bg: '#F6F3EE', surface: '#FFFFFF', ink: '#141210', ink2: '#4A443C', muted: '#6B645B', faint: '#8A8175', rule: '#DDD6CB', track: '#E9DFD3', trackB: '#D3E3D8', focus: '#D9480F', focusT: '#B93C0A', brk: '#2F7D4F', brkT: '#2F7D4F', onBrk: '#FFFFFF', btn: '#141210', onBtn: '#F6F3EE', chip: '#ECE5DA', scrim: 'rgba(20,18,16,0.45)', breakBg: '#2F7D4F', accentSoft: '#F0A27F' },
+      dark: { bg: '#0B0A09', surface: '#191715', ink: '#F2EEE8', ink2: '#C9C2B8', muted: '#9A9289', faint: '#7A7269', rule: '#2C2926', track: '#2A2420', trackB: '#1C2A22', focus: '#FF6A2B', focusT: '#FF8A5B', brk: '#3FA66A', brkT: '#6CC892', onBrk: '#0B0A09', btn: '#F2EEE8', onBtn: '#0B0A09', chip: '#221F1C', scrim: 'rgba(0,0,0,0.6)', breakBg: '#173D28', accentSoft: '#B93C0A' }
+    };
+    return { c: T[this.props.theme === 'dark' ? 'dark' : 'light'] };
+  }
+}
+</script>
+</body>
+</html>

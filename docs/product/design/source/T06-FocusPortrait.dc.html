@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tablet portrait — Focus numbers</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Host+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>body{margin:0}</style>
+</helmet>
+<div style="width: 834px; height: 1194px; box-sizing: border-box; padding: 48px 56px 44px; background: {{c.bg}}; color: {{c.ink}}; font-family: 'Host Grotesk', system-ui, sans-serif; font-feature-settings: 'tnum'; display: flex; flex-direction: column">
+  <div style="display: flex; justify-content: space-between; align-items: center">
+    <div style="font-size: 15px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: {{c.focusT}}">Focus 2 of 4</div>
+    <div role="group" aria-label="Display" style="display: flex; padding: 2px; border-radius: 24px; background: {{c.chip}}">
+      <button type="button" aria-label="Show time as a disc" aria-pressed="false" style="width: 56px; height: 44px; border: none; border-radius: 22px; background: transparent; color: {{c.ink}}; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"></circle><path d="M10 10V1.5A8.5 8.5 0 0 1 18.1 12.6z" fill="currentColor"></path></svg></button>
+      <button type="button" aria-label="Show time as numbers" aria-pressed="true" style="width: 56px; height: 44px; border: none; border-radius: 22px; background: {{c.surface}}; color: {{c.ink}}; font-family: inherit; font-size: 14px; font-weight: 700">12:34</button>
+    </div>
+  </div>
+  <div style="margin-top: 40px; font-family: 'Newsreader', Georgia, serif; font-size: 40px; line-height: 1.1">Draft the intro for the Q4 report</div>
+  <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center">
+    <div style="display: flex; align-items: baseline"><span style="font-size: 380px; line-height: 0.82; font-weight: 600; letter-spacing: -0.06em">18</span><span style="font-size: 100px; font-weight: 500; color: {{c.faint}}">:42</span></div>
+    <div style="margin-top: 20px; font-size: 24px; color: {{c.ink2}}">minutes left · ends 14:51</div>
+  </div>
+  <div style="display: flex; gap: 4px; height: 12px" aria-hidden="true">
+    <div style="flex-grow: 25; background: {{c.focus}}"></div><div style="flex-grow: 5; background: {{c.brk}}"></div><div style="flex-grow: 25; background: {{c.track}}"><div style="width: 25%; height: 12px; background: {{c.focus}}"></div></div><div style="flex-grow: 5; background: {{c.trackB}}"></div><div style="flex-grow: 25; background: {{c.track}}"></div><div style="flex-grow: 5; background: {{c.trackB}}"></div><div style="flex-grow: 25; background: {{c.track}}"></div><div style="flex-grow: 15; background: {{c.trackB}}"></div>
+  </div>
+  <div style="margin-top: 10px; font-size: 15px; color: {{c.muted}}">Next: 5 min break</div>
+  <button type="button" style="margin-top: 28px; height: 60px; padding: 0 20px; border: 1px solid {{c.rule}}; border-radius: 30px; background: transparent; display: flex; align-items: center; gap: 12px; font-family: 'Newsreader', Georgia, serif; font-style: italic; font-size: 20px; color: {{c.ink2}}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg>Later, not now…</button>
+  <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+    <button type="button" style="height: 64px; border-radius: 32px; border: 1.5px solid {{c.ink}}; background: transparent; color: {{c.ink}}; font-family: inherit; font-size: 19px; font-weight: 600">Pause</button>
+    <button type="button" style="height: 64px; border: none; background: transparent; color: {{c.muted}}; font-family: inherit; font-size: 19px">End early…</button>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["light","dark"],"default":"light"},"$preview":{"width":834,"height":1194}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const T = {
+      light: { bg: '#F6F3EE', surface: '#FFFFFF', ink: '#141210', ink2: '#4A443C', muted: '#6B645B', faint: '#8A8175', rule: '#DDD6CB', track: '#E9DFD3', trackB: '#D3E3D8', focus: '#D9480F', focusT: '#B93C0A', brk: '#2F7D4F', brkT: '#2F7D4F', onBrk: '#FFFFFF', btn: '#141210', onBtn: '#F6F3EE', chip: '#ECE5DA', scrim: 'rgba(20,18,16,0.45)', breakBg: '#2F7D4F', accentSoft: '#F0A27F' },
+      dark: { bg: '#0B0A09', surface: '#191715', ink: '#F2EEE8', ink2: '#C9C2B8', muted: '#9A9289', faint: '#7A7269', rule: '#2C2926', track: '#2A2420', trackB: '#1C2A22', focus: '#FF6A2B', focusT: '#FF8A5B', brk: '#3FA66A', brkT: '#6CC892', onBrk: '#0B0A09', btn: '#F2EEE8', onBtn: '#0B0A09', chip: '#221F1C', scrim: 'rgba(0,0,0,0.6)', breakBg: '#173D28', accentSoft: '#B93C0A' }
+    };
+    return { c: T[this.props.theme === 'dark' ? 'dark' : 'light'] };
+  }
+}
+</script>
+</body>
+</html>
