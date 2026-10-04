@@ -28,10 +28,10 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-10-04T13:56:00Z",
-    "round_count": 15,
+    "fired_at": "2026-10-04T14:02:45Z",
+    "round_count": 16,
     "routine": "release",
-    "session_url": "https://claude.ai/code/cse_01WriUx1VFjdyHJ7SSEsdHcq",
+    "session_url": "https://claude.ai/code/cse_01VQKu2umnVBpdLbjr5uV1Xd",
     "verdict": "pending"
   },
   "next_action": "Phase 3 release: PR #6 fixes for release review round 15 pushed; next = iOS production build 1.0.0 on sponsor confirmation, then submit internal track, then Android. Owner Gate-2 signature pending on PR #6 (waiver record in EXCEPTION_REPORT). Gate-3 exceptions: RR-09/10/12/14 before submission; RR-04..08,15..18 before production rollout",
@@ -197,5 +197,5 @@
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-10-04T14:02:16Z"
+  "updated_at": "2026-10-04T14:02:45Z"
 }
