@@ -4,15 +4,15 @@
 
 **not ready** — v1.0.0, surfaces ios/android
 
-- Checks run: 26 — passed: 6, failed-and-remediated: 0, manual: 0, exceptions: 20 (RR-03 resolved after production AdMob IDs were provided; 13 formal exceptions remain)
+- Checks run: 26 — passed: 6, failed-and-remediated: 0, manual: 0, exceptions: 20 → updated 2026-10-04: RR-01/RR-02 **waived by sponsor** (iOS Simulator SIT evidence retained), RR-13 resolved (RELEASE_NOTES.md + CHANGELOG.md written), RR-11 in-flight (release pipeline wired; first production build pending trigger). 10 formal exceptions remain, all console/ops-side.
 - Gate 3 decision needed: **yes**
 
 ## Exception summary
 
 | ID    | Title                                                            | Rows covered                                              | Owner                       | Deadline   | Default |
 | ----- | ---------------------------------------------------------------- | --------------------------------------------------------- | --------------------------- | ---------- | ------- |
-| RR-01 | Native device SIT not run                                        | SIT regression                                            | justin.nguyen@appsindie.com | 2026-08-15 | block   |
-| RR-02 | Failure-mode cases not verified                                  | Failure-mode cases                                        | justin.nguyen@appsindie.com | 2026-08-15 | block   |
+| RR-01 | Native device SIT not run — **waived 2026-10-04**                | SIT regression                                            | justin.nguyen@appsindie.com | —          | waived  |
+| RR-02 | Failure-mode cases not verified — **waived 2026-10-04**          | Failure-mode cases                                        | justin.nguyen@appsindie.com | —          | waived  |
 | RR-04 | North-star events and dashboards not wired                       | North-star events, Dashboards                             | justin.nguyen@appsindie.com | 2026-08-20 | block   |
 | RR-05 | Alerts, rollout thresholds and rollback triggers not operational | Alerts wired, Rollout halt thresholds, Trigger conditions | justin.nguyen@appsindie.com | 2026-08-20 | block   |
 | RR-06 | Rollback command and owner not finalized                         | Rollback command, Rollback owner                          | justin.nguyen@appsindie.com | 2026-08-18 | block   |
@@ -20,9 +20,9 @@
 | RR-08 | Runbook and escalation path not operational                      | Runbook, Escalation path                                  | justin.nguyen@appsindie.com | 2026-08-20 | block   |
 | RR-09 | Store agreements not verified                                    | Store agreements                                          | justin.nguyen@appsindie.com | 2026-08-22 | block   |
 | RR-10 | Store declarations not completed                                 | Declarations                                              | justin.nguyen@appsindie.com | 2026-08-22 | block   |
-| RR-11 | Internal testing build not produced                              | Internal testing                                          | justin.nguyen@appsindie.com | 2026-08-18 | block   |
+| RR-11 | Internal testing build not produced — **in-flight 2026-10-04**   | Internal testing                                          | justin.nguyen@appsindie.com | 2026-08-18 | block   |
 | RR-12 | Privacy / data-safety declaration not completed                  | Privacy delta                                             | justin.nguyen@appsindie.com | 2026-08-22 | block   |
-| RR-13 | Release record not completed                                     | Release notes, Changelog, Traceability                    | justin.nguyen@appsindie.com | 2026-08-12 | block   |
+| RR-13 | Release record — **resolved 2026-10-04**                         | Release notes, Changelog, Traceability                    | justin.nguyen@appsindie.com | —          | done    |
 | RR-14 | EAS / portal credentials not fully verified                      | Credentials                                               | justin.nguyen@appsindie.com | 2026-08-18 | block   |
 
 ## Exceptions
@@ -30,20 +30,16 @@
 ### RR-01. Native device SIT not run
 
 - **Situation**: E2E verification was run on the Expo web preview (`docs/qa/v1-e2e-test-report.md`). **Partial progress**: native iOS Simulator SIT pass done (iPhone 17, iOS 26, debug dev-client) — J1 first-launch + ATT prompt + display pick, J2 focus start/pause/end-early/save, Home (loop summary, weekly goal counter, live AdMob banner), Settings P20, Themes & sounds trial rows, Paywall P14 with fallback prices all verified on-device; three native build defects found and fixed in the pass (widget Info.plist, duplicate ActivityAttributes, expo-store-review `SceneGeometry` patch via patch-package). Remaining for a physical device: haptics, real push delivery, Live Activity on lock screen, IAP sandbox purchase.
-- **Options**: A — run `eas build` plus native QA before Gate 3. B — accept simulator+web evidence and move to TestFlight/Play Console internal testing after Gate 3.
-- **Recommendation**: A — first preview EAS build doubles as the TestFlight artifact.
-- **Default if you say nothing**: blocks Gate 3.
+- **Resolution 2026-10-04**: **waived by sponsor** — "k sit, làm release luôn đi. app mới chưa có user mà sit gì men". First release has no users; physical-device verification moves to internal testing (TestFlight/Play internal), which is itself the SIT artifact.
 - **Owner**: justin.nguyen@appsindie.com
-- **Deadline**: 2026-08-15
+- **Deadline**: —
 
 ### RR-02. Failure-mode cases not verified
 
 - **Situation**: Cancel regression passed on web preview. **Partial progress**: ATT denial path verified on iOS Simulator ("Ask App Not to Track" → non-personalized test banner still loads in the Home slot); store-product fetch failure degrades to fallback prices on the paywall. Still unexercised on device: ad load-failure UI, notification permission denial, offline edge cases, IAP sandbox purchase.
-- **Options**: A — add and run failure-mode cases on native SIT before Gate 3. B — defer to internal testing.
-- **Recommendation**: A.
-- **Default if you say nothing**: blocks Gate 3.
+- **Resolution 2026-10-04**: **waived by sponsor** (same decision as RR-01) — device failure-mode coverage lands in internal testing rather than a pre-release SIT cycle.
 - **Owner**: justin.nguyen@appsindie.com
-- **Deadline**: 2026-08-15
+- **Deadline**: —
 
 ### RR-04. North-star events and dashboards not wired
 
@@ -110,9 +106,9 @@
 
 ### RR-11. Internal testing build not produced
 
-- **Situation**: No EAS build has been produced for iOS or Android.
+- **Situation**: No EAS build has been produced for iOS or Android. **Progress 2026-10-04**: release pipeline wired (`.eas/workflows/release.yml`, `eas.json` `appVersionSource: remote` + `submit.internal`); first production build pending trigger — each build is a separate confirmed go-ahead.
 - **Options**: A — run `eas build` for internal testing before Gate 3. B — defer build until after Gate 3 and use it as the first SIT artifact.
-- **Recommendation**: A.
+- **Recommendation**: A — the internal-testing build doubles as the SIT artifact under the RR-01/02 waiver.
 - **Default if you say nothing**: blocks Gate 3.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-08-18
@@ -126,14 +122,11 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-08-22
 
-### RR-13. Release record not completed
+### RR-13. Release record — resolved 2026-10-04
 
-- **Situation**: `RELEASE_NOTES.md`, `CHANGELOG.md`, and issue-traceability references do not exist for v1. This is a deliberate bundle of the three release-record rows that share the same remediation: write release notes, changelog, and link shaping/build issues.
-- **Options**: A — complete release record before Gate 3. B — complete before store submission.
-- **Recommendation**: A before Gate 3 so the human sign-off has a record of what ships.
-- **Default if you say nothing**: blocks Gate 3.
+- **Resolution**: `docs/release/v1/RELEASE_NOTES.md` written (rollout/monitoring/rollback, compliance, traceability to PR #4 + J1–J10 + 297-test verify); `CHANGELOG.md` carries the v1.0.0 product entry.
 - **Owner**: justin.nguyen@appsindie.com
-- **Deadline**: 2026-08-12
+- **Deadline**: —
 
 ### RR-14. EAS / portal credentials and console products not fully provisioned
 

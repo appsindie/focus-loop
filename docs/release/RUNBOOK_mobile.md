@@ -4,7 +4,7 @@
 
 - **Product / surface**: Focus Loop / iOS & Android
 - **Version (CalVer)**: v1.0.0
-- **Rollback owner**: TBD
+- **Rollback owner**: justin.nguyen@appsindie.com
 - **Last rehearsed**: N/A
 
 ## What this service does

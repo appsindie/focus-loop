@@ -148,7 +148,8 @@
           "recordAudioAndroid": false
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "./plugins/withAndroidLintFix.js"
     ],
     "extra": {
       "eas": {
