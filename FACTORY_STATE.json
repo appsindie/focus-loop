@@ -25,10 +25,10 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-10-04T05:58:00Z",
+    "fired_at": "2026-10-04T06:50:00Z",
     "round_count": 14,
     "routine": "code-review",
-    "session_url": "https://claude.ai/code/cse_01G3zKS5bCEL8bmSh6a853E4",
+    "session_url": "https://claude.ai/code/cse_01U5QaCa2KjQtCahZZQp1JoV",
     "verdict": "pending"
   },
   "next_action": "Gate 1 signed (PR #4). Phase 2 close-out: collect round-14 verdict; SIT on real device + RR-01/02/11; then Gate 2 items (RR-14 console products/AdMob units, release docs)",
@@ -183,5 +183,5 @@
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-10-04T06:30:00Z"
+  "updated_at": "2026-10-04T06:50:00Z"
 }
