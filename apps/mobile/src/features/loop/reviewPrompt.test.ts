@@ -53,6 +53,21 @@ describe("maybePromptStoreReview (J6-R6)", () => {
     expect(request).toHaveBeenCalledTimes(1);
   });
 
+  it("does not spend the one-shot when the sheet is unavailable (CR-22)", async () => {
+    const unavailable = jest.fn(() => Promise.resolve(false));
+    for (const loopId of ["l1", "l2", "l3"]) {
+      await maybePromptStoreReview(loopId, [session({ loopId, outcome: "finished" })], unavailable);
+    }
+    // Third qualified loop reached the requester but the sheet was unavailable —
+    // the one-shot must not be spent.
+    expect(unavailable).toHaveBeenCalledTimes(1);
+
+    const available = jest.fn(() => Promise.resolve(true));
+    const fourth = [session({ loopId: "l4", outcome: "finished" })];
+    await expect(maybePromptStoreReview("l4", fourth, available)).resolves.toBe(true);
+    expect(available).toHaveBeenCalledTimes(1);
+  });
+
   it("ignores a loop id that already qualified", async () => {
     const request = jest.fn(() => Promise.resolve(true));
     const sessions = [session({ loopId: "l1", outcome: "finished" })];

@@ -11,13 +11,17 @@ type ReviewPromptState = {
   prompted: boolean;
 };
 
-const DEFAULT_STATE: ReviewPromptState = { qualifiedLoopIds: [], prompted: false };
+// Fresh object per load — callers push into qualifiedLoopIds and set prompted,
+// so handing out a shared default would poison every later empty-store read.
+function defaultState(): ReviewPromptState {
+  return { qualifiedLoopIds: [], prompted: false };
+}
 
 async function loadState(): Promise<ReviewPromptState> {
   try {
     const raw = await AsyncStorage.getItem(REVIEW_PROMPT_KEY);
     if (raw == null) {
-      return DEFAULT_STATE;
+      return defaultState();
     }
     const parsed = JSON.parse(raw) as Partial<ReviewPromptState>;
     return {
@@ -27,7 +31,7 @@ async function loadState(): Promise<ReviewPromptState> {
       prompted: parsed.prompted === true,
     };
   } catch {
-    return DEFAULT_STATE;
+    return defaultState();
   }
 }
 
@@ -64,8 +68,13 @@ export async function maybePromptStoreReview(
     await AsyncStorage.setItem(REVIEW_PROMPT_KEY, JSON.stringify(state));
     return false;
   }
-  state.prompted = true;
+  // CR-22: spend the one-shot only when the request actually ran — an
+  // unavailable sheet (isAvailableAsync false) leaves prompted=false so the
+  // next qualified loop tries again.
+  const requested = await requestReview();
+  if (requested) {
+    state.prompted = true;
+  }
   await AsyncStorage.setItem(REVIEW_PROMPT_KEY, JSON.stringify(state));
-  // The OS decides whether the sheet actually shows; requested !== shown.
-  return requestReview();
+  return requested;
 }

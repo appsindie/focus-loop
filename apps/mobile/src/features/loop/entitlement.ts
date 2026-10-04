@@ -53,8 +53,24 @@ export async function loadEntitlement(): Promise<Entitlement> {
   }
 }
 
+// In-process change notification: AsyncStorage has no event system, and the only
+// writers of this key run in the JS runtime (purchase, trial grant, re-check), so a
+// synchronous listener set is enough for useEntitlement to re-read on any write.
+type EntitlementListener = () => void;
+const entitlementListeners = new Set<EntitlementListener>();
+
+export function onEntitlementChanged(listener: EntitlementListener): () => void {
+  entitlementListeners.add(listener);
+  return () => {
+    entitlementListeners.delete(listener);
+  };
+}
+
 export async function saveEntitlement(entitlement: Entitlement): Promise<void> {
   await AsyncStorage.setItem(ENTITLEMENT_KEY, JSON.stringify(entitlement));
+  for (const listener of entitlementListeners) {
+    listener();
+  }
 }
 
 export async function grantPlus(
@@ -114,14 +130,23 @@ export async function startTrial(itemId: string, now: Date): Promise<Entitlement
 // renewal that settles a few hours late doesn't flicker the paywall (CR-02).
 const RENEWAL_GRACE_MS = 48 * 3600 * 1000;
 
-export function isItemUnlocked(entitlement: Entitlement, itemId: string, now: Date): boolean {
-  if (entitlement.isPlus) {
-    // Lifetime has no expiry stamp; a yearly lapses at expiry + renewal grace.
-    if (entitlement.plusExpiresAt == null) {
-      return true;
-    }
-    return new Date(entitlement.plusExpiresAt).getTime() + RENEWAL_GRACE_MS > now.getTime();
+// J7-R3 ad-removal flag and J6-R3 history gate share this: lifetime has no expiry
+// stamp; a yearly stays Plus until expiry + renewal grace.
+export function isPlusActive(entitlement: Entitlement, now: Date): boolean {
+  if (!entitlement.isPlus) {
+    return false;
   }
+  if (entitlement.plusExpiresAt == null) {
+    return true;
+  }
+  return new Date(entitlement.plusExpiresAt).getTime() + RENEWAL_GRACE_MS > now.getTime();
+}
+
+export function isItemUnlocked(entitlement: Entitlement, itemId: string, now: Date): boolean {
+  if (isPlusActive(entitlement, now)) {
+    return true;
+  }
+  // An ex-Plus user past the renewal grace is a free user — a live trial still counts.
   const trial = entitlement.trials.find((t) => t.itemId === itemId);
   return trial != null && new Date(trial.expiresAt).getTime() > now.getTime();
 }

@@ -19,14 +19,26 @@ export function isWithinAdGrace(firstInstallAt: string | null, now: Date = new D
   return now.getTime() - installMs < NEW_USER_AD_GRACE_MS;
 }
 
+export type InterstitialTriggerContext = {
+  firstInstallAt: string | null;
+  // J7-R3: Plus removes all ads — suppress the trigger before the grace check so
+  // `ad_trigger_shown` never claims a show no Plus user could see.
+  hasAdsRemoval?: boolean | undefined;
+  show?: (() => void) | undefined;
+  now?: Date | undefined;
+};
+
 // A trigger point is a request, not a guarantee: the console cap + grace decide;
 // `show` only runs when the request is allowed through.
 export function notifyInterstitialTrigger(
   trigger: InterstitialTrigger,
-  firstInstallAt: string | null,
-  show?: () => void,
-  now: Date = new Date(),
-): "suppressed-grace" | "queued" {
+  context: InterstitialTriggerContext,
+): "suppressed-plus" | "suppressed-grace" | "queued" {
+  const { firstInstallAt, hasAdsRemoval = false, show, now = new Date() } = context;
+  if (hasAdsRemoval) {
+    trackEvent("ad_trigger_suppressed", { trigger, reason: "plus" });
+    return "suppressed-plus";
+  }
   if (isWithinAdGrace(firstInstallAt, now)) {
     trackEvent("ad_trigger_suppressed", { trigger, reason: "new-user-grace" });
     return "suppressed-grace";

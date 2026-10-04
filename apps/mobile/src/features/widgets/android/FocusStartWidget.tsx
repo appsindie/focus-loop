@@ -1,5 +1,5 @@
 import { FlexWidget, TextWidget } from "react-native-android-widget";
-import { liveRunning, type WidgetSnapshot } from "../../surfaces/widgetData";
+import { formatEndTime, liveRunning, type WidgetSnapshot } from "../../surfaces/widgetData";
 import { widgetPalette } from "./widgetPalette";
 
 // J4-R1/R2 small home-screen widget: the whole tile is the Start target —
@@ -16,8 +16,8 @@ export function FocusStartWidget({ snapshot }: { snapshot: WidgetSnapshot }) {
       : running.kind === "focus"
         ? running.paused
           ? `Paused · ${snapshot.focusMinutes}m`
-          : `Focusing · ${Math.max(1, Math.ceil((running.endsAtMs - Date.now()) / 60000))}m left`
-        : "On a break";
+          : `Focusing · until ${formatEndTime(running.endsAtMs)}`
+        : `On a break · until ${formatEndTime(running.endsAtMs)}`;
   return (
     <FlexWidget
       clickAction="OPEN_URI"

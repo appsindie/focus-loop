@@ -12,6 +12,8 @@ import { FocusScreen } from "./src/features/loop/screens/FocusScreen";
 import { HomeScreen } from "./src/features/loop/screens/HomeScreen";
 import { LoopDoneScreen } from "./src/features/loop/screens/LoopDoneScreen";
 import { NotifAskSheet } from "./src/features/loop/screens/NotifAskSheet";
+import { isPlusActive } from "./src/features/loop/entitlement";
+import { useEntitlement } from "./src/features/loop/useEntitlement";
 import { mostRecentUnused } from "./src/features/loop/parkedThoughts";
 import { SettingsScreen } from "./src/features/settings/SettingsScreen";
 import { DEFAULT_SETTINGS, Settings, useSettings } from "./src/features/settings/useSettings";
@@ -68,9 +70,16 @@ type AppBodyProps = {
 };
 
 function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
-  // Free tier for now; J7's entitlement flips hasAdsRemoval.
-  const { showFullscreenAds } = useFullScreenAds(false);
-  const interstitial = useMemo(() => ({ show: showFullscreenAds }), [showFullscreenAds]);
+  // J7-R3: Plus removes every ad. The flag follows the stored entitlement
+  // (expiry + renewal grace handled inside isPlusActive) and flips live on a
+  // purchase / lapse re-check — no restart needed (useEntitlement listener).
+  const { entitlement } = useEntitlement();
+  const hasAdsRemoval = isPlusActive(entitlement, new Date());
+  const { showFullscreenAds } = useFullScreenAds(hasAdsRemoval);
+  const interstitial = useMemo(
+    () => ({ show: showFullscreenAds, hasAdsRemoval }),
+    [showFullscreenAds, hasAdsRemoval],
+  );
 
   // J4: a widget/Live-Activity deep link may have launched the app — resolve
   // it before boot so a widget start can route straight into a focus (R1).
@@ -183,7 +192,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
       {route === "home" ? (
         // P04 free-tier banner, 320x50 pinned to the bottom of Home.
         <View style={styles.bannerSlot}>
-          <Banner hasAdsRemoval={false} />
+          <Banner hasAdsRemoval={hasAdsRemoval} />
         </View>
       ) : null}
       {route === "focus" ? (
@@ -278,7 +287,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
       {route === "history" ? (
         <HistoryScreen
           sessions={sessions}
-          isPlus={false /* J7 entitlement lands in the Plus slice */}
+          isPlus={hasAdsRemoval /* same validity window as ad removal (J7-R3) */}
           onBack={() => go("home")}
           onWeek={() => go("week")}
           onShare={() => go("share")}

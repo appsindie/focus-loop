@@ -1,5 +1,5 @@
 import { FlexWidget, TextWidget } from "react-native-android-widget";
-import { liveRunning, type WidgetSnapshot } from "../../surfaces/widgetData";
+import { formatEndTime, liveRunning, type WidgetSnapshot } from "../../surfaces/widgetData";
 import { widgetPalette } from "./widgetPalette";
 
 // J4-R2 medium home-screen widget: week progress, the next parked thought to
@@ -10,8 +10,8 @@ export function FocusNextWidget({ snapshot }: { snapshot: WidgetSnapshot }) {
   const nextLine =
     running != null
       ? running.kind === "focus"
-        ? "Focusing now"
-        : "On a break"
+        ? `Focusing until ${formatEndTime(running.endsAtMs)}`
+        : `On a break until ${formatEndTime(running.endsAtMs)}`
       : snapshot.nextParkedText != null
         ? `Next up: ${snapshot.nextParkedText}`
         : `Next up: Focus ${snapshot.focusMinutes}`;

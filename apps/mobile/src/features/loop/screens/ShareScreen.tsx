@@ -118,7 +118,14 @@ export function ShareScreen({
     }
     setSharing(true);
     try {
-      const uri = await captureRef(cardRef, { format: "png", quality: 1 });
+      // Fixed output canvas (CR-24): without width/height the PNG follows the
+      // device pixel ratio; pinned to the card's 9:16 dp size on every device.
+      const uri = await captureRef(cardRef, {
+        format: "png",
+        quality: 1,
+        width: 720,
+        height: 1280,
+      });
       if (await Sharing.isAvailableAsync()) {
         await Sharing.shareAsync(uri, { mimeType: "image/png", dialogTitle: "Share your week" });
       }
@@ -129,7 +136,6 @@ export function ShareScreen({
     }
   };
 
-  const preview = CARD_STYLES[cardStyle];
   return (
     <SafeAreaView style={[styles.root, { backgroundColor: colors.bg }]}>
       <View style={styles.header}>
@@ -146,12 +152,18 @@ export function ShareScreen({
         <View style={styles.back} />
       </View>
 
-      <View style={[styles.preview, { backgroundColor: preview.bg }]}>
-        <Text style={[styles.previewApp, { color: preview.muted }]}>FOCUS LOOP</Text>
-        <Text style={[styles.previewHeadline, { color: preview.ink }]}>
-          {week.daysMet} of {week.goalDays} days
-        </Text>
-        <Text style={[styles.previewSub, { color: preview.muted }]}>focused this week</Text>
+      {/* CR-23: the preview IS the shared card scaled down — what you see is
+          exactly what the system sheet carries, including the privacy toggle. */}
+      <View style={styles.previewClip}>
+        <View style={styles.previewScale} pointerEvents="none">
+          <ShareCard
+            week={week}
+            totals={totals}
+            intentions={intentions}
+            showWorkedOn={showWorkedOn}
+            cardStyle={cardStyle}
+          />
+        </View>
       </View>
 
       <View style={styles.styleRow}>
@@ -225,18 +237,18 @@ const styles = StyleSheet.create({
   back: { width: 48, minHeight: 44, justifyContent: "center" },
   backText: { ...typography.body },
   title: { ...typography.title, flex: 1, textAlign: "center" },
-  preview: {
+  previewClip: {
     alignSelf: "center",
     width: 200,
-    height: 356, // 9:16 preview
+    height: 356, // 720x1280 card at PREVIEW_SCALE
     borderRadius: 20,
-    padding: 16,
+    overflow: "hidden",
     marginBottom: 20,
-    justifyContent: "flex-start",
   },
-  previewApp: { fontSize: 9, fontWeight: "700", letterSpacing: 2, marginTop: 6 },
-  previewHeadline: { fontSize: 30, fontWeight: "700", letterSpacing: -1, marginTop: 56 },
-  previewSub: { fontSize: 12, marginTop: 4 },
+  previewScale: {
+    transformOrigin: "top left",
+    transform: [{ scale: 200 / 720 }],
+  },
   styleRow: { flexDirection: "row", justifyContent: "center", gap: 10, marginBottom: 20 },
   styleChip: {
     borderRadius: 999,

@@ -67,6 +67,14 @@ export function liveRunning(
   return running.endsAtMs > nowMs ? running : null;
 }
 
+// CR-21: Android widgets never re-render at endsAt (updatePeriodMillis 0, no
+// scheduled refresh API in managed workflow), so a countdown label ages wrong
+// the minute it renders. Rendering the deadline itself keeps a stale tile
+// informative — "Focusing until 14:30" is still true minutes later.
+export function formatEndTime(endsAtMs: number): string {
+  return new Date(endsAtMs).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+}
+
 // Read side for the Android headless widget task — tolerates a missing or
 // corrupt value by falling back to defaults (a widget that renders zeros beats
 // a widget that crashes headless).

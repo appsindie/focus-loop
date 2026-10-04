@@ -1,6 +1,10 @@
 import { Platform } from "react-native";
 import { TestIds } from "react-native-google-mobile-ads";
 
+// J2-R5 / ADR-003: whether a triggered interstitial actually shows — frequency
+// cap (≤1 trigger/active day per the Gate-0 model), placement rules — is AdMob
+// CONSOLE server-side configuration. It is not expressible in app code; the
+// console setting is a release-gate check alongside RR-03's production IDs.
 export const ADS_CONFIG = {
   bannerId: __DEV__
     ? TestIds.BANNER

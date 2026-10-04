@@ -36,3 +36,15 @@
 ## Non-UI verification
 
 - Run `npm run verify` at repo root. Pass criteria: `tsc --noEmit` exits 0, `eslint` exits 0, `jest --ci --coverage=false` reports all suites passed, `prettier --check .` reports no formatting issues.
+
+## Native-device SIT additions (J4/J6 surfaces — reviewers CR-15..24)
+
+These cases cannot run in jest or the web preview; they ride on the RR-01 native SIT build before Gate 3.
+
+| Step | Action | Expected result | Source |
+| --- | --- | --- | --- |
+| N1 | Start a focus, background the app, let the step end. Check iOS home widget + Live Activity and the Android widgets + ongoing notification. | Widgets show "Done"/idle once endsAt passes (iOS post-endsAt timeline entry; Android "until HH:MM" stays truthful); Live Activity and the ongoing notification are gone — teardown is unconditional, not flag-gated (CR-15/17/19/21). | `FocusLoopWidgets.swift`, `Module.swift`, `androidOngoingNotification.ts`, `FocusStartWidget.tsx` |
+| N2 | Same but force-kill the app mid-focus, reopen, dismiss welcome-back. | No orphaned Live Activity / sticky notification (CR-17). | `useLoopController.ts` boot teardown |
+| N3 | Widget end-race: end a focus then immediately start another from the widget. | The new Live Activity survives; the old one ends (CR-18 outgoing-set capture). | `Module.swift` |
+| N4 | P19 share: flip "Show what I worked on" ON, confirm the preview updates to the exact card, tap Share image on BOTH an Android and an iOS device. | Preview == shared PNG; no blank/cropped output from the off-screen capture (CR-23/24). | `ShareScreen.tsx` |
+| N5 | Complete 3 loops with a "Finished" outcome on a device where the store sheet is unavailable, then a 4th where it is. | Sheet requested on the 4th, not spent early (CR-22). | `reviewPrompt.ts` |

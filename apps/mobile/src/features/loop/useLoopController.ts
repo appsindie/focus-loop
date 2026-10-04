@@ -73,7 +73,7 @@ function useSessionWriter(engine: LoopEngine, onWritten: (session: FocusSession)
 export function useLoopController(
   settings: Settings,
   settingsLoading: boolean,
-  interstitial?: { show: () => void },
+  interstitial?: { show: () => void; hasAdsRemoval?: boolean },
   // J4-R1: a widget/Live-Activity deep link resolved before boot finished.
   // "pending" means the OS hasn't answered getInitialURL yet — boot waits.
   bootIntent: FocusLoopIntent | "pending" | null = null,
@@ -298,11 +298,15 @@ export function useLoopController(
         trackEvent("loop_completed", { loopId: engine.currentLoopId });
         // J6-R6: store review sheet after the 3rd qualified loop — fired at
         // most once ever; the OS decides whether the sheet actually shows.
-        void maybePromptStoreReview(engine.currentLoopId, sessionsRef.current).then((requested) => {
-          if (requested) {
-            trackEvent("store_review_prompted", { loopId: engine.currentLoopId });
-          }
-        });
+        void maybePromptStoreReview(engine.currentLoopId, sessionsRef.current)
+          .then((requested) => {
+            if (requested) {
+              trackEvent("store_review_prompted", { loopId: engine.currentLoopId });
+            }
+          })
+          // CR-22: a storage/request rejection at loop-done must not surface as
+          // an unhandled rejection — the review sheet is best-effort.
+          .catch(() => {});
         go("loop-done");
       } else if (after === "finished") {
         go("home");
@@ -342,11 +346,11 @@ export function useLoopController(
   const startBreak = useCallback(() => {
     // Leaving P10 = the closeout interstitial trigger point (§5).
     if (isCloseoutTriggerPoint(engine.currentFocusNumber, false)) {
-      notifyInterstitialTrigger(
-        "closeout-leave-second-focus",
-        settings.firstInstallAt,
-        interstitial?.show,
-      );
+      notifyInterstitialTrigger("closeout-leave-second-focus", {
+        firstInstallAt: settings.firstInstallAt,
+        hasAdsRemoval: interstitial?.hasAdsRemoval,
+        show: interstitial?.show,
+      });
     }
     engine.advance();
     afterEngineChange();
@@ -416,7 +420,11 @@ export function useLoopController(
 
   const leaveLoopDone = useCallback(() => {
     if (isLaterLoop) {
-      notifyInterstitialTrigger("loop-done-leave", settings.firstInstallAt, interstitial?.show);
+      notifyInterstitialTrigger("loop-done-leave", {
+        firstInstallAt: settings.firstInstallAt,
+        hasAdsRemoval: interstitial?.hasAdsRemoval,
+        show: interstitial?.show,
+      });
     }
   }, [isLaterLoop, settings.firstInstallAt, interstitial]);
 
