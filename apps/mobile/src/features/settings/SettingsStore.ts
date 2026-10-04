@@ -1,6 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DEFAULT_RHYTHM, RHYTHM_BOUNDS, Rhythm, RhythmPresetId } from "../loop/rhythm";
 import { DEFAULT_WEEKLY_GOAL_DAYS } from "../loop/weeklyGoal";
+import {
+  DEFAULT_DISC_COLOR_ID,
+  DEFAULT_FOCUS_SOUND_ID,
+  normalizeDiscColorId,
+  normalizeFocusSoundId,
+} from "../personalize/catalogue";
 
 const SETTINGS_KEY = "focus-loop/settings";
 
@@ -24,6 +30,9 @@ export type Settings = {
   vibrationEnabled: boolean;
   // ADR-003: install-age ad grace is client-side; anchored to first launch.
   firstInstallAt: string | null;
+  // J8: personalisation picks — catalogue ids, normalised on load.
+  discColorId: string;
+  focusSoundId: string;
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -37,6 +46,8 @@ export const DEFAULT_SETTINGS: Settings = {
   soundEnabled: true,
   vibrationEnabled: true,
   firstInstallAt: null,
+  discColorId: DEFAULT_DISC_COLOR_ID,
+  focusSoundId: DEFAULT_FOCUS_SOUND_ID,
 };
 
 const RHYTHM_KEYS: (keyof Rhythm)[] = [
@@ -61,9 +72,12 @@ function clamp(value: number, min: number, max: number): number {
 }
 
 // Stored payloads may carry the pilot's "progress" display value; it folds to
-// "disc" on load (canvas vocabulary).
-type StoredSettings = Omit<Settings, "displayMode"> & {
+// "disc" on load (canvas vocabulary). The J8 personalisation keys are optional
+// here — payloads written before J8 simply lack them.
+type StoredSettings = Omit<Settings, "displayMode" | "discColorId" | "focusSoundId"> & {
   displayMode: DisplayMode | "progress" | null;
+  discColorId?: string;
+  focusSoundId?: string;
 };
 
 // Bounds enforced on load: a bad rhythm id or NaN/0 field would crash or degenerate
@@ -95,6 +109,10 @@ function normalizeSettings(settings: StoredSettings): Settings {
       ),
     },
     weeklyGoalDays: clamp(settings.weeklyGoalDays, 1, 7),
+    // Older payloads predate the J8 keys; absent or unknown ids fall back to
+    // the free defaults rather than failing validation (CR-04 class).
+    discColorId: normalizeDiscColorId(settings.discColorId),
+    focusSoundId: normalizeFocusSoundId(settings.focusSoundId),
   };
 }
 
@@ -118,7 +136,9 @@ function isSettings(value: unknown): value is StoredSettings {
       candidate["appearance"] === "dark") &&
     typeof candidate["soundEnabled"] === "boolean" &&
     typeof candidate["vibrationEnabled"] === "boolean" &&
-    (candidate["firstInstallAt"] === null || typeof candidate["firstInstallAt"] === "string")
+    (candidate["firstInstallAt"] === null || typeof candidate["firstInstallAt"] === "string") &&
+    (candidate["discColorId"] === undefined || typeof candidate["discColorId"] === "string") &&
+    (candidate["focusSoundId"] === undefined || typeof candidate["focusSoundId"] === "string")
   );
 }
 

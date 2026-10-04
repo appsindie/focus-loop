@@ -160,6 +160,24 @@ export function isItemUnlocked(entitlement: Entitlement, itemId: string, now: Da
   return trial != null && new Date(trial.expiresAt).getTime() > now.getTime();
 }
 
+// Picker caption: while a trial is live, show when it ends; null when free/
+// Plus-covered or expired.
+export function activeTrialEndsAt(
+  entitlement: Entitlement,
+  itemId: string,
+  now: Date,
+): Date | null {
+  if (isPlusActive(entitlement, now)) {
+    return null;
+  }
+  const trial = entitlement.trials.find((t) => t.itemId === itemId);
+  if (trial == null) {
+    return null;
+  }
+  const ends = new Date(trial.expiresAt);
+  return ends.getTime() > now.getTime() ? ends : null;
+}
+
 export function pruneExpiredTrials(entitlement: Entitlement, now: Date): Entitlement {
   return {
     ...entitlement,

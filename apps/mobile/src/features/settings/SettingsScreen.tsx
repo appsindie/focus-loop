@@ -19,6 +19,8 @@ type SettingsScreenProps = {
   onUpgrade: () => void;
   onRestore: () => void;
   restoreMessage?: string | null;
+  // J8: P15 lives on its own screen — this row routes there.
+  onOpenThemes: () => void;
 };
 
 function Stepper({
@@ -105,6 +107,7 @@ export function SettingsScreen({
   onUpgrade,
   onRestore,
   restoreMessage,
+  onOpenThemes,
 }: SettingsScreenProps) {
   const rhythm = resolveRhythm(settings.rhythmPresetId, settings.customRhythm);
 
@@ -189,6 +192,20 @@ export function SettingsScreen({
           onChange={(displayMode) => onChange({ displayMode })}
         />
       </View>
+
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Themes and sounds"
+        onPress={onOpenThemes}
+        style={styles.row}
+      >
+        <Text style={styles.rowLabel} allowFontScaling>
+          Themes & sounds
+        </Text>
+        <Text style={styles.rowValue} allowFontScaling>
+          Disc colour, focus sound
+        </Text>
+      </Pressable>
 
       <View style={styles.row}>
         <Text style={styles.rowLabel} allowFontScaling>
@@ -347,6 +364,7 @@ const styles = StyleSheet.create({
     color: colors.text,
     flexShrink: 1,
   },
+  rowValue: { ...typography.caption, color: colors.textMuted, flexShrink: 1 },
   stepper: { flexDirection: "row", alignItems: "center", gap: spacing.md },
   stepButton: { minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center" },
   stepButtonText: { fontSize: 24, color: colors.text },

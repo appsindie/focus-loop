@@ -80,4 +80,26 @@ describe("SettingsStore", () => {
     expect(a.firstInstallAt).toBe(b.firstInstallAt);
     expect(a.firstInstallAt).toEqual(expect.any(String));
   });
+
+  it("fills the J8 catalogue ids on a pre-J8 payload", async () => {
+    await AsyncStorage.setItem(
+      "focus-loop/settings",
+      JSON.stringify({
+        ...DEFAULT_SETTINGS,
+        firstInstallAt: "2026-10-01T00:00:00.000Z",
+        discColorId: undefined,
+        focusSoundId: undefined,
+      }),
+    );
+    const loaded = await loadSettings();
+    expect(loaded.discColorId).toBe("ember");
+    expect(loaded.focusSoundId).toBe("silence");
+  });
+
+  it("normalizes stored catalogue ids that no longer exist", async () => {
+    await saveSettings({ ...DEFAULT_SETTINGS, discColorId: "lava", focusSoundId: "whales" });
+    const loaded = await loadSettings();
+    expect(loaded.discColorId).toBe("ember");
+    expect(loaded.focusSoundId).toBe("silence");
+  });
 });

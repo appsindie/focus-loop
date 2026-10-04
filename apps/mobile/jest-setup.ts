@@ -68,6 +68,18 @@ jest.mock("expo-store-review", () => ({
   requestReview: jest.fn(() => Promise.resolve()),
 }));
 
+// J8 focus sounds are best-effort — the port swallows the absent native
+// module, and tests mock createAudioPlayer directly.
+jest.mock("expo-audio", () => ({
+  createAudioPlayer: jest.fn(() => ({
+    play: jest.fn(),
+    pause: jest.fn(),
+    remove: jest.fn(),
+    loop: false,
+    volume: 1,
+  })),
+}));
+
 // The IAP native module only exists in a dev-client build. The port layer is
 // tested through an injected fake PlusStore instead, so every expo-iap export
 // is an inert stub here.

@@ -1,7 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { useKeepAwake } from "expo-keep-awake";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Banner, useFullScreenAds } from "@appsindie/react-native-ads";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { AdsContext, Banner, useFullScreenAds } from "@appsindie/react-native-ads";
 import { Linking, StyleSheet, Text, View } from "react-native";
 import { AdsProvider } from "./src/features/ads/AdsProvider";
 import { useLoopController } from "./src/features/loop/useLoopController";
@@ -12,12 +12,30 @@ import { FocusScreen } from "./src/features/loop/screens/FocusScreen";
 import { HomeScreen } from "./src/features/loop/screens/HomeScreen";
 import { LoopDoneScreen } from "./src/features/loop/screens/LoopDoneScreen";
 import { NotifAskSheet } from "./src/features/loop/screens/NotifAskSheet";
-import { isPlusActive } from "./src/features/loop/entitlement";
+import {
+  activeTrialEndsAt,
+  isItemUnlocked,
+  isPlusActive,
+  startTrial,
+} from "./src/features/loop/entitlement";
 import { useEntitlement } from "./src/features/loop/useEntitlement";
 import { restorePlus, verifyPlusWithStore } from "./src/features/plus/purchase";
 import { PaywallScreen } from "./src/features/plus/screens/PaywallScreen";
 import { PlusWelcomeScreen } from "./src/features/plus/screens/PlusWelcomeScreen";
 import { mostRecentUnused } from "./src/features/loop/parkedThoughts";
+import { ThemesSoundsScreen } from "./src/features/personalize/ThemesSoundsScreen";
+import {
+  DEFAULT_FOCUS_SOUND_ID,
+  catalogueItem,
+  shadeHex,
+} from "./src/features/personalize/catalogue";
+import {
+  pauseFocusSound,
+  startFocusSound,
+  stopFocusSound,
+} from "./src/features/personalize/focusSounds";
+import { watchForReward } from "./src/features/ads/rewardedAd";
+import { ADS_CONFIG } from "./src/features/ads/adsConfig";
 import { SettingsScreen } from "./src/features/settings/SettingsScreen";
 import { DEFAULT_SETTINGS, Settings, useSettings } from "./src/features/settings/useSettings";
 import { saveSettings } from "./src/features/settings/SettingsStore";
@@ -81,6 +99,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
   const { entitlement, loaded: entitlementLoaded } = useEntitlement();
   const hasAdsRemoval = isPlusActive(entitlement, new Date());
   const adsBlocked = !entitlementLoaded || hasAdsRemoval;
+  const ads = useContext(AdsContext);
   const { showFullscreenAds } = useFullScreenAds(adsBlocked);
   const interstitial = useMemo(
     () => ({ show: showFullscreenAds, hasAdsRemoval: adsBlocked }),
@@ -128,6 +147,55 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
   const controller = useLoopController(settings, settingsLoading, interstitial, bootIntent);
   const [restoreMessage, setRestoreMessage] = useState<string | null>(null);
 
+  // J8: the focus sound loops under a RUNNING focus step only — paused keeps
+  // the player but mutes it; leaving focus or ending the step releases it.
+  // A lapsed trial/Plus drops the pick back to silence (isItemUnlocked gate).
+  const unlockedFocusSoundId = isItemUnlocked(entitlement, settings.focusSoundId, new Date())
+    ? settings.focusSoundId
+    : DEFAULT_FOCUS_SOUND_ID;
+  const soundStepKind = controller.step?.kind ?? null;
+  const soundRoute = controller.route;
+  const soundPhase = controller.phase;
+  useEffect(() => {
+    if (soundRoute === "focus" && soundPhase === "running" && soundStepKind === "focus") {
+      startFocusSound(unlockedFocusSoundId);
+    } else if (soundPhase === "paused" && soundStepKind === "focus") {
+      pauseFocusSound();
+    } else {
+      stopFocusSound();
+    }
+  }, [soundRoute, soundPhase, soundStepKind, unlockedFocusSoundId]);
+
+  // J8-R1: the rewarded video buys a 24h trial — the port lazy-loads RNGMA so
+  // jest/Expo Go stay native-free; null unit → "unavailable" → retry copy.
+  const watchVideo = useCallback(
+    () =>
+      watchForReward(ADS_CONFIG.rewardedId, {
+        keywords: ADS_CONFIG.keywords,
+        requestNonPersonalizedAdsOnly: ads.allowTracking === false,
+      }),
+    [ads.allowTracking],
+  );
+  const onTrialEarned = useCallback(async (itemId: string) => {
+    await startTrial(itemId, new Date());
+  }, []);
+
+  // P15: the picked disc colour re-tints the focus palette — only while the
+  // pick is unlocked (Plus or live trial); the accent derives its darker
+  // focusText variant via shadeHex (design ships one hex per colour).
+  const colors = palette.light; // Dark theme + Appearance wiring lands with P20 polish.
+  const focusColors = useMemo(() => {
+    const item = catalogueItem(settings.discColorId);
+    if (
+      item?.kind === "disc-color" &&
+      item.swatch != null &&
+      isItemUnlocked(entitlement, item.id, new Date())
+    ) {
+      return { ...colors, focus: item.swatch, focusText: shadeHex(item.swatch, 0.85) };
+    }
+    return colors;
+  }, [colors, settings.discColorId, entitlement]);
+
   // Links that arrive while the app is alive (widget tap, Live Activity pause).
   useEffect(() => {
     const subscription = Linking.addEventListener("url", ({ url }) => {
@@ -138,8 +206,6 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
     });
     return () => subscription.remove();
   }, [controller]);
-
-  const colors = palette.light; // Dark theme + Appearance wiring lands with P20 polish.
 
   const {
     route,
@@ -224,7 +290,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
       ) : null}
       {route === "focus" ? (
         <FocusScreen
-          colors={colors}
+          colors={focusColors}
           displayMode={settings.displayMode ?? "disc"}
           onDisplayModeChange={(mode) => void persistSettings({ displayMode: mode })}
           showSeconds={settings.showSeconds}
@@ -302,6 +368,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           plusExpiresAt={entitlement.plusExpiresAt}
           plusProductId={entitlement.productId}
           restoreMessage={restoreMessage}
+          onOpenThemes={() => go("themes")}
           onUpgrade={() => {
             setRestoreMessage(null);
             controller.setPostPaywall("settings");
@@ -359,6 +426,25 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
       ) : null}
       {route === "share" ? (
         <ShareScreen sessions={sessions} week={week} onBack={() => go("week")} colors={colors} />
+      ) : null}
+      {route === "themes" ? (
+        <ThemesSoundsScreen
+          colors={colors}
+          discColorId={settings.discColorId}
+          focusSoundId={settings.focusSoundId}
+          isPlus={hasAdsRemoval}
+          isItemUnlocked={(id) => isItemUnlocked(entitlement, id, new Date())}
+          trialEndsAt={(id) => activeTrialEndsAt(entitlement, id, new Date())}
+          onPick={(patch) => void persistSettings(patch)}
+          onUpgrade={() => {
+            // Locked-item entry: return to this picker after close/purchase.
+            controller.setPostPaywall("themes");
+            controller.openPaywall("locked-item");
+          }}
+          watchVideo={watchVideo}
+          onTrialEarned={onTrialEarned}
+          onBack={() => go("settings")}
+        />
       ) : null}
       <NotifAskSheet
         visible={notifAskOpen}

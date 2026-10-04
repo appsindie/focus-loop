@@ -51,7 +51,8 @@ export type LoopRoute =
   | "history"
   | "share"
   | "paywall"
-  | "plus-welcome";
+  | "plus-welcome"
+  | "themes";
 
 export type LoopController = ReturnType<typeof useLoopController>;
 
@@ -422,7 +423,9 @@ export function useLoopController(
     [sessions, engine.currentLoopId],
   );
 
-  const [postPaywall, setPostPaywall] = useState<"longBreak" | "home" | "settings" | null>(null);
+  const [postPaywall, setPostPaywall] = useState<
+    "longBreak" | "home" | "settings" | "themes" | null
+  >(null);
 
   const openPaywall = useCallback(
     (entry: "loop-done-first" | "settings" | "locked-item") => {
@@ -433,7 +436,7 @@ export function useLoopController(
   );
 
   const runPostPaywall = useCallback(
-    (destination: "longBreak" | "home" | "settings" | null) => {
+    (destination: "longBreak" | "home" | "settings" | "themes" | null) => {
       setPostPaywall(null);
       if (destination === "longBreak") {
         engine.advance();
@@ -441,6 +444,9 @@ export function useLoopController(
         go("break");
       } else if (destination === "settings") {
         go("settings");
+      } else if (destination === "themes") {
+        // J8: the locked-item paywall returns to the picker it came from.
+        go("themes");
       } else {
         engine.discard();
         afterEngineChange();
