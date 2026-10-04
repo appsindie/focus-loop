@@ -6,6 +6,7 @@ import { buildLoopPlan } from "./loopPlan";
 import { LoopSnapshot } from "./LoopEngine";
 import { DEFAULT_SETTINGS, Settings } from "../settings/SettingsStore";
 import { saveEngineSnapshot } from "./engineSnapshot";
+import { recordSession } from "./SessionLog";
 import { requireNativeModule } from "expo-modules-core";
 
 // CR-17: spy on the iOS native surface module so the unconditional endActivity
@@ -39,6 +40,18 @@ const nativeModuleSpy = (): NativeModuleSpy => {
 };
 
 const SETTINGS: Settings = { ...DEFAULT_SETTINGS, displayMode: "disc" };
+
+const sessionSeed = (overrides: { loopId: string }) => ({
+  loopId: overrides.loopId,
+  roundIndex: 1,
+  intention: null,
+  outcome: "finished" as const,
+  startedAt: "2026-10-01T09:00:00.000Z",
+  endedAt: "2026-10-01T09:25:00.000Z",
+  plannedSeconds: 1500,
+  focusedSeconds: 1500,
+  partial: false,
+});
 
 const flushBoot = async () => {
   // Boot is async (storage loads + effects); let React act flush everything.
@@ -359,5 +372,85 @@ describe("useLoopController", () => {
     await renderHook(() => useLoopController(SETTINGS, false));
     await flushBoot();
     expect(nativeModuleSpy().endActivity).toHaveBeenCalled();
+  });
+
+  it("J7 entry: the FIRST loop-done leave opens the paywall instead of an ad", async () => {
+    const plan = buildLoopPlan({
+      focusMinutes: 25,
+      breakMinutes: 5,
+      rounds: 4,
+      longBreakMinutes: 15,
+    });
+    const snapshot: LoopSnapshot = {
+      loopId: "loop-1",
+      // loop-done parks on the last FOCUS step; the longBreak step trails it.
+      stepIndex: plan.length - 2,
+      phase: "loop-done",
+      stepStartedAtMs: Date.now() - 60_000,
+      pausedMs: 0,
+      pausedAtMs: null,
+      intention: null,
+      pendingFocusRecord: null,
+      plan,
+    };
+    await saveEngineSnapshot(snapshot);
+    await recordSession(sessionSeed({ loopId: "loop-1" }));
+
+    const interstitial = { show: jest.fn(), hasAdsRemoval: false };
+    const { result } = await renderHook(() => useLoopController(SETTINGS, false, interstitial));
+    await flushBoot();
+    expect(result.current.route).toBe("loop-done");
+
+    await act(async () => {
+      result.current.skipLongBreak();
+      await Promise.resolve();
+    });
+    // First loop ever: the paywall takes the slot the interstitial would have.
+    expect(result.current.route).toBe("paywall");
+    expect(interstitial.show).not.toHaveBeenCalled();
+
+    // Closing P14 lands the user where their chosen action was going.
+    await act(async () => {
+      result.current.closePaywall();
+      await Promise.resolve();
+    });
+    expect(result.current.route).toBe("home");
+  });
+
+  it("J7 entry: a LATER loop-done leave fires the interstitial, not the paywall", async () => {
+    const plan = buildLoopPlan({
+      focusMinutes: 25,
+      breakMinutes: 5,
+      rounds: 4,
+      longBreakMinutes: 15,
+    });
+    const snapshot: LoopSnapshot = {
+      loopId: "loop-2",
+      // loop-done parks on the last FOCUS step; the longBreak step trails it.
+      stepIndex: plan.length - 2,
+      phase: "loop-done",
+      stepStartedAtMs: Date.now() - 60_000,
+      pausedMs: 0,
+      pausedAtMs: null,
+      intention: null,
+      pendingFocusRecord: null,
+      plan,
+    };
+    await saveEngineSnapshot(snapshot);
+    // A completed earlier loop makes loop-2 a "later" loop.
+    await recordSession(sessionSeed({ loopId: "loop-1" }));
+    await recordSession(sessionSeed({ loopId: "loop-2" }));
+
+    const interstitial = { show: jest.fn(), hasAdsRemoval: false };
+    const { result } = await renderHook(() => useLoopController(SETTINGS, false, interstitial));
+    await flushBoot();
+    expect(result.current.route).toBe("loop-done");
+
+    await act(async () => {
+      result.current.skipLongBreak();
+      await Promise.resolve();
+    });
+    expect(result.current.route).toBe("home");
+    expect(interstitial.show).toHaveBeenCalled();
   });
 });

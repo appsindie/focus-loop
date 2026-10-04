@@ -1,7 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { beforeEach, describe, expect, it } from "@jest/globals";
 import {
-  DEFAULT_ENTITLEMENT,
+  defaultEntitlement,
   applyVerification,
   grantPlus,
   isItemUnlocked,
@@ -17,7 +17,7 @@ describe("entitlement (ADR-003)", () => {
   });
 
   it("defaults to the free entitlement", async () => {
-    expect(await loadEntitlement()).toEqual(DEFAULT_ENTITLEMENT);
+    expect(await loadEntitlement()).toEqual(defaultEntitlement());
   });
 
   it("grants Plus and revokes it when a re-check reports a lapse", async () => {
@@ -59,7 +59,7 @@ describe("entitlement (ADR-003)", () => {
 
   it("isPlusActive gates ads/history: lifetime open-ended, yearly until expiry + grace", async () => {
     const now = new Date("2026-10-03T10:00:00Z");
-    expect(isPlusActive(DEFAULT_ENTITLEMENT, now)).toBe(false);
+    expect(isPlusActive(defaultEntitlement(), now)).toBe(false);
 
     const lifetime = await grantPlus("lifetime", null, now);
     expect(isPlusActive(lifetime, new Date("2030-01-01T00:00:00Z"))).toBe(true);

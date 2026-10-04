@@ -9,6 +9,12 @@ type SettingsScreenProps = {
   // P20: changes save immediately — the parent persists every patch.
   onChange: (patch: Partial<Settings>) => void;
   onBack: () => void;
+  // J7: Plus card + R4 restore row.
+  isPlus: boolean;
+  plusExpiresAt: string | null;
+  onUpgrade: () => void;
+  onRestore: () => void;
+  restoreMessage?: string | null;
 };
 
 function Stepper({
@@ -85,7 +91,16 @@ function Segmented<T extends string>({
 
 // P20 interim: the full screen order lands in the settings slice; these rows are
 // the v1 controls the loop surfaces depend on today.
-export function SettingsScreen({ settings, onChange, onBack }: SettingsScreenProps) {
+export function SettingsScreen({
+  settings,
+  onChange,
+  onBack,
+  isPlus,
+  plusExpiresAt,
+  onUpgrade,
+  onRestore,
+  restoreMessage,
+}: SettingsScreenProps) {
   const rhythm = resolveRhythm(settings.rhythmPresetId, settings.customRhythm);
 
   return (
@@ -106,6 +121,51 @@ export function SettingsScreen({ settings, onChange, onBack }: SettingsScreenPro
           Settings
         </Text>
         <View style={styles.backButton} />
+      </View>
+
+      <View style={styles.plusSection}>
+        {isPlus ? (
+          <View style={styles.row}>
+            <Text style={styles.rowLabel} allowFontScaling>
+              Focus Loop Plus
+            </Text>
+            <Text style={styles.plusStatus} allowFontScaling>
+              {plusExpiresAt != null
+                ? `Active until ${new Date(plusExpiresAt).toLocaleDateString()}`
+                : "Lifetime"}
+            </Text>
+          </View>
+        ) : (
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Get Focus Loop Plus"
+            onPress={onUpgrade}
+            style={styles.plusCard}
+          >
+            <Text style={styles.plusCardTitle} allowFontScaling>
+              Get Plus
+            </Text>
+            <Text style={styles.plusCardBody} allowFontScaling>
+              No ads, full history, all themes & sounds
+            </Text>
+          </Pressable>
+        )}
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Restore purchases"
+          onPress={onRestore}
+          hitSlop={8}
+          style={styles.restoreRow}
+        >
+          <Text style={styles.restoreText} allowFontScaling>
+            Restore purchases
+          </Text>
+        </Pressable>
+        {restoreMessage != null ? (
+          <Text style={styles.restoreMessage} allowFontScaling>
+            {restoreMessage}
+          </Text>
+        ) : null}
       </View>
 
       <View style={styles.row}>
@@ -236,6 +296,22 @@ const styles = StyleSheet.create({
   section: {
     marginVertical: spacing.lg,
   },
+  plusSection: { marginBottom: spacing.lg, gap: spacing.sm },
+  plusCard: {
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radii.md,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.md,
+    gap: 2,
+  },
+  plusCardTitle: { ...typography.headline, color: colors.text },
+  plusCardBody: { ...typography.caption, color: colors.textMuted },
+  plusStatus: { ...typography.caption, color: colors.textMuted },
+  restoreRow: { alignSelf: "center", minHeight: 44, justifyContent: "center" },
+  restoreText: { ...typography.caption, color: colors.primary },
+  restoreMessage: { ...typography.caption, color: colors.textMuted, textAlign: "center" },
   sectionTitle: {
     ...typography.headline,
     color: colors.text,

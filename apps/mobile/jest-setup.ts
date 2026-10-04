@@ -67,3 +67,19 @@ jest.mock("expo-store-review", () => ({
   isAvailableAsync: jest.fn(() => Promise.resolve(false)),
   requestReview: jest.fn(() => Promise.resolve()),
 }));
+
+// The IAP native module only exists in a dev-client build. The port layer is
+// tested through an injected fake PlusStore instead, so every expo-iap export
+// is an inert stub here.
+jest.mock("expo-iap", () => ({
+  initConnection: jest.fn(() => Promise.resolve()),
+  endConnection: jest.fn(() => Promise.resolve()),
+  fetchProducts: jest.fn(() => Promise.resolve([])),
+  getAvailablePurchases: jest.fn(() => Promise.resolve([])),
+  requestPurchase: jest.fn(() => Promise.resolve(null)),
+  finishTransaction: jest.fn(() => Promise.resolve()),
+  restorePurchases: jest.fn(() => Promise.resolve()),
+  purchaseUpdatedListener: jest.fn(() => ({ remove: jest.fn() })),
+  purchaseErrorListener: jest.fn(() => ({ remove: jest.fn() })),
+  ErrorCode: { UserCancelled: "user-cancelled" },
+}));

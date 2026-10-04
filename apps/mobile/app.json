@@ -130,7 +130,8 @@
           ]
         }
       ],
-      "expo-sharing"
+      "expo-sharing",
+      "expo-iap"
     ],
     "extra": {
       "eas": {

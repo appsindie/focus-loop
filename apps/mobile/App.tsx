@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import { useKeepAwake } from "expo-keep-awake";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Banner, useFullScreenAds } from "@appsindie/react-native-ads";
 import { Linking, StyleSheet, Text, View } from "react-native";
 import { AdsProvider } from "./src/features/ads/AdsProvider";
@@ -14,6 +14,9 @@ import { LoopDoneScreen } from "./src/features/loop/screens/LoopDoneScreen";
 import { NotifAskSheet } from "./src/features/loop/screens/NotifAskSheet";
 import { isPlusActive } from "./src/features/loop/entitlement";
 import { useEntitlement } from "./src/features/loop/useEntitlement";
+import { restorePlus, verifyPlusWithStore } from "./src/features/plus/purchase";
+import { PaywallScreen } from "./src/features/plus/screens/PaywallScreen";
+import { PlusWelcomeScreen } from "./src/features/plus/screens/PlusWelcomeScreen";
 import { mostRecentUnused } from "./src/features/loop/parkedThoughts";
 import { SettingsScreen } from "./src/features/settings/SettingsScreen";
 import { DEFAULT_SETTINGS, Settings, useSettings } from "./src/features/settings/useSettings";
@@ -73,13 +76,33 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
   // J7-R3: Plus removes every ad. The flag follows the stored entitlement
   // (expiry + renewal grace handled inside isPlusActive) and flips live on a
   // purchase / lapse re-check — no restart needed (useEntitlement listener).
-  const { entitlement } = useEntitlement();
+  // CR-25: until the first AsyncStorage read lands, ads stay OFF — a Plus user
+  // must never see a banner or an ad request in the load window.
+  const { entitlement, loaded: entitlementLoaded } = useEntitlement();
   const hasAdsRemoval = isPlusActive(entitlement, new Date());
-  const { showFullscreenAds } = useFullScreenAds(hasAdsRemoval);
+  const adsBlocked = !entitlementLoaded || hasAdsRemoval;
+  const { showFullscreenAds } = useFullScreenAds(adsBlocked);
   const interstitial = useMemo(
-    () => ({ show: showFullscreenAds, hasAdsRemoval }),
-    [showFullscreenAds, hasAdsRemoval],
+    () => ({ show: showFullscreenAds, hasAdsRemoval: adsBlocked }),
+    [showFullscreenAds, adsBlocked],
   );
+
+  // ADR-003 entitlement re-check: run once at app start, then again the moment
+  // a stored expiry stamp passes while the app is alive (renewal grace already
+  // inside isPlusActive). A store failure resolves "unknown" and keeps the
+  // local flag (tri-state, CR-02).
+  // Once per app start.
+  useEffect(() => {
+    void verifyPlusWithStore();
+  }, []);
+  const wasPlusActiveRef = useRef(hasAdsRemoval);
+  useEffect(() => {
+    const was = wasPlusActiveRef.current;
+    wasPlusActiveRef.current = hasAdsRemoval;
+    if (was && !hasAdsRemoval && entitlement.isPlus) {
+      void verifyPlusWithStore();
+    }
+  }, [hasAdsRemoval, entitlement.isPlus]);
 
   // J4: a widget/Live-Activity deep link may have launched the app — resolve
   // it before boot so a widget start can route straight into a focus (R1).
@@ -103,6 +126,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
   }, []);
 
   const controller = useLoopController(settings, settingsLoading, interstitial, bootIntent);
+  const [restoreMessage, setRestoreMessage] = useState<string | null>(null);
 
   // Links that arrive while the app is alive (widget tap, Live Activity pause).
   useEffect(() => {
@@ -190,10 +214,13 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
         />
       ) : null}
       {route === "home" ? (
-        // P04 free-tier banner, 320x50 pinned to the bottom of Home.
-        <View style={styles.bannerSlot}>
-          <Banner hasAdsRemoval={hasAdsRemoval} />
-        </View>
+        // P04 free-tier banner, 320x50 pinned to the bottom of Home. Hidden
+        // until the entitlement read lands so Plus never flashes an ad (CR-25).
+        entitlementLoaded ? (
+          <View style={styles.bannerSlot}>
+            <Banner hasAdsRemoval={hasAdsRemoval} />
+          </View>
+        ) : null
       ) : null}
       {route === "focus" ? (
         <FocusScreen
@@ -271,7 +298,42 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           settings={settings}
           onChange={(patch) => void persistSettings(patch)}
           onBack={() => go("home")}
+          isPlus={hasAdsRemoval}
+          plusExpiresAt={entitlement.plusExpiresAt}
+          restoreMessage={restoreMessage}
+          onUpgrade={() => {
+            setRestoreMessage(null);
+            controller.setPostPaywall("settings");
+            controller.openPaywall("settings");
+          }}
+          onRestore={() => {
+            // J7-R4: restore must work directly from Settings, not just via P14.
+            setRestoreMessage(null);
+            void restorePlus().then((outcome) => {
+              if (outcome === "restored") {
+                controller.setPostPaywall("settings");
+                controller.plusPurchased();
+              } else {
+                setRestoreMessage(
+                  outcome === "none"
+                    ? "No purchases found for this store account."
+                    : "We couldn't reach the store. Check your connection and try again.",
+                );
+              }
+            });
+          }}
         />
+      ) : null}
+      {route === "paywall" ? (
+        <PaywallScreen
+          colors={colors}
+          onClose={controller.closePaywall}
+          onPurchased={controller.plusPurchased}
+          onRestored={controller.plusPurchased}
+        />
+      ) : null}
+      {route === "plus-welcome" ? (
+        <PlusWelcomeScreen colors={colors} onContinue={controller.plusWelcomeContinue} />
       ) : null}
       {route === "week" ? (
         <WeekScreen

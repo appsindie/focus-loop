@@ -15,13 +15,20 @@ export type Entitlement = {
   trials: { itemId: string; expiresAt: string }[];
 };
 
-export const DEFAULT_ENTITLEMENT: Entitlement = {
+const DEFAULT_ENTITLEMENT: Entitlement = {
   isPlus: false,
   productId: null,
   plusExpiresAt: null,
   lastVerifiedAt: null,
   trials: [],
 };
+
+// CR-26: callers may push into `trials` (J8) — never hand out the shared
+// default or later empty-store reads inherit earlier state (same bug class
+// the reviewPrompt shared-default had).
+export function defaultEntitlement(): Entitlement {
+  return { ...DEFAULT_ENTITLEMENT, trials: [] };
+}
 
 function isEntitlement(value: unknown): value is Entitlement {
   if (typeof value !== "object" || value == null) {
@@ -41,15 +48,17 @@ export async function loadEntitlement(): Promise<Entitlement> {
   try {
     const raw = await AsyncStorage.getItem(ENTITLEMENT_KEY);
     if (raw == null) {
-      return DEFAULT_ENTITLEMENT;
+      return defaultEntitlement();
     }
     const parsed = JSON.parse(raw) as unknown;
     if (!isEntitlement(parsed)) {
-      return DEFAULT_ENTITLEMENT;
+      return defaultEntitlement();
     }
+    // The parsed object is used as-is; saveEntitlement callers spread it before
+    // writing, so sharing it is safe.
     return parsed;
   } catch {
-    return DEFAULT_ENTITLEMENT;
+    return defaultEntitlement();
   }
 }
 

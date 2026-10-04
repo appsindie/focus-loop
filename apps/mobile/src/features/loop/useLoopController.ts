@@ -49,7 +49,9 @@ export type LoopRoute =
   | "settings"
   | "week"
   | "history"
-  | "share";
+  | "share"
+  | "paywall"
+  | "plus-welcome";
 
 export type LoopController = ReturnType<typeof useLoopController>;
 
@@ -411,36 +413,98 @@ export function useLoopController(
     go("home");
   }, [engine, go, afterEngineChange]);
 
-  // §5: leaving P12 is a trigger point only from the second loop on — the first
-  // loop ever opens the paywall instead (P14 lands in the Plus slice, J7).
+  // §5 + J7 entry: leaving P12 on the FIRST loop ever opens the paywall (P14)
+  // instead of an interstitial; later loops take the trigger. Plus users see
+  // neither. The action the user picked (long break vs done) is remembered so
+  // the paywall can return to it on close or purchase.
   const isLaterLoop = useMemo(
     () => sessions.some((s) => s.loopId !== engine.currentLoopId),
     [sessions, engine.currentLoopId],
   );
 
-  const leaveLoopDone = useCallback(() => {
-    if (isLaterLoop) {
-      notifyInterstitialTrigger("loop-done-leave", {
-        firstInstallAt: settings.firstInstallAt,
-        hasAdsRemoval: interstitial?.hasAdsRemoval,
-        show: interstitial?.show,
-      });
-    }
-  }, [isLaterLoop, settings.firstInstallAt, interstitial]);
+  const [postPaywall, setPostPaywall] = useState<"longBreak" | "home" | "settings" | null>(null);
+
+  const openPaywall = useCallback(
+    (entry: "loop-done-first" | "settings" | "locked-item") => {
+      trackEvent("paywall_shown", { entry });
+      go("paywall");
+    },
+    [go],
+  );
+
+  const runPostPaywall = useCallback(
+    (destination: "longBreak" | "home" | "settings" | null) => {
+      setPostPaywall(null);
+      if (destination === "longBreak") {
+        engine.advance();
+        afterEngineChange();
+        go("break");
+      } else if (destination === "settings") {
+        go("settings");
+      } else {
+        engine.discard();
+        afterEngineChange();
+        go("home");
+      }
+    },
+    [engine, go, afterEngineChange],
+  );
+
+  const closePaywall = useCallback(() => {
+    runPostPaywall(postPaywall ?? "home");
+  }, [postPaywall, runPostPaywall]);
+
+  // Purchase/restore success lands on P16, which continues the pending action.
+  const plusPurchased = useCallback(() => {
+    go("plus-welcome");
+  }, [go]);
+
+  const plusWelcomeContinue = useCallback(() => {
+    runPostPaywall(postPaywall);
+  }, [postPaywall, runPostPaywall]);
+
+  const leaveLoopDone = useCallback(
+    (destination: "longBreak" | "home") => {
+      if (!isLaterLoop && interstitial?.hasAdsRemoval !== true) {
+        setPostPaywall(destination);
+        openPaywall("loop-done-first");
+        return;
+      }
+      if (isLaterLoop) {
+        notifyInterstitialTrigger("loop-done-leave", {
+          firstInstallAt: settings.firstInstallAt,
+          hasAdsRemoval: interstitial?.hasAdsRemoval,
+          show: interstitial?.show,
+        });
+      }
+      if (destination === "longBreak") {
+        engine.advance();
+        afterEngineChange();
+        go("break");
+      } else {
+        engine.discard();
+        afterEngineChange();
+        go("home");
+      }
+    },
+    [
+      isLaterLoop,
+      interstitial,
+      settings.firstInstallAt,
+      openPaywall,
+      engine,
+      go,
+      afterEngineChange,
+    ],
+  );
 
   const startLongBreak = useCallback(() => {
-    leaveLoopDone();
-    engine.advance();
-    afterEngineChange();
-    go("break");
-  }, [leaveLoopDone, engine, go, afterEngineChange]);
+    leaveLoopDone("longBreak");
+  }, [leaveLoopDone]);
 
   const skipLongBreak = useCallback(() => {
-    leaveLoopDone();
-    engine.discard();
-    afterEngineChange();
-    go("home");
-  }, [leaveLoopDone, engine, go, afterEngineChange]);
+    leaveLoopDone("home");
+  }, [leaveLoopDone]);
 
   // P13 Welcome back (J9): the focus expired while the app was closed — its record
   // is already written; the user picks the close-out or skips straight to break.
@@ -627,6 +691,14 @@ export function useLoopController(
     welcomeHowDidItGo,
     welcomeSkipToBreak,
     handleDeepLinkIntent,
+    // J7: paywall open/close plumbing. openPaywall records the entry point for
+    // the conversion metric; the close/purchase paths run the action the user
+    // had picked before P14 opened.
+    openPaywall,
+    setPostPaywall,
+    closePaywall,
+    plusPurchased,
+    plusWelcomeContinue,
     restoreSnapshot: (snapshot: LoopSnapshot) => engine.restore(snapshot),
   };
 }
