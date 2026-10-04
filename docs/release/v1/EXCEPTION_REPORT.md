@@ -135,18 +135,21 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-08-12
 
-### RR-14. EAS / portal credentials not fully verified
+### RR-14. EAS / portal credentials and console products not fully provisioned
 
-- **Situation**: `npx eas-cli whoami` confirmed the `EXPO_TOKEN` is valid (account: tuan3.nguyen@gmail.com). The `EXPO_APPLE_ID` / Apple App Store Connect credentials have not been verified for expiry or access.
-- **Options**: A — verify Apple ID / App Store Connect credentials in portal before Gate 3. B — verify before first store submission.
-- **Recommendation**: A before Gate 3 if production rollout is the goal; B is acceptable if this release stops at internal testing.
-- **Default if you say nothing**: blocks store submission.
+- **Situation**: `npx eas-cli whoami` confirmed the `EXPO_TOKEN` is valid (account: tuan3.nguyen@gmail.com). The `EXPO_APPLE_ID` / Apple App Store Connect credentials have not been verified for expiry or access. Console store products required by the v1 build (Phase 2, 2026-10-04):
+  - App Store Connect / Play Console IAP: `focusloop.plus.yearly` (auto-renewable, 7-day free trial, $19.99) and `focusloop.plus.lifetime` (non-consumable, $49.99) — J7 Plus. App code reads product ids `focusloop.plus.yearly` / `focusloop.plus.lifetime` in `apps/mobile/src/features/plus/`.
+  - AdMob rewarded ad unit for the J8 24h-trial flow — the app calls `watchForReward` with a production unit id placeholder; without it the rewarded path reports `unavailable` (spec retry copy shown).
+  - AdMob console frequency caps on the interstitial unit (sponsor: ad limits live server-side, not in app code).
+- **Options**: A — verify credentials and create the products/ad unit before Gate 3. B — verify before first store submission.
+- **Recommendation**: A before Gate 3; without the console products Plus and J8 trials cannot be SIT-tested on a real store sandbox.
+- **Default if you say nothing**: blocks store submission and J7/J8 store-sandbox verification.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-08-18
 
 ## What ships
 
-- Focus Loop v1.0.0: Pomodoro timer with 15/25/45-minute presets, session history, streak, local notifications, and AdMob banner + interstitial ads.
+- Focus Loop v1.0.0: no-account focus–break loop (Disc/Numbers, weekly goal 4-of-7 replacing streak), widgets + Live Activity, reminders, share card, Plus (Yearly $19.99 7-day trial / Lifetime $49.99), rewarded 24h theme/sound trials, session history, local notifications, and AdMob banner + interstitial ads.
 - Rollout plan: 5% → 25% → 100% on TestFlight / Play Console internal testing tracks, halting on thresholds in `docs/release/SLO_AND_ALERTING.md` once wired.
 - Rollback: mobile binary cannot be recalled; rollout is halted and a hotfix is submitted. Owner and command to be recorded in `RUNBOOK_mobile.md`.
 - Store submission and promotion to production App Store / Play Store remains a human action after Gate 3; this release artifact does not perform a store submission.
