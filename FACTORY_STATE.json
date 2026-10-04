@@ -1,5 +1,5 @@
 {
-  "active_branch": "release/v1",
+  "active_branch": "release/v2",
   "gates": {
     "0": {
       "evidence": "docs/research/OPPORTUNITY_DECISION.json",
@@ -8,16 +8,10 @@
       "status": "passed"
     },
     "1": {
-      "evidence": "docs/product/PRODUCT_CONCEPT.md, docs/product/MARKET_RESEARCH_LIVE.md",
-      "signed_at": "2026-08-06",
-      "signed_by": "justin.nguyen@appsindie.com",
-      "status": "passed"
+      "status": "open"
     },
     "2": {
-      "evidence": "https://github.com/appsindie/focus-loop/pull/1#issuecomment-5210571237",
-      "signed_at": "2026-08-07",
-      "signed_by": "justin.nguyen@appsindie.com",
-      "status": "passed"
+      "status": "open"
     },
     "3": {
       "status": "open"
@@ -27,14 +21,7 @@
     }
   },
   "hold": false,
-  "last_review": {
-    "fired_at": "2026-08-07T15:02:59Z",
-    "round_count": 4,
-    "routine": "release",
-    "session_url": "https://claude.ai/code/session_01PCXE64sb6YXs4SQCR6pMXN",
-    "verdict": "APPROVE"
-  },
-  "next_action": "EAS project initialized and Android preview build queued (ID: 6a3df2ba-3f6e-4139-97fc-46bedd9efc06). iOS preview build needs App Store Connect API key (key ID, issuer ID, .p8) and at least one registered device. Remaining Phase 3 work: complete EAS builds, run native QA, then proceed to Gate 3.",
+  "next_action": "v2 re-shape on canvas 1791071241-7cd3: spec/concept/architecture rewritten to design journeys J1-J10, sponsor answers recorded in DESIGN_REVIEW round 5. Gate 1 for v2 = merged design-sync PR #2 + gate-signed on the v2 cycle PR; then Phase 2 build on the approved snapshot (QA plan and release evidence need rewriting for J1-J10).",
   "open_exceptions": [
     {
       "blocking": true,
@@ -104,7 +91,7 @@
     },
     {
       "blocking": true,
-      "deadline": "2026-08-20",
+      "deadline": "2026-08-18",
       "default_if_silent": "block",
       "gate": 3,
       "id": "RR-08",
@@ -180,11 +167,11 @@
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     }
   ],
-  "open_pr": "https://github.com/appsindie/focus-loop/pull/1",
+  "open_pr": "https://github.com/appsindie/focus-loop/pull/2",
   "owner": "justin.nguyen@appsindie.com",
-  "phase": 3,
+  "phase": 1,
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-08-07T15:45:34Z"
+  "updated_at": "2026-10-03T17:15:00Z"
 }

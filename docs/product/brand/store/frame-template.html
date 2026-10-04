@@ -1,0 +1,85 @@
+<!doctype html>
+<!--
+  Focus Loop — store frame theme template (Stage A, design canvas 1791071241-7cd3)
+  One theme per product: ink canvas + ember disc, Host Grotesk captions.
+  Fill {{CAPTION}}, {{SUB}}, {{SCREENSHOT}} per frame; never restyle per frame.
+  See ../store_metadata/README.md §Store frame plan for the frame order.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Focus Loop — store frame</title>
+<style>
+  :root {
+    --ink: #141210;        /* frame canvas */
+    --paper: #F6F3EE;      /* caption text */
+    --muted: #9A9289;      /* sub-caption */
+    --focus: #D9480F;      /* disc remaining */
+    --ember: #FF6A2B;      /* icon wedge accent */
+    --track: #2A2420;      /* disc elapsed */
+    --break: #2F7D4F;      /* break accents, sparing */
+    --font-ui: 'Host Grotesk', system-ui, sans-serif;
+    --font-words: 'Newsreader', Georgia, serif;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  .frame {
+    /* App Store 6.9" frame: 1290 x 2796 — scale as needed, keep ratio */
+    width: 1290px; height: 2796px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-ui);
+    display: flex; flex-direction: column;
+    padding: 160px 90px 120px;
+  }
+  .caption {
+    font-size: 96px; font-weight: 600; line-height: 1.02;
+    letter-spacing: -0.03em; font-feature-settings: 'tnum';
+    max-width: 1010px;
+  }
+  .caption em { font-style: normal; color: var(--ember); }
+  .sub {
+    margin-top: 34px;
+    font-size: 44px; font-weight: 400; line-height: 1.35;
+    color: var(--muted);
+    max-width: 1010px;
+  }
+  .sub.user-words { font-family: var(--font-words); }
+  .shot-wrap {
+    flex: 1; display: flex; align-items: flex-end; justify-content: center;
+    margin-top: 90px;
+  }
+  .shot {
+    width: 880px; border-radius: 72px;
+    /* device screenshot fills this slot at 2x PNG from docs/product/design/png/ */
+    box-shadow: 0 60px 160px rgba(0,0,0,.55);
+    border: 2px solid #2C2926;
+  }
+  .mark {
+    position: absolute; left: 90px; bottom: 80px;
+    display: flex; align-items: center; gap: 28px;
+  }
+  .mark .ring {
+    width: 84px; height: 84px; border-radius: 50%;
+    border: 14px solid var(--paper);
+    border-right-color: var(--ember);
+    transform: rotate(45deg);
+  }
+  .mark .name { font-size: 40px; font-weight: 600; letter-spacing: -0.01em; }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <h1 class="caption">{{CAPTION — benefit, ≤ 5 words, longest locale must fit}}</h1>
+    <p class="sub">{{SUB — optional proof line}}</p>
+    <div class="shot-wrap">
+      <img class="shot" src="{{SCREENSHOT — design/png/*.png @2x}}" alt="Focus Loop screen" />
+    </div>
+    <div class="mark">
+      <div class="ring"></div>
+      <div class="name">Focus Loop</div>
+    </div>
+  </div>
+</body>
+</html>

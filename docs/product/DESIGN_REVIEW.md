@@ -6,15 +6,27 @@ Merging a `design-sync` PR is the sponsor's approval of that canvas version. New
 
 ## Open shaping points
 
-| Id    | Point                                                                                                                                                                                                                       | Proposed default                                     | Owner   |
-| ----- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- | ------- |
-| OP-01 | Plus pricing (yearly, lifetime) and trial length. Screens show `[PRICE]`.                                                                                                                                                   | 7-day trial on yearly; prices from store experiments | Sponsor |
-| OP-02 | ~~Rewarded unlock: 24-hour trial vs permanent~~ — closed 2026-10-03: sponsor confirmed **24-hour trial**; permanent unlock only via Plus. Spec J6-R3 stands.                                                                | Closed                                               | Sponsor |
-| OP-03 | Default of Settings → Show seconds. P07 shows seconds; P20 shows the toggle off.                                                                                                                                            | On (affects Numbers only)                            | Sponsor |
-| OP-04 | Streak removed in favour of a weekly goal (any N of 7 days). Changes spec J1-R6 and J4. North-star tracking must switch to "days focused per week".                                                                         | Weekly goal 4 days                                   | Sponsor |
-| OP-05 | ~~Interstitial frequency cap~~ — closed 2026-10-03: frequency and caps are server-side; the design only fixes trigger points (leaving Loop complete; leaving Close-out after the 2nd focus when the loop is not completed). | Closed                                               | Sponsor |
-| OP-06 | App icon and palette change from Pilot green to ink + ember. Store assets and splash need regenerating.                                                                                                                     | Adopt                                                | Sponsor |
-| OP-07 | Values set by design without data: weekly goal 4, review prompt after 3rd loop, history 7 days free.                                                                                                                        | Keep, revisit after 4 weeks of data                  | Growth  |
+| Id    | Point                                                                                                                                                                                                                                                                                                                                              | Proposed default                    | Owner   |
+| ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ------- |
+| OP-01 | ~~Plus pricing (yearly, lifetime) and trial length~~ — closed 2026-10-03: sponsor confirmed ("chốt giá") **Yearly $19.99 with 7-day trial, Lifetime $49.99**. Spec J7-R2.                                                                                                                                                                          | Closed                              | Sponsor |
+| OP-02 | ~~Rewarded unlock: 24-hour trial vs permanent~~ — closed 2026-10-03: sponsor confirmed **24-hour trial**; permanent unlock only via Plus. Spec J8-R2.                                                                                                                                                                                              | Closed                              | Sponsor |
+| OP-03 | ~~Default of Settings → Show seconds~~ — closed 2026-10-03: sponsor confirmed ("chốt seconds") **default on**, affects Numbers display only. Spec J10-R2.                                                                                                                                                                                          | Closed                              | Sponsor |
+| OP-04 | ~~Streak removed in favour of a weekly goal~~ — closed 2026-10-03: sponsor confirmed ("bỏ streak") **weekly goal, any 4 of 7 days**. North-star tracking = "days focused per week". Spec J2-R6, J6-R1.                                                                                                                                             | Closed                              | Sponsor |
+| OP-05 | ~~Interstitial frequency cap~~ — closed 2026-10-03: frequency and caps are server-side; the design only fixes trigger points (leaving Loop complete; leaving Close-out after the 2nd focus when the loop is not completed). Sponsor 2026-10-03: "admod limit là do admob server config" → AdMob console configuration, no owned backend (ADR-003). | Closed                              | Sponsor |
+| OP-06 | ~~App icon and palette change from Pilot green to ink + ember~~ — closed 2026-10-03: adopted by design sync; sponsor directed shaping to proceed on this canvas. Store assets and splash regenerate during the v2 build.                                                                                                                           | Closed                              | Sponsor |
+| OP-07 | Values set by design without data: weekly goal 4, review prompt after 3rd loop, history 7 days free.                                                                                                                                                                                                                                               | Keep, revisit after 4 weeks of data | Growth  |
+
+## Round 5 — 2026-10-03 · sponsor answers on the shaping re-pass
+
+Sponsor replies to the open points (verbatim): _"chốt giá / chốt seconds / bỏ streak / admod limit là do admob server config"_ — recorded as:
+
+- OP-01 closed: Yearly $19.99 (7-day trial) + Lifetime $49.99.
+- OP-03 closed: Show seconds default on.
+- OP-04 closed: streak removed; weekly goal any 4 of 7 days; north-star = days focused per week.
+- OP-05 confirmed: "server-side" ad limits = AdMob console configuration, not an owned backend (ADR-003).
+- OP-06 closed: ink + ember adopted via this canvas; store/splash regen is build scope.
+- OP-07 stays open with its proposed default, owned by Growth.
+- Spec corpus re-shaped on this canvas in the same cycle: `PRODUCT_SPEC_LIVE.md` v2.0 (journeys now match J-Map J1–J10), `PRODUCT_CONCEPT.md` v2.0, `ARC42_SYSTEM_LIVE.md` v2.
 
 ## Round 4 — 2026-10-03 · canvas `1791071241-7cd3` (this sync)
 
