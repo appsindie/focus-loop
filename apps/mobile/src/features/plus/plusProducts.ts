@@ -4,8 +4,8 @@
 export type PlusPlan = "yearly" | "lifetime";
 
 export const PLUS_PRODUCT_IDS: Record<PlusPlan, string> = {
-  yearly: "focusloop.plus.yearly",
-  lifetime: "focusloop.plus.lifetime",
+  yearly: "com.appsindie.focusloop.plus.yearly",
+  lifetime: "com.appsindie.focusloop.plus.lifetime",
 };
 
 export const PLUS_PLANS: PlusPlan[] = ["yearly", "lifetime"];

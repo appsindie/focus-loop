@@ -138,7 +138,7 @@
 ### RR-14. EAS / portal credentials and console products not fully provisioned
 
 - **Situation**: `npx eas-cli whoami` confirmed the `EXPO_TOKEN` is valid (account: tuan3.nguyen@gmail.com). The `EXPO_APPLE_ID` / Apple App Store Connect credentials have not been verified for expiry or access. Console store products required by the v1 build (Phase 2, 2026-10-04):
-  - App Store Connect / Play Console IAP: `focusloop.plus.yearly` (auto-renewable, 7-day free trial, $19.99) and `focusloop.plus.lifetime` (non-consumable, $49.99) — J7 Plus. App code reads product ids `focusloop.plus.yearly` / `focusloop.plus.lifetime` in `apps/mobile/src/features/plus/`.
+  - App Store Connect / Play Console IAP: `com.appsindie.focusloop.plus.yearly` (auto-renewable, 7-day free trial, $19.99) and `com.appsindie.focusloop.plus.lifetime` (non-consumable, $49.99) — J7 Plus. App code reads these product ids in `apps/mobile/src/features/plus/` (ids created by sponsor 2026-10-04).
   - AdMob rewarded ad unit for the J8 24h-trial flow — the app calls `watchForReward` with a production unit id placeholder; without it the rewarded path reports `unavailable` (spec retry copy shown).
   - AdMob console frequency caps on the interstitial unit (sponsor: ad limits live server-side, not in app code).
 - **Options**: A — verify credentials and create the products/ad unit before Gate 3. B — verify before first store submission.

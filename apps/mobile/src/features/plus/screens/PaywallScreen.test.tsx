@@ -8,10 +8,15 @@ import type { StoreProduct } from "../iapPort";
 // loadProducts is called exactly once through the no-prop path (the default
 // argument is what used to mint a fresh store per render).
 const PRODUCTS: StoreProduct[] = [
-  { plan: "yearly", productId: "focusloop.plus.yearly", title: "Plus Yearly", priceText: "$19.99" },
+  {
+    plan: "yearly",
+    productId: "com.appsindie.focusloop.plus.yearly",
+    title: "Plus Yearly",
+    priceText: "$19.99",
+  },
   {
     plan: "lifetime",
-    productId: "focusloop.plus.lifetime",
+    productId: "com.appsindie.focusloop.plus.lifetime",
     title: "Plus Lifetime",
     priceText: "$49.99",
   },

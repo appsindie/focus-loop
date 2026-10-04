@@ -12,7 +12,11 @@ beforeEach(async () => {
 
 describe("useEntitlement", () => {
   it("starts unloaded, resolves the stored entitlement, then re-reads on writes", async () => {
-    await grantPlus("focusloop.plus.lifetime", null, new Date("2026-10-01T09:00:00Z"));
+    await grantPlus(
+      "com.appsindie.focusloop.plus.lifetime",
+      null,
+      new Date("2026-10-01T09:00:00Z"),
+    );
     // awaiting renderHook flushes the first read — `loaded` starts false and is
     // already true by the time the hook is returned to the test.
     const { result } = await renderHook(() => useEntitlement());
@@ -20,10 +24,14 @@ describe("useEntitlement", () => {
     expect(result.current.entitlement.isPlus).toBe(true);
 
     await act(async () => {
-      await grantPlus("focusloop.plus.yearly", "2026-10-10T00:00:00.000Z", new Date());
+      await grantPlus(
+        "com.appsindie.focusloop.plus.yearly",
+        "2026-10-10T00:00:00.000Z",
+        new Date(),
+      );
       await Promise.resolve();
     });
-    expect(result.current.entitlement.productId).toBe("focusloop.plus.yearly");
+    expect(result.current.entitlement.productId).toBe("com.appsindie.focusloop.plus.yearly");
     expect(result.current.entitlement.plusExpiresAt).toBe("2026-10-10T00:00:00.000Z");
   });
 });
