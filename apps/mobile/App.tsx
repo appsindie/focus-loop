@@ -1,8 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import { useKeepAwake } from "expo-keep-awake";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Banner, useFullScreenAds } from "@appsindie/react-native-ads";
-import { StyleSheet, Text, View } from "react-native";
+import { Linking, StyleSheet, Text, View } from "react-native";
 import { AdsProvider } from "./src/features/ads/AdsProvider";
 import { useLoopController } from "./src/features/loop/useLoopController";
 import { BreakScreen } from "./src/features/loop/screens/BreakScreen";
@@ -18,6 +18,7 @@ import { DEFAULT_SETTINGS, Settings, useSettings } from "./src/features/settings
 import { saveSettings } from "./src/features/settings/SettingsStore";
 import { HistoryScreen } from "./src/features/loop/screens/HistoryScreen";
 import { WelcomeBackScreen } from "./src/features/loop/screens/WelcomeBackScreen";
+import { parseFocusLoopUrl, type FocusLoopIntent } from "./src/linking";
 import { palette, typography } from "./src/shared/theme";
 
 function KeepAwakeActivator() {
@@ -68,7 +69,41 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
   // Free tier for now; J7's entitlement flips hasAdsRemoval.
   const { showFullscreenAds } = useFullScreenAds(false);
   const interstitial = useMemo(() => ({ show: showFullscreenAds }), [showFullscreenAds]);
-  const controller = useLoopController(settings, settingsLoading, interstitial);
+
+  // J4: a widget/Live-Activity deep link may have launched the app — resolve
+  // it before boot so a widget start can route straight into a focus (R1).
+  const [bootIntent, setBootIntent] = useState<FocusLoopIntent | "pending" | null>("pending");
+  useEffect(() => {
+    let mounted = true;
+    Linking.getInitialURL()
+      .then((url) => {
+        if (mounted) {
+          setBootIntent(parseFocusLoopUrl(url));
+        }
+      })
+      .catch(() => {
+        if (mounted) {
+          setBootIntent(null);
+        }
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const controller = useLoopController(settings, settingsLoading, interstitial, bootIntent);
+
+  // Links that arrive while the app is alive (widget tap, Live Activity pause).
+  useEffect(() => {
+    const subscription = Linking.addEventListener("url", ({ url }) => {
+      const intent = parseFocusLoopUrl(url);
+      if (intent != null) {
+        controller.handleDeepLinkIntent(intent);
+      }
+    });
+    return () => subscription.remove();
+  }, [controller]);
+
   const colors = palette.light; // Dark theme + Appearance wiring lands with P20 polish.
 
   const {

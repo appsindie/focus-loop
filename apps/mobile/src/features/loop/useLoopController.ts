@@ -25,12 +25,17 @@ import {
   addParkedThought,
   loadParkedThoughts,
   markThoughtUsed,
+  mostRecentUnused,
 } from "./parkedThoughts";
 import { resolveRhythm } from "./rhythm";
 import { isCloseoutTriggerPoint } from "./triggers";
 import { computeWeekProgress } from "./weeklyGoal";
 import { loadEngineSnapshot, saveEngineSnapshot } from "./engineSnapshot";
 import { trackEvent } from "../analytics/events";
+import type { FocusLoopIntent } from "../../linking";
+import { publishWidgetSnapshot } from "../surfaces/surfaceBridge";
+import { syncLiveSurface } from "../surfaces/liveSurface";
+import { buildWidgetSnapshot, type RunningStepSurface } from "../surfaces/widgetData";
 
 export type LoopRoute =
   | "loading"
@@ -67,6 +72,9 @@ export function useLoopController(
   settings: Settings,
   settingsLoading: boolean,
   interstitial?: { show: () => void },
+  // J4-R1: a widget/Live-Activity deep link resolved before boot finished.
+  // "pending" means the OS hasn't answered getInitialURL yet — boot waits.
+  bootIntent: FocusLoopIntent | "pending" | null = null,
 ) {
   const [route, setRoute] = useState<LoopRoute>("loading");
   const [sessions, setSessions] = useState<FocusSession[]>([]);
@@ -178,7 +186,7 @@ export function useLoopController(
   // settings change (e.g. the Disc/Numbers toggle) must never re-route (CR-06).
   const bootedRef = useRef(false);
   useEffect(() => {
-    if (settingsLoading || bootedRef.current) {
+    if (settingsLoading || bootedRef.current || bootIntent === "pending") {
       return;
     }
     // CR-10: when settings just loaded with a non-default rhythm, this commit's
@@ -197,7 +205,16 @@ export function useLoopController(
       await clearStepAlertsAtBoot();
       const snapshot = await loadEngineSnapshot();
       if (snapshot == null) {
-        go(settingsRef.current.displayMode == null ? "first-launch" : "home");
+        if (bootIntent === "start") {
+          // J4-R1: widget start skips Home entirely — begin the session with
+          // the last-used rhythm, even on first launch (Disc is the default).
+          engine.start(null);
+          drainRecord();
+          afterEngineChange();
+          go("focus");
+        } else {
+          go(settingsRef.current.displayMode == null ? "first-launch" : "home");
+        }
         return;
       }
       const wasInFlight = snapshot.phase === "running" || snapshot.phase === "paused";
@@ -233,6 +250,7 @@ export function useLoopController(
     persistSnapshot,
     drainRecord,
     afterEngineChange,
+    bootIntent,
   ]);
 
   const haptic = useCallback(() => {
@@ -472,6 +490,27 @@ export function useLoopController(
     [syncAlert],
   );
 
+  // J4 foreground deep link: a widget tap or Live Activity action while the
+  // app is alive. "start" only fires when nothing is mid-loop (a live session
+  // outranks the intent); "pause" pauses whatever step is counting down.
+  const handleDeepLinkIntent = useCallback(
+    (intent: FocusLoopIntent) => {
+      if (intent === "pause") {
+        if (engine.currentPhase === "running") {
+          pauseFocus();
+        }
+        return;
+      }
+      const phaseNow = engine.currentPhase;
+      if (phaseNow === "idle" || phaseNow === "finished" || phaseNow === "abandoned") {
+        engine.start(null);
+        afterEngineChange();
+        go("focus");
+      }
+    },
+    [engine, pauseFocus, afterEngineChange, go],
+  );
+
   // ── Derived view state ───────────────────────────────────────────────────
 
   const now = new Date();
@@ -486,6 +525,63 @@ export function useLoopController(
   const loopEndsAtMs = Date.now() + steps.reduce((sum, s) => sum + s.durationSeconds, 0) * 1000;
   const sessionsInLoop = sessions.filter((s) => s.loopId === engine.currentLoopId);
   const longBreakSeconds = steps.find((s) => s.kind === "longBreak")?.durationSeconds ?? 900;
+
+  // J4 surfaces: the running-step state every platform surface mirrors, and
+  // the widget snapshot feeding home/lock-screen widgets. Both effects run on
+  // every render and dedupe on a signature — transitions and minute flips are
+  // the only moments that change the signature, so native calls stay sparse.
+  const runningSurface: RunningStepSurface | null =
+    step != null && (phase === "running" || phase === "paused")
+      ? {
+          kind: step.kind,
+          displayMode: settings.displayMode ?? "disc",
+          remainingSeconds: engine.remainingSeconds(),
+          endsAtMs: phase === "paused" ? 0 : Date.now() + engine.remainingSeconds() * 1000,
+          paused: phase === "paused",
+          currentFocusNumber: engine.currentFocusNumber,
+          totalFocusCount: engine.totalFocusCount,
+        }
+      : null;
+  const liveSurfaceSignature =
+    runningSurface == null
+      ? "none"
+      : `${runningSurface.kind}|${runningSurface.paused}|${runningSurface.displayMode}|${Math.ceil(runningSurface.remainingSeconds / 60)}`;
+  const lastLiveSignatureRef = useRef("unset");
+  useEffect(() => {
+    if (liveSurfaceSignature === lastLiveSignatureRef.current) {
+      return;
+    }
+    lastLiveSignatureRef.current = liveSurfaceSignature;
+    syncLiveSurface(runningSurface);
+  });
+
+  const focusStepMinutes = Math.round(
+    (plan.find((s) => s.kind === "focus")?.durationSeconds ?? 1500) / 60,
+  );
+  const nextParkedText = mostRecentUnused(parkedThoughts)?.text ?? null;
+  const widgetSignature = JSON.stringify([
+    week.daysMet,
+    week.goalDays,
+    nextParkedText,
+    focusStepMinutes,
+    liveSurfaceSignature,
+  ]);
+  const lastWidgetSignatureRef = useRef("unset");
+  useEffect(() => {
+    if (widgetSignature === lastWidgetSignatureRef.current) {
+      return;
+    }
+    lastWidgetSignatureRef.current = widgetSignature;
+    void publishWidgetSnapshot(
+      buildWidgetSnapshot({
+        weekDaysMet: week.daysMet,
+        weekGoalDays: week.goalDays,
+        nextParkedText,
+        focusMinutes: focusStepMinutes,
+        running: runningSurface,
+      }),
+    );
+  });
 
   return {
     route,
@@ -527,6 +623,7 @@ export function useLoopController(
     resumeFocus,
     welcomeHowDidItGo,
     welcomeSkipToBreak,
+    handleDeepLinkIntent,
     restoreSnapshot: (snapshot: LoopSnapshot) => engine.restore(snapshot),
   };
 }

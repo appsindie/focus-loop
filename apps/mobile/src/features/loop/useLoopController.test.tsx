@@ -260,4 +260,64 @@ describe("useLoopController", () => {
     expect(result.current.engine).not.toBe(runningEngine);
     expect(result.current.engine.baseSteps[0]?.durationSeconds).toBe(15 * 60);
   });
+
+  it("J4-R1: a widget start intent boots straight into a running focus", async () => {
+    const { result } = await renderHook(() =>
+      useLoopController(SETTINGS, false, undefined, "start"),
+    );
+    await flushBoot();
+    expect(result.current.route).toBe("focus");
+    expect(result.current.engine.currentPhase).toBe("running");
+    expect(result.current.engine.currentStep?.kind).toBe("focus");
+  });
+
+  it("J4-R1: a live snapshot outranks the widget start intent", async () => {
+    const plan = buildLoopPlan({
+      focusMinutes: 25,
+      breakMinutes: 5,
+      rounds: 4,
+      longBreakMinutes: 15,
+    });
+    const snapshot: LoopSnapshot = {
+      loopId: "kill-9",
+      stepIndex: 0,
+      phase: "running",
+      stepStartedAtMs: Date.now() - 60_000,
+      pausedMs: 0,
+      pausedAtMs: null,
+      intention: null,
+      pendingFocusRecord: null,
+      plan,
+    };
+    await saveEngineSnapshot(snapshot);
+
+    const { result } = await renderHook(() =>
+      useLoopController(SETTINGS, false, undefined, "start"),
+    );
+    await flushBoot();
+    // The recovered session wins — the intent must not spawn a second loop.
+    expect(result.current.engine.currentLoopId).toBe("kill-9");
+  });
+
+  it("J4: deep-link 'start' mid-session is a no-op; 'pause' pauses the step", async () => {
+    const { result } = await renderHook(() => useLoopController(SETTINGS, false));
+    await flushBoot();
+    await act(async () => {
+      result.current.startFocus();
+      await Promise.resolve();
+    });
+    const engine = result.current.engine;
+    await act(async () => {
+      result.current.handleDeepLinkIntent("start");
+      await Promise.resolve();
+    });
+    expect(result.current.engine).toBe(engine);
+    expect(result.current.engine.currentPhase).toBe("running");
+
+    await act(async () => {
+      result.current.handleDeepLinkIntent("pause");
+      await Promise.resolve();
+    });
+    expect(result.current.engine.currentPhase).toBe("paused");
+  });
 });

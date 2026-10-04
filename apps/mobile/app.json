@@ -36,6 +36,42 @@
         }
       ],
       [
+        "react-native-widget-extension",
+        {
+          "frequentUpdates": true,
+          "widgetsFolder": "targets/widgets",
+          "groupIdentifier": "group.com.appsindie.focusloop"
+        }
+      ],
+      [
+        "react-native-android-widget",
+        {
+          "widgets": [
+            {
+              "name": "FocusStart",
+              "label": "Focus Loop — Start",
+              "description": "Start a focus session with your last-used rhythm",
+              "minWidth": "110dp",
+              "minHeight": "40dp",
+              "targetCellWidth": 2,
+              "targetCellHeight": 1,
+              "updatePeriodMillis": 0,
+              "resizeMode": "horizontal"
+            },
+            {
+              "name": "FocusNext",
+              "label": "Focus Loop — Next up",
+              "description": "Week progress and your next focus",
+              "minWidth": "250dp",
+              "minHeight": "110dp",
+              "targetCellWidth": 4,
+              "targetCellHeight": 2,
+              "updatePeriodMillis": 0
+            }
+          ]
+        }
+      ],
+      [
         "react-native-google-mobile-ads",
         {
           "androidAppId": "ca-app-pub-9324885420924703~9653900797",
