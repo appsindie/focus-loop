@@ -209,8 +209,7 @@
 
 | Risk                                                             | Accepted by                 | Date       | Revisit at                                                                   |
 | ---------------------------------------------------------------- | --------------------------- | ---------- | ---------------------------------------------------------------------------- |
-| AdMob SDK collecting device/usage data per Google/Apple policies | justin.nguyen@appsindie.com | 2026-08-08 | Before store submission (`docs/security/ads-integration-security-review.md`) |
-| Test AdMob IDs in QA builds                                      | justin.nguyen@appsindie.com | 2026-08-08 | Before production rollout (RR-03)                                            |
+| AdMob SDK collecting device/usage data per Google/Apple policies | justin.nguyen@appsindie.com | 2026-08-08 | Before store submission (`docs/security/ads-integration-security-review.md` — predates production AdMob IDs and `write-store-credentials.sh`; refresh before production promotion if the ad config changes again) |
 | No pre-release device SIT (RR-01/02 waiver)                      | justin.nguyen@appsindie.com | 2026-10-04 | Internal testing before any production promotion                             |
 
 ## After the release
