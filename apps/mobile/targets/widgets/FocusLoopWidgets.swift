@@ -2,21 +2,9 @@ import ActivityKit
 import SwiftUI
 import WidgetKit
 
-// Extension-side copy of the app-side FocusLoopActivityAttributes — the config
-// plugin compiles Attributes.swift into the app target only, and the two
-// targets cannot share a file. Keep the shapes identical.
-struct FocusLoopActivityAttributes: ActivityAttributes {
-    struct ContentState: Codable, Hashable {
-        var remainingSeconds: Int
-        var endsAtMs: Double
-        var paused: Bool
-    }
-    var stepKind: String
-    var displayMode: String
-    // Localized copy piped from the app — the extension has no string
-    // catalog, so fixed labels arrive through the attributes.
-    var strings: [String: String]
-}
+// FocusLoopActivityAttributes lives in Attributes.swift — the config plugin
+// compiles that file into BOTH this extension target and the app target
+// (for Module.swift), so the type is declared once, shared by both.
 
 // ── Shared widget data ─────────────────────────────────────────────────────
 // Written by the app via Module.setSharedData into the App Group UserDefaults.
