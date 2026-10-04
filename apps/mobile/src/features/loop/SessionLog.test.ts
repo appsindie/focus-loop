@@ -40,6 +40,17 @@ describe("SessionLog", () => {
     await expect(loadSessions()).resolves.toEqual([]);
   });
 
+  it("keeps valid entries when one stored record is malformed (CR-01)", async () => {
+    const good = await recordSession(BASE);
+    await AsyncStorage.setItem(
+      "focus-loop/v1/sessions",
+      JSON.stringify([good, { bogus: true }, { ...good, endedAt: 42 }]),
+    );
+    const sessions = await loadSessions();
+    expect(sessions).toHaveLength(1);
+    expect(sessions[0]!.id).toBe(good.id);
+  });
+
   it("updates the outcome chosen on P10 (optional)", async () => {
     const saved = await recordSession(BASE);
     await updateSessionOutcome(saved.id, "moved-forward");

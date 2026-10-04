@@ -153,4 +153,31 @@ describe("LoopEngine", () => {
       focusedSeconds: 600,
     });
   });
+
+  it("stamps endedAt at the true step end across a midnight boundary (CR-03)", () => {
+    const now = { t: Date.parse("2026-10-03T23:45:00Z") };
+    const engine = makeEngine(now);
+    engine.start();
+    const snap = engine.snapshot()!;
+    now.t = Date.parse("2026-10-04T00:10:00Z"); // noticed 25 min later, next day
+
+    const restored = makeEngine(now);
+    restored.restore(snap);
+    // True end = start + 10 min = 23:55 the SAME day — not the 00:10 notice time.
+    expect(restored.completedFocusRecord!.endedAt).toBe("2026-10-03T23:55:00.000Z");
+  });
+
+  it("auto-started focus counts from the break's true end (CR-03)", () => {
+    const now = { t: 0 };
+    const engine = makeEngine(now, true);
+    engine.start();
+    now.t = 600_000;
+    engine.tick();
+    engine.advance(); // break starts at 600_000, ends at 720_000
+    now.t = 750_000; // noticed 30s after the break's true end
+    engine.tick();
+    expect(engine.currentPhase).toBe("running");
+    expect(engine.currentStep!.kind).toBe("focus");
+    expect(engine.remainingSeconds()).toBe(570); // 30s already elapsed, not reset
+  });
 });

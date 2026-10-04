@@ -74,21 +74,26 @@ export async function grantPlus(
   return next;
 }
 
-// Called on app start and whenever the expiry timestamp passes (ADR-003 re-check);
-// the real re-verify goes through the store entitlement query — this applies its
-// result so a lapsed/refunded yearly revokes Plus without user action.
+// Called on app start and whenever the expiry timestamp passes (ADR-003 re-check).
+// Tri-state: a store query that fails (offline, error) is "unknown" — it must neither
+// revoke a paying user nor extend Plus (code review CR-02).
+export type VerificationResult = "plus" | "not-plus" | "unknown";
+
 export async function applyVerification(
-  storeReportsPlus: boolean,
+  result: VerificationResult,
   productId: string | null,
   plusExpiresAt: string | null,
   verifiedAt: Date,
 ): Promise<Entitlement> {
+  if (result === "unknown") {
+    return loadEntitlement();
+  }
   const entitlement = await loadEntitlement();
   const next: Entitlement = {
     ...entitlement,
-    isPlus: storeReportsPlus,
-    productId: storeReportsPlus ? productId : entitlement.productId,
-    plusExpiresAt: storeReportsPlus ? plusExpiresAt : entitlement.plusExpiresAt,
+    isPlus: result === "plus",
+    productId: result === "plus" ? productId : entitlement.productId,
+    plusExpiresAt: result === "plus" ? plusExpiresAt : entitlement.plusExpiresAt,
     lastVerifiedAt: verifiedAt.toISOString(),
   };
   await saveEntitlement(next);
@@ -105,9 +110,17 @@ export async function startTrial(itemId: string, now: Date): Promise<Entitlement
   return next;
 }
 
+// Slow store renewals: keep Plus unlocked for a short grace past the expiry stamp so a
+// renewal that settles a few hours late doesn't flicker the paywall (CR-02).
+const RENEWAL_GRACE_MS = 48 * 3600 * 1000;
+
 export function isItemUnlocked(entitlement: Entitlement, itemId: string, now: Date): boolean {
   if (entitlement.isPlus) {
-    return true;
+    // Lifetime has no expiry stamp; a yearly lapses at expiry + renewal grace.
+    if (entitlement.plusExpiresAt == null) {
+      return true;
+    }
+    return new Date(entitlement.plusExpiresAt).getTime() + RENEWAL_GRACE_MS > now.getTime();
   }
   const trial = entitlement.trials.find((t) => t.itemId === itemId);
   return trial != null && new Date(trial.expiresAt).getTime() > now.getTime();

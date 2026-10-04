@@ -51,10 +51,12 @@ export async function loadSessions(): Promise<FocusSession[]> {
       return [];
     }
     const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed) || !parsed.every(isFocusSession)) {
+    if (!Array.isArray(parsed)) {
       return [];
     }
-    return parsed;
+    // Drop malformed entries but keep the valid history — discarding the array here
+    // would let the next recordSession overwrite the whole log (code review CR-01).
+    return parsed.filter(isFocusSession);
   } catch {
     return [];
   }

@@ -95,12 +95,20 @@ export class LoopEngine {
     this.startStep(0);
   }
 
-  private startStep(index: number): void {
+  private startStep(index: number, atMs?: number): void {
     this.stepIndex = index;
-    this.stepStartedAtMs = this.now();
+    this.stepStartedAtMs = atMs ?? this.now();
     this.pausedMs = 0;
     this.pausedAtMs = null;
     this.phase = "running";
+  }
+
+  // The moment the step actually ended — start + planned + accumulated pause — NOT
+  // the time tick()/restore() noticed it. endedAt and auto-advance anchor here so
+  // day bucketing (weeklyGoal, sessionsOnDay) stays right across midnight/kill (CR-03).
+  private stepEndMs(): number {
+    const step = this.plan[this.stepIndex]!;
+    return this.stepStartedAtMs + step.durationSeconds * 1000 + this.pausedMs;
   }
 
   private elapsedMs(): number {
@@ -140,8 +148,9 @@ export class LoopEngine {
 
   private onStepEnd(): void {
     const step = this.plan[this.stepIndex]!;
+    const endMs = this.stepEndMs();
     if (step.kind === "focus") {
-      this.pendingFocusRecord = this.buildFocusRecord(false, this.now());
+      this.pendingFocusRecord = this.buildFocusRecord(false, endMs);
       if (this.stepIndex === this.plan.length - 2) {
         // Last focus — P12 Loop complete; the long break waits behind it.
         this.phase = "loop-done";
@@ -154,10 +163,11 @@ export class LoopEngine {
       this.phase = "finished";
       return;
     }
-    // A break ending: auto-start the next focus when the P10 toggle is on.
+    // A break ending: auto-start the next focus when the P10 toggle is on, anchored
+    // at the break's true end so elapsed counts real time, not notice time (CR-03).
     this.phase = "step-done";
     if (this.autoStartBreaks) {
-      this.advance();
+      this.advance(null, endMs);
     }
   }
 
@@ -188,15 +198,16 @@ export class LoopEngine {
   }
 
   // Step-done → next step; loop-done → the long break. Focus steps take the next
-  // intention (optional per J2-R2).
-  advance(nextIntention: string | null = null): void {
+  // intention (optional per J2-R2). `atMs` anchors the start — used by auto-advance
+  // so the next step counts from the previous one's true end (CR-03).
+  advance(nextIntention: string | null = null, atMs?: number): void {
     if (this.phase === "step-done") {
       this.intention = nextIntention;
-      this.startStep(this.stepIndex + 1);
+      this.startStep(this.stepIndex + 1, atMs);
       return;
     }
     if (this.phase === "loop-done") {
-      this.startStep(this.stepIndex + 1);
+      this.startStep(this.stepIndex + 1, atMs);
     }
   }
 

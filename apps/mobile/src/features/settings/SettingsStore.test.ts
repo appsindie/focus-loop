@@ -48,5 +48,36 @@ describe("SettingsStore", () => {
     );
     const loaded = await loadSettings();
     expect(loaded.displayMode).toBeNull();
+    // Corrupt payload → no fresh anchor (would restart the ad grace every launch).
+    expect(loaded.firstInstallAt).toBeNull();
+  });
+
+  it("clamps rhythm fields and the weekly goal on load (CR-04)", async () => {
+    await saveSettings({
+      ...DEFAULT_SETTINGS,
+      customRhythm: { focusMinutes: 999, breakMinutes: -3, rounds: 0, longBreakMinutes: 10_000 },
+      weeklyGoalDays: 0,
+      firstInstallAt: "2026-10-03T00:00:00.000Z",
+    });
+    const loaded = await loadSettings();
+    expect(loaded.customRhythm).toEqual({
+      focusMinutes: 180,
+      breakMinutes: 0,
+      rounds: 1,
+      longBreakMinutes: 120,
+    });
+    expect(loaded.weeklyGoalDays).toBe(1);
+  });
+
+  it("rejects an unknown rhythm preset id (CR-04)", async () => {
+    await saveSettings({ ...DEFAULT_SETTINGS, rhythmPresetId: "turbo" as never });
+    const loaded = await loadSettings();
+    expect(loaded.rhythmPresetId).toBe("classic");
+  });
+
+  it("shares one anchor between concurrent first-launch loads (CR-04)", async () => {
+    const [a, b] = await Promise.all([loadSettings(), loadSettings()]);
+    expect(a.firstInstallAt).toBe(b.firstInstallAt);
+    expect(a.firstInstallAt).toEqual(expect.any(String));
   });
 });
