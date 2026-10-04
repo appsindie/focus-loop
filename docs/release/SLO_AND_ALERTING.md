@@ -26,14 +26,26 @@
 
 ## Dashboards
 
-| Surface | Dashboard | Shows                                           |
-| ------- | --------- | ----------------------------------------------- |
-| mobile  | TBD       | crash-free sessions, ANR rate, ad load failures |
+No custom dashboard for v1 (RR-15, option B accepted): each SLI is watched in
+its vendor console. Links to check during rollout:
+
+| Surface | Console entry | Shows |
+| ------- | ------------- | ----- |
+| mobile (iOS)     | App Store Connect → app 6818991496 → Metrics/Crashes | crash-free sessions, adoption |
+| mobile (Android) | Play Console → Android Vitals → overview | crash rate, ANR rate (automatic for AAB installs — no SDK needed) |
+| mobile (ads)     | AdMob console → app reports | ad requests, fill/failure rate, revenue |
 
 ## Escalation
 
-| Alert                          | Severity | Route | Wakes a human |
-| ------------------------------ | -------- | ----- | ------------- |
-| Crash-free sessions SLO breach | high     | TBD   | yes           |
-| ANR rate SLO breach            | high     | TBD   | yes           |
-| Ad load failure rate spike     | medium   | TBD   | no            |
+No in-app crash SDK in v1, so alerting is console-native + a manual check
+cadence (RR-16/RR-17, option B):
+
+| Alert                          | Severity | Route                                                        | Wakes a human |
+| ------------------------------ | -------- | ------------------------------------------------------------ | ------------- |
+| Crash-free sessions SLO breach | high     | Play Vitals / ASC Metrics checked daily by owner during rollout; Play Console auto-emails crash spikes to the account owner | yes (manual + auto email) |
+| ANR rate SLO breach            | high     | Same daily Vitals check                                      | yes (manual)  |
+| Ad load failure rate spike     | medium   | AdMob console daily check                                    | no            |
+
+Manual-check cadence: owner checks the three consoles once a day while any
+staged rollout is running (RR-16 option B). Wiring Crashlytics/Slack alerts is
+deferred until an analytics SDK ships (RR-04).

@@ -110,7 +110,7 @@
 
 ### RR-10. Store declarations not completed
 
-- **Situation**: Age rating, app-store permission/ATT/ads declarations not yet completed on either console. Legal pages exist at `appsindie.com/docs/legal/focus-loop/{privacy,tnc,disclaimer,licenses}` (appsindie-landing#5).
+- **Situation**: Age rating, app-store permission/ATT/ads declarations not yet completed on either console. Legal pages exist at `appsindie.com/docs/legal/focus-loop/{privacy,tnc,disclaimer,licenses}` (appsindie-landing#5). **Progress 2026-10-04**: all form answers drafted in `docs/release/v1/STORE_DECLARATIONS.md` — owner copies them into the consoles.
 - **Options**: A — complete before Gate 3. B — complete before public store submission; internal testing does not require them.
 - **Recommendation**: B for internal testing; A for public submission.
 - **Default if you say nothing**: blocks public store submission.
@@ -128,7 +128,7 @@
 
 ### RR-12. Privacy / data-safety declaration not completed
 
-- **Situation**: The app's actual data collection (local AsyncStorage, AdMob/ATT, Firebase Analytics if wired) has not been mapped to a store data-safety declaration.
+- **Situation**: The app's actual data collection (local AsyncStorage, AdMob/ATT, Firebase Analytics if wired) has not been mapped to a store data-safety declaration. **Progress 2026-10-04**: mapping drafted in `docs/release/v1/STORE_DECLARATIONS.md` (Play data-safety table + ASC App Privacy + ATT note); iOS `PrivacyInfo.xcprivacy` verified auto-generated correctly.
 - **Options**: A — complete before Gate 3. B — complete before public store submission.
 - **Recommendation**: B for internal testing; A for public submission.
 - **Default if you say nothing**: blocks public store submission.
@@ -163,7 +163,7 @@
 
 ### RR-15. Dashboards not created
 
-- **Situation**: No dashboard exists for crash-free rate, ANR, or ad metrics (`SLO_AND_ALERTING.md` lists TBD).
+- **Situation**: No dashboard exists for crash-free rate, ANR, or ad metrics. **Progress 2026-10-04**: `SLO_AND_ALERTING.md` now lists the vendor consoles that cover each SLI (ASC Metrics/Crashes, Play Vitals, AdMob reports) — the option-B resolution is written down; owner confirms the choice.
 - **Options**: A — create a minimal dashboard (Crashlytics + AdMob links collected in one place) before production rollout. B — rely on per-vendor consoles.
 - **Recommendation**: B acceptable for v1 — vendor consoles cover each SLI; revisit when usage grows.
 - **Default if you say nothing**: blocks production rollout.
@@ -172,7 +172,7 @@
 
 ### RR-16. Rollout halt thresholds not wired to alerts
 
-- **Situation**: `SLO_AND_ALERTING.md` defines numeric halt thresholds per rollout stage, but they are not wired to a live alert — a breach would need manual watching of Crashlytics/Play Console.
+- **Situation**: `SLO_AND_ALERTING.md` defines numeric halt thresholds per rollout stage, but they are not wired to a live alert — a breach would need manual watching of the consoles. **Progress 2026-10-04**: a concrete daily manual-check cadence is written into `SLO_AND_ALERTING.md` (option B); without an in-app crash SDK, Play Vitals + ASC Metrics + AdMob are the sources.
 - **Options**: A — wire Crashlytics/Play Console alerts to the thresholds before production rollout. B — manual daily check during staged rollout (owner does it).
 - **Recommendation**: B is honest for a low-volume first release if the owner commits to the daily check; A before any paid push.
 - **Default if you say nothing**: blocks production rollout.
@@ -181,7 +181,7 @@
 
 ### RR-17. Rollback trigger conditions not wired
 
-- **Situation**: The conditions that trigger a rollback decision (SLO breaches in `SLO_AND_ALERTING.md`) are documented but not connected to an alerting channel that wakes the owner.
+- **Situation**: The conditions that trigger a rollback decision (SLO breaches in `SLO_AND_ALERTING.md`) are documented but not connected to an alerting channel that wakes the owner. **Progress 2026-10-04**: escalation routes drafted (owner daily check + Play Console auto-email on crash spikes); a real alert channel still needs an SDK or wiring — tracked under RR-04/RR-05.
 - **Options**: A — route Crashlytics alerts to email/Slack before production rollout. B — same manual daily check as RR-16.
 - **Recommendation**: A — Crashlytics email alerts are free and one-time setup.
 - **Default if you say nothing**: blocks production rollout.
@@ -190,7 +190,7 @@
 
 ### RR-18. Escalation path not defined
 
-- **Situation**: `SLO_AND_ALERTING.md` escalation routes are all `TBD`; no contact channel is recorded for a live incident.
+- **Situation**: `SLO_AND_ALERTING.md` escalation routes were `TBD`. **Progress 2026-10-04**: routes now written — owner daily console check during rollout + Play Console auto-emails for crash spikes; the waking-human channel is the account-owner email.
 - **Options**: A — record the owner's contact route (email/Slack) in `SLO_AND_ALERTING.md` before production rollout. B — n/a for internal testing.
 - **Recommendation**: A — trivial to fill in, required before users can hit a real incident.
 - **Default if you say nothing**: blocks production rollout.
