@@ -28,10 +28,11 @@
   },
   "hold": false,
   "last_review": {
-    "round": 15,
-    "session_url": "https://claude.ai/code/cse_01WriUx1VFjdyHJ7SSEsdHcq",
     "verdict": "pending",
-    "phase": "release"
+    "routine": "release",
+    "session_url": "https://claude.ai/code/cse_01WriUx1VFjdyHJ7SSEsdHcq",
+    "round_count": 15,
+    "fired_at": "2026-10-04T13:56:00Z"
   },
   "next_action": "Phase 3 release: release PR open (pipeline + docs); next = iOS production build 1.0.0 on sponsor confirmation, then submit internal track, then Android. Gate-3 exceptions RR-04..12,14 remain",
   "open_exceptions": [
@@ -152,5 +153,5 @@
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-10-04T13:57:23Z"
+  "updated_at": "2026-10-04T13:58:09Z"
 }
