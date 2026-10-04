@@ -541,7 +541,7 @@ Design reference per screen is `design/png/<name>.png` rendered from `design/sou
 ## P24 — Widgets (surface) · Release slice
 
 - **Intent**: one-tap focus from the OS surfaces.
-- **Data**: small idle = full disc + "N/G days" + Focus 25; small running = "Focus N of M" + minutes left + break time; medium "Next up" = most recent parked thought + Start; lock screen = circular disc gauge + inline "N of G days".
+- **Data**: small idle = full disc + "N/G days" + Focus 25; small running = "Focus N of M" + minutes left + break time; medium "Next up" = most recent parked thought + Start — all release slice. Lock screen = circular disc gauge + inline "N of G days" — **fast-follow** (ships with P23, per J4 Entry).
 - **Rules**: R1 Actions per J4-R1/R2.
 - **Metric**: widget-initiated session share (target ≥ 10%). **Design**: `P24-Widgets` (board).
 

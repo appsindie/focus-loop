@@ -31,6 +31,8 @@ Round-2 re-review (verdict **approve-with-concerns** again): SR-03/04/05 resolve
 - SR-06 (major): the first re-model's own base case (~$0.146 blended, gross Plus figure) sat under its proposed $0.15 guard-rail, and the old ±20%-of-$0.23 guard-rail was still in the document → re-model rewritten net of the 30% store fee with lower/base/upper cases (~$1,640 / ~$2,250 / ~$2,720 per month at 14,686 MAU); the ad-only guard-rail is retired for **net blended contribution >= $0.15/MAU-month**; the thin margin and the ads-only slice are recorded as an explicit **Gate 0 re-check for the sponsor**, not smoothed over.
 - SR-07 (major): the slice split lived only in the concept → spec journeys retagged Release slice / Fast-follow (with surface-level splits inside J4/J6, P23/P24, tablet), ARC42 transition path rewritten to match, `next_action` points at the slice-first build. The 8-week kill-criterion reading (per release window, ~7–9 weeks total) is stated and flagged for sign-off.
 
+Round-3 re-review: verdict **APPROVE** — no Blockers, no Majors. The only remaining finding, SR-08 (minor: lock-screen widget sat in both slice and fast-follow buckets), was folded in directly — P24's data line now marks the lock-screen widget fast-follow alongside P23.
+
 Items awaiting sponsor at Gate 1 signature: blended-ARPU guard-rail + Gate 0 economics re-check, the slice/fast-follow split vs single-v2 estimate, and the per-window kill-criterion reading.
 
 ## Round 5 — 2026-10-03 · sponsor answers on the shaping re-pass
