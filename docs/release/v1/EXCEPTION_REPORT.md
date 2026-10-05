@@ -153,7 +153,7 @@
 
 - **Situation**: `EXPO_TOKEN` valid (account tuan3.nguyen@gmail.com). ASC app "Your Focus Loop" (id 6818991496) exists; ASC API key works (app visible via API). `EXPO_APPLE_ID`, iOS distribution credentials and EAS env vars (`ANDROID_SERVICE_ACCOUNT_JSON`, `IOS_STORE_CONNECT_P8`, `EXPO_APPLE_ID`) still to be provisioned on the EAS project. Console products:
   - IAP `com.appsindie.focusloop.plus.yearly` (auto-renewable, 7-day trial, $19.99) and `com.appsindie.focusloop.plus.lifetime` (non-consumable, $49.99) — sponsor created the ids on ASC; Play products blocked until first AAB upload.
-  - AdMob rewarded unit for J8 24h-trial — production banner/interstitial ids exist (RR-03 resolved); rewarded id still needed.
+  - AdMob rewarded unit for J8 24h-trial — production banner/interstitial ids exist (RR-03 resolved). **Progress 2026-10-05**: iOS unit `ca-app-pub-9324885420924703/6917716345` wired; Android unit still needed.
   - AdMob console frequency caps on the interstitial unit (sponsor decision: limits live server-side).
 - **Options**: A — provision before Gate 3. B — provision before first store submission.
 - **Recommendation**: A — without products, Plus and J8 trials cannot be exercised in internal testing.
