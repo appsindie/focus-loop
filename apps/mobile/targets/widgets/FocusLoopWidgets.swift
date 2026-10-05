@@ -260,7 +260,11 @@ struct FocusLoopLiveActivityWidget: Widget {
                 Image(systemName: context.attributes.stepKind == "focus" ? "circle.hexagongrid.fill" : "cup.and.saucer.fill")
                     .font(.title2)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(context.attributes.stepKind == "focus" ? tra(context.attributes, "focusingLabel", "Focusing") : tra(context.attributes, "breakLabel", "Break"))
+                    Text("FOCUS LOOP")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(emberColor)
+                        .kerning(1)
+                    Text(tra(context.attributes, "stepTitle", context.attributes.stepKind == "focus" ? "Focusing" : "Break"))
                         .font(.system(size: 16, weight: .bold))
                     if context.state.paused {
                         Text(tra(context.attributes, "pausedLabel", "Paused"))
@@ -269,6 +273,12 @@ struct FocusLoopLiveActivityWidget: Widget {
                     } else {
                         countdownLabel(context)
                             .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(.secondary)
+                    }
+                    let nextStep = context.attributes.strings["nextStep"] ?? ""
+                    if !nextStep.isEmpty {
+                        Text(nextStep)
+                            .font(.system(size: 11))
                             .foregroundStyle(.secondary)
                     }
                 }
