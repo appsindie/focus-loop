@@ -4,7 +4,7 @@
 
 **not ready** — v1.0.0, surfaces ios/android
 
-- Re-audited 2026-10-04 at release/1.0.0 head. Checks run: 26 — passed: 9, waived: 3 (RR-01, RR-02 sponsor waiver + the third-party-sandbox row folded under it), failed-and-remediated: 0, manual: 0, exception rows: 14. Open exceptions: 15 (RR-04..RR-12, RR-14..RR-19). RR-13 resolved (release notes + changelog). RR-11 in-flight.
+- Re-audited 2026-10-04 at release/1.0.0 head. Checks run: 26 — passed: 9, waived: 3 (RR-01, RR-02 sponsor waiver + the third-party-sandbox row folded under it), failed-and-remediated: 0, manual: 0, exception rows: 14. Open exceptions: 14 (RR-04..RR-10, RR-12, RR-14..RR-19). RR-13 resolved (release notes + changelog). RR-11 resolved (iOS 1.0.0 build 8 on TestFlight).
 - Gate 2 status: **open — human signature pending on this PR** (sponsor waived SIT verbally 2026-10-04; the waiver is recorded but the gate stays open until the owner signs here).
 - Gate 3 decision needed: **yes**
 
@@ -21,7 +21,7 @@
 | RR-08 | Runbook procedures still placeholders                             | Runbook                 | justin.nguyen@appsindie.com | 2026-10-11 | block   |
 | RR-09 | Store agreements not verified                                     | Store agreements        | justin.nguyen@appsindie.com | 2026-10-06 | block   |
 | RR-10 | Store declarations not completed                                  | Declarations            | justin.nguyen@appsindie.com | 2026-10-06 | block   |
-| RR-11 | Internal testing build not produced — **in-flight 2026-10-04**    | Internal testing        | justin.nguyen@appsindie.com | 2026-10-06 | block   |
+| RR-11 | Internal testing build not produced — **resolved 2026-10-05**   | Internal testing        | justin.nguyen@appsindie.com | —          | —       |
 | RR-12 | Privacy / data-safety declaration not completed                   | Privacy delta           | justin.nguyen@appsindie.com | 2026-10-06 | block   |
 | RR-13 | Release record — **resolved 2026-10-04**                          | Release notes, Changelog, Traceability | justin.nguyen@appsindie.com | — | done |
 | RR-14 | EAS / portal credentials and console products not fully provisioned | Credentials           | justin.nguyen@appsindie.com | 2026-10-06 | block   |
@@ -56,9 +56,9 @@
 
 ### RR-04. North-star analytics events not wired
 
-- **Situation**: `apps/mobile/src/features/analytics/events.ts` exists as a thin hook but no analytics backend is connected, so north-star events (days-focused per week, retention) are not collected anywhere.
+- **Situation**: `apps/mobile/src/features/analytics/events.ts` exists as a thin hook but no analytics backend is connected, so north-star events (days-focused per week, retention) are not collected anywhere. **Progress 2026-10-04 (option A)**: sponsor supplied `GoogleService-Info.plist` / `google-services.json` (project `focus-loop-3db4a`); `@react-native-firebase/app+analytics+crashlytics` wired — `setEventSink` forwards all 15 events to `logEvent`, Crashlytics auto-captures on init (verified: `RNFBCrashlyticsInit initialization successful` in the iOS sim boot log). **Consent decision**: Analytics + Crashlytics collect pseudonymous app-instance data by default from first launch — no separate consent screen; ATT governs ad tracking only (recorded here per code-review CR-2). Remaining for closure: first real event rows seen in the Firebase console after a build runs.
 - **Options**: A — wire Firebase Analytics event export before Gate 3. B — defer to post-launch growth phase.
-- **Recommendation**: A before any paid/marketing spend; B acceptable for an organic initial release.
+- **Recommendation**: A before any paid/marketing spend; B acceptable for an organic initial release. Sponsor chose A (configs delivered 2026-10-04).
 - **Default if you say nothing**: blocks Gate 3.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-11 (before production rollout)
@@ -117,18 +117,14 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-06 (before public submission)
 
-### RR-11. Internal testing build not produced
+### RR-11. Internal testing build not produced — resolved 2026-10-05
 
-- **Situation**: No EAS build has been produced. **Progress 2026-10-04**: release pipeline wired (`.eas/workflows/release.yml` — `workflow_dispatch` only, no push trigger, so every build/submission is a separately confirmed go-ahead; `eas.json` `appVersionSource: remote` + `submit.internal` profile). First production build pending named confirmation.
-- **Options**: A — run `eas build` production now (iOS first, then Android), submit to internal tracks. B — defer.
-- **Recommendation**: A — the internal-testing build doubles as the SIT artifact under the RR-01/02 waiver; the items the waiver defers are tracked as blocking exception RR-19.
-- **Default if you say nothing**: blocks Gate 3.
+- **Resolution**: sponsor go-ahead "go" (2026-10-05) — `eas build --platform ios --profile production` → build `d19deb41` (app version 1.0.0, build number 8) submitted to TestFlight via `eas submit` (`submit.production`, ASC API key `KHJLUQ98Z9`). Artifact includes Firebase Analytics + Crashlytics and all six production ad units (built from the PR #7 head). Android AAB pending — opens the Play product console, separately confirmed.
 - **Owner**: justin.nguyen@appsindie.com
-- **Deadline**: 2026-10-06
 
 ### RR-12. Privacy / data-safety declaration not completed
 
-- **Situation**: The app's actual data collection (local AsyncStorage, AdMob/ATT, Firebase Analytics if wired) has not been mapped to a store data-safety declaration. **Progress 2026-10-04**: mapping drafted in `docs/release/v1/STORE_DECLARATIONS.md` (Play data-safety table + ASC App Privacy + ATT note); iOS `PrivacyInfo.xcprivacy` verified auto-generated correctly.
+- **Situation**: The app's actual data collection (local AsyncStorage, AdMob/ATT, Firebase Analytics — wired 2026-10-04) has not been mapped to a store data-safety declaration. **Progress 2026-10-04**: mapping drafted in `docs/release/v1/STORE_DECLARATIONS.md` (Play data-safety table + ASC App Privacy + ATT note, both updated for the wired Firebase SDKs); iOS `PrivacyInfo.xcprivacy` verified auto-generated correctly.
 - **Options**: A — complete before Gate 3. B — complete before public store submission.
 - **Recommendation**: B for internal testing; A for public submission.
 - **Default if you say nothing**: blocks public store submission.
@@ -153,7 +149,7 @@
 
 - **Situation**: `EXPO_TOKEN` valid (account tuan3.nguyen@gmail.com). ASC app "Your Focus Loop" (id 6818991496) exists; ASC API key works (app visible via API). `EXPO_APPLE_ID`, iOS distribution credentials and EAS env vars (`ANDROID_SERVICE_ACCOUNT_JSON`, `IOS_STORE_CONNECT_P8`, `EXPO_APPLE_ID`) still to be provisioned on the EAS project. Console products:
   - IAP `com.appsindie.focusloop.plus.yearly` (auto-renewable, 7-day trial, $19.99) and `com.appsindie.focusloop.plus.lifetime` (non-consumable, $49.99) — sponsor created the ids on ASC; Play products blocked until first AAB upload.
-  - AdMob rewarded unit for J8 24h-trial — production banner/interstitial ids exist (RR-03 resolved); rewarded id still needed.
+  - AdMob rewarded unit for J8 24h-trial — production banner/interstitial ids exist (RR-03 resolved). **Progress 2026-10-05**: rewarded units wired on both platforms (iOS `…/6917716345`, Android `…/9703661782`).
   - AdMob console frequency caps on the interstitial unit (sponsor decision: limits live server-side).
 - **Options**: A — provision before Gate 3. B — provision before first store submission.
 - **Recommendation**: A — without products, Plus and J8 trials cannot be exercised in internal testing.
@@ -172,7 +168,7 @@
 
 ### RR-16. Rollout halt thresholds not wired to alerts
 
-- **Situation**: `SLO_AND_ALERTING.md` defines numeric halt thresholds per rollout stage, but they are not wired to a live alert — a breach would need manual watching of the consoles. **Progress 2026-10-04**: a concrete daily manual-check cadence is written into `SLO_AND_ALERTING.md` (option B); without an in-app crash SDK, Play Vitals + ASC Metrics + AdMob are the sources.
+- **Situation**: `SLO_AND_ALERTING.md` defines numeric halt thresholds per rollout stage, but they are not wired to a live alert — a breach would need manual watching of the consoles. **Progress 2026-10-04**: a concrete daily manual-check cadence is written into `SLO_AND_ALERTING.md` (option B); sources are Play Vitals + ASC Metrics + AdMob + the Firebase console (Crashlytics wired 2026-10-04 — email alerts can be enabled in the Firebase console as part of RR-05/RR-17).
 - **Options**: A — wire Crashlytics/Play Console alerts to the thresholds before production rollout. B — manual daily check during staged rollout (owner does it).
 - **Recommendation**: B is honest for a low-volume first release if the owner commits to the daily check; A before any paid push.
 - **Default if you say nothing**: blocks production rollout.

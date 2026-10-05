@@ -7,13 +7,20 @@ does — verify before submitting; the console forms are the sponsor's signature
 
 | Question | Answer |
 | --- | --- |
-| Does the app collect data? | **Yes** — AdMob SDK and (if wired) Firebase Analytics collect device data automatically. The app itself stores everything locally (AsyncStorage); no account, no server. |
-| Identifiers — Device ID | Collected by Google Mobile Ads SDK → **Used for advertising, linked to user, not used for tracking if ATT denied**; declare "Device ID → Advertising → linked". |
-| Usage Data — Product Interaction / Advertising Data | Collected by AdMob → "Advertising → linked to user". |
-| Diagnostics — Crash Data | If Firebase Crashlytics is wired → "App Functionality → not linked". Without Firebase SDK: **none** (Xcode/ASC crash metrics are aggregate and don't require declaration). |
-| Purchases | Handled by the store → declare "Purchase History → App Functionality → linked" (store records IAP transactions). |
+| Does the app collect data? | **Yes** — Google Mobile Ads SDK, Firebase Analytics and Firebase Crashlytics collect device data automatically (all wired in v1). The app itself stores everything locally (AsyncStorage); no account, no owned server. |
+| Identifiers — Device ID | Collected by Google Mobile Ads SDK (advertising) and Firebase Analytics (analytics, app-instance ID) → "Device ID → Advertising + Analytics → linked to user". |
+| Usage Data — Product Interaction / Advertising Data | Collected by Firebase Analytics (feature-usage events) and AdMob → "Analytics + Advertising → linked to user". |
+| Diagnostics — Crash Data, Other Diagnostic Data | Collected by Firebase Crashlytics (wired) → "App Functionality + Analytics → not linked to user". |
+| Purchases | Handled by the store → "Purchase History → App Functionality → linked" (store records IAP transactions). |
 | Tracking (ATT) | Yes — the app shows the ATT prompt (`expo-tracking-transparency`); if denied, ads are non-personalized. Declare "Used for tracking: Advertising" so the ATT prompt is consistent. |
 | Privacy policy URL | https://www.appsindie.com/docs/legal/focus-loop/privacy/ |
+
+Consent note: Firebase Analytics + Crashlytics collect **pseudonymous**
+app-instance data by default (no account, no PII fields) — enabled from first
+launch without a separate consent screen; the ATT prompt governs ad tracking
+only. Recorded as an explicit sponsor decision in `EXCEPTION_REPORT.md`
+(RR-04). The privacy policy is updated to cover both SDKs
+(appsindie-landing legal update alongside this change).
 
 ## App Store Connect — Age Rating
 
@@ -27,10 +34,10 @@ does — verify before submitting; the console forms are the sponsor's signature
 
 | Data type | Collected? | Shared? | Purpose | Notes |
 | --- | --- | --- | --- | --- |
-| Device or other IDs | Yes (AdMob) | Yes (Google) | Advertising | Encrypted in transit by SDK. |
-| App activity / interactions | Yes (AdMob) | Yes (Google) | Advertising | |
+| Device or other IDs | Yes (AdMob + Firebase Analytics) | Yes (Google) | Advertising + Analytics | Encrypted in transit by SDK. |
+| App activity / interactions | Yes (Firebase Analytics events + AdMob) | Yes (Google) | Analytics + Advertising | Pseudonymous feature-usage events (no account). |
+| App info and performance — crash logs, diagnostics | Yes (Firebase Crashlytics) | No | App functionality + Analytics | Wired in v1. |
 | Purchase history | Yes | No (store-side) | App functionality | IAP via Play Billing. |
-| Crash logs | Only if Firebase Crashlytics wired | No | Analytics | Without SDK: answer "not collected" — Play Vitals is aggregate and exempt. |
 | Personal info, location, photos, files | No | No | — | App is local-first; no server. |
 
 - "Is data encrypted in transit?" → Yes (SDK traffic is TLS).

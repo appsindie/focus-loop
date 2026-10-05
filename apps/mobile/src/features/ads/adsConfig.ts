@@ -20,10 +20,14 @@ export const ADS_CONFIG = {
         android: "ca-app-pub-9324885420924703/3245505198",
         default: TestIds.INTERSTITIAL,
       }),
-  // J8 rewarded unit: not yet provisioned in the AdMob console (RR-14 — the
-  // unit must exist before the trial card can earn). Null in production makes
-  // the port report "unavailable"; the UI then shows the retry copy instead
-  // of a dead button.
-  rewardedId: __DEV__ ? TestIds.REWARDED : (Platform.select({ default: null }) as string | null),
+  // J8 rewarded unit (RR-14): provisioned in the AdMob console 2026-10-05,
+  // both platforms.
+  rewardedId: __DEV__
+    ? TestIds.REWARDED
+    : Platform.select({
+        ios: "ca-app-pub-9324885420924703/6917716345",
+        android: "ca-app-pub-9324885420924703/9703661782",
+        default: TestIds.REWARDED,
+      }),
   keywords: ["focus", "productivity", "adhd", "pomodoro"],
 };

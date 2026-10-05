@@ -33,19 +33,21 @@ its vendor console. Links to check during rollout:
 | ------- | ------------- | ----- |
 | mobile (iOS)     | App Store Connect → app 6818991496 → Metrics/Crashes | crash-free sessions, adoption |
 | mobile (Android) | Play Console → Android Vitals → overview | crash rate, ANR rate (automatic for AAB installs — no SDK needed) |
+| mobile (both)    | Firebase console → project `focus-loop-3db4a` → Crashlytics / Analytics | crash detail + symbolication, north-star event counts |
 | mobile (ads)     | AdMob console → app reports | ad requests, fill/failure rate, revenue |
 
 ## Escalation
 
-No in-app crash SDK in v1, so alerting is console-native + a manual check
-cadence (RR-16/RR-17, option B):
+Alerting is console-native + a manual check cadence (RR-16/RR-17, option B).
+Crashlytics is wired, so the Firebase console is the crash-detail source;
+its email alerts can be enabled per alert type (RR-05/RR-17 follow-up):
 
 | Alert                          | Severity | Route                                                        | Wakes a human |
 | ------------------------------ | -------- | ------------------------------------------------------------ | ------------- |
-| Crash-free sessions SLO breach | high     | Play Vitals / ASC Metrics checked daily by owner during rollout; Play Console auto-emails crash spikes to the account owner | yes (manual + auto email) |
+| Crash-free sessions SLO breach | high     | Firebase Crashlytics + Play Vitals checked daily by owner during rollout; Play Console auto-emails crash spikes to the account owner | yes (manual + auto email) |
 | ANR rate SLO breach            | high     | Same daily Vitals check                                      | yes (manual)  |
 | Ad load failure rate spike     | medium   | AdMob console daily check                                    | no            |
 
-Manual-check cadence: owner checks the three consoles once a day while any
-staged rollout is running (RR-16 option B). Wiring Crashlytics/Slack alerts is
-deferred until an analytics SDK ships (RR-04).
+Manual-check cadence: owner checks the consoles once a day while any
+staged rollout is running (RR-16 option B). Enabling Crashlytics email
+alerts + any Slack route is the RR-05/RR-17 follow-up.

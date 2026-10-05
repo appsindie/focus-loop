@@ -18,7 +18,8 @@
           "UIInterfaceOrientationPortraitUpsideDown",
           "UIInterfaceOrientationLandscapeLeft",
           "UIInterfaceOrientationLandscapeRight"
-        ]
+        ],
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -149,7 +150,11 @@
         }
       ],
       "expo-localization",
-      "./plugins/withAndroidLintFix.js"
+      "./plugins/withFirebasePods.js",
+      "./plugins/withAndroidLintFix.js",
+      "@react-native-firebase/app",
+      "@react-native-firebase/analytics",
+      "@react-native-firebase/crashlytics"
     ],
     "extra": {
       "eas": {

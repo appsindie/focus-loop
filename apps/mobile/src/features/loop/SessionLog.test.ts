@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { beforeEach, describe, expect, it } from "@jest/globals";
 import {
   loadSessions,
+  localDayKey,
   recordSession,
   sessionsInLoop,
   sessionsOnDay,
@@ -69,5 +70,21 @@ describe("SessionLog", () => {
     expect(sessionsOnDay(await loadSessions(), new Date("2026-10-04T15:00:00"))).toHaveLength(1);
     const loopOne = sessionsInLoop(await loadSessions(), "loop-1");
     expect(loopOne.map((s) => s.roundIndex)).toEqual([1, 2]);
+  });
+
+  it("localDayKey buckets by local calendar day, matching sessionsOnDay", () => {
+    // A session ending 23:56 local time belongs to the local day, not the UTC
+    // date — otherwise goal_day_met disagrees with sessionsOnDay near midnight.
+    const end = new Date();
+    end.setHours(23, 56, 0, 0);
+    const key = localDayKey(end);
+    expect(key).toBe(
+      `${end.getFullYear()}-${String(end.getMonth() + 1).padStart(2, "0")}-${String(
+        end.getDate(),
+      ).padStart(2, "0")}`,
+    );
+    // Same instant must land in the same bucket sessionsOnDay counts.
+    const session = { ...BASE, id: "s-local-day", endedAt: end.toISOString() };
+    expect(sessionsOnDay([session], end)).toHaveLength(1);
   });
 });

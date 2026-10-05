@@ -1,5 +1,5 @@
 {
-  "active_branch": "release/1.0.0",
+  "active_branch": "devin/1791182312-firebase-analytics",
   "gates": {
     "0": {
       "evidence": "docs/research/OPPORTUNITY_DECISION.json",
@@ -26,13 +26,13 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-10-04T14:07:20Z",
-    "round_count": 17,
-    "routine": "release",
-    "session_url": "https://claude.ai/code/cse_014ay7poAtCv2SsZB6SJJuVv",
+    "fired_at": "2026-10-05T06:53:00Z",
+    "round_count": 2,
+    "routine": "code-review",
+    "session_url": "https://claude.ai/code/cse_011xLArCYWqmvWkzL1kwHySd",
     "verdict": "pass"
   },
-  "next_action": "Build done; Gate 2 open pending owner signature on PR #6 (SIT waiver recorded). Next: iOS production build 1.0.0 on sponsor confirmation, then TestFlight submit, then Android. Gate-3 exceptions: RR-09/10/12/14 before submission; RR-04..08,15..19 before production rollout",
+  "next_action": "iOS 1.0.0 build 8 on TestFlight (submission 9479e4db) — device items RR-19 re-test on internal testing; awaiting Justin: merge PR #7, gate-2 signature, AdMob interstitial cap; Android build separately confirmed",
   "open_exceptions": [
     {
       "blocking": true,
@@ -200,7 +200,7 @@
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     }
   ],
-  "open_pr": "https://github.com/appsindie/focus-loop/pull/6",
+  "open_pr": "https://github.com/appsindie/focus-loop/pull/7",
   "owner": "justin.nguyen@appsindie.com",
   "phase": 2,
   "product": "focus-loop",
