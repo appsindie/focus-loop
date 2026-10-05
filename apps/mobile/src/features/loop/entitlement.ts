@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { catalogueItem } from "../personalize/catalogue";
 
 const ENTITLEMENT_KEY = "focus-loop/v1/entitlement";
 const TRIAL_HOURS = 24;
@@ -152,6 +153,13 @@ export function isPlusActive(entitlement: Entitlement, now: Date): boolean {
 }
 
 export function isItemUnlocked(entitlement: Entitlement, itemId: string, now: Date): boolean {
+  // Free-tier catalogue items are always usable — the trial/Plus checks below
+  // only exist for locked tiers. Without this, a free install locked its own
+  // free rows (picker opened the trial card; the session-sound fallback in
+  // App.tsx dropped a free pick back to silence). Found via E2E on sim.
+  if (catalogueItem(itemId)?.tier === "free") {
+    return true;
+  }
   if (isPlusActive(entitlement, now)) {
     return true;
   }
@@ -167,7 +175,7 @@ export function activeTrialEndsAt(
   itemId: string,
   now: Date,
 ): Date | null {
-  if (isPlusActive(entitlement, now)) {
+  if (catalogueItem(itemId)?.tier === "free" || isPlusActive(entitlement, now)) {
     return null;
   }
   const trial = entitlement.trials.find((t) => t.itemId === itemId);

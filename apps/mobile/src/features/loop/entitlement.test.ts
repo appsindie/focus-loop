@@ -78,6 +78,22 @@ describe("entitlement (ADR-003)", () => {
     expect(isItemUnlocked(entitlement, "theme:ember", new Date("2026-10-08T10:00:00Z"))).toBe(true);
   });
 
+  it("free-tier catalogue items are unlocked on a free install (E2E-found bug)", async () => {
+    const now = new Date("2026-10-03T10:00:00Z");
+    const entitlement = await loadEntitlement(); // fresh free install, no trials
+    expect(entitlement.isPlus).toBe(false);
+    // Without the tier check these returned false — the picker offered a 24h
+    // trial card for items that are supposed to be free, and the session-sound
+    // fallback dropped a free pick back to silence.
+    expect(isItemUnlocked(entitlement, "white-noise", now)).toBe(true);
+    expect(isItemUnlocked(entitlement, "brown-noise", now)).toBe(true);
+    expect(isItemUnlocked(entitlement, "ember", now)).toBe(true);
+    // Locked tiers still gate; unknown ids are never "free".
+    expect(isItemUnlocked(entitlement, "rain-on-window", now)).toBe(false);
+    expect(isItemUnlocked(entitlement, "ocean", now)).toBe(false);
+    expect(isItemUnlocked(entitlement, "no-such-item", now)).toBe(false);
+  });
+
   it("a rewarded trial unlocks one item for exactly 24h (spec J8-R2)", async () => {
     const now = new Date("2026-10-03T10:00:00Z");
     const entitlement = await startTrial("theme:ember", now);
