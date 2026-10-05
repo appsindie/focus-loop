@@ -15,6 +15,7 @@ import {
   FocusSession,
   SessionOutcome,
   loadSessions,
+  localDayKey,
   recordSession,
   sessionsOnDay,
   updateSessionOutcome,
@@ -155,7 +156,7 @@ export function useLoopController(
       // J2-R6: the first session of ITS day turns that day into a goal day.
       const day = new Date(session.endedAt);
       if (sessionsOnDay(sessionsRef.current, day).length === 0) {
-        trackEvent("goal_day_met", { day: session.endedAt.slice(0, 10) });
+        trackEvent("goal_day_met", { day: localDayKey(day) });
       }
       setLastSession(session);
       setOutcomeDraft(null);

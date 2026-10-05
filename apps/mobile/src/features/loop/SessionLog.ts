@@ -96,6 +96,12 @@ export function startOfDayTimestamp(date: Date): number {
   return copy.getTime();
 }
 
+export function localDayKey(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
 export function sessionsOnDay(sessions: FocusSession[], day: Date): FocusSession[] {
   const dayTimestamp = startOfDayTimestamp(day);
   return sessions.filter(
