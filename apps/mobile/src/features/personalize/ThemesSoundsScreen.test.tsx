@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { createAudioPlayer } from "expo-audio";
 import { palette } from "../../shared/theme";
 import type { RewardedResult } from "../ads/rewardedAd";
 import { ThemesSoundsScreen } from "./ThemesSoundsScreen";
@@ -36,6 +37,21 @@ describe("ThemesSoundsScreen (J8 / P15)", () => {
     const { getByLabelText } = await render(<ThemesSoundsScreen {...props} />);
     await fireEvent.press(getByLabelText("White noise"));
     expect(props.onPick).toHaveBeenCalledWith({ focusSoundId: "white-noise" });
+  });
+
+  it("plays a short preview when tapping an unlocked sound row (tap-to-hear)", async () => {
+    const props = makeProps();
+    const { getByLabelText } = await render(<ThemesSoundsScreen {...props} />);
+    await fireEvent.press(getByLabelText("White noise"));
+    expect(jest.mocked(createAudioPlayer)).toHaveBeenCalled();
+  });
+
+  it("does not preview a locked sound row", async () => {
+    const props = makeProps();
+    const { getByLabelText } = await render(<ThemesSoundsScreen {...props} />);
+    await fireEvent.press(getByLabelText(/Rain on a window — locked/));
+    expect(jest.mocked(createAudioPlayer)).not.toHaveBeenCalled();
+    expect(props.onUpgrade).toHaveBeenCalled();
   });
 
   it("opens the 24h trial card for a locked trial-tier item (J8-R1/R2)", async () => {

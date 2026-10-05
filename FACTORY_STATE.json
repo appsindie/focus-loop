@@ -35,7 +35,7 @@
     "session_url": "https://claude.ai/code/cse_01MzUzgPXZAz2WCQ2RLVHkcA",
     "verdict": "pending"
   },
-  "next_action": "Gate 3 release: Justin creates TestFlight beta group + runs RR-19 device items on build 8; then production submission. Android AAB build separately confirmed. AdMob interstitial cap ≤1/day on console still his.",
+  "next_action": "Gate 3 release: Justin creates TestFlight beta group + runs RR-19 device items on build 8; next EAS build carries all post-build-8 polish (icon, settings, Live Activity, sound preview). Android AAB build separately confirmed. AdMob interstitial cap = 1/5min (his console setting).",
   "open_exceptions": [
     {
       "blocking": true,

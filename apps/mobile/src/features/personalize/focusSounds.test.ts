@@ -1,6 +1,12 @@
-import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { afterEach, beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { createAudioPlayer, setAudioModeAsync } from "expo-audio";
-import { pauseFocusSound, startFocusSound, stopFocusSound } from "./focusSounds";
+import {
+  pauseFocusSound,
+  previewFocusSound,
+  startFocusSound,
+  stopFocusSound,
+  stopSoundPreview,
+} from "./focusSounds";
 
 const create = jest.mocked(createAudioPlayer);
 const setMode = jest.mocked(setAudioModeAsync);
@@ -72,5 +78,43 @@ describe("focusSounds (J8)", () => {
     expect(() => startFocusSound("white-noise")).not.toThrow();
     expect(() => pauseFocusSound()).not.toThrow();
     expect(() => stopFocusSound()).not.toThrow();
+  });
+});
+
+describe("previewFocusSound (picker tap-to-hear)", () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    stopSoundPreview();
+    jest.useRealTimers();
+  });
+
+  it("plays a sample that auto-stops after the preview window", () => {
+    previewFocusSound("rain-on-window");
+    expect(create).toHaveBeenCalledTimes(1);
+    const player = lastPlayer;
+    expect(player.loop).toBe(true);
+    expect(player.play).toHaveBeenCalledTimes(1);
+    jest.advanceTimersByTime(4000);
+    expect(player.remove).toHaveBeenCalledTimes(1);
+  });
+
+  it("silence stops a playing preview without starting a player", () => {
+    previewFocusSound("white-noise");
+    const player = lastPlayer;
+    create.mockClear();
+    previewFocusSound("silence");
+    expect(create).not.toHaveBeenCalled();
+    expect(player.remove).toHaveBeenCalledTimes(1);
+  });
+
+  it("pauses a live session sound so the two never double up", () => {
+    startFocusSound("white-noise");
+    const session = lastPlayer;
+    previewFocusSound("brown-noise");
+    expect(session.pause).toHaveBeenCalledTimes(1);
+    expect(session.remove).not.toHaveBeenCalled();
   });
 });

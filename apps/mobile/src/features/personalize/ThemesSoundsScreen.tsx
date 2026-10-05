@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { t } from "../../i18n";
@@ -10,6 +10,7 @@ import { trackEvent } from "../analytics/events";
 import type { RewardedResult } from "../ads/rewardedAd";
 import { trackRewardedResult } from "../ads/rewardedAd";
 import { CatalogueItem, DISC_COLORS, FOCUS_SOUNDS } from "./catalogue";
+import { previewFocusSound, stopSoundPreview } from "./focusSounds";
 
 // P15 / J8: disc colours + focus sounds. Locked tiers resolve like this —
 // "trial" opens the 24h trial card (watch one rewarded video, or Get Plus),
@@ -66,10 +67,17 @@ export function ThemesSoundsScreen({
   const [trialItem, setTrialItem] = useState<CatalogueItem | null>(null);
   const [adState, setAdState] = useState<AdState>("idle");
 
+  // Stop any sound preview if the user leaves the screen mid-sample.
+  useEffect(() => () => stopSoundPreview(), []);
+
   const pickItem = (item: CatalogueItem) => {
     const selected =
       item.kind === "disc-color" ? discColorId === item.id : focusSoundId === item.id;
     if (isItemUnlocked(item.id)) {
+      if (item.kind === "focus-sound") {
+        // Tap-to-hear: play a short preview (Silence stops any playing one).
+        previewFocusSound(item.id);
+      }
       if (!selected) {
         onPick(item.kind === "disc-color" ? { discColorId: item.id } : { focusSoundId: item.id });
       }

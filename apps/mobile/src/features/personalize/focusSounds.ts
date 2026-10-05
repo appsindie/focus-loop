@@ -72,6 +72,44 @@ export function pauseFocusSound(): void {
   }
 }
 
+// Picker preview: tapping an unlocked sound row plays a short sample so the
+// user hears what they picked before the next focus session. Uses its own
+// player — never touches `current` — except pausing a live session sound so
+// the two don't double up; the controller's render loop resumes it.
+const PREVIEW_MS = 4000;
+let preview: { player: AudioPlayer; timer: ReturnType<typeof setTimeout> } | null = null;
+
+export function stopSoundPreview(): void {
+  if (preview == null) {
+    return;
+  }
+  clearTimeout(preview.timer);
+  try {
+    preview.player.remove();
+  } catch {
+    // best-effort
+  }
+  preview = null;
+}
+
+export function previewFocusSound(id: string): void {
+  stopSoundPreview();
+  const source = SOURCES[id];
+  if (source == null) {
+    return;
+  }
+  try {
+    ensureAudioMode();
+    pauseFocusSound();
+    const player = createAudioPlayer(source);
+    player.loop = true;
+    player.play();
+    preview = { player, timer: setTimeout(stopSoundPreview, PREVIEW_MS) };
+  } catch {
+    preview = null;
+  }
+}
+
 export function stopFocusSound(): void {
   try {
     current?.player.remove();
