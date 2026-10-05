@@ -56,9 +56,9 @@
 
 ### RR-04. North-star analytics events not wired
 
-- **Situation**: `apps/mobile/src/features/analytics/events.ts` exists as a thin hook but no analytics backend is connected, so north-star events (days-focused per week, retention) are not collected anywhere.
+- **Situation**: `apps/mobile/src/features/analytics/events.ts` exists as a thin hook but no analytics backend is connected, so north-star events (days-focused per week, retention) are not collected anywhere. **Progress 2026-10-04 (option A)**: sponsor supplied `GoogleService-Info.plist` / `google-services.json` (project `focus-loop-3db4a`); `@react-native-firebase/app+analytics+crashlytics` wired — `setEventSink` forwards all 15 events to `logEvent`, Crashlytics auto-captures on init (verified: `RNFBCrashlyticsInit initialization successful` in the iOS sim boot log). Remaining for closure: first real event rows seen in the Firebase console after a build runs.
 - **Options**: A — wire Firebase Analytics event export before Gate 3. B — defer to post-launch growth phase.
-- **Recommendation**: A before any paid/marketing spend; B acceptable for an organic initial release.
+- **Recommendation**: A before any paid/marketing spend; B acceptable for an organic initial release. Sponsor chose A (configs delivered 2026-10-04).
 - **Default if you say nothing**: blocks Gate 3.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-11 (before production rollout)
