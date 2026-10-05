@@ -18,7 +18,8 @@
           "UIInterfaceOrientationPortraitUpsideDown",
           "UIInterfaceOrientationLandscapeLeft",
           "UIInterfaceOrientationLandscapeRight"
-        ]
+        ],
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
