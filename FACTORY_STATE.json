@@ -14,8 +14,11 @@
       "status": "passed"
     },
     "2": {
-      "note": "Sponsor waived device SIT verbally 2026-10-04 (\"k sit, làm release luôn đi. app mới chưa có user mà sit gì men\") — recorded as RR-01/02 waiver in docs/release/v1/EXCEPTION_REPORT.md; gate stays open until the owner signs on PR #6.",
-      "status": "open"
+      "evidence": "Sponsor merged PR #6 (release/1.0.0 carrying the RR-01/02 SIT waiver + RR-19 re-test condition) and confirmed \"approve hết rồi\" 2026-10-05 — human sign-off recorded on the merge, not a gate-signed label.",
+      "note": "SIT waived: \"k sit, làm release luôn đi. app mới chưa có user mà sit gì men\". Device-only items (haptics, push, Live Activity, IAP sandbox, rewarded fill) re-test under RR-19 during internal testing before production promotion.",
+      "signed_at": "2026-10-05",
+      "signed_by": "justin.nguyen@appsindie.com",
+      "status": "passed"
     },
     "3": {
       "status": "open"
@@ -32,7 +35,7 @@
     "session_url": "https://claude.ai/code/cse_01SjBn8F1q8FgE6cioEr8y1G",
     "verdict": "pending"
   },
-  "next_action": "UX polish v1 (sponsor feedback): keyboard-avoiding inputs, gear settings icon, hub-and-detail settings, expo-web-browser legal links, brand icon assets — PR stacked on #7 pending; still awaiting Justin: merge #7, gate-2 signature, AdMob cap; Android build separately confirmed",
+  "next_action": "Gate 3 release: Justin creates TestFlight beta group + runs RR-19 device items on build 8; then production submission. Android AAB build separately confirmed. AdMob interstitial cap ≤1/day on console still his.",
   "open_exceptions": [
     {
       "blocking": true,
@@ -202,7 +205,7 @@
   ],
   "open_pr": "https://github.com/appsindie/focus-loop/pull/7",
   "owner": "justin.nguyen@appsindie.com",
-  "phase": 2,
+  "phase": 3,
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
