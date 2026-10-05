@@ -4,7 +4,7 @@
 
 **not ready** — v1.0.0, surfaces ios/android
 
-- Re-audited 2026-10-04 at release/1.0.0 head. Checks run: 26 — passed: 9, waived: 3 (RR-01, RR-02 sponsor waiver + the third-party-sandbox row folded under it), failed-and-remediated: 0, manual: 0, exception rows: 14. Open exceptions: 15 (RR-04..RR-12, RR-14..RR-19). RR-13 resolved (release notes + changelog). RR-11 in-flight.
+- Re-audited 2026-10-04 at release/1.0.0 head. Checks run: 26 — passed: 9, waived: 3 (RR-01, RR-02 sponsor waiver + the third-party-sandbox row folded under it), failed-and-remediated: 0, manual: 0, exception rows: 14. Open exceptions: 14 (RR-04..RR-10, RR-12, RR-14..RR-19). RR-13 resolved (release notes + changelog). RR-11 resolved (iOS 1.0.0 build 8 on TestFlight).
 - Gate 2 status: **open — human signature pending on this PR** (sponsor waived SIT verbally 2026-10-04; the waiver is recorded but the gate stays open until the owner signs here).
 - Gate 3 decision needed: **yes**
 
@@ -21,7 +21,7 @@
 | RR-08 | Runbook procedures still placeholders                             | Runbook                 | justin.nguyen@appsindie.com | 2026-10-11 | block   |
 | RR-09 | Store agreements not verified                                     | Store agreements        | justin.nguyen@appsindie.com | 2026-10-06 | block   |
 | RR-10 | Store declarations not completed                                  | Declarations            | justin.nguyen@appsindie.com | 2026-10-06 | block   |
-| RR-11 | Internal testing build not produced — **in-flight 2026-10-04**    | Internal testing        | justin.nguyen@appsindie.com | 2026-10-06 | block   |
+| RR-11 | Internal testing build not produced — **resolved 2026-10-05**   | Internal testing        | justin.nguyen@appsindie.com | —          | —       |
 | RR-12 | Privacy / data-safety declaration not completed                   | Privacy delta           | justin.nguyen@appsindie.com | 2026-10-06 | block   |
 | RR-13 | Release record — **resolved 2026-10-04**                          | Release notes, Changelog, Traceability | justin.nguyen@appsindie.com | — | done |
 | RR-14 | EAS / portal credentials and console products not fully provisioned | Credentials           | justin.nguyen@appsindie.com | 2026-10-06 | block   |
@@ -117,14 +117,10 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-06 (before public submission)
 
-### RR-11. Internal testing build not produced
+### RR-11. Internal testing build not produced — resolved 2026-10-05
 
-- **Situation**: No EAS build has been produced. **Progress 2026-10-04**: release pipeline wired (`.eas/workflows/release.yml` — `workflow_dispatch` only, no push trigger, so every build/submission is a separately confirmed go-ahead; `eas.json` `appVersionSource: remote` + `submit.internal` profile). First production build pending named confirmation.
-- **Options**: A — run `eas build` production now (iOS first, then Android), submit to internal tracks. B — defer.
-- **Recommendation**: A — the internal-testing build doubles as the SIT artifact under the RR-01/02 waiver; the items the waiver defers are tracked as blocking exception RR-19.
-- **Default if you say nothing**: blocks Gate 3.
+- **Resolution**: sponsor go-ahead "go" (2026-10-05) — `eas build --platform ios --profile production` → build `d19deb41` (app version 1.0.0, build number 8) submitted to TestFlight via `eas submit` (`submit.production`, ASC API key `KHJLUQ98Z9`). Artifact includes Firebase Analytics + Crashlytics and all six production ad units (built from the PR #7 head). Android AAB pending — opens the Play product console, separately confirmed.
 - **Owner**: justin.nguyen@appsindie.com
-- **Deadline**: 2026-10-06
 
 ### RR-12. Privacy / data-safety declaration not completed
 

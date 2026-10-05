@@ -32,7 +32,7 @@
     "session_url": "https://claude.ai/code/cse_011xLArCYWqmvWkzL1kwHySd",
     "verdict": "pass"
   },
-  "next_action": "Firebase Analytics+Crashlytics wired (RR-04 option A) on PR #7 — code-review round 1 pending; then EAS build chain per sponsor go-ahead (iOS production 1.0.0 first). Gate 2 still open pending owner signature.",
+  "next_action": "iOS 1.0.0 build 8 on TestFlight (submission 9479e4db) — device items RR-19 re-test on internal testing; awaiting Justin: merge PR #7, gate-2 signature, AdMob interstitial cap; Android build separately confirmed",
   "open_exceptions": [
     {
       "blocking": true,
