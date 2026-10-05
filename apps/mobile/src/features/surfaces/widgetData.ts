@@ -76,7 +76,38 @@ export function widgetSurfaceStrings(): Record<string, string> {
     focusingLabel: t("Focusing"),
     pauseLabel: t("Pause"),
     doneLabel: t("Done"),
+    longBreakLabel: t("Long break"),
   };
+}
+
+// Live Activity step title + next-up line, resolved JS-side so the extension
+// renders localized text without doing placeholder math. Step attributes are
+// immutable, but a step change always ends and restarts the activity, so the
+// resolved strings never go stale mid-step.
+export function liveActivityStepStrings(
+  state: RunningStepSurface,
+  strings: Record<string, string>,
+): Record<string, string> {
+  const focusCounter = (n: number, total: number): string =>
+    (strings["focusCounter"] ?? "Focus {n} of {total}")
+      .replace("{n}", String(n))
+      .replace("{total}", String(total));
+  if (state.kind === "focus") {
+    return { stepTitle: focusCounter(state.currentFocusNumber, state.totalFocusCount) };
+  }
+  const stepTitle =
+    state.kind === "longBreak"
+      ? (strings["longBreakLabel"] ?? "Long break")
+      : (strings["breakLabel"] ?? "Break");
+  const nextFocus = state.currentFocusNumber + 1;
+  const nextStep =
+    nextFocus <= state.totalFocusCount
+      ? (strings["nextUp"] ?? "Next up: {text}").replace(
+          "{text}",
+          focusCounter(nextFocus, state.totalFocusCount),
+        )
+      : "";
+  return { stepTitle, nextStep };
 }
 
 // CR-19: a running state only counts while endsAt is still ahead of render

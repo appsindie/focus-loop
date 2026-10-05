@@ -1,5 +1,5 @@
 import { requireNativeModule } from "expo-modules-core";
-import type { RunningStepSurface } from "./widgetData";
+import { liveActivityStepStrings, type RunningStepSurface } from "./widgetData";
 
 // iOS running-session surface (J4-R3 / P23): an ActivityKit Live Activity on
 // the lock screen + Dynamic Island. Module.swift owns the ActivityKit calls;
@@ -60,7 +60,7 @@ export function syncLiveSurface(
         state.endsAtMs,
         state.remainingSeconds,
         state.paused,
-        JSON.stringify(strings),
+        JSON.stringify({ ...strings, ...liveActivityStepStrings(state, strings) }),
       );
       activeAttributes = { stepKind: state.kind, displayMode: state.displayMode };
     } else {

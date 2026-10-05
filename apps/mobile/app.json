@@ -26,7 +26,7 @@
       "package": "com.appsindie.focusloop",
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
-        "backgroundColor": "#2D5A27",
+        "backgroundColor": "#F6F3EE",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
@@ -59,7 +59,7 @@
           "widgets": [
             {
               "name": "FocusStart",
-              "label": "Focus Loop \u2014 Start",
+              "label": "Focus Loop — Start",
               "description": "Start a focus session with your last-used rhythm",
               "minWidth": "110dp",
               "minHeight": "40dp",
@@ -70,7 +70,7 @@
             },
             {
               "name": "FocusNext",
-              "label": "Focus Loop \u2014 Next up",
+              "label": "Focus Loop — Next up",
               "description": "Week progress and your next focus",
               "minWidth": "250dp",
               "minHeight": "110dp",
@@ -154,7 +154,8 @@
       "./plugins/withAndroidLintFix.js",
       "@react-native-firebase/app",
       "@react-native-firebase/analytics",
-      "@react-native-firebase/crashlytics"
+      "@react-native-firebase/crashlytics",
+      "expo-web-browser"
     ],
     "extra": {
       "eas": {

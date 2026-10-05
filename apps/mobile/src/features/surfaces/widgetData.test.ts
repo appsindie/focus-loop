@@ -4,6 +4,7 @@ import {
   DEFAULT_WIDGET_SNAPSHOT,
   WIDGET_DATA_KEY,
   buildWidgetSnapshot,
+  liveActivityStepStrings,
   liveRunning,
   loadWidgetSnapshot,
   type RunningStepSurface,
@@ -103,5 +104,49 @@ describe("liveRunning (CR-19)", () => {
   it("a paused step stays live — it has no wall-clock end", () => {
     const snapshot = withRunning(running({ paused: true, endsAtMs: 0 }));
     expect(liveRunning(snapshot, Number.MAX_SAFE_INTEGER)).not.toBeNull();
+  });
+});
+
+describe("liveActivityStepStrings", () => {
+  const strings = {
+    focusCounter: "Focus {n} of {total}",
+    breakLabel: "Break",
+    longBreakLabel: "Long break",
+    nextUp: "Next up: {text}",
+  };
+  const surface = (overrides: Partial<RunningStepSurface> = {}): RunningStepSurface => ({
+    kind: "focus",
+    displayMode: "disc",
+    remainingSeconds: 300,
+    endsAtMs: 1_800_000_000_000,
+    paused: false,
+    currentFocusNumber: 1,
+    totalFocusCount: 4,
+    ...overrides,
+  });
+
+  it("focus title resolves to the numbered round", () => {
+    expect(liveActivityStepStrings(surface({ currentFocusNumber: 2 }), strings)).toEqual({
+      stepTitle: "Focus 2 of 4",
+    });
+  });
+
+  it("break shows the next focus round coming up", () => {
+    expect(
+      liveActivityStepStrings(surface({ kind: "break", currentFocusNumber: 1 }), strings),
+    ).toEqual({ stepTitle: "Break", nextStep: "Next up: Focus 2 of 4" });
+  });
+
+  it("long break names itself and the last break has no next round", () => {
+    expect(
+      liveActivityStepStrings(surface({ kind: "longBreak", currentFocusNumber: 4 }), strings),
+    ).toEqual({ stepTitle: "Long break", nextStep: "" });
+  });
+
+  it("falls back to English literals when strings are absent", () => {
+    expect(liveActivityStepStrings(surface({ kind: "break" }), {})).toEqual({
+      stepTitle: "Break",
+      nextStep: "Next up: Focus 2 of 4",
+    });
   });
 });

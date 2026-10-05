@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Linking, Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
+import * as WebBrowser from "expo-web-browser";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { t } from "../../i18n";
 import { Palette, radii, spacing, typography } from "../../shared/theme";
@@ -35,7 +36,9 @@ export const APPEARANCE_OPTIONS: { id: Appearance; label: string }[] = [
 ];
 
 function openLink(url: string): void {
-  void Linking.openURL(url);
+  // In-app browser sheet — legal pages stay inside the app instead of
+  // kicking the user out to Safari (falls back to the system browser on web).
+  void WebBrowser.openBrowserAsync(url);
 }
 
 type SettingsScreenProps = {
@@ -162,12 +165,14 @@ function Row({
   label,
   value,
   onPress,
+  chevron,
   children,
 }: {
   colors: Palette;
   label: string;
-  value?: string;
+  value?: string | undefined;
   onPress?: () => void;
+  chevron?: boolean;
   children?: React.ReactNode;
 }) {
   const inner = (
@@ -175,12 +180,20 @@ function Row({
       <Text style={[styles.rowLabel, { color: colors.ink }]} allowFontScaling>
         {label}
       </Text>
-      {children ??
-        (value != null ? (
-          <Text style={[styles.rowValue, { color: colors.muted }]} allowFontScaling>
-            {value}
-          </Text>
-        ) : null)}
+      {children ?? (
+        <View style={styles.rowRight}>
+          {value != null ? (
+            <Text style={[styles.rowValue, { color: colors.muted }]} allowFontScaling>
+              {value}
+            </Text>
+          ) : null}
+          {chevron ? (
+            <Text style={[styles.rowChevron, { color: colors.faint }]} allowFontScaling>
+              ›
+            </Text>
+          ) : null}
+        </View>
+      )}
     </>
   );
   if (onPress == null) {
@@ -243,7 +256,10 @@ export function SettingsScreen({
   const rhythm = resolveRhythm(settings.rhythmPresetId, settings.customRhythm);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [adChoicesOpen, setAdChoicesOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<SectionId>("timer");
+  // Phone: hub-and-detail — hub lists the sections (no vertical scroll per
+  // J-style grouped list); tapping a section drills into its rows. Tablet
+  // keeps the master–detail rail with "timer" preselected.
+  const [activeSection, setActiveSection] = useState<SectionId | null>(isTablet ? "timer" : null);
 
   const rhythmSummary = `${rhythm.focusMinutes} · ${rhythm.breakMinutes} · ${t("long")} ${rhythm.longBreakMinutes}`;
   const discName = t(catalogueItem(settings.discColorId)?.name ?? "Ember");
@@ -326,24 +342,6 @@ export function SettingsScreen({
     </>
   );
 
-  const themeRows = (
-    <>
-      <Row
-        colors={colors}
-        label={t("Themes & sounds")}
-        value={`${discName} · ${soundName}`}
-        onPress={onOpenThemes}
-      />
-
-      <Row
-        colors={colors}
-        label={t("Reminders")}
-        value={remindersSummary}
-        onPress={onOpenReminders}
-      />
-    </>
-  );
-
   const plusCard = (
     <View style={[styles.plusCard, { backgroundColor: colors.surface, borderColor: colors.rule }]}>
       <View style={styles.plusHeader}>
@@ -397,9 +395,6 @@ export function SettingsScreen({
 
   const dataRows = (
     <>
-      <Text style={[styles.sectionTitle, { color: colors.faint }]} allowFontScaling>
-        {t("Your data")}
-      </Text>
       <Row colors={colors} label={t("Export sessions (CSV)")} onPress={onExportData} />
       {exportMessage != null ? (
         <Text style={[styles.message, { color: colors.muted }]} allowFontScaling>
@@ -412,9 +407,6 @@ export function SettingsScreen({
 
   const aboutRows = (
     <>
-      <Text style={[styles.sectionTitle, { color: colors.faint }]} allowFontScaling>
-        {t("About")}
-      </Text>
       {ABOUT_LINKS.map((link) => (
         <Row
           key={link.id}
@@ -461,9 +453,9 @@ export function SettingsScreen({
     >
       <View style={styles.header}>
         <Pressable
-          accessibilityLabel={t("Back to home")}
+          accessibilityLabel={activeSection == null ? t("Back to home") : t("Back to settings")}
           accessibilityRole="button"
-          onPress={onBack}
+          onPress={activeSection == null ? onBack : () => setActiveSection(null)}
           hitSlop={8}
           style={styles.backButton}
         >
@@ -472,7 +464,9 @@ export function SettingsScreen({
           </Text>
         </Pressable>
         <Text style={[styles.title, { color: colors.ink }]} allowFontScaling>
-          {t("Settings")}
+          {activeSection == null
+            ? t("Settings")
+            : t(RAIL.find((item) => item.id === activeSection)?.label ?? "Settings")}
         </Text>
         <View style={styles.backButton} />
       </View>
@@ -526,18 +520,49 @@ export function SettingsScreen({
             {detail}
           </ScrollView>
         </View>
-      ) : (
-        <ScrollView>
+      ) : activeSection == null ? (
+        // Phone hub: one grouped list of sections — each section's rows live
+        // behind a tap, so nothing scrolls vertically.
+        <View style={styles.hub}>
           <Text style={[styles.saveHint, { color: colors.faint }]} allowFontScaling>
             {t("Changes save as you go.")}
           </Text>
-
-          {timerRows}
-          {themeRows}
-          {plusCard}
-          {dataRows}
-          {aboutRows}
+          {RAIL.map((item) => {
+            const value =
+              item.id === "themes"
+                ? `${discName} · ${soundName}`
+                : item.id === "reminders"
+                  ? remindersSummary
+                  : item.id === "timer"
+                    ? rhythmSummary
+                    : undefined;
+            return (
+              <Row
+                key={item.id}
+                colors={colors}
+                label={t(item.label)}
+                value={value}
+                chevron
+                onPress={() => {
+                  if (item.id === "themes") {
+                    onOpenThemes();
+                  } else if (item.id === "reminders") {
+                    onOpenReminders();
+                  } else {
+                    setActiveSection(item.id);
+                  }
+                }}
+              />
+            );
+          })}
           {versionFooter}
+        </View>
+      ) : (
+        <ScrollView style={styles.detail}>
+          <Text style={[styles.saveHint, { color: colors.faint }]} allowFontScaling>
+            {t("Changes save as you go.")}
+          </Text>
+          {detail}
         </ScrollView>
       )}
 
@@ -628,6 +653,7 @@ const styles = StyleSheet.create({
   railItemText: { ...typography.body },
   railFooter: { marginTop: "auto", paddingHorizontal: spacing.md, paddingVertical: spacing.sm },
   detail: { flex: 1 },
+  hub: { flex: 1, gap: spacing.sm },
   sectionTitle: { ...typography.label, marginTop: spacing.lg, marginBottom: spacing.sm },
   row: {
     flexDirection: "row",
@@ -642,7 +668,9 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   rowLabel: { ...typography.body, flexShrink: 1 },
+  rowRight: { flexDirection: "row", alignItems: "center", gap: spacing.xs, flexShrink: 1 },
   rowValue: { ...typography.caption, flexShrink: 1 },
+  rowChevron: { fontSize: 22, lineHeight: 24 },
   stepper: { flexDirection: "row", alignItems: "center", gap: spacing.md },
   stepButton: { minWidth: 44, minHeight: 44, alignItems: "center", justifyContent: "center" },
   stepButtonText: { fontSize: 24 },

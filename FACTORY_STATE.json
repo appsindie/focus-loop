@@ -26,13 +26,13 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-10-05T06:53:00Z",
-    "round_count": 2,
+    "fired_at": "2026-10-05T09:08:49Z",
+    "round_count": 1,
     "routine": "code-review",
-    "session_url": "https://claude.ai/code/cse_011xLArCYWqmvWkzL1kwHySd",
-    "verdict": "pass"
+    "session_url": "https://claude.ai/code/cse_01SjBn8F1q8FgE6cioEr8y1G",
+    "verdict": "pending"
   },
-  "next_action": "iOS 1.0.0 build 8 on TestFlight (submission 9479e4db) — device items RR-19 re-test on internal testing; awaiting Justin: merge PR #7, gate-2 signature, AdMob interstitial cap; Android build separately confirmed",
+  "next_action": "UX polish v1 (sponsor feedback): keyboard-avoiding inputs, gear settings icon, hub-and-detail settings, expo-web-browser legal links, brand icon assets — PR stacked on #7 pending; still awaiting Justin: merge #7, gate-2 signature, AdMob cap; Android build separately confirmed",
   "open_exceptions": [
     {
       "blocking": true,
