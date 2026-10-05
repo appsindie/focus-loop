@@ -20,15 +20,14 @@ export const ADS_CONFIG = {
         android: "ca-app-pub-9324885420924703/3245505198",
         default: TestIds.INTERSTITIAL,
       }),
-  // J8 rewarded unit (RR-14): iOS provisioned 2026-10-05; Android unit still
-  // pending in the AdMob console — null makes the port report "unavailable"
-  // and the UI shows the retry copy instead of a dead button.
+  // J8 rewarded unit (RR-14): provisioned in the AdMob console 2026-10-05,
+  // both platforms.
   rewardedId: __DEV__
     ? TestIds.REWARDED
     : Platform.select({
         ios: "ca-app-pub-9324885420924703/6917716345",
-        android: null,
-        default: null,
+        android: "ca-app-pub-9324885420924703/9703661782",
+        default: TestIds.REWARDED,
       }),
   keywords: ["focus", "productivity", "adhd", "pomodoro"],
 };
