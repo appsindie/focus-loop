@@ -128,7 +128,7 @@
 
 ### RR-12. Privacy / data-safety declaration not completed
 
-- **Situation**: The app's actual data collection (local AsyncStorage, AdMob/ATT, Firebase Analytics if wired) has not been mapped to a store data-safety declaration. **Progress 2026-10-04**: mapping drafted in `docs/release/v1/STORE_DECLARATIONS.md` (Play data-safety table + ASC App Privacy + ATT note); iOS `PrivacyInfo.xcprivacy` verified auto-generated correctly.
+- **Situation**: The app's actual data collection (local AsyncStorage, AdMob/ATT, Firebase Analytics — wired 2026-10-04) has not been mapped to a store data-safety declaration. **Progress 2026-10-04**: mapping drafted in `docs/release/v1/STORE_DECLARATIONS.md` (Play data-safety table + ASC App Privacy + ATT note, both updated for the wired Firebase SDKs); iOS `PrivacyInfo.xcprivacy` verified auto-generated correctly.
 - **Options**: A — complete before Gate 3. B — complete before public store submission.
 - **Recommendation**: B for internal testing; A for public submission.
 - **Default if you say nothing**: blocks public store submission.
@@ -172,7 +172,7 @@
 
 ### RR-16. Rollout halt thresholds not wired to alerts
 
-- **Situation**: `SLO_AND_ALERTING.md` defines numeric halt thresholds per rollout stage, but they are not wired to a live alert — a breach would need manual watching of the consoles. **Progress 2026-10-04**: a concrete daily manual-check cadence is written into `SLO_AND_ALERTING.md` (option B); without an in-app crash SDK, Play Vitals + ASC Metrics + AdMob are the sources.
+- **Situation**: `SLO_AND_ALERTING.md` defines numeric halt thresholds per rollout stage, but they are not wired to a live alert — a breach would need manual watching of the consoles. **Progress 2026-10-04**: a concrete daily manual-check cadence is written into `SLO_AND_ALERTING.md` (option B); sources are Play Vitals + ASC Metrics + AdMob + the Firebase console (Crashlytics wired 2026-10-04 — email alerts can be enabled in the Firebase console as part of RR-05/RR-17).
 - **Options**: A — wire Crashlytics/Play Console alerts to the thresholds before production rollout. B — manual daily check during staged rollout (owner does it).
 - **Recommendation**: B is honest for a low-volume first release if the owner commits to the daily check; A before any paid push.
 - **Default if you say nothing**: blocks production rollout.
