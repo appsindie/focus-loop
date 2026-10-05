@@ -46,4 +46,12 @@ describe("registerFirebaseAnalytics", () => {
     expect(() => trackEvent("loop_completed", { loopId: "l1" })).not.toThrow();
     await Promise.resolve();
   });
+
+  it("swallows synchronous sink failures — unconfigured app must not break trackEvent", () => {
+    expect(registerFirebaseAnalytics()).toBe(true);
+    mockLogEvent.mockImplementationOnce(() => {
+      throw new Error("No Firebase App '[DEFAULT]' has been created");
+    });
+    expect(() => trackEvent("focus_session_completed", { plannedSeconds: 60 })).not.toThrow();
+  });
 });

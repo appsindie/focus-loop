@@ -30,11 +30,16 @@ export function registerFirebaseAnalytics(): boolean {
     const analytics = (require("@react-native-firebase/analytics") as FirebaseAnalyticsModule)
       .default;
     setEventSink((name, props) => {
-      void analytics()
-        .logEvent(name, toFirebaseParams(props))
-        .catch(() => {
-          // Analytics must never break the app (offline, quota, etc.).
-        });
+      try {
+        void analytics()
+          .logEvent(name, toFirebaseParams(props))
+          .catch(() => {
+            // Analytics must never break the app (offline, quota, etc.).
+          });
+      } catch {
+        // Synchronous failure too (e.g. default app not configured): the sink
+        // is fire-and-forget and must never propagate into a user flow.
+      }
     });
     return true;
   } catch {
