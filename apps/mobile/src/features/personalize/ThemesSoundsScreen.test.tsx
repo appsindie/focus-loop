@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, jest } from "@jest/globals";
-import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import { createAudioPlayer } from "expo-audio";
 import { palette } from "../../shared/theme";
 import type { RewardedResult } from "../ads/rewardedAd";
@@ -52,6 +52,19 @@ describe("ThemesSoundsScreen (J8 / P15)", () => {
     await fireEvent.press(getByLabelText(/Rain on a window — locked/));
     expect(jest.mocked(createAudioPlayer)).not.toHaveBeenCalled();
     expect(props.onUpgrade).toHaveBeenCalled();
+  });
+
+  it("stops the playing preview when the screen unmounts", async () => {
+    const props = makeProps();
+    const { getByLabelText, unmount } = await render(<ThemesSoundsScreen {...props} />);
+    await fireEvent.press(getByLabelText("White noise"));
+    const player = jest.mocked(createAudioPlayer).mock.results[0]?.value as {
+      remove: jest.Mock;
+    };
+    await act(async () => {
+      await unmount();
+    });
+    expect(player.remove).toHaveBeenCalledTimes(1);
   });
 
   it("opens the 24h trial card for a locked trial-tier item (J8-R1/R2)", async () => {
