@@ -1,5 +1,13 @@
 import { useMemo } from "react";
-import { Pressable, StyleSheet, Text, TextInput, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ParkedThought } from "../parkedThoughts";
 import { WeekProgress } from "../weeklyGoal";
@@ -7,6 +15,7 @@ import { LoopStep } from "../loopPlan";
 import { locale, t } from "../../../i18n";
 import { Palette, fonts, typography } from "../../../shared/theme";
 import { PrimaryButton } from "../../../shared/ui/Buttons";
+import { GearIcon } from "../../../shared/ui/GearIcon";
 import { LoopStrip } from "../ui/LoopStrip";
 import { useIsTablet, TABLET_PADDING } from "../../../shared/layout";
 
@@ -169,137 +178,139 @@ export function HomeScreen({
     <SafeAreaView
       style={[styles.root, { backgroundColor: colors.bg }, isTablet && { padding: TABLET_PADDING }]}
     >
-      <View style={styles.topRow}>
-        <Text style={[styles.date, { color: colors.muted }]}>{formatDate(now)}</Text>
-        <View style={styles.icons}>
-          <Pressable
-            onPress={onOpenWeek}
-            accessibilityRole="button"
-            accessibilityLabel={t("Open week and history")}
-            hitSlop={8}
-            style={styles.iconButton}
-          >
-            <View style={styles.chartIcon}>
-              <View style={[styles.bar, { height: 6, backgroundColor: colors.ink }]} />
-              <View style={[styles.bar, { height: 10, backgroundColor: colors.ink }]} />
-              <View style={[styles.bar, { height: 14, backgroundColor: colors.ink }]} />
-            </View>
-          </Pressable>
-          <Pressable
-            onPress={onOpenSettings}
-            accessibilityRole="button"
-            accessibilityLabel={t("Open settings")}
-            hitSlop={8}
-            style={styles.iconButton}
-          >
-            <View style={styles.slidersIcon}>
-              <View style={[styles.sliderLine, { backgroundColor: colors.ink }]} />
-              <View style={[styles.sliderDot, { backgroundColor: colors.ink, left: 4 }]} />
-              <View style={[styles.sliderLine, { backgroundColor: colors.ink }]} />
-              <View style={[styles.sliderDot, { backgroundColor: colors.ink, left: 12 }]} />
-            </View>
-          </Pressable>
+      <KeyboardAvoidingView
+        style={styles.keyboardBody}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <View style={styles.topRow}>
+          <Text style={[styles.date, { color: colors.muted }]}>{formatDate(now)}</Text>
+          <View style={styles.icons}>
+            <Pressable
+              onPress={onOpenWeek}
+              accessibilityRole="button"
+              accessibilityLabel={t("Open week and history")}
+              hitSlop={8}
+              style={styles.iconButton}
+            >
+              <View style={styles.chartIcon}>
+                <View style={[styles.bar, { height: 6, backgroundColor: colors.ink }]} />
+                <View style={[styles.bar, { height: 10, backgroundColor: colors.ink }]} />
+                <View style={[styles.bar, { height: 14, backgroundColor: colors.ink }]} />
+              </View>
+            </Pressable>
+            <Pressable
+              onPress={onOpenSettings}
+              accessibilityRole="button"
+              accessibilityLabel={t("Open settings")}
+              hitSlop={8}
+              style={styles.iconButton}
+            >
+              <GearIcon size={20} color={colors.ink} />
+            </Pressable>
+          </View>
         </View>
-      </View>
 
-      {isTablet ? (
-        // T01: left column = loop state + intention + rest-of-loop + Start;
-        // right column = today/week stats, parked thoughts, banner slot.
-        <View style={styles.columns}>
-          <View style={styles.colMain}>
+        {isTablet ? (
+          // T01: left column = loop state + intention + rest-of-loop + Start;
+          // right column = today/week stats, parked thoughts, banner slot.
+          <View style={styles.columns}>
+            <View style={styles.colMain}>
+              {hero}
+              {intentionField}
+              {loopSchedule.length > 0 ? (
+                <View style={styles.restLoop}>
+                  <Text style={[styles.restLoopTitle, { color: colors.faint }]}>
+                    {t("REST OF TODAY’S LOOP")}
+                  </Text>
+                  {loopSchedule.map((row) => (
+                    <View key={row.key} style={styles.restLoopRow}>
+                      <Text style={[styles.restLoopLabel, { color: colors.ink }]}>{row.label}</Text>
+                      <Text style={[styles.restLoopRange, { color: colors.muted }]}>
+                        {row.range}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              ) : null}
+              <View style={styles.spacer} />
+              {startButton}
+            </View>
+            <View style={styles.colSide}>
+              <View style={[styles.statsCard, { backgroundColor: colors.surface }]}>
+                <Text style={[styles.statsLine, { color: colors.ink2 }]}>
+                  {t("Today {count} focus · {minutes} min", {
+                    count: todayFocusCount,
+                    minutes: todayMinutes,
+                  })}
+                </Text>
+                <Text style={[styles.statsLine, { color: colors.ink2 }]}>
+                  {t("This week {daysMet} of {goalDays} days", {
+                    daysMet: week.daysMet,
+                    goalDays: week.goalDays,
+                  })}
+                  {week.goalMet ? t(" · goal met") : ""}
+                </Text>
+              </View>
+              {parkedList.length > 0 ? (
+                <View style={[styles.parkedCard, { backgroundColor: colors.surface }]}>
+                  <Text style={[styles.parkedLabel, { color: colors.faint }]}>
+                    {t("WAITING FROM LAST TIME")}
+                  </Text>
+                  {parkedList.map((thought) => (
+                    <Pressable
+                      key={thought.id}
+                      onPress={() => onUseParkedThought(thought)}
+                      accessibilityRole="button"
+                      accessibilityLabel={t("Use parked thought: {text}", { text: thought.text })}
+                      hitSlop={8}
+                    >
+                      <Text style={[styles.parkedText, { color: colors.ink2 }]} numberOfLines={2}>
+                        {thought.text}
+                      </Text>
+                    </Pressable>
+                  ))}
+                </View>
+              ) : null}
+              <View style={styles.spacer} />
+              {bannerSlot}
+            </View>
+          </View>
+        ) : (
+          <>
             {hero}
             {intentionField}
-            {loopSchedule.length > 0 ? (
-              <View style={styles.restLoop}>
-                <Text style={[styles.restLoopTitle, { color: colors.faint }]}>
-                  {t("REST OF TODAY’S LOOP")}
+            {parked != null ? (
+              <View style={[styles.parkedCard, { backgroundColor: colors.surface }]}>
+                <Text style={[styles.parkedLabel, { color: colors.faint }]}>
+                  {t("PARKED EARLIER")}
                 </Text>
-                {loopSchedule.map((row) => (
-                  <View key={row.key} style={styles.restLoopRow}>
-                    <Text style={[styles.restLoopLabel, { color: colors.ink }]}>{row.label}</Text>
-                    <Text style={[styles.restLoopRange, { color: colors.muted }]}>{row.range}</Text>
-                  </View>
-                ))}
+                <Text style={[styles.parkedText, { color: colors.ink2 }]} numberOfLines={2}>
+                  {parked.text}
+                </Text>
+                <Pressable
+                  onPress={() => onUseParkedThought(parked)}
+                  accessibilityRole="button"
+                  accessibilityLabel={t("Use parked thought: {text}", { text: parked.text })}
+                  hitSlop={8}
+                >
+                  <Text style={[styles.useThis, { color: colors.focusText }]}>{t("use this")}</Text>
+                </Pressable>
               </View>
             ) : null}
-            <View style={styles.spacer} />
-            {startButton}
-          </View>
-          <View style={styles.colSide}>
-            <View style={[styles.statsCard, { backgroundColor: colors.surface }]}>
-              <Text style={[styles.statsLine, { color: colors.ink2 }]}>
-                {t("Today {count} focus · {minutes} min", {
-                  count: todayFocusCount,
+            <View style={styles.summaryRow}>
+              <Text style={[styles.summary, { color: colors.muted }]}>
+                {t("Today {minutes} min · Week {daysMet} of {goalDays} days", {
                   minutes: todayMinutes,
-                })}
-              </Text>
-              <Text style={[styles.statsLine, { color: colors.ink2 }]}>
-                {t("This week {daysMet} of {goalDays} days", {
                   daysMet: week.daysMet,
                   goalDays: week.goalDays,
                 })}
-                {week.goalMet ? t(" · goal met") : ""}
+                {week.goalMet ? t(" · Goal met") : ""}
               </Text>
             </View>
-            {parkedList.length > 0 ? (
-              <View style={[styles.parkedCard, { backgroundColor: colors.surface }]}>
-                <Text style={[styles.parkedLabel, { color: colors.faint }]}>
-                  {t("WAITING FROM LAST TIME")}
-                </Text>
-                {parkedList.map((thought) => (
-                  <Pressable
-                    key={thought.id}
-                    onPress={() => onUseParkedThought(thought)}
-                    accessibilityRole="button"
-                    accessibilityLabel={t("Use parked thought: {text}", { text: thought.text })}
-                    hitSlop={8}
-                  >
-                    <Text style={[styles.parkedText, { color: colors.ink2 }]} numberOfLines={2}>
-                      {thought.text}
-                    </Text>
-                  </Pressable>
-                ))}
-              </View>
-            ) : null}
-            <View style={styles.spacer} />
-            {bannerSlot}
-          </View>
-        </View>
-      ) : (
-        <>
-          {hero}
-          {intentionField}
-          {parked != null ? (
-            <View style={[styles.parkedCard, { backgroundColor: colors.surface }]}>
-              <Text style={[styles.parkedLabel, { color: colors.faint }]}>
-                {t("PARKED EARLIER")}
-              </Text>
-              <Text style={[styles.parkedText, { color: colors.ink2 }]} numberOfLines={2}>
-                {parked.text}
-              </Text>
-              <Pressable
-                onPress={() => onUseParkedThought(parked)}
-                accessibilityRole="button"
-                accessibilityLabel={t("Use parked thought: {text}", { text: parked.text })}
-                hitSlop={8}
-              >
-                <Text style={[styles.useThis, { color: colors.focusText }]}>{t("use this")}</Text>
-              </Pressable>
-            </View>
-          ) : null}
-          <View style={styles.summaryRow}>
-            <Text style={[styles.summary, { color: colors.muted }]}>
-              {t("Today {minutes} min · Week {daysMet} of {goalDays} days", {
-                minutes: todayMinutes,
-                daysMet: week.daysMet,
-                goalDays: week.goalDays,
-              })}
-              {week.goalMet ? t(" · Goal met") : ""}
-            </Text>
-          </View>
-          {startButton}
-        </>
-      )}
+            {startButton}
+          </>
+        )}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -318,15 +329,13 @@ function loopSummaryLabel(plan: readonly LoopStep[]): string {
 
 const styles = StyleSheet.create({
   root: { flex: 1, padding: 24, gap: 18 },
+  keyboardBody: { flex: 1, gap: 18 },
   topRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   date: { ...typography.label, textTransform: "none", fontWeight: "500" },
   icons: { flexDirection: "row", gap: 8 },
   iconButton: { width: 44, height: 44, alignItems: "center", justifyContent: "center" },
   chartIcon: { flexDirection: "row", alignItems: "flex-end", gap: 3, height: 16 },
   bar: { width: 4, borderRadius: 1 },
-  slidersIcon: { width: 18, height: 14, justifyContent: "space-between" },
-  sliderLine: { height: 1.5, width: "100%" },
-  sliderDot: { position: "absolute", width: 5, height: 5, borderRadius: 2.5, top: -2 },
   columns: { flex: 1, flexDirection: "row", gap: 32 },
   colMain: { flex: 1.4, gap: 18 },
   colSide: { flex: 1, gap: 16 },

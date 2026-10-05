@@ -248,8 +248,22 @@ describe("Settings keepScreenOn (T05 row)", () => {
       onSetAllowTracking: jest.fn(),
       version: "1.0.0",
     };
+    // Phone hub: drill into the section holding the row.
     const { getByLabelText } = await render(<SettingsScreen {...props} />);
+    await fireEvent.press(getByLabelText("Timer & display"));
     await fireEvent(getByLabelText("Toggle keep screen on during focus"), "onValueChange", false);
     expect(props.onChange).toHaveBeenCalledWith({ keepScreenOn: false });
+
+    // Tablet master–detail: the row is in the preselected Timer detail pane.
+    const restore = asTablet();
+    const tabletProps = { ...props, onChange: jest.fn() };
+    const second = await render(<SettingsScreen {...tabletProps} />);
+    await fireEvent(
+      second.getByLabelText("Toggle keep screen on during focus"),
+      "onValueChange",
+      false,
+    );
+    expect(tabletProps.onChange).toHaveBeenCalledWith({ keepScreenOn: false });
+    restore();
   });
 });

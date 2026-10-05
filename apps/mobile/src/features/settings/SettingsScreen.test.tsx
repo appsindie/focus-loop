@@ -1,5 +1,6 @@
-// P20 tests: section order and rows (J10-R2), save-immediately writes
-// (J10-R3), the confirmed delete-all (J10-R4), and the ad-choices sheet.
+// P20 tests: hub lists the sections, drill-in shows each section's rows,
+// save-immediately writes (J10-R3), the confirmed delete-all (J10-R4), and
+// the ad-choices sheet (J10-R5).
 import { describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
 import { palette } from "../../shared/theme";
@@ -31,17 +32,28 @@ async function renderScreen(overrides: Record<string, unknown> = {}) {
     ...overrides,
   };
   const screen = await render(<SettingsScreen {...props} />);
-  const json = JSON.stringify(screen.toJSON());
-  const labels = [...json.matchAll(/"accessibilityLabel":"([^"]+)"/g)].map((m) => m[1]);
-  console.log(`LABELS(${labels.length}):`, labels.slice(0, 30).join("|"));
   return { screen, props };
 }
 
+// Phone layout is hub-and-detail: tap a section row first, then assert.
+async function drill(screen: Awaited<ReturnType<typeof render>>, sectionLabel: string) {
+  await fireEvent.press(screen.getByLabelText(sectionLabel));
+}
+
 describe("SettingsScreen (P20)", () => {
-  it("renders the P20 sections in canvas order (J10-R2)", async () => {
+  it("hub lists every section and drills in and back (J10-R2)", async () => {
     const { screen } = await renderScreen();
-    const { getByText } = screen;
-    // Focus section
+    const { getByText, getByLabelText, queryByText } = screen;
+    getByText("Timer & display");
+    getByText("Themes & sounds");
+    getByText("Reminders");
+    getByText("Focus Loop Plus");
+    getByText("Your data");
+    getByText("About & legal");
+    getByText("Focus Loop · Version 1.0.0");
+    expect(queryByText("Show time as")).toBeNull();
+
+    await drill(screen, "Timer & display");
     getByText("Show time as");
     getByText("Appearance");
     getByText("Rhythm");
@@ -50,32 +62,41 @@ describe("SettingsScreen (P20)", () => {
     getByText("Show seconds");
     getByText("Sound on completion");
     getByText("Vibrate at the end");
-    // Personalise + reminders
-    getByText("Themes & sounds");
-    getByText("Reminders");
-    // Data + about
-    getByText("Your data");
+
+    await fireEvent.press(getByLabelText("Back to settings"));
+    getByText("About & legal");
+
+    await drill(screen, "Your data");
     getByText("Export sessions (CSV)");
     getByText("Delete all data…");
-    getByText("About");
+
+    await fireEvent.press(getByLabelText("Back to settings"));
+    await drill(screen, "About & legal");
     getByText("Ad choices & tracking");
     getByText("Privacy Policy");
-    getByText("Focus Loop · Version 1.0.0");
   });
 
   it("shows the rhythm and reminder summaries and routes on tap", async () => {
     const { screen, props } = await renderScreen();
-    const { getByText } = screen;
-    await fireEvent.press(getByText("Rhythm"));
-    await fireEvent.press(getByText("Reminders"));
-    expect(props.onOpenRhythm).toHaveBeenCalled();
-    expect(props.onOpenReminders).toHaveBeenCalled();
+    const { getByText, getByLabelText } = screen;
     getByText("Weekdays 9:00");
+    await fireEvent.press(getByLabelText("Reminders"));
+    expect(props.onOpenReminders).toHaveBeenCalled();
+    await drill(screen, "Timer & display");
+    await fireEvent.press(getByText("Rhythm"));
+    expect(props.onOpenRhythm).toHaveBeenCalled();
+  });
+
+  it("routes Themes & sounds to its own screen", async () => {
+    const { screen, props } = await renderScreen();
+    await fireEvent.press(screen.getByLabelText("Themes & sounds"));
+    expect(props.onOpenThemes).toHaveBeenCalled();
   });
 
   it("writes the appearance choice immediately (J10-R3)", async () => {
     const { screen, props } = await renderScreen();
     const { getByLabelText } = screen;
+    await drill(screen, "Timer & display");
     await fireEvent.press(getByLabelText("Appearance: Dark", { includeHiddenElements: true }));
     expect(props.onChange).toHaveBeenCalledWith({ appearance: "dark" });
   });
@@ -83,6 +104,7 @@ describe("SettingsScreen (P20)", () => {
   it("deletes only after the confirm sheet (J10-R4)", async () => {
     const { screen, props } = await renderScreen();
     const { getByLabelText } = screen;
+    await drill(screen, "Your data");
     await fireEvent.press(getByLabelText("Delete all data…"));
     // Sheet open → confirm button visible; nothing called yet.
     expect(props.onDeleteAll).not.toHaveBeenCalled();
@@ -93,6 +115,7 @@ describe("SettingsScreen (P20)", () => {
   it("'Keep my data' dismisses the sheet without deleting", async () => {
     const { screen, props } = await renderScreen();
     const { getByLabelText, queryByLabelText } = screen;
+    await drill(screen, "Your data");
     await fireEvent.press(getByLabelText("Delete all data…"));
     await fireEvent.press(getByLabelText("Keep my data"));
     expect(props.onDeleteAll).not.toHaveBeenCalled();
@@ -102,6 +125,7 @@ describe("SettingsScreen (P20)", () => {
   it("the ad-tracking switch reports the user's choice (J10-R5)", async () => {
     const { screen, props } = await renderScreen();
     const { getByLabelText } = screen;
+    await drill(screen, "About & legal");
     await fireEvent.press(getByLabelText("Ad choices & tracking"));
     await fireEvent(getByLabelText("Toggle ad tracking"), "onValueChange", false);
     expect(props.onSetAllowTracking).toHaveBeenCalledWith(false);

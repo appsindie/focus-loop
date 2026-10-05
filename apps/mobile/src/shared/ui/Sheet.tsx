@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Modal, Pressable, StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, View } from "react-native";
 import { t } from "../../i18n";
 import { Palette, radii } from "../theme";
 
@@ -26,14 +26,17 @@ export function Sheet({
       onRequestClose={onDismiss}
       accessibilityLabel={accessibilityLabel}
     >
-      <View style={styles.wrap}>
+      <KeyboardAvoidingView
+        style={styles.wrap}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
         <Pressable
           style={[StyleSheet.absoluteFill, { backgroundColor: colors.scrim }]}
           onPress={onDismiss}
           accessibilityLabel={t("Dismiss")}
         />
         <View style={[styles.card, { backgroundColor: colors.surface }]}>{children}</View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }

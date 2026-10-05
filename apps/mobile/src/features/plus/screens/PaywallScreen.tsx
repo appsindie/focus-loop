@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, Linking, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
+import * as WebBrowser from "expo-web-browser";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
@@ -209,12 +210,12 @@ export function PaywallScreen({
           />
           <TextButton
             label={t("Terms")}
-            onPress={() => void Linking.openURL(TERMS_URL)}
+            onPress={() => void WebBrowser.openBrowserAsync(TERMS_URL)}
             colors={colors}
           />
           <TextButton
             label={t("Privacy")}
-            onPress={() => void Linking.openURL(PRIVACY_URL)}
+            onPress={() => void WebBrowser.openBrowserAsync(PRIVACY_URL)}
             colors={colors}
           />
         </View>
