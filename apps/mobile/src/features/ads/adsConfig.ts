@@ -25,10 +25,10 @@ export const ADS_CONFIG = {
   // and the UI shows the retry copy instead of a dead button.
   rewardedId: __DEV__
     ? TestIds.REWARDED
-    : (Platform.select({
+    : Platform.select({
         ios: "ca-app-pub-9324885420924703/6917716345",
         android: null,
         default: null,
-      }) as string | null),
+      }),
   keywords: ["focus", "productivity", "adhd", "pomodoro"],
 };
