@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { t } from "../../i18n";
 import { Palette, radii } from "../theme";
 
@@ -35,7 +36,9 @@ export function Sheet({
           onPress={onDismiss}
           accessibilityLabel={t("Dismiss")}
         />
-        <View style={[styles.card, { backgroundColor: colors.surface }]}>{children}</View>
+        <SafeAreaView edges={["bottom"]}>
+          <View style={[styles.card, { backgroundColor: colors.surface }]}>{children}</View>
+        </SafeAreaView>
       </KeyboardAvoidingView>
     </Modal>
   );
@@ -47,7 +50,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: radii.xl,
     borderTopRightRadius: radii.xl,
     padding: 24,
-    paddingBottom: 40,
     gap: 12,
   },
 });

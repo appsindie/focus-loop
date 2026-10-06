@@ -6,6 +6,7 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "r
 import { AdsContext, useFullScreenAds } from "@appsindie/react-native-ads";
 
 import { AppState, Linking, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { AdsProvider } from "./src/features/ads/AdsProvider";
 import { useLoopController } from "./src/features/loop/useLoopController";
 import { BreakScreen } from "./src/features/loop/screens/BreakScreen";
@@ -422,7 +423,13 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           bannerSlot={isTablet ? homeBanner : undefined}
         />
       ) : null}
-      {route === "home" && !isTablet ? homeBanner : null}
+      {route === "home" && !isTablet ? (
+        // Phone path renders the banner outside Home's SafeAreaView — it must
+        // still clear the bottom inset (home indicator / gesture bar).
+        <SafeAreaView edges={["bottom"]} style={{ backgroundColor: colors.bg }}>
+          {homeBanner}
+        </SafeAreaView>
+      ) : null}
       {route === "focus" ? (
         <FocusScreen
           colors={focusColors}
