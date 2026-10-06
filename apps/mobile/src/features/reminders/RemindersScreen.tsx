@@ -1,8 +1,22 @@
-import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
+import { useCallback, useEffect, useState } from "react";
+import {
+  AppState,
+  Linking,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from "react-native";
+import * as Notifications from "expo-notifications";
+import { PermissionStatus } from "expo-notifications";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { t } from "../../i18n";
 import { Palette, radii, spacing, typography } from "../../shared/theme";
 import { TABLET_PADDING, useIsTablet } from "../../shared/layout";
+import { requestNotificationPermissions } from "../notifications/NotificationScheduler";
+import { markNotificationsAsked } from "../notifications/notifAsk";
 import { dayChipLetters, MAX_REMINDERS, Reminder, ReminderPrefs } from "./reminderStore";
 
 // ISO Mon..Sun chip indices; letters come from CLDR via dayChipLetters().
@@ -72,6 +86,8 @@ export function RemindersScreen({ colors, prefs, onChange, onBack }: RemindersSc
     onChange({ ...prefs, reminders: prefs.reminders.filter((r) => r.id !== id) });
   };
   const addReminder = () => {
+    // New rows start enabled — same ensure-permission path as flipping a toggle.
+    ensureNotificationPermission();
     onChange({
       ...prefs,
       reminders: [
@@ -86,6 +102,57 @@ export function RemindersScreen({ colors, prefs, onChange, onBack }: RemindersSc
         },
       ],
     });
+  };
+
+  // Permission-denied nudge: scheduling silently no-ops without the OS grant
+  // (J5 failure mode in reminderScheduler), so an armed-but-blocked reminder
+  // would just never fire. The card deep-links to app Settings — iOS cannot
+  // re-ask once denied. Re-derived whenever the arming state changes: turn the
+  // last reminder off and the card goes away on its own.
+  const [showNudge, setShowNudge] = useState(false);
+  const anythingEnabled = prefs.eveningNote || prefs.reminders.some((reminder) => reminder.enabled);
+
+  const refreshNudge = useCallback(() => {
+    void Notifications.getPermissionsAsync().then(({ status }) => {
+      setShowNudge(status === PermissionStatus.DENIED && anythingEnabled);
+    });
+  }, [anythingEnabled]);
+
+  useEffect(() => {
+    refreshNudge();
+  }, [refreshNudge]);
+
+  // The nudge's whole job is to send the user to app Settings — re-check on
+  // resume so a granted permission clears it instead of leaving a stale card.
+  useEffect(() => {
+    const sub = AppState.addEventListener("change", (state) => {
+      if (state === "active") {
+        refreshNudge();
+      }
+    });
+    return () => sub.remove();
+  }, [refreshNudge]);
+
+  // Enabling a reminder is explicit intent — the right moment to fire the real
+  // OS prompt when permission was never decided (the P03 pre-prompt only shows
+  // after the first completed focus). The answer is recorded so the pre-prompt
+  // honours it instead of double-asking later. The denied path sets the nudge
+  // immediately rather than waiting for the prefs round-trip.
+  const ensureNotificationPermission = () => {
+    void (async () => {
+      const { status } = await Notifications.getPermissionsAsync();
+      if (status === PermissionStatus.GRANTED) {
+        setShowNudge(false);
+        return;
+      }
+      if (status === PermissionStatus.DENIED) {
+        setShowNudge(true);
+        return;
+      }
+      const granted = await requestNotificationPermissions();
+      void markNotificationsAsked(granted ? "allowed" : "declined");
+      setShowNudge(!granted);
+    })();
   };
 
   const isTablet = useIsTablet();
@@ -122,6 +189,30 @@ export function RemindersScreen({ colors, prefs, onChange, onBack }: RemindersSc
         <Text style={[styles.explainer, { color: colors.muted }]} allowFontScaling>
           {t("A nudge at the times you plan to focus. Tapping it starts your rhythm right away.")}
         </Text>
+
+        {showNudge ? (
+          <View
+            style={[
+              styles.card,
+              styles.nudgeCard,
+              { backgroundColor: colors.surface, borderColor: colors.rule },
+            ]}
+          >
+            <Text style={[styles.nudgeBody, { color: colors.ink }]} allowFontScaling>
+              {t("Notifications are off — reminders won't fire.")}
+            </Text>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("Open settings")}
+              onPress={() => void Linking.openSettings()}
+              hitSlop={8}
+            >
+              <Text style={[styles.nudgeLink, { color: colors.focus }]} allowFontScaling>
+                {t("Open settings")}
+              </Text>
+            </Pressable>
+          </View>
+        ) : null}
 
         {prefs.reminders.map((reminder) => (
           <View
@@ -216,7 +307,12 @@ export function RemindersScreen({ colors, prefs, onChange, onBack }: RemindersSc
                   accessibilityLabel={t("{time} reminder toggle", {
                     time: formatTime(reminder.hour, reminder.minute),
                   })}
-                  onValueChange={(enabled) => setReminder(reminder.id, { enabled })}
+                  onValueChange={(enabled) => {
+                    if (enabled) {
+                      ensureNotificationPermission();
+                    }
+                    setReminder(reminder.id, { enabled });
+                  }}
                   value={reminder.enabled}
                 />
               </View>
@@ -247,7 +343,12 @@ export function RemindersScreen({ colors, prefs, onChange, onBack }: RemindersSc
             </Text>
             <Switch
               accessibilityLabel={t("Evening goal-day note")}
-              onValueChange={(eveningNote) => onChange({ ...prefs, eveningNote })}
+              onValueChange={(eveningNote) => {
+                if (eveningNote) {
+                  ensureNotificationPermission();
+                }
+                onChange({ ...prefs, eveningNote });
+              }}
               value={prefs.eveningNote}
             />
           </View>
@@ -317,4 +418,12 @@ const styles = StyleSheet.create({
   addText: { ...typography.body, fontWeight: "600" },
   eveningBody: { ...typography.body },
   eveningRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  nudgeCard: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: spacing.md,
+  },
+  nudgeBody: { ...typography.body, flex: 1 },
+  nudgeLink: { ...typography.body, fontWeight: "600" },
 });

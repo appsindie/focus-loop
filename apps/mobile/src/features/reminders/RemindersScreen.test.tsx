@@ -1,8 +1,11 @@
 // P22 tests: reminder cards (time + day chips + toggle + remove), the
 // add-reminder row (J5-R1 cap at MAX_REMINDERS), and the evening-note card —
 // every control is save-immediately (J10-R3), so assertions land on onChange.
-import { describe, expect, it, jest } from "@jest/globals";
-import { fireEvent, render } from "@testing-library/react-native";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
+import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { Linking } from "react-native";
+import * as Notifications from "expo-notifications";
+import { PermissionStatus } from "expo-notifications";
 import { palette } from "../../shared/theme";
 import { RemindersScreen } from "./RemindersScreen";
 import { DEFAULT_REMINDER_PREFS, MAX_REMINDERS, type ReminderPrefs } from "./reminderStore";
@@ -106,5 +109,79 @@ describe("RemindersScreen (P22)", () => {
   it("still offers the add row on an empty default state", async () => {
     const { getByLabelText } = await renderScreen(DEFAULT_REMINDER_PREFS);
     getByLabelText("Add a reminder");
+  });
+});
+
+// Permission nudge: reminder scheduling silently no-ops without the OS grant,
+// so the screen surfaces a deep-link card whenever something is armed while
+// denied, and fires the real OS prompt on an explicit enable while still
+// undetermined.
+describe("RemindersScreen notification permission", () => {
+  type PermResponse = Awaited<ReturnType<typeof Notifications.getPermissionsAsync>>;
+  const PERM = (status: PermissionStatus) => ({ status }) as PermResponse;
+  const NUDGE = "Notifications are off — reminders won't fire.";
+  const getPerms = jest.mocked(Notifications.getPermissionsAsync);
+  const reqPerms = jest.mocked(Notifications.requestPermissionsAsync);
+  let openSettings: jest.SpiedFunction<typeof Linking.openSettings>;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    getPerms.mockResolvedValue(PERM(PermissionStatus.UNDETERMINED));
+    reqPerms.mockResolvedValue(PERM(PermissionStatus.GRANTED));
+    openSettings = jest.spyOn(Linking, "openSettings").mockResolvedValue(true as never);
+  });
+
+  it("shows the nudge on mount when a reminder is armed but permission is denied", async () => {
+    getPerms.mockResolvedValue(PERM(PermissionStatus.DENIED));
+    const { findByText } = await renderScreen(); // PREFS.r-1 is enabled
+    await findByText(NUDGE);
+  });
+
+  it("hides the nudge while denied when nothing is enabled", async () => {
+    getPerms.mockResolvedValue(PERM(PermissionStatus.DENIED));
+    const { queryByText } = await renderScreen({
+      reminders: [{ id: "r-1", hour: 9, minute: 0, days: [1], enabled: false }],
+      eveningNote: false,
+    });
+    await waitFor(() => expect(getPerms).toHaveBeenCalled());
+    expect(queryByText(NUDGE)).toBeNull();
+  });
+
+  it("asks the OS on an explicit enable while undetermined — granted leaves no nudge", async () => {
+    const { getByLabelText, queryByText } = await renderScreen({
+      reminders: [{ id: "r-1", hour: 9, minute: 0, days: [1], enabled: false }],
+      eveningNote: false,
+    });
+    await fireEvent(getByLabelText("9:00 reminder toggle"), "onValueChange", true);
+    await waitFor(() => expect(reqPerms).toHaveBeenCalled());
+    expect(queryByText(NUDGE)).toBeNull();
+  });
+
+  it("shows the nudge when the OS prompt comes back denied", async () => {
+    reqPerms.mockResolvedValue(PERM(PermissionStatus.DENIED));
+    const { getByLabelText, findByText } = await renderScreen({
+      reminders: [{ id: "r-1", hour: 9, minute: 0, days: [1], enabled: false }],
+      eveningNote: false,
+    });
+    await fireEvent(getByLabelText("9:00 reminder toggle"), "onValueChange", true);
+    await findByText(NUDGE);
+  });
+
+  it("shows the nudge on toggle when permission is already denied (no OS re-ask)", async () => {
+    getPerms.mockResolvedValue(PERM(PermissionStatus.DENIED));
+    const { getByLabelText, findByText } = await renderScreen({
+      reminders: [{ id: "r-1", hour: 9, minute: 0, days: [1], enabled: false }],
+      eveningNote: false,
+    });
+    await fireEvent(getByLabelText("9:00 reminder toggle"), "onValueChange", true);
+    await findByText(NUDGE);
+    expect(reqPerms).not.toHaveBeenCalled();
+  });
+
+  it("deep-links to app settings from the nudge", async () => {
+    getPerms.mockResolvedValue(PERM(PermissionStatus.DENIED));
+    const { findByLabelText } = await renderScreen();
+    await fireEvent.press(await findByLabelText("Open settings"));
+    expect(openSettings).toHaveBeenCalled();
   });
 });
