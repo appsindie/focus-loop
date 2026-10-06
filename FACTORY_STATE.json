@@ -29,13 +29,13 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-10-06T13:20:06Z",
+    "fired_at": "2026-10-06T13:59:38Z",
     "round_count": 1,
-    "routine": "code-review",
-    "session_url": "https://claude.ai/code/cse_01Cbwar26BhEWxXwRyyJmxFa",
+    "routine": "release",
+    "session_url": "https://claude.ai/code/cse_01QuomCLQQp6eY7HV3NETLjx",
     "verdict": "pending"
   },
-  "next_action": "Gate 3 release: Justin creates TestFlight beta group + runs RR-19 device items on build 8; next EAS build carries all post-build-8 polish (icon, settings, Live Activity, sound preview, reminder-permission nudge). Android AAB build separately confirmed. AdMob interstitial cap = 1/5min (his console setting).",
+  "next_action": "Gate 3 release: iOS build 9 (all post-build-8 polish incl. icon, settings, Live Activity, sound preview, free-tier fix, reminder-permission nudge) built + submitted to TestFlight (submission 0680cff4); Justin runs RR-19 device items on build 9 then promotes to App Store production (declarations in docs/release/v1/STORE_DECLARATIONS.md). Android AAB build separately confirmed. AdMob interstitial cap = 1/5min.",
   "open_exceptions": [
     {
       "blocking": true,
