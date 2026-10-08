@@ -5,7 +5,8 @@
 #   AZURE_DEVOPS_PAT=... ./scripts/migrate-ado-repo.sh <ado-repo-name> [library|app|backend]
 #
 # Requires: git, gh (authenticated with repo-creation rights in the target org),
-# and a checkout of appsindie/ai-repo-template (TEMPLATE_DIR).
+# and a checkout of appsindie/ai-repo-template (TEMPLATE_DIR). Library/consumer
+# assets resolve from a devin-skills checkout (DEVIN_SKILLS_DIR).
 set -euo pipefail
 
 ADO_ORG="${ADO_ORG:-AppsIndieCompanyLimited}"
@@ -42,18 +43,23 @@ cd "$repo"
 base=$(git symbolic-ref --short HEAD)
 git checkout -b "chore/github-migration"
 
-mkdir -p .github/workflows docs/changes docs/traceability docs/operations
-cp -r "$TEMPLATE_DIR/governance" .
+mkdir -p .github/workflows docs/changes docs/operations
+# Governance (rules, generic skills, playbooks) resolves canonically from
+# appsindie/devin-skills; only the repo-scoped .agents skeleton is seeded.
 cp -r "$TEMPLATE_DIR/.agents" .
 cp "$TEMPLATE_DIR/AGENTS.md" .
 cp "$TEMPLATE_DIR/.github/CODEOWNERS" .github/
 cp "$TEMPLATE_DIR/.github/workflows/ci.yml" .github/workflows/ci.yml
-cp "$TEMPLATE_DIR/docs/traceability/matrix.md" docs/traceability/matrix.md
 cp "$TEMPLATE_DIR/docs/changes/README.md" docs/changes/README.md
 cp "$TEMPLATE_DIR/docs/operations/DEVIN_SOFTWARE_FACTORY.md" \
    "$TEMPLATE_DIR/docs/operations/DEVELOPER_SETUP.md" docs/operations/
 
-lib_assets="$TEMPLATE_DIR/.agents/skills/engineering/assets/github"
+DEVIN_SKILLS_DIR="${DEVIN_SKILLS_DIR:-}"
+lib_assets="${DEVIN_SKILLS_DIR}/.agents/skills/engineering/assets/github"
+if [ ! -d "$lib_assets" ]; then
+  echo "clone appsindie/devin-skills and set DEVIN_SKILLS_DIR to it" >&2
+  exit 1
+fi
 case "$kind" in
   library)
     cp "$lib_assets/publish-github-packages.yml" .github/workflows/publish.yml
