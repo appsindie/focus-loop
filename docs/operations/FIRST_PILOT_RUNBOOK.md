@@ -6,7 +6,7 @@ How the first real product runs through the playbooks, end to end, with the two 
 
 - The request and its decisions are captured in one thread (Slack or issue) that the run reports back to.
 - A human sponsor (scope) and a designer (UI) are named — they own the shaping gate.
-- The playbooks are available in `.agents/playbooks/`: `!shape_from_slack`, `!build_product`, `!release_product`, `!gtm_aso`, `!grow_product`.
+- The playbooks resolve from `appsindie/devin-skills` (`.agents/playbooks/`): `!shape_from_slack`, `!build_product`, `!release_product`, `!gtm_aso`, `!grow_product`.
 
 ## Branches and PRs
 

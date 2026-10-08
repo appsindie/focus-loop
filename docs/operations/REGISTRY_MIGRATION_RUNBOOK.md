@@ -1,7 +1,7 @@
 # Registry Migration Runbook: Azure Artifacts -> GitHub Packages
 
 Executable form of the "Migration rollout checklist" in
-`.agents/skills/internal-frontend-react-and-react-native-libraries/assets/registry-and-migration.md`, annotated with what the AppsIndie cutover actually did.
+`appsindie/devin-skills` → `.agents/skills/engineering/assets/registry-and-migration.md`, annotated with what the AppsIndie cutover actually did.
 
 Scope: the `@appsindie/*` libraries. Package names and semver do **not** change; only the registry host does. Azure stays the backend runtime target and is not otherwise affected.
 
@@ -63,7 +63,7 @@ Notes:
 Old lockfiles hold Azure tarball URLs and Azure integrity hashes, so `npm ci` keeps hitting Azure until the lockfile is rebuilt. Regenerate with the pins from step 3 so resolved versions do not drift:
 
 ```bash
-cp .agents/skills/internal-frontend-react-and-react-native-libraries/assets/github/npmrc-consumer.example .npmrc
+cp <devin-skills>/.agents/skills/engineering/assets/github/npmrc-consumer.example .npmrc
 export NODE_AUTH_TOKEN=<PAT with read:packages>
 
 rm -f package-lock.json

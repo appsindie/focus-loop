@@ -1,7 +1,8 @@
 # Devin Software Factory — how this repository is operated
 
-Generic skills, knowledge notes and playbooks live in `appsindie/devin-skills` and are
-copied here at bootstrap. This document is the local map, not a second copy of policy.
+Generic skills, rules and playbooks live in `appsindie/devin-skills` and resolve
+canonically from the plugin at session time — they are never vendored into this repo.
+This document is the local map, not a second copy of policy.
 
 ## Operating principle
 
@@ -13,8 +14,8 @@ copied here at bootstrap. This document is the local map, not a second copy of p
 - **Position is a file, not a conversation.** `FACTORY_STATE.json` records the phase,
   each gate's status, the open PR, the last review verdict and any open exceptions.
   Read it first; if `hold` is true, stop.
-- `AGENTS.md` is the entry point for repo-specific machine policy. Where a copied
-  canonical file and `appsindie/devin-skills` disagree, the canonical corpus wins.
+- `AGENTS.md` is the entry point for repo-specific machine policy. Repo overrides
+  win for this repository; everything else resolves from `appsindie/devin-skills`.
 
 ## Policy mapping
 
