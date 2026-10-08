@@ -53,7 +53,7 @@ cp "$TEMPLATE_DIR/docs/changes/README.md" docs/changes/README.md
 cp "$TEMPLATE_DIR/docs/operations/DEVIN_SOFTWARE_FACTORY.md" \
    "$TEMPLATE_DIR/docs/operations/DEVELOPER_SETUP.md" docs/operations/
 
-lib_assets="$TEMPLATE_DIR/.agents/skills/internal-frontend-react-and-react-native-libraries/assets/github"
+lib_assets="$TEMPLATE_DIR/.agents/skills/engineering/assets/github"
 case "$kind" in
   library)
     cp "$lib_assets/publish-github-packages.yml" .github/workflows/publish.yml

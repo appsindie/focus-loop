@@ -54,6 +54,8 @@
             "pass",
             "rework",
             "APPROVE",
+            "APPROVE WITH COMMENTS",
+            "APPROVE WITH CONCERNS",
             "APPROVE WITH CORRECTIONS",
             "RESEARCH REQUIRED",
             "REJECT",

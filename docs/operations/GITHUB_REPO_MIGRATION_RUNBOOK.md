@@ -63,13 +63,13 @@ Do not move existing source files to fit the template layout in the migration PR
 ## Step 3 — CI and (for libraries) publish
 
 ```bash
-cp .agents/skills/devops-terraform-azure-delivery/assets/github/ci-light.yml .github/workflows/ci.yml
+cp <devin-skills>/.agents/skills/release/assets/github/ci-light.yml .github/workflows/ci.yml
 # library repos only:
-cp .agents/skills/internal-frontend-react-and-react-native-libraries/assets/github/publish-github-packages.yml \
+cp <devin-skills>/.agents/skills/engineering/assets/github/publish-github-packages.yml \
    .github/workflows/publish.yml
-cp .agents/skills/internal-frontend-react-and-react-native-libraries/assets/github/npmrc-library.example .npmrc
+cp <devin-skills>/.agents/skills/engineering/assets/github/npmrc-library.example .npmrc
 # consumer apps only:
-cp .agents/skills/internal-frontend-react-and-react-native-libraries/assets/github/npmrc-consumer.example .npmrc
+cp <devin-skills>/.agents/skills/engineering/assets/github/npmrc-consumer.example .npmrc
 ```
 
 Adapt per repo:
