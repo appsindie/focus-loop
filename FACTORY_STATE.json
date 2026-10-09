@@ -35,7 +35,7 @@
     "session_url": "https://claude.ai/code/cse_01SVJ43eRMVhCtuzBckz2g5N",
     "verdict": "pending"
   },
-  "next_action": "PR #16 (RNGMA 17.2 fix) under review; Android build 7f46a07c running on EAS to verify Gradle fix; submit internal on pass.",
+  "next_action": "Android AAB vc4 submitted to Play internal track (RNGMA 17.2 fix verified by green EAS build); PR #16 under review; iOS build 10 on sponsor go-ahead.",
   "open_exceptions": [
     {
       "blocking": true,
