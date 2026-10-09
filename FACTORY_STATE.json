@@ -29,13 +29,13 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-10-06T16:11:00Z",
+    "fired_at": "2026-10-09T15:05:26Z",
     "round_count": 1,
     "routine": "code-review",
-    "session_url": "https://claude.ai/code/cse_012rDprof7Ubwe26xPqzAVb4",
+    "session_url": "https://claude.ai/code/cse_01WFzcJoaFKKKD5teFJ7oABv",
     "verdict": "pending"
   },
-  "next_action": "Gate 3 release: iOS build 9 on TestFlight carries all polish; PR #13 fixes home banner bottom safe-area overlap — next build (10) carries it. Justin runs RR-19 device items then promotes to App Store production (declarations in docs/release/v1/STORE_DECLARATIONS.md). Android AAB build separately confirmed. AdMob interstitial cap = 1/5min.",
+  "next_action": "Batch-4 UX PR #15 under review; iOS build 10 on sponsor go-ahead carries it + PR #13 safe-area fix.",
   "open_exceptions": [
     {
       "blocking": true,
