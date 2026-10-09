@@ -183,11 +183,11 @@
       "ar": "./src/i18n/native/ar.strings.json",
       "hi": "./src/i18n/native/hi.strings.json"
     },
-    "owner": "appsindie",
-    "react-native-google-mobile-ads": {
-      "android_app_id": "ca-app-pub-9324885420924703~9653900797",
-      "ios_app_id": "ca-app-pub-9324885420924703~3266907687",
-      "android_sdk": "classic"
-    }
+    "owner": "appsindie"
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-9324885420924703~9653900797",
+    "ios_app_id": "ca-app-pub-9324885420924703~3266907687",
+    "android_sdk": "classic"
   }
 }
