@@ -117,4 +117,24 @@ describe("previewFocusSound (picker tap-to-hear)", () => {
     expect(session.pause).toHaveBeenCalledTimes(1);
     expect(session.remove).not.toHaveBeenCalled();
   });
+
+  it("defers a session-sound start issued mid-preview instead of layering", () => {
+    previewFocusSound("white-noise");
+    const previewPlayer = lastPlayer;
+    create.mockClear();
+    startFocusSound("brown-noise"); // controller re-render while preview runs
+    expect(create).not.toHaveBeenCalled();
+    stopSoundPreview();
+    expect(create).toHaveBeenCalledTimes(1);
+    expect(previewPlayer.remove).toHaveBeenCalledTimes(1);
+  });
+
+  it("resumes the paused session sound when the preview ends", () => {
+    startFocusSound("white-noise");
+    const session = lastPlayer;
+    previewFocusSound("brown-noise");
+    session.play.mockClear();
+    stopSoundPreview();
+    expect(session.play).toHaveBeenCalledTimes(1);
+  });
 });

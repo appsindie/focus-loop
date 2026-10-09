@@ -166,7 +166,7 @@ export function ThemesSoundsScreen({
           accessibilityRole="button"
           onPress={onBack}
           hitSlop={8}
-          style={styles.backButton}
+          style={({ pressed }) => [styles.backButton, pressed && { opacity: 0.55 }]}
         >
           <Text style={[styles.backButtonText, { color: colors.ink }]} allowFontScaling>
             {t("Back")}

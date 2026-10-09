@@ -30,7 +30,11 @@ export function PrimaryButton({
       accessibilityLabel={accessibilityLabel ?? label}
       style={({ pressed }) => [
         styles.primary,
-        { backgroundColor: fill, opacity: pressed ? 0.85 : 1 },
+        {
+          backgroundColor: fill,
+          opacity: pressed ? 0.75 : 1,
+          transform: [{ scale: pressed ? 0.97 : 1 }],
+        },
       ]}
     >
       <Text style={[styles.primaryLabel, { color: text }]}>{label}</Text>
@@ -61,7 +65,8 @@ export function SecondaryButton({
         styles.secondary,
         {
           borderColor: strong ? colors.ink : colors.rule,
-          opacity: pressed ? 0.7 : 1,
+          opacity: pressed ? 0.5 : 1,
+          transform: [{ scale: pressed ? 0.98 : 1 }],
         },
       ]}
     >
@@ -86,7 +91,7 @@ export function TextButton({
       accessibilityLabel={label}
       hitSlop={8}
       style={({ pressed }) => ({
-        opacity: pressed ? 0.6 : 1,
+        opacity: pressed ? 0.4 : 1,
         minHeight: 44,
         justifyContent: "center",
       })}
@@ -113,7 +118,11 @@ export function DisplayToggle({
         accessibilityRole="button"
         accessibilityLabel={t("Show time as a disc")}
         accessibilityState={{ selected: mode === "disc" }}
-        style={[styles.segment, mode === "disc" && { backgroundColor: colors.chip }]}
+        style={({ pressed }) => [
+          styles.segment,
+          mode === "disc" && { backgroundColor: colors.chip },
+          pressed && { opacity: 0.55 },
+        ]}
       >
         <View
           style={[styles.discGlyph, { borderColor: mode === "disc" ? colors.ink : colors.muted }]}
@@ -124,7 +133,11 @@ export function DisplayToggle({
         accessibilityRole="button"
         accessibilityLabel={t("Show time as numbers")}
         accessibilityState={{ selected: mode === "numbers" }}
-        style={[styles.segment, mode === "numbers" && { backgroundColor: colors.chip }]}
+        style={({ pressed }) => [
+          styles.segment,
+          mode === "numbers" && { backgroundColor: colors.chip },
+          pressed && { opacity: 0.55 },
+        ]}
       >
         <Text
           style={[styles.segmentLabel, { color: mode === "numbers" ? colors.ink : colors.muted }]}

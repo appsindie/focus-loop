@@ -32,9 +32,13 @@ describe("catalogue (J8 / P15)", () => {
     }
   });
 
-  it("keeps 'Rain on a window' Plus-only with no trial (spec J8-R4)", () => {
+  it("keeps ambient sounds Plus-only with no trial (spec J8-R4)", () => {
     expect(catalogueItem("rain-on-window")?.tier).toBe("plus");
-    expect(CATALOGUE.filter((i) => i.tier === "plus").map((i) => i.id)).toEqual(["rain-on-window"]);
+    expect(catalogueItem("ocean-waves")?.tier).toBe("plus");
+    expect(CATALOGUE.filter((i) => i.tier === "plus").map((i) => i.id)).toEqual([
+      "rain-on-window",
+      "ocean-waves",
+    ]);
   });
 
   it("normalizes unknown or legacy ids to the free defaults", () => {

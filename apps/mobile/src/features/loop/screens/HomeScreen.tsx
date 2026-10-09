@@ -121,7 +121,7 @@ export function HomeScreen({
   const hero = isNewWeek ? (
     <View style={styles.hero}>
       <Text style={[styles.headline, { color: colors.ink }]}>{t("A new week.")}</Text>
-      <Text style={[styles.sub, { color: colors.muted }]}>
+      <Text style={[styles.sub, { color: colors.ink2 }]}>
         {t("Any {goalDays} of 7 days counts.", { goalDays: week.goalDays })}{" "}
         <Text onPress={onOpenSettings} style={{ color: colors.ink2 }}>
           {t("change")}
@@ -141,7 +141,7 @@ export function HomeScreen({
       <Text style={[styles.headline, { color: colors.ink }]}>
         {t("Focus {n} of {total}", { n: focusNumber, total: totalFocus })}
       </Text>
-      <Text style={[styles.sub, { color: colors.muted }]}>
+      <Text style={[styles.sub, { color: colors.ink2 }]}>
         {loopSummaryLabel(plan)} · {t("Loop ends {endsAt}", { endsAt: formatClock(loopEndsAtMs) })}{" "}
         <Text onPress={onOpenSettings} style={{ color: colors.ink2 }}>
           {t("change")}
@@ -158,7 +158,7 @@ export function HomeScreen({
       placeholder={t("What will you work on?")}
       placeholderTextColor={colors.faint}
       accessibilityLabel={t("Intention for this focus (optional)")}
-      style={[styles.intention, { color: colors.ink, borderBottomColor: colors.rule }]}
+      style={[styles.intention, { color: colors.ink, backgroundColor: colors.surface }]}
     />
   );
 
@@ -190,7 +190,7 @@ export function HomeScreen({
               accessibilityRole="button"
               accessibilityLabel={t("Open week and history")}
               hitSlop={8}
-              style={styles.iconButton}
+              style={({ pressed }) => [styles.iconButton, pressed && { opacity: 0.55 }]}
             >
               <View style={styles.chartIcon}>
                 <View style={[styles.bar, { height: 6, backgroundColor: colors.ink }]} />
@@ -203,7 +203,7 @@ export function HomeScreen({
               accessibilityRole="button"
               accessibilityLabel={t("Open settings")}
               hitSlop={8}
-              style={styles.iconButton}
+              style={({ pressed }) => [styles.iconButton, pressed && { opacity: 0.55 }]}
             >
               <GearIcon size={20} color={colors.ink} />
             </Pressable>
@@ -328,7 +328,9 @@ function loopSummaryLabel(plan: readonly LoopStep[]): string {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, padding: 24, gap: 18 },
+  // Top flush to the safe-area edge like the detail screens (Settings et al.)
+  // — the all-sides padding pushed the top row lower than everywhere else.
+  root: { flex: 1, paddingHorizontal: 24, paddingBottom: 24, gap: 18 },
   keyboardBody: { flex: 1, gap: 18 },
   topRow: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   date: { ...typography.label, textTransform: "none", fontWeight: "500" },
@@ -345,11 +347,14 @@ const styles = StyleSheet.create({
   sub: { ...typography.body },
   goalStrip: { flexDirection: "row", gap: 6 },
   goalCell: { flex: 1, height: 8, borderRadius: 4 },
+  // Field, not a line of text: a soft surface card makes the tap target
+  // readable — the bare underline blended into the loop strip above it.
   intention: {
     ...typography.userWords,
     fontFamily: fonts.userWords,
-    borderBottomWidth: 1,
-    paddingVertical: 10,
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   restLoop: { gap: 4, marginTop: 4 },
   restLoopTitle: { ...typography.caption, fontWeight: "600", letterSpacing: 1, marginBottom: 4 },

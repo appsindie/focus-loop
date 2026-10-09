@@ -32,7 +32,11 @@ export function Sheet({
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <Pressable
-          style={[StyleSheet.absoluteFill, { backgroundColor: colors.scrim }]}
+          style={({ pressed }) => [
+            StyleSheet.absoluteFill,
+            { backgroundColor: colors.scrim },
+            pressed && { opacity: 0.55 },
+          ]}
           onPress={onDismiss}
           accessibilityLabel={t("Dismiss")}
         />

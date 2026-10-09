@@ -113,7 +113,7 @@ export function PaywallScreen({
           accessibilityRole="button"
           onPress={onClose}
           hitSlop={8}
-          style={styles.closeButton}
+          style={({ pressed }) => [styles.closeButton, pressed && { opacity: 0.55 }]}
         >
           <Text style={[styles.closeText, { color: colors.muted }]}>×</Text>
         </Pressable>
@@ -153,13 +153,14 @@ export function PaywallScreen({
                   accessibilityLabel={`${product.title} ${product.priceText}`}
                   accessibilityState={{ selected }}
                   onPress={() => setPlan(product.plan)}
-                  style={[
+                  style={({ pressed }) => [
                     styles.planCard,
                     {
                       borderColor: selected ? colors.focus : colors.rule,
                       backgroundColor: colors.surface,
                     },
                     selected && { backgroundColor: colors.chip },
+                    pressed && { opacity: 0.55 },
                   ]}
                 >
                   <Text style={[styles.planName, { color: colors.ink }]} allowFontScaling>

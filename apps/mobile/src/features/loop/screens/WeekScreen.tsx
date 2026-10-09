@@ -59,7 +59,7 @@ export function WeekScreen({
           accessibilityLabel={t("Back to home")}
           onPress={onBack}
           hitSlop={8}
-          style={styles.back}
+          style={({ pressed }) => [styles.back, pressed && { opacity: 0.55 }]}
         >
           <Text style={[styles.backText, { color: colors.ink }]}>{t("Back")}</Text>
         </Pressable>
@@ -76,7 +76,7 @@ export function WeekScreen({
 
 const styles = StyleSheet.create({
   root: { flex: 1, paddingHorizontal: 24 },
-  header: { flexDirection: "row", alignItems: "center", marginBottom: 8 },
+  header: { flexDirection: "row", alignItems: "center", marginBottom: 16 },
   back: { width: 48, minHeight: 44, justifyContent: "center" },
   backText: { ...typography.body },
   title: { ...typography.title, flex: 1, textAlign: "center" },

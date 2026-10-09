@@ -59,7 +59,7 @@ export function HistoryScreen({
           accessibilityLabel={t("Back to home")}
           onPress={onBack}
           hitSlop={8}
-          style={styles.back}
+          style={({ pressed }) => [styles.back, pressed && { opacity: 0.55 }]}
         >
           <Text style={[styles.backText, { color: colors.ink }]}>{t("Back")}</Text>
         </Pressable>
@@ -69,7 +69,7 @@ export function HistoryScreen({
           accessibilityLabel={t("Share my week")}
           onPress={onShare}
           hitSlop={8}
-          style={styles.back}
+          style={({ pressed }) => [styles.back, pressed && { opacity: 0.55 }]}
         >
           <Text style={[styles.shareLink, { color: colors.focusText }]}>{t("Share")}</Text>
         </Pressable>
@@ -85,7 +85,9 @@ export function HistoryScreen({
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, padding: 24 },
+  // Same chrome as WeekScreen — paddingHorizontal-only keeps the title at the
+  // same Y as every other detail screen (padded top caused the tab "jump").
+  root: { flex: 1, paddingHorizontal: 24, paddingBottom: 24 },
   header: { flexDirection: "row", alignItems: "center", marginBottom: 16 },
   back: { width: 48, minHeight: 44, justifyContent: "center" },
   backText: { ...typography.body },

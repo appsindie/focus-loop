@@ -24,7 +24,9 @@ export function LoopStrip({
       {steps.map((step, i) => {
         const isDone = i < currentIndex;
         const isCurrent = i === currentIndex;
-        const base = step.kind === "focus" ? colors.track : colors.trackBreak;
+        // Pending focus segments carry a soft focus tint so the at-rest strip
+        // reads as a plan (orange-focus / green-break), not a grey rule.
+        const base = step.kind === "focus" ? colors.trackFocus : colors.trackBreak;
         const fill = step.kind === "focus" ? colors.focus : colors.break;
         const width = `${Math.max(2, (step.durationSeconds / total) * 100)}%` as const;
         return (

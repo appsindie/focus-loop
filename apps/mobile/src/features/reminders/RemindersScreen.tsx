@@ -55,7 +55,11 @@ function MiniStepper({
         accessibilityRole="button"
         accessibilityLabel={t("Decrease {label}", { label: accessibilityLabel })}
         hitSlop={8}
-        style={[styles.miniStepButton, { borderColor: colors.rule }]}
+        style={({ pressed }) => [
+          styles.miniStepButton,
+          { borderColor: colors.rule },
+          pressed && { opacity: 0.55 },
+        ]}
       >
         <Text style={[styles.miniStepText, { color: colors.ink }]}>−</Text>
       </Pressable>
@@ -64,7 +68,11 @@ function MiniStepper({
         accessibilityRole="button"
         accessibilityLabel={t("Increase {label}", { label: accessibilityLabel })}
         hitSlop={8}
-        style={[styles.miniStepButton, { borderColor: colors.rule }]}
+        style={({ pressed }) => [
+          styles.miniStepButton,
+          { borderColor: colors.rule },
+          pressed && { opacity: 0.55 },
+        ]}
       >
         <Text style={[styles.miniStepText, { color: colors.ink }]}>+</Text>
       </Pressable>
@@ -171,7 +179,7 @@ export function RemindersScreen({ colors, prefs, onChange, onBack }: RemindersSc
           accessibilityRole="button"
           onPress={onBack}
           hitSlop={8}
-          style={styles.backButton}
+          style={({ pressed }) => [styles.backButton, pressed && { opacity: 0.55 }]}
         >
           <Text style={[styles.backButtonText, { color: colors.ink }]} allowFontScaling>
             {t("Back")}
@@ -271,10 +279,11 @@ export function RemindersScreen({ colors, prefs, onChange, onBack }: RemindersSc
                       day: isoDay,
                     })}
                     accessibilityState={{ selected: active }}
-                    style={[
+                    style={({ pressed }) => [
                       styles.chip,
                       { borderColor: colors.rule },
                       active && { backgroundColor: colors.chip, borderColor: colors.chip },
+                      pressed && { opacity: 0.55 },
                     ]}
                   >
                     <Text style={[styles.chipText, { color: active ? colors.ink : colors.faint }]}>
@@ -325,7 +334,11 @@ export function RemindersScreen({ colors, prefs, onChange, onBack }: RemindersSc
             accessibilityRole="button"
             accessibilityLabel={t("Add a reminder")}
             onPress={addReminder}
-            style={[styles.addRow, { borderColor: colors.rule }]}
+            style={({ pressed }) => [
+              styles.addRow,
+              { borderColor: colors.rule },
+              pressed && { opacity: 0.55 },
+            ]}
           >
             <Text style={[styles.addText, { color: colors.focus }]} allowFontScaling>
               {t("Add a reminder")}

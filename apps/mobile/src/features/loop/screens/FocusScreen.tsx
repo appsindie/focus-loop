@@ -214,7 +214,7 @@ export function FocusScreen({
         accessibilityRole="button"
         accessibilityLabel={t("Park a thought for later — the timer keeps running")}
         hitSlop={8}
-        style={styles.laterLink}
+        style={({ pressed }) => [styles.laterLink, pressed && { opacity: 0.55 }]}
       >
         <Text style={[styles.laterText, { color: colors.muted }]}>{t("Later, not now…")}</Text>
       </Pressable>
