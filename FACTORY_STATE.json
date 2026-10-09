@@ -205,8 +205,7 @@
     {
       "blocking": false,
       "deadline": "2026-10-12",
-      "default_if_silent": "human reviews PR #16 manually",
-      "fired_at": "2026-10-09T17:01:41Z",
+      "default_if_silent": "block",
       "gate": 3,
       "id": "EX-AI-REVIEW-TIMEOUT",
       "owner": "human",
