@@ -1,5 +1,7 @@
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from "expo-audio";
 import brownNoise from "../../../assets/sounds/brown-noise.wav";
+import deepCalm from "../../../assets/sounds/deep-calm.wav";
+import oceanWaves from "../../../assets/sounds/ocean-waves.wav";
 import rainOnWindow from "../../../assets/sounds/rain-on-window.wav";
 import whiteNoise from "../../../assets/sounds/white-noise.wav";
 
@@ -10,7 +12,9 @@ import whiteNoise from "../../../assets/sounds/white-noise.wav";
 const SOURCES: Record<string, number> = {
   "white-noise": whiteNoise,
   "brown-noise": brownNoise,
+  "deep-calm": deepCalm,
   "rain-on-window": rainOnWindow,
+  "ocean-waves": oceanWaves,
 };
 
 let current: { id: string; player: AudioPlayer } | null = null;
@@ -37,9 +41,17 @@ function ensureAudioMode(): void {
   }
 }
 
+// While a preview is playing, a session-sound start is deferred instead of
+// playing underneath it — that layering is the "sounds stack up" bug.
+let pendingFocusSound: string | null = null;
+
 // Idempotent: restarting the same id resumes it; switching ids rebuilds.
 // The controller calls this on every focus-running render.
 export function startFocusSound(id: string): void {
+  if (preview != null) {
+    pendingFocusSound = id;
+    return;
+  }
   if (current != null && current.id === id) {
     try {
       current.player.play();
@@ -75,7 +87,7 @@ export function pauseFocusSound(): void {
 // Picker preview: tapping an unlocked sound row plays a short sample so the
 // user hears what they picked before the next focus session. Uses its own
 // player — never touches `current` — except pausing a live session sound so
-// the two don't double up; the controller's render loop resumes it.
+// the two don't double up; stopSoundPreview hands playback back explicitly.
 const PREVIEW_MS = 4000;
 let preview: { player: AudioPlayer; timer: ReturnType<typeof setTimeout> } | null = null;
 
@@ -90,6 +102,20 @@ export function stopSoundPreview(): void {
     // best-effort
   }
   preview = null;
+  // Explicit hand-back: start whatever the controller asked for during the
+  // preview, else resume the session sound we paused — no reliance on the
+  // controller's render loop firing again.
+  if (pendingFocusSound != null) {
+    const next = pendingFocusSound;
+    pendingFocusSound = null;
+    startFocusSound(next);
+  } else if (current != null) {
+    try {
+      current.player.play();
+    } catch {
+      // best-effort
+    }
+  }
 }
 
 export function previewFocusSound(id: string): void {
@@ -111,6 +137,7 @@ export function previewFocusSound(id: string): void {
 }
 
 export function stopFocusSound(): void {
+  pendingFocusSound = null;
   try {
     current?.player.remove();
   } catch {

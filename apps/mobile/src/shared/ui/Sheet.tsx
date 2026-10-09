@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import { KeyboardAvoidingView, Modal, Platform, Pressable, StyleSheet, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../shared/ui/SafeAreaView";
 import { t } from "../../i18n";
 import { Palette, radii } from "../theme";
 
@@ -32,7 +32,11 @@ export function Sheet({
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
         <Pressable
-          style={[StyleSheet.absoluteFill, { backgroundColor: colors.scrim }]}
+          style={({ pressed }) => [
+            StyleSheet.absoluteFill,
+            { backgroundColor: colors.scrim },
+            pressed && { opacity: 0.55 },
+          ]}
           onPress={onDismiss}
           accessibilityLabel={t("Dismiss")}
         />

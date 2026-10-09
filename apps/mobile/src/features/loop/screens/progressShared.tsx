@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { FocusSession } from "../SessionLog";
 import { WeekProgress } from "../weeklyGoal";
 import { WeekTotals, computeWeekTotals, weekInsight, weekdayLabels } from "../weekStats";
@@ -176,7 +176,11 @@ export function WeekCard({
         accessibilityRole="button"
         accessibilityLabel={t("Share my week")}
         onPress={onShare}
-        style={[styles.shareButton, { backgroundColor: colors.ink }]}
+        style={({ pressed }) => [
+          styles.shareButton,
+          { backgroundColor: colors.ink },
+          pressed && { opacity: 0.55 },
+        ]}
       >
         <Text style={[styles.shareText, { color: colors.onPrimary }]}>{t("Share my week")}</Text>
       </Pressable>
@@ -221,7 +225,7 @@ export function TabletProgressBody({
           accessibilityLabel={t("Back to home")}
           onPress={onBack}
           hitSlop={8}
-          style={styles.back}
+          style={({ pressed }) => [styles.back, pressed && { opacity: 0.55 }]}
         >
           <Text style={[styles.backText, { color: colors.ink }]}>{t("Back")}</Text>
         </Pressable>

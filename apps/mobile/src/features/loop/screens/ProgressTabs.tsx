@@ -23,11 +23,12 @@ export function ProgressTabs({
         accessibilityState={{ selected }}
         accessibilityLabel={t("{label} tab", { label })}
         onPress={onPress}
-        style={[
+        style={({ pressed }) => [
           styles.tab,
           {
             backgroundColor: selected ? colors.ink : "transparent",
           },
+          pressed && { opacity: 0.55 },
         ]}
       >
         <Text style={[styles.tabText, { color: selected ? colors.onPrimary : colors.muted }]}>

@@ -6,7 +6,7 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "r
 import { AdsContext, useFullScreenAds } from "@appsindie/react-native-ads";
 
 import { AppState, Linking, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "./src/shared/ui/SafeAreaView";
 import { AdsProvider } from "./src/features/ads/AdsProvider";
 import { useLoopController } from "./src/features/loop/useLoopController";
 import { BreakScreen } from "./src/features/loop/screens/BreakScreen";
@@ -276,8 +276,14 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
   // prefs change, a logged session (today's evening note may be due off), and
   // every return to foreground. Permission-denied is a silent no-op inside.
   const [reminderPrefs, setReminderPrefs] = useState<ReminderPrefs>(DEFAULT_REMINDER_PREFS);
+  // Gate the screen on the real prefs — rendering the defaults first and
+  // flipping toggles a frame later is the "flash" users see on open.
+  const [reminderPrefsLoaded, setReminderPrefsLoaded] = useState(false);
   useEffect(() => {
-    void loadReminderPrefs().then(setReminderPrefs);
+    void loadReminderPrefs().then((prefs) => {
+      setReminderPrefs(prefs);
+      setReminderPrefsLoaded(true);
+    });
   }, []);
   const persistReminders = useCallback(async (prefs: ReminderPrefs) => {
     setReminderPrefs(prefs);
@@ -610,12 +616,16 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
         />
       ) : null}
       {route === "reminders" ? (
-        <RemindersScreen
-          colors={colors}
-          prefs={reminderPrefs}
-          onChange={(prefs) => void persistReminders(prefs)}
-          onBack={() => go("settings")}
-        />
+        reminderPrefsLoaded ? (
+          <RemindersScreen
+            colors={colors}
+            prefs={reminderPrefs}
+            onChange={(prefs) => void persistReminders(prefs)}
+            onBack={() => go("settings")}
+          />
+        ) : (
+          <SafeAreaView style={[styles.splash, { backgroundColor: colors.bg }]} />
+        )
       ) : null}
       <NotifAskSheet
         visible={notifAskOpen}

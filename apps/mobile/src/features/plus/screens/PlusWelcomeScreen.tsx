@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
 import { PrimaryButton } from "../../../shared/ui/Buttons";

@@ -30,7 +30,9 @@ export const FOCUS_SOUNDS: CatalogueItem[] = [
   { id: "silence", kind: "focus-sound", name: "Silence", tier: "free" },
   { id: "white-noise", kind: "focus-sound", name: "White noise", tier: "free" },
   { id: "brown-noise", kind: "focus-sound", name: "Brown noise", tier: "free" },
+  { id: "deep-calm", kind: "focus-sound", name: "Deep calm", tier: "free" },
   { id: "rain-on-window", kind: "focus-sound", name: "Rain on a window", tier: "plus" },
+  { id: "ocean-waves", kind: "focus-sound", name: "Ocean waves", tier: "plus" },
 ];
 
 export const CATALOGUE: CatalogueItem[] = [...DISC_COLORS, ...FOCUS_SOUNDS];

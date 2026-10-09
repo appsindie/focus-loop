@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Switch, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { captureRef } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
 import { FocusSession } from "../SessionLog";
@@ -167,7 +167,7 @@ export function ShareScreen({
           accessibilityLabel={t("Back")}
           onPress={onBack}
           hitSlop={8}
-          style={styles.back}
+          style={({ pressed }) => [styles.back, pressed && { opacity: 0.55 }]}
         >
           <Text style={[styles.backText, { color: colors.ink }]}>{t("Back")}</Text>
         </Pressable>
@@ -199,12 +199,13 @@ export function ShareScreen({
               accessibilityState={{ selected }}
               accessibilityLabel={t("Card style {name}", { name: t(STYLE_LABELS[name]) })}
               onPress={() => setCardStyle(name)}
-              style={[
+              style={({ pressed }) => [
                 styles.styleChip,
                 {
                   borderColor: selected ? colors.ink : colors.rule,
                   backgroundColor: CARD_STYLES[name].bg,
                 },
+                pressed && { opacity: 0.55 },
               ]}
             >
               <Text style={[styles.styleChipText, { color: CARD_STYLES[name].ink }]}>
@@ -231,7 +232,11 @@ export function ShareScreen({
         accessibilityRole="button"
         accessibilityLabel={t("Share image")}
         onPress={() => void shareImage()}
-        style={[styles.shareButton, { backgroundColor: colors.ink, opacity: sharing ? 0.6 : 1 }]}
+        style={({ pressed }) => [
+          styles.shareButton,
+          { backgroundColor: colors.ink, opacity: sharing ? 0.6 : 1 },
+          pressed && { opacity: 0.55 },
+        ]}
       >
         {sharing ? (
           <ActivityIndicator color={colors.onPrimary} />

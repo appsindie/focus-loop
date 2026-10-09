@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../shared/ui/SafeAreaView";
 import { t } from "../../i18n";
 import { Palette, radii, spacing, typography } from "../../shared/theme";
 import { TABLET_PADDING, useIsTablet } from "../../shared/layout";
@@ -94,7 +94,7 @@ function Stepper({
         accessibilityRole="button"
         accessibilityLabel={t("Decrease {label}", { label: accessibilityLabel })}
         hitSlop={8}
-        style={styles.stepButton}
+        style={({ pressed }) => [styles.stepButton, pressed && { opacity: 0.55 }]}
       >
         <Text style={[styles.stepButtonText, { color: colors.ink }]}>−</Text>
       </Pressable>
@@ -104,7 +104,7 @@ function Stepper({
         accessibilityRole="button"
         accessibilityLabel={t("Increase {label}", { label: accessibilityLabel })}
         hitSlop={8}
-        style={styles.stepButton}
+        style={({ pressed }) => [styles.stepButton, pressed && { opacity: 0.55 }]}
       >
         <Text style={[styles.stepButtonText, { color: colors.ink }]}>+</Text>
       </Pressable>
@@ -139,9 +139,10 @@ function Segmented<T extends string>({
               option: t(o.label),
             })}
             accessibilityState={{ selected }}
-            style={[
+            style={({ pressed }) => [
               styles.segmentOption,
               selected && { backgroundColor: colors.chip, borderRadius: radii.pill },
+              pressed && { opacity: 0.55 },
             ]}
           >
             <Text
@@ -208,7 +209,11 @@ function Row({
       accessibilityRole="button"
       accessibilityLabel={label}
       onPress={onPress}
-      style={[styles.row, { backgroundColor: colors.surface, borderColor: colors.rule }]}
+      style={({ pressed }) => [
+        styles.row,
+        { backgroundColor: colors.surface, borderColor: colors.rule },
+        pressed && { opacity: 0.55 },
+      ]}
     >
       {inner}
     </Pressable>
@@ -379,7 +384,7 @@ export function SettingsScreen({
         accessibilityLabel={t("Restore purchases")}
         onPress={onRestore}
         hitSlop={8}
-        style={styles.restoreRow}
+        style={({ pressed }) => [styles.restoreRow, pressed && { opacity: 0.55 }]}
       >
         <Text style={[styles.linkText, { color: colors.focus }]} allowFontScaling>
           {t("Restore purchases")}
@@ -457,7 +462,7 @@ export function SettingsScreen({
           accessibilityRole="button"
           onPress={activeSection == null ? onBack : () => setActiveSection(null)}
           hitSlop={8}
-          style={styles.backButton}
+          style={({ pressed }) => [styles.backButton, pressed && { opacity: 0.55 }]}
         >
           <Text style={[styles.backButtonText, { color: colors.ink }]} allowFontScaling>
             {t("Back")}
@@ -493,9 +498,10 @@ export function SettingsScreen({
                       setActiveSection(item.id);
                     }
                   }}
-                  style={[
+                  style={({ pressed }) => [
                     styles.railItem,
                     selected && { backgroundColor: colors.chip, borderRadius: radii.md },
+                    pressed && { opacity: 0.55 },
                   ]}
                 >
                   <Text
@@ -587,7 +593,11 @@ export function SettingsScreen({
             setConfirmDelete(false);
             onDeleteAll();
           }}
-          style={[styles.dangerButton, { backgroundColor: colors.danger }]}
+          style={({ pressed }) => [
+            styles.dangerButton,
+            { backgroundColor: colors.danger },
+            pressed && { opacity: 0.55 },
+          ]}
         >
           <Text style={[styles.dangerButtonText, { color: colors.onPrimary }]} allowFontScaling>
             {t("Delete everything")}
@@ -598,7 +608,7 @@ export function SettingsScreen({
           accessibilityLabel={t("Keep my data")}
           onPress={() => setConfirmDelete(false)}
           hitSlop={8}
-          style={styles.sheetSecondary}
+          style={({ pressed }) => [styles.sheetSecondary, pressed && { opacity: 0.55 }]}
         >
           <Text style={[styles.sheetSecondaryText, { color: colors.ink }]} allowFontScaling>
             {t("Keep my data")}

@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../shared/ui/SafeAreaView";
 import { t } from "../../i18n";
 import { Palette, radii, spacing, typography } from "../../shared/theme";
 import { TABLET_PADDING, useIsTablet } from "../../shared/layout";
@@ -59,7 +59,7 @@ function StepperRow({
           accessibilityRole="button"
           accessibilityLabel={t("Decrease {label}", { label })}
           hitSlop={8}
-          style={styles.stepButton}
+          style={({ pressed }) => [styles.stepButton, pressed && { opacity: 0.55 }]}
         >
           <Text style={[styles.stepButtonText, { color: colors.ink }]}>−</Text>
         </Pressable>
@@ -71,7 +71,7 @@ function StepperRow({
           accessibilityRole="button"
           accessibilityLabel={t("Increase {label}", { label })}
           hitSlop={8}
-          style={styles.stepButton}
+          style={({ pressed }) => [styles.stepButton, pressed && { opacity: 0.55 }]}
         >
           <Text style={[styles.stepButtonText, { color: colors.ink }]}>+</Text>
         </Pressable>
@@ -112,7 +112,7 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
           accessibilityRole="button"
           onPress={onBack}
           hitSlop={8}
-          style={styles.backButton}
+          style={({ pressed }) => [styles.backButton, pressed && { opacity: 0.55 }]}
         >
           <Text style={[styles.backButtonText, { color: colors.ink }]} allowFontScaling>
             {t("Back")}
@@ -135,12 +135,13 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
               name: t(RHYTHM_PRESET_NAMES[id]),
             })}
             accessibilityState={{ selected }}
-            style={[
+            style={({ pressed }) => [
               styles.presetRow,
               {
                 backgroundColor: colors.surface,
                 borderColor: selected ? colors.focus : colors.rule,
               },
+              pressed && { opacity: 0.55 },
             ]}
           >
             <Text style={[styles.presetName, { color: colors.ink }]} allowFontScaling>
@@ -157,12 +158,13 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
         accessibilityRole="button"
         accessibilityLabel={t("Rhythm preset {name}", { name: t("Custom") })}
         accessibilityState={{ selected: settings.rhythmPresetId === "custom" }}
-        style={[
+        style={({ pressed }) => [
           styles.presetRow,
           {
             backgroundColor: colors.surface,
             borderColor: settings.rhythmPresetId === "custom" ? colors.focus : colors.rule,
           },
+          pressed && { opacity: 0.55 },
         ]}
       >
         <Text style={[styles.presetName, { color: colors.ink }]} allowFontScaling>
