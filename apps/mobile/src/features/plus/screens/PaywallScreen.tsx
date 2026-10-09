@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Text, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
 import { TABLET_PADDING, useIsTablet } from "../../../shared/layout";

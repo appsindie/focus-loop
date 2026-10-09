@@ -6,7 +6,7 @@ import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "r
 import { AdsContext, useFullScreenAds } from "@appsindie/react-native-ads";
 
 import { AppState, Linking, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "./src/shared/ui/SafeAreaView";
 import { AdsProvider } from "./src/features/ads/AdsProvider";
 import { useLoopController } from "./src/features/loop/useLoopController";
 import { BreakScreen } from "./src/features/loop/screens/BreakScreen";

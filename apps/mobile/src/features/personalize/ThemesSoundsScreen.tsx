@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../shared/ui/SafeAreaView";
 import { t } from "../../i18n";
 import { Palette, radii, spacing, typography } from "../../shared/theme";
 import { TABLET_PADDING, useIsTablet } from "../../shared/layout";

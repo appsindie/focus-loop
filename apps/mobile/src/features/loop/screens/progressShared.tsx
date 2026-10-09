@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { FlatList, Pressable, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { FocusSession } from "../SessionLog";
 import { WeekProgress } from "../weeklyGoal";
 import { WeekTotals, computeWeekTotals, weekInsight, weekdayLabels } from "../weekStats";

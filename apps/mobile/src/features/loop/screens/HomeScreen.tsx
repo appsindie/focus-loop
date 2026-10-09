@@ -8,7 +8,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { ParkedThought } from "../parkedThoughts";
 import { WeekProgress } from "../weeklyGoal";
 import { LoopStep } from "../loopPlan";

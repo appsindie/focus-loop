@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, Switch, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { captureRef } from "react-native-view-shot";
 import * as Sharing from "expo-sharing";
 import { FocusSession } from "../SessionLog";

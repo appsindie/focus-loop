@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { SessionOutcome } from "../SessionLog";
 import { LoopStep } from "../loopPlan";
 import { t } from "../../../i18n";

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import * as Notifications from "expo-notifications";
 import { PermissionStatus } from "expo-notifications";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../shared/ui/SafeAreaView";
 import { t } from "../../i18n";
 import { Palette, radii, spacing, typography } from "../../shared/theme";
 import { TABLET_PADDING, useIsTablet } from "../../shared/layout";

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { FocusSession } from "../SessionLog";
 import { LoopStep } from "../loopPlan";
 import { WeekProgress } from "../weeklyGoal";

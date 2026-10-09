@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { DisplayMode } from "../../settings/SettingsStore";
 import { ParkedThought } from "../parkedThoughts";
 import { LoopStep } from "../loopPlan";
