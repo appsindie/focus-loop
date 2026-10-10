@@ -40,6 +40,8 @@ export function FocusStartWidget({ snapshot }: { snapshot: WidgetSnapshot }) {
       />
       <TextWidget
         text={headline}
+        truncate="END"
+        maxLines={1}
         style={{ color: widgetPalette.ink, fontSize: 20, fontWeight: "bold", marginTop: 2 }}
       />
       <TextWidget
@@ -54,6 +56,8 @@ export function FocusStartWidget({ snapshot }: { snapshot: WidgetSnapshot }) {
                 goalDays: snapshot.weekGoalDays,
               })
         }
+        truncate="END"
+        maxLines={2}
         style={{ color: widgetPalette.accent, fontSize: 12, marginTop: 4 }}
       />
     </FlexWidget>

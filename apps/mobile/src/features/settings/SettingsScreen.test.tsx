@@ -27,6 +27,8 @@ async function renderScreen(overrides: Record<string, unknown> = {}) {
     onExportData: jest.fn(),
     onDeleteAll: jest.fn(),
     allowTracking: null,
+    shareDiagnostics: true,
+    onSetShareDiagnostics: jest.fn(),
     onSetAllowTracking: jest.fn(),
     version: "1.0.0",
     ...overrides,

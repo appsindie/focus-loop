@@ -68,6 +68,8 @@ type SettingsScreenProps = {
   onDeleteAll: () => void;
   // P20 About: ad tracking choice + the store app version string.
   allowTracking: boolean | null;
+  shareDiagnostics: boolean;
+  onSetShareDiagnostics: (on: boolean) => void;
   onSetAllowTracking: (allow: boolean) => void;
   version: string;
 };
@@ -254,12 +256,15 @@ export function SettingsScreen({
   exportMessage,
   onDeleteAll,
   allowTracking,
+  shareDiagnostics,
+  onSetShareDiagnostics,
   onSetAllowTracking,
   version,
 }: SettingsScreenProps) {
   const isTablet = useIsTablet();
   const rhythm = resolveRhythm(settings.rhythmPresetId, settings.customRhythm);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
   const [adChoicesOpen, setAdChoicesOpen] = useState(false);
   // Phone: hub-and-detail — hub lists the sections (no vertical scroll per
   // J-style grouped list); tapping a section drills into its rows. Tablet
@@ -424,6 +429,11 @@ export function SettingsScreen({
         colors={colors}
         label={t("Ad choices & tracking")}
         onPress={() => setAdChoicesOpen(true)}
+      />
+      <Row
+        colors={colors}
+        label={t("Crash & usage reports")}
+        onPress={() => setDiagnosticsOpen(true)}
       />
     </>
   );
@@ -638,6 +648,32 @@ export function SettingsScreen({
             accessibilityLabel={t("Toggle ad tracking")}
             onValueChange={onSetAllowTracking}
             value={allowTracking === true}
+          />
+        </View>
+      </Sheet>
+
+      <Sheet
+        visible={diagnosticsOpen}
+        onDismiss={() => setDiagnosticsOpen(false)}
+        colors={colors}
+        accessibilityLabel={t("Crash and usage reports")}
+      >
+        <Text style={[styles.sheetTitle, { color: colors.ink }]} allowFontScaling>
+          {t("Crash & usage reports")}
+        </Text>
+        <Text style={[styles.sheetBody, { color: colors.muted }]} allowFontScaling>
+          {t(
+            "Focus Loop sends anonymous crash and usage reports to Firebase so bugs get found and fixed. Turning this off stops all crash and analytics collection — it does not affect ads.",
+          )}
+        </Text>
+        <View style={styles.adChoiceRow}>
+          <Text style={[styles.adChoiceLabel, { color: colors.ink }]} allowFontScaling>
+            {t("Share crash & usage reports")}
+          </Text>
+          <Switch
+            accessibilityLabel={t("Toggle crash and usage reporting")}
+            onValueChange={onSetShareDiagnostics}
+            value={shareDiagnostics}
           />
         </View>
       </Sheet>
