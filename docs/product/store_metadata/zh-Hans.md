@@ -21,7 +21,7 @@
 
 ## Apple
 
-- Name (≤30): `Focus Loop: 番茄钟` ((15 chars))
+- Name (≤30): `番茄钟: Focus Loop` ((15 chars))
 - Subtitle (≤30): `ADHD专注·深度工作·学习休息` ((16 chars))
 - Keywords (≤100 bytes): `专注,计时器,学习,工作,效率,习惯,提醒,目标,休息,自律,周计划` (82 bytes)
 - Promotional text (≤170): `一键开始专注。为 ADHD 设计的番茄钟——锁屏实时计时、小组件、宽容的每周目标。无需账号。` ((46 chars))
@@ -49,7 +49,7 @@ Focus Loop 是为 ADHD 人群和知识工作者设计的番茄钟计时器:一�
 
 ## Play
 
-- Title (≤30): `Focus Loop: 番茄钟` ((15 chars))
+- Title (≤30): `番茄钟: Focus Loop` ((15 chars))
 - Short description (≤80): `为 ADHD 设计的番茄钟——一键专注,每周目标,无需账号` ((29 chars))
 - Full description: same body as Apple description above (Play indexes it — keep keyword terms verbatim).
 

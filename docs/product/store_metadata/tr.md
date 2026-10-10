@@ -21,7 +21,7 @@ Telefonu işinden koparan DEHB'li yetişkinler ve bilgi çalışanları için Fo
 
 ## Apple
 
-- Name (≤30): `Focus Loop: Pomodoro Timer` ((26 chars))
+- Name (≤30): `Pomodoro Timer: Focus Loop` ((26 chars))
 - Subtitle (≤30): `DEHB odak, çalışma ve molalar` ((29 chars))
 - Keywords (≤100 bytes): `odaklanma,konsantrasyon,çalışma,alışkanlık,hatırlatma,domates,akış,hedef,seans` (87 bytes)
 - Promotional text (≤170): `DEHB zihinleri için tek dokunuş pomodoro — kilit ekranı canlı sayacı, widget'lar ve kötü günü affeden haftalık hedefler.` ((120 chars))
@@ -49,7 +49,7 @@ Sınav için ders sayacı, yazı ve kod için derin çalışma sayacı, okuma i�
 
 ## Play
 
-- Title (≤30): `Focus Loop: Pomodoro Timer` ((26 chars))
+- Title (≤30): `Pomodoro Timer: Focus Loop` ((26 chars))
 - Short description (≤80): `DEHB için pomodoro — tek dokunuş odak, haftalık hedef, hesapsız` ((63 chars))
 - Full description: same body as Apple description above (Play indexes it — keep keyword terms verbatim).
 

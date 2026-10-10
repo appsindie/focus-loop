@@ -21,7 +21,7 @@
 
 ## Apple
 
-- Name (≤30): `Focus Loop: بومودورو` ((20 chars))
+- Name (≤30): `بومودورو: Focus Loop` ((20 chars))
 - Subtitle (≤30): `مؤقت تركيز لذوي ADHD واستراحات` ((30 chars))
 - Keywords (≤100 bytes): `دراسة,عمل,إنتاجية,عادة,تذكير,هدف,أسبوعي` (107 bytes)
 - Promotional text (≤170): `بومودورو بلمسة واحدة لعقول ADHD — مؤقت حي على شاشة القفل، ودجات، وأهداف أسبوعية تسامح اليوم السيئ.` ((98 chars))
@@ -49,7 +49,7 @@ Focus Loop مؤقت بومودورو مصمم لعقول ADHD والعاملين
 
 ## Play
 
-- Title (≤30): `Focus Loop: بومودورو` ((20 chars))
+- Title (≤30): `بومودورو: Focus Loop` ((20 chars))
 - Short description (≤80): `بومودورو لعقول ADHD — تركيز بلمسة واحدة، أهداف أسبوعية، بدون حساب` ((65 chars))
 - Full description: same body as Apple description above (Play indexes it — keep keyword terms verbatim).
 

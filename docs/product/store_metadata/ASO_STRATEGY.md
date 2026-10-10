@@ -46,14 +46,14 @@ keyword field carries the un-accented forms (cheaper in bytes).
 
 | Field | Value | Why |
 | --- | --- | --- |
-| Apple name | `Focus Loop: Pomodoro Timer` (26/30) | Brand + the two heaviest head terms in the heaviest-indexed field; matches incumbent pattern ("X — Pomodoro Timer") |
+| Apple name | `Pomodoro Timer: Focus Loop` (26/30) | Brand + the two heaviest head terms in the heaviest-indexed field. Head terms lead because `Focus Loop: Pomodoro Timer` failed Apple's name-uniqueness check — it normalizes to Anyspace Ltd's "FocusLoop: Pomodoro Timer" |
 | Apple subtitle | `ADHD deep work & study breaks` (29/30) | Five new indexed tokens, zero overlap with name: `adhd`, `deep`, `work`, `study`, `breaks` — covers the four open clusters |
 | Apple keywords | `tomato,concentration,productivity,flow,widget,reminder,habit,weekly,goal,interval,session,countdown` (99–100 B) | No repeats of name/subtitle tokens, no plurals-dupes, no competitor marks |
 | Play title | same as name | Play's heaviest field too |
 | Play short | `Pomodoro timer for ADHD minds — one-tap focus loops, weekly goals, no account` (76/80) | Benefit-first, carries `ADHD` + `weekly goals` + `no account` differentiator |
 | Play long | Hook → mechanism → ADHD wedge → surfaces → features, ~1–2% natural density for pomodoro/focus timer/adhd/deep work/study timer | Play indexes full text |
 | Promo text | launch hook, editable without new version | Cheap freshness signal |
-| Localized names | Native head term where the loanword differs (`Focus Loop: 番茄钟`, `ポモドーロ`, `뽀모도로`, `Помодоро`, `โพโมโดโร`, `पोमोडोरो`, `بومودورو`); `Focus Loop: Pomodoro Timer` elsewhere | "Pomodoro" is the global loanword; CJK/Cyrillic markets search the native form |
+| Localized names | Native head term first where the loanword differs (`番茄钟: Focus Loop`, `ポモドーロ`, `뽀모도로`, `Помодоро`, `โพโมโดโร`, `पोमोडोरो`, `بومودورو`); `Pomodoro Timer: Focus Loop` elsewhere | "Pomodoro" is the global loanword; CJK/Cyrillic markets search the native form; term-first order matches the en-US name everywhere |
 
 **Excluded deliberately**: `time blocking`, `screen time`, `app blocker`,
 `habit tracker` — wrong intent (planner / blocker categories), would convert
@@ -81,17 +81,26 @@ subtitle where it indexes harder and frees 9 bytes for `interval,session`.
 kept as a subtitle token (catches `adhd focus`/`adhd timer`/`adhd app` combos)
 instead of chasing the bare term owned by mental-health giants.
 
+**Name collision at upload (2026-10-10)**: ASC rejected `Focus Loop: Pomodoro
+Timer` — "already being used on a different account": Apple normalizes
+spaces/punctuation, colliding with Anyspace Ltd's "FocusLoop: Pomodoro Timer".
+Flipped to `Pomodoro Timer: Focus Loop` — identical indexed tokens, unique
+string, and the head terms now lead (same shape incumbents use, e.g.
+"FocusPomo · Pomodoro Timer"). All localized names follow the same
+term-first order. Uploaded to ASC (all 20 locales) and Play (19 locales)
+via fastlane deliver/supply.
+
 ## Console cheat-sheet — en-US (repeat per locale from its file)
 
 App Store Connect → app 6818991496 → version 1.0.0 listing:
-- Name: `Focus Loop: Pomodoro Timer`
+- Name: `Pomodoro Timer: Focus Loop`
 - Subtitle: `ADHD deep work & study breaks`
 - Keywords: `tomato,concentration,productivity,flow,widget,reminder,habit,weekly,goal,interval,session,countdown`
 - Promotional text / Description / What's New: copy blocks in `en-US.md`
 - Add the 18 other localizations from their `<locale>.md` files (ASC locale codes: en-US, vi, es-MX for `es`, pt-BR, de-DE, fr-FR, it, ja, ko, zh-Hans, zh-Hant, ru, tr, id, th, pl, nl, ar-SA, hi)
 
 Play Console → main store listing:
-- App name: `Focus Loop: Pomodoro Timer`
+- App name: `Pomodoro Timer: Focus Loop`
 - Short description + Full description from `en-US.md`; add custom store
   listings per locale (Play locale codes differ — `es` covers es-ES/es-419)
 

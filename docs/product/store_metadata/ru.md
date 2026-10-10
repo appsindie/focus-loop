@@ -21,7 +21,7 @@
 
 ## Apple
 
-- Name (≤30): `Focus Loop: Помодоро` ((20 chars))
+- Name (≤30): `Помодоро: Focus Loop` ((20 chars))
 - Subtitle (≤30): `ADHD фокус и таймер перерывов` ((29 chars))
 - Keywords (≤100 bytes): `таймер,концентрация,учёба,привычка,помидор,цель` (154 bytes)
 - Promotional text (≤170): `Помодоро в одно касание для умов с СДВГ — живой таймер на экране блокировки, виджеты и недельные цели, которые прощают плохой день.` ((131 chars))
@@ -49,7 +49,7 @@ Focus Loop — помодоро-таймер для людей с СДВГ и р
 
 ## Play
 
-- Title (≤30): `Focus Loop: Помодоро` ((20 chars))
+- Title (≤30): `Помодоро: Focus Loop` ((20 chars))
 - Short description (≤80): `Помодоро для СДВГ — фокус в одно касание, недельные цели, без аккаунта` ((72 chars))
 - Full description: same body as Apple description above (Play indexes it — keep keyword terms verbatim).
 

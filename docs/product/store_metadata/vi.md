@@ -34,7 +34,7 @@ top-3 nhanh trên cụm "hẹn giờ tập trung"/"đồng hồ pomodoro".
 
 ## Apple
 
-- Name (≤30): `Focus Loop: Pomodoro Timer` (26 — người VN gõ "pomodoro" trực tiếp)
+- Name (≤30): `Pomodoro Timer: Focus Loop` (26 — người VN gõ "pomodoro" trực tiếp)
 - Subtitle (≤30): `Hẹn giờ tập trung cho ADHD` (26 — có dấu: index đúng cụm đầy đủ)
 - Keywords (≤100 **bytes**): `hen gio tap trung,dem gio hoc,nghi giai lao,thoi quen,muc tieu,tomato,concentration,flow` — đếm byte vì tiếng Việt có dấu tốn 2 byte/ký tự; ưu tiên dạng không dấu cho cụm dài
 - Promotional text (≤170): `Bấm một cái là vào việc. Focus Loop tự chạy vòng tập trung–nghỉ, có widget và mục tiêu tuần tha thứ cho ngày xấu. Không cần tài khoản.` (~140)
@@ -65,7 +65,7 @@ top-3 nhanh trên cụm "hẹn giờ tập trung"/"đồng hồ pomodoro".
 
 ## Play
 
-- Title (≤30): `Focus Loop: Pomodoro Timer` (26)
+- Title (≤30): `Pomodoro Timer: Focus Loop` (26)
 - Short description (≤80): `Pomodoro cho ADHD — một chạm vào tập trung, mục tiêu tuần, không cần tài khoản` (78)
 - Full description:
   ```

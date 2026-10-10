@@ -21,7 +21,7 @@ ADHD वाले वयस्कों और नॉलेज वर्कर�
 
 ## Apple
 
-- Name (≤30): `Focus Loop: पोमोडोरो` ((20 chars))
+- Name (≤30): `पोमोडोरो: Focus Loop` ((20 chars))
 - Subtitle (≤30): `ADHD फोकस टाइमर और ब्रेक लूप` ((28 chars))
 - Keywords (≤100 bytes): `पढ़ाई,काम,आदत,रिमाइंडर,लक्ष्य,छात्र` (180 bytes)
 - Promotional text (≤170): `ADHD दिमागों के लिए एक-टैप पोमोडोरो — लॉक स्क्रीन लाइव टाइमर, विजेट और बुरे दिन को माफ करने वाले साप्ताहिक लक्ष्य.` ((114 chars))
@@ -49,7 +49,7 @@ ADHD के लिए फोकस ऐप खोजने वालों को
 
 ## Play
 
-- Title (≤30): `Focus Loop: पोमोडोरो` ((20 chars))
+- Title (≤30): `पोमोडोरो: Focus Loop` ((20 chars))
 - Short description (≤80): `ADHD के लिए पोमोडोरो — एक-टैप फोकस, साप्ताहिक लक्ष्य, कोई अकाउंट नहीं` ((69 chars))
 - Full description: same body as Apple description above (Play indexes it — keep keyword terms verbatim).
 
