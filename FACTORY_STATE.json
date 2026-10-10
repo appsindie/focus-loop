@@ -29,13 +29,13 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-10-09T16:05:03Z",
+    "fired_at": "2026-10-10T03:19:25Z",
     "round_count": 1,
     "routine": "code-review",
-    "session_url": "https://claude.ai/code/cse_01SVJ43eRMVhCtuzBckz2g5N",
-    "verdict": "no-verdict"
+    "session_url": "https://claude.ai/code/cse_01Gs3ys6Gg7SSGpWfZ3Ex56i",
+    "verdict": "pending"
   },
-  "next_action": "PR #16 (RNGMA 17.2, EAS-verified green) awaiting human review — AI routine timed out; Android vc4 on Play internal track; iOS build 10 on sponsor go-ahead.",
+  "next_action": "PR #17 (diagnostics opt-out, Android permission trim, R8+resource shrink, widget truncate fix) awaiting review + human merge; Android vc5 needs a rebuild to pick up the permission/size fixes; iOS build 10 on sponsor go-ahead.",
   "open_exceptions": [
     {
       "blocking": true,
