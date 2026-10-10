@@ -194,6 +194,8 @@ describe("SettingsScreen (T05 tablet)", () => {
       onExportData: jest.fn(),
       onDeleteAll: jest.fn(),
       allowTracking: null,
+      shareDiagnostics: true,
+      onSetShareDiagnostics: jest.fn(),
       onSetAllowTracking: jest.fn(),
       version: "1.0.0",
     };
@@ -245,6 +247,8 @@ describe("Settings keepScreenOn (T05 row)", () => {
       onExportData: jest.fn(),
       onDeleteAll: jest.fn(),
       allowTracking: null,
+      shareDiagnostics: true,
+      onSetShareDiagnostics: jest.fn(),
       onSetAllowTracking: jest.fn(),
       version: "1.0.0",
     };

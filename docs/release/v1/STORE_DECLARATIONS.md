@@ -20,7 +20,10 @@ app-instance data by default (no account, no PII fields) — enabled from first
 launch without a separate consent screen; the ATT prompt governs ad tracking
 only. Recorded as an explicit sponsor decision in `EXCEPTION_REPORT.md`
 (RR-04). The privacy policy is updated to cover both SDKs
-(appsindie-landing legal update alongside this change).
+(appsindie-landing legal update alongside this change). Users can opt out of
+Analytics + Crashlytics collection in-app: Settings → "Crash & usage reports"
+(wired v1, `shareDiagnostics` pref → `setAnalyticsCollectionEnabled` +
+`setCrashlyticsCollectionEnabled`).
 
 ## App Store Connect — Age Rating
 

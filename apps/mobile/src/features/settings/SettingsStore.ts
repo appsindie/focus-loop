@@ -36,6 +36,8 @@ export type Settings = {
   // J8: personalisation picks — catalogue ids, normalised on load.
   discColorId: string;
   focusSoundId: string;
+  // Sponsor ask (batch 5): user opt-out for Firebase Analytics + Crashlytics.
+  shareDiagnostics: boolean;
 };
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -52,6 +54,7 @@ export const DEFAULT_SETTINGS: Settings = {
   firstInstallAt: null,
   discColorId: DEFAULT_DISC_COLOR_ID,
   focusSoundId: DEFAULT_FOCUS_SOUND_ID,
+  shareDiagnostics: true,
 };
 
 const RHYTHM_KEYS: (keyof Rhythm)[] = [
@@ -80,9 +83,10 @@ function clamp(value: number, min: number, max: number): number {
 // here — payloads written before J8 simply lack them.
 type StoredSettings = Omit<
   Settings,
-  "displayMode" | "discColorId" | "focusSoundId" | "keepScreenOn"
+  "displayMode" | "discColorId" | "focusSoundId" | "keepScreenOn" | "shareDiagnostics"
 > & {
   keepScreenOn?: boolean;
+  shareDiagnostics?: boolean;
   displayMode: DisplayMode | "progress" | null;
   discColorId?: string;
   focusSoundId?: string;
@@ -120,6 +124,8 @@ function normalizeSettings(settings: StoredSettings): Settings {
     // Payloads saved before the T05 row predate the key — absent means the
     // pre-toggle behaviour (screen stays on).
     keepScreenOn: settings.keepScreenOn ?? true,
+    // Payloads saved before the diagnostics toggle — absent means default ON.
+    shareDiagnostics: settings.shareDiagnostics ?? true,
     // Older payloads predate the J8 keys; absent or unknown ids fall back to
     // the free defaults rather than failing validation (CR-04 class).
     discColorId: normalizeDiscColorId(settings.discColorId),
@@ -151,7 +157,9 @@ function isSettings(value: unknown): value is StoredSettings {
     (candidate["keepScreenOn"] === undefined || typeof candidate["keepScreenOn"] === "boolean") &&
     (candidate["firstInstallAt"] === null || typeof candidate["firstInstallAt"] === "string") &&
     (candidate["discColorId"] === undefined || typeof candidate["discColorId"] === "string") &&
-    (candidate["focusSoundId"] === undefined || typeof candidate["focusSoundId"] === "string")
+    (candidate["focusSoundId"] === undefined || typeof candidate["focusSoundId"] === "string") &&
+    (candidate["shareDiagnostics"] === undefined ||
+      typeof candidate["shareDiagnostics"] === "boolean")
   );
 }
 

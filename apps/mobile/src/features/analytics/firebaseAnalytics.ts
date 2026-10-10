@@ -1,6 +1,7 @@
 import { Platform } from "react-native";
 
 import { setEventSink, type EventProps } from "./events";
+import { isDiagnosticsAllowed } from "./diagnosticsConsent";
 
 type FirebaseAnalyticsModule = {
   default: () => {
@@ -30,6 +31,7 @@ export function registerFirebaseAnalytics(): boolean {
     const analytics = (require("@react-native-firebase/analytics") as FirebaseAnalyticsModule)
       .default;
     setEventSink((name, props) => {
+      if (!isDiagnosticsAllowed()) return;
       try {
         void analytics()
           .logEvent(name, toFirebaseParams(props))

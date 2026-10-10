@@ -57,6 +57,7 @@ import { syncReminderSchedules } from "./src/features/reminders/reminderSchedule
 import { sessionsOnDay } from "./src/features/loop/SessionLog";
 import { wipeStoredData } from "./src/features/settings/deleteAllData";
 import { DEFAULT_SETTINGS, Settings, useSettings } from "./src/features/settings/useSettings";
+import { applyDiagnosticsConsent } from "./src/features/analytics/diagnosticsConsent";
 import { saveSettings } from "./src/features/settings/SettingsStore";
 import { HistoryScreen } from "./src/features/loop/screens/HistoryScreen";
 import { ShareScreen } from "./src/features/loop/screens/ShareScreen";
@@ -167,6 +168,14 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
       mounted = false;
     };
   }, []);
+
+  // Diagnostics opt-out: apply the stored consent as soon as settings land and
+  // on every change — native SDKs persist it, so an opt-out survives restarts.
+  useEffect(() => {
+    if (!settingsLoading) {
+      applyDiagnosticsConsent(settings.shareDiagnostics);
+    }
+  }, [settings.shareDiagnostics, settingsLoading]);
 
   const controller = useLoopController(settings, settingsLoading, interstitial, bootIntent);
   const [restoreMessage, setRestoreMessage] = useState<string | null>(null);
@@ -526,6 +535,8 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           onDeleteAll={onDeleteAll}
           allowTracking={ads.allowTracking}
           onSetAllowTracking={(allow) => ads.setAllowTracking?.(allow)}
+          shareDiagnostics={settings.shareDiagnostics}
+          onSetShareDiagnostics={(on) => void persistSettings({ shareDiagnostics: on })}
           version={Constants.expoConfig?.version ?? "1.0.0"}
           onUpgrade={() => {
             setRestoreMessage(null);
