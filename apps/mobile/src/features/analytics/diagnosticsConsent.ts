@@ -1,13 +1,37 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Platform } from "react-native";
 
 // User opt-out for Firebase Analytics + Crashlytics (Settings → "Crash & usage
-// reports"). The JS-side flag gates the analytics sink for the window between
-// module init and the stored pref landing; the native SDKs persist their own
-// collection flag so an opt-out survives restarts even before JS boots.
+// reports"). Stored under its OWN key, separate from the settings payload: a
+// corrupt/invalid settings blob falling back to defaults must never silently
+// re-enable collection (review F2). The JS-side flag gates the analytics sink
+// for the window between module init and the stored pref landing; the native
+// SDKs persist their own collection flag so an opt-out survives restarts even
+// before JS boots.
+const CONSENT_KEY = "focus-loop/diagnostics-consent";
+
 let allowed = true;
 
 export function isDiagnosticsAllowed(): boolean {
   return allowed;
+}
+
+export async function loadDiagnosticsConsent(): Promise<boolean> {
+  try {
+    const raw = await AsyncStorage.getItem(CONSENT_KEY);
+    // Absent = first launch = default ON (recorded sponsor decision, RR-04).
+    return raw == null ? true : JSON.parse(raw) === true;
+  } catch {
+    return true;
+  }
+}
+
+export async function saveDiagnosticsConsent(enabled: boolean): Promise<void> {
+  try {
+    await AsyncStorage.setItem(CONSENT_KEY, JSON.stringify(enabled));
+  } catch {
+    // A failed write only means the pref reverts next launch — never crash.
+  }
 }
 
 type AnalyticsModule = {

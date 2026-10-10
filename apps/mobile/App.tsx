@@ -57,7 +57,11 @@ import { syncReminderSchedules } from "./src/features/reminders/reminderSchedule
 import { sessionsOnDay } from "./src/features/loop/SessionLog";
 import { wipeStoredData } from "./src/features/settings/deleteAllData";
 import { DEFAULT_SETTINGS, Settings, useSettings } from "./src/features/settings/useSettings";
-import { applyDiagnosticsConsent } from "./src/features/analytics/diagnosticsConsent";
+import {
+  applyDiagnosticsConsent,
+  loadDiagnosticsConsent,
+  saveDiagnosticsConsent,
+} from "./src/features/analytics/diagnosticsConsent";
 import { saveSettings } from "./src/features/settings/SettingsStore";
 import { HistoryScreen } from "./src/features/loop/screens/HistoryScreen";
 import { ShareScreen } from "./src/features/loop/screens/ShareScreen";
@@ -169,13 +173,21 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
     };
   }, []);
 
-  // Diagnostics opt-out: apply the stored consent as soon as settings land and
-  // on every change — native SDKs persist it, so an opt-out survives restarts.
+  // Diagnostics opt-out lives under its own storage key (review F2): a corrupt
+  // settings payload must not silently re-enable collection. Loaded once at
+  // boot; the native SDKs persist the flag, so an opt-out survives restarts.
+  const [shareDiagnostics, setShareDiagnostics] = useState(true);
   useEffect(() => {
-    if (!settingsLoading) {
-      applyDiagnosticsConsent(settings.shareDiagnostics);
-    }
-  }, [settings.shareDiagnostics, settingsLoading]);
+    void loadDiagnosticsConsent().then((consent) => {
+      setShareDiagnostics(consent);
+      applyDiagnosticsConsent(consent);
+    });
+  }, []);
+  const setDiagnosticsConsent = (on: boolean) => {
+    setShareDiagnostics(on);
+    applyDiagnosticsConsent(on);
+    void saveDiagnosticsConsent(on);
+  };
 
   const controller = useLoopController(settings, settingsLoading, interstitial, bootIntent);
   const [restoreMessage, setRestoreMessage] = useState<string | null>(null);
@@ -535,8 +547,8 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           onDeleteAll={onDeleteAll}
           allowTracking={ads.allowTracking}
           onSetAllowTracking={(allow) => ads.setAllowTracking?.(allow)}
-          shareDiagnostics={settings.shareDiagnostics}
-          onSetShareDiagnostics={(on) => void persistSettings({ shareDiagnostics: on })}
+          shareDiagnostics={shareDiagnostics}
+          onSetShareDiagnostics={setDiagnosticsConsent}
           version={Constants.expoConfig?.version ?? "1.0.0"}
           onUpgrade={() => {
             setRestoreMessage(null);
