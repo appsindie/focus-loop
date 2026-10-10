@@ -29,13 +29,13 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-10-09T15:05:26Z",
+    "fired_at": "2026-10-09T16:05:03Z",
     "round_count": 1,
     "routine": "code-review",
-    "session_url": "https://claude.ai/code/cse_01WFzcJoaFKKKD5teFJ7oABv",
-    "verdict": "pending"
+    "session_url": "https://claude.ai/code/cse_01SVJ43eRMVhCtuzBckz2g5N",
+    "verdict": "no-verdict"
   },
-  "next_action": "Batch-4 UX PR #15 under review; iOS build 10 on sponsor go-ahead carries it + PR #13 safe-area fix.",
+  "next_action": "PR #16 (RNGMA 17.2, EAS-verified green) awaiting human review — AI routine timed out; Android vc4 on Play internal track; iOS build 10 on sponsor go-ahead.",
   "open_exceptions": [
     {
       "blocking": true,
@@ -201,6 +201,17 @@
       "severity": "high",
       "title": "SIT waiver re-test condition — device items untested",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
+    },
+    {
+      "blocking": false,
+      "deadline": "2026-10-12",
+      "default_if_silent": "block",
+      "gate": 3,
+      "id": "EX-AI-REVIEW-TIMEOUT",
+      "owner": "human",
+      "severity": "low",
+      "title": "Claude code-review routine returned no verdict within 30min on PR #16 (RNGMA 17.2 fix)",
+      "url": "https://github.com/appsindie/focus-loop/pull/16"
     }
   ],
   "open_pr": "https://github.com/appsindie/focus-loop/pull/7",

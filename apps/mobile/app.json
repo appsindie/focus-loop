@@ -59,7 +59,7 @@
           "widgets": [
             {
               "name": "FocusStart",
-              "label": "Focus Loop — Start",
+              "label": "Focus Loop \u2014 Start",
               "description": "Start a focus session with your last-used rhythm",
               "minWidth": "110dp",
               "minHeight": "40dp",
@@ -70,7 +70,7 @@
             },
             {
               "name": "FocusNext",
-              "label": "Focus Loop — Next up",
+              "label": "Focus Loop \u2014 Next up",
               "description": "Week progress and your next focus",
               "minWidth": "250dp",
               "minHeight": "110dp",
@@ -184,5 +184,10 @@
       "hi": "./src/i18n/native/hi.strings.json"
     },
     "owner": "appsindie"
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-9324885420924703~9653900797",
+    "ios_app_id": "ca-app-pub-9324885420924703~3266907687",
+    "android_sdk": "classic"
   }
 }
