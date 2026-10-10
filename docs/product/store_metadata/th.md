@@ -21,7 +21,7 @@
 
 ## Apple
 
-- Name (≤30): `Focus Loop: โพโมโดโร` ((20 chars))
+- Name (≤30): `โพโมโดโร: Focus Loop` ((20 chars))
 - Subtitle (≤30): `จับเวลาสมาธิ ADHD พักอัตโนมัติ` ((30 chars))
 - Keywords (≤100 bytes): `เรียน,งาน,นิสัย,เตือน,เป้าหมาย` (161 bytes)
 - Promotional text (≤170): `โพโมโดโรแตะครั้งเดียวสำหรับคน ADHD — ตัวจับเวลาบนหน้าจอล็อก วิดเจ็ต และเป้าหมายรายสัปดาห์ที่ให้อภัยวันแย่ๆ` ((106 chars))
@@ -49,7 +49,7 @@ Focus Loop คือตัวจับเวลาโพโมโดโรสำ
 
 ## Play
 
-- Title (≤30): `Focus Loop: โพโมโดโร` ((20 chars))
+- Title (≤30): `โพโมโดโร: Focus Loop` ((20 chars))
 - Short description (≤80): `โพโมโดโรสำหรับ ADHD — แตะครั้งเดียวเข้าสมาธิ เป้าหมายรายสัปดาห์ ไม่ต้องมีบัญชี` ((78 chars))
 - Full description: same body as Apple description above (Play indexes it — keep keyword terms verbatim).
 

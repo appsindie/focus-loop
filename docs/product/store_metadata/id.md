@@ -21,7 +21,7 @@ Untuk orang dewasa dengan ADHD dan pekerja pengetahuan yang ponselnya mengalihka
 
 ## Apple
 
-- Name (≤30): `Focus Loop: Pomodoro Timer` ((26 chars))
+- Name (≤30): `Pomodoro Timer: Focus Loop` ((26 chars))
 - Subtitle (≤30): `ADHD fokus, belajar & jeda` ((26 chars))
 - Keywords (≤100 bytes): `konsentrasi,belajar,istirahat,kebiasaan,pengingat,tomat,alir,target,sesi` (72 bytes)
 - Promotional text (≤170): `Pomodoro satu ketukan untuk pikiran ADHD — timer live di lockscreen, widget, dan target mingguan yang memaafkan hari buruk.` ((123 chars))
@@ -49,7 +49,7 @@ Pakai sebagai timer belajar, timer deep work menulis dan coding, atau timer kons
 
 ## Play
 
-- Title (≤30): `Focus Loop: Pomodoro Timer` ((26 chars))
+- Title (≤30): `Pomodoro Timer: Focus Loop` ((26 chars))
 - Short description (≤80): `Pomodoro untuk ADHD — fokus satu ketukan, target mingguan, tanpa akun` ((69 chars))
 - Full description: same body as Apple description above (Play indexes it — keep keyword terms verbatim).
 

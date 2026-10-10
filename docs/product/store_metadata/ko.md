@@ -21,7 +21,7 @@
 
 ## Apple
 
-- Name (≤30): `Focus Loop: 뽀모도로` ((16 chars))
+- Name (≤30): `뽀모도로: Focus Loop` ((16 chars))
 - Subtitle (≤30): `ADHD 집중 타이머·공부·휴식` ((17 chars))
 - Keywords (≤100 bytes): `집중,타이머,공부,작업,생산성,습관,알림,목표,휴식,플로우,주간` (85 bytes)
 - Promotional text (≤170): `한 번의 탭으로 집중 시작. ADHD를 위한 뽀모도로 — 잠금화면 라이브 타이머, 위젯, 나쁜 날도 용서하는 주간 목표. 계정 불필요.` ((75 chars))
@@ -49,7 +49,7 @@ ADHD를 위한 설계
 
 ## Play
 
-- Title (≤30): `Focus Loop: 뽀모도로` ((16 chars))
+- Title (≤30): `뽀모도로: Focus Loop` ((16 chars))
 - Short description (≤80): `ADHD를 위한 뽀모도로 — 탭 한 번 집중, 주간 목표, 계정 없이` ((38 chars))
 - Full description: same body as Apple description above (Play indexes it — keep keyword terms verbatim).
 

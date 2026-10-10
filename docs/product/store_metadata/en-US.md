@@ -45,7 +45,7 @@ Difficulty = rating mass of the term's top results.
 
 ## Apple
 
-- Name (≤30): `Focus Loop: Pomodoro Timer` (26 — brand + the two heaviest head terms)
+- Name (≤30): `Pomodoro Timer: Focus Loop` (26 — brand + the two heaviest head terms)
 - Subtitle (≤30): `ADHD deep work & study breaks` (29 — zero token overlap with name; adhd, deep, work, study, breaks)
 - Keywords (≤100 bytes): `tomato,concentration,productivity,flow,widget,reminder,habit,weekly,goal,interval,session,countdown` (exactly 100 bytes, no repeats of name/subtitle words, no plurals dupes)
 - Promotional text (≤170, editable any time): `One-tap pomodoro loops for ADHD minds — lock-screen live timer, widgets, weekly goals that forgive a bad day. No account, no setup.` (135)
@@ -80,7 +80,7 @@ Difficulty = rating mass of the term's top results.
 
 ## Play
 
-- Title (≤30): `Focus Loop: Pomodoro Timer` (26)
+- Title (≤30): `Pomodoro Timer: Focus Loop` (26)
 - Short description (≤80): `Pomodoro timer for ADHD minds — one-tap focus loops, weekly goals, no account` (76)
 - Full description (≤4 000, keyword-natural):
   ```

@@ -35,7 +35,7 @@
     "session_url": "https://claude.ai/code/cse_01Gs3ys6Gg7SSGpWfZ3Ex56i",
     "verdict": "APPROVE"
   },
-  "next_action": "PR #17 review APPROVED (F2 fixed: consent isolated to own key; F1 release-build smoke = vc5). Awaiting human merge; Android vc5 after merge picks up permission trim + R8 shrink; iOS build 10 on sponsor go-ahead.",
+  "next_action": "ASO metadata uploaded to both consoles via fastlane (20 ASC locales + 19 Play locales); en-US name flipped to \"Pomodoro Timer: Focus Loop\" after Apple uniqueness collision. Remaining Gate-3 items are human console work: declarations (RR-10/12), agreements (RR-09), IAP/ad caps (RR-14), RR-19 device re-test on internal builds; observability items (RR-04..08,15-18) due by their deadlines.",
   "open_exceptions": [
     {
       "blocking": true,
@@ -115,14 +115,14 @@
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     },
     {
-      "blocking": true,
+      "blocking": false,
       "deadline": "2026-10-06",
       "default_if_silent": "block",
       "gate": 3,
       "id": "RR-11",
       "owner": "justin.nguyen@appsindie.com",
       "severity": "high",
-      "title": "Internal testing build not produced — in-flight",
+      "title": "Internal testing builds delivered — iOS b10 on TestFlight, Android vc5 on Play internal",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     },
     {
@@ -220,5 +220,5 @@
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-10-04T14:08:57Z"
+  "updated_at": "2026-10-10T15:45:00Z"
 }

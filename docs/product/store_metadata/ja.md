@@ -21,7 +21,7 @@
 
 ## Apple
 
-- Name (≤30): `Focus Loop: ポモドーロ` ((17 chars))
+- Name (≤30): `ポモドーロ: Focus Loop` ((17 chars))
 - Subtitle (≤30): `ADHD集中タイマー・作業と休憩` ((16 chars))
 - Keywords (≤100 bytes): `集中,タイマー,勉強,作業,生産性,習慣,リマインダー,目標,フロー,週間` (93 bytes)
 - Promotional text (≤170): `ワンタップで集中開始。ADHDのためのポモドーロタイマー — ロック画面ライブタイマー、ウィジェット、週間ゴール。アカウント不要。` ((65 chars))
@@ -49,7 +49,7 @@ ADHDのために
 
 ## Play
 
-- Title (≤30): `Focus Loop: ポモドーロ` ((17 chars))
+- Title (≤30): `ポモドーロ: Focus Loop` ((17 chars))
 - Short description (≤80): `ADHDのためのポモドーロ — ワンタップ集中、週間ゴール、アカウント不要` ((37 chars))
 - Full description: same body as Apple description above (Play indexes it — keep keyword terms verbatim).
 

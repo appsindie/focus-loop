@@ -21,7 +21,7 @@ Para adultos com TDAH e profissionais do conhecimento que o telefone tira do tra
 
 ## Apple
 
-- Name (≤30): `Focus Loop: Pomodoro Timer` ((26 chars))
+- Name (≤30): `Pomodoro Timer: Focus Loop` ((26 chars))
 - Subtitle (≤30): `TDAH foco, estudo e pausas` ((26 chars))
 - Keywords (≤100 bytes): `temporizador,concentração,estudo,produtividade,hábito,fluxo,tomate,intervalo,lembrete` (88 bytes)
 - Promotional text (≤170): `Pomodoro de um toque para mentes TDAH — timer na tela de bloqueio, widgets e metas semanais que perdoam um dia ruim.` ((116 chars))
@@ -49,7 +49,7 @@ Use como timer de estudo, timer de deep work ou timer de concentração. Comece 
 
 ## Play
 
-- Title (≤30): `Focus Loop: Pomodoro Timer` ((26 chars))
+- Title (≤30): `Pomodoro Timer: Focus Loop` ((26 chars))
 - Short description (≤80): `Pomodoro para mentes TDAH — foco de um toque, metas semanais, sem conta` ((71 chars))
 - Full description: same body as Apple description above (Play indexes it — keep keyword terms verbatim).
 

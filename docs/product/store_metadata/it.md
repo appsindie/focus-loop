@@ -21,7 +21,7 @@ Per adulti con ADHD e knowledge worker che il telefono distrae dal lavoro, Focus
 
 ## Apple
 
-- Name (≤30): `Focus Loop: Pomodoro Timer` ((26 chars))
+- Name (≤30): `Pomodoro Timer: Focus Loop` ((26 chars))
 - Subtitle (≤30): `ADHD concentrazione e pause` ((27 chars))
 - Keywords (≤100 bytes): `studio,lavoro,produttività,abitudine,promemoria,tomate,flusso,obiettivo,intervallo` (83 bytes)
 - Promotional text (≤170): `Pomodoro in un tocco per menti ADHD — timer in lock screen, widget e obiettivi settimanali che perdonano una brutta giornata.` ((125 chars))
@@ -49,7 +49,7 @@ Timer da studio per gli esami, timer deep work per scrivere e programmare, timer
 
 ## Play
 
-- Title (≤30): `Focus Loop: Pomodoro Timer` ((26 chars))
+- Title (≤30): `Pomodoro Timer: Focus Loop` ((26 chars))
 - Short description (≤80): `Pomodoro per menti ADHD — focus in un tocco, obiettivi settimanali, no account` ((78 chars))
 - Full description: same body as Apple description above (Play indexes it — keep keyword terms verbatim).
 
