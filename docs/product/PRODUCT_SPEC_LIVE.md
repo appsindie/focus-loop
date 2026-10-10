@@ -423,8 +423,8 @@ Design reference per screen is `design/png/<name>.png` rendered from `design/sou
 - **Intent**: mark how the focus went; honest data.
 - **Entry**: focus ends (naturally, end-early, or via J9/P13).
 - **Data**: "FOCUS N DONE · 25 MIN" header + intention; single-choice Finished / Moved forward / Got stuck ("still counts"); "Start breaks automatically" toggle.
-- **Primary action**: Start break -> P11; text action "Keep going, 10 more minutes".
-- **Rules**: R1 Session log written before display. R2 No ad on this screen; the 2nd-focus trigger point is on **leaving** it when the loop is not completed (J2-R5).
+- **Primary action**: Start break -> P11; text actions "Keep going, 10 more minutes" and "Done for now" -> P04 Home (loop abandoned).
+- **Rules**: R1 Session log written before display. R2 No ad on this screen; the 2nd-focus trigger point is on **leaving** it when the loop is not completed (J2-R5). R3 "Done for now" exits without starting the break; the logged session is kept.
 - **Metric**: outcome capture rate. **Design**: `P10-Closeout`.
 
 ## SCR-break — P11 (short and long)
