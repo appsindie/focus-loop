@@ -238,6 +238,52 @@ describe("useLoopController", () => {
     expect(result.current.lastSession?.loopId).toBe("kill-4");
   });
 
+  it("P10 'Done for now' keeps the logged focus and exits mid-loop to home", async () => {
+    // The record is written before P10 shows, so bailing out must not require
+    // starting the break to keep the session.
+    const plan = buildLoopPlan({
+      focusMinutes: 25,
+      breakMinutes: 5,
+      rounds: 4,
+      longBreakMinutes: 15,
+    });
+    const snapshot: LoopSnapshot = {
+      loopId: "kill-5b",
+      stepIndex: 0,
+      phase: "step-done",
+      stepStartedAtMs: Date.now() - 25 * 60_000,
+      pausedMs: 0,
+      pausedAtMs: null,
+      intention: null,
+      pendingFocusRecord: {
+        loopId: "kill-5b",
+        roundIndex: 1,
+        intention: null,
+        startedAt: new Date(Date.now() - 25 * 60_000).toISOString(),
+        endedAt: new Date(Date.now()).toISOString(),
+        plannedSeconds: 1500,
+        focusedSeconds: 1500,
+        partial: false,
+      },
+      plan,
+    };
+    await saveEngineSnapshot(snapshot);
+
+    const { result } = await renderHook(() => useLoopController(SETTINGS, false));
+    await flushBoot();
+    expect(result.current.route).toBe("closeout");
+    await flushBoot();
+    expect(result.current.lastSession?.loopId).toBe("kill-5b");
+
+    await act(async () => {
+      result.current.closeoutDone();
+      await Promise.resolve();
+    });
+    expect(result.current.route).toBe("home");
+    expect(result.current.engine.currentPhase).toBe("abandoned");
+    expect(result.current.sessions.some((s) => s.loopId === "kill-5b")).toBe(true);
+  });
+
   it("CR-10: non-default rhythm + live snapshot restores into the post-swap engine", async () => {
     // Saved rhythm is Gentle but the pre-load engine was built on Classic —
     // the swap must land BEFORE boot restores, or the session strands.

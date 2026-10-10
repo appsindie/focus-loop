@@ -14,7 +14,9 @@ const OUTCOMES: { id: SessionOutcome; label: () => string }[] = [
 ];
 
 // P10: header FOCUS N DONE · MIN, optional single-choice outcome, auto-break
-// toggle, primary Start break, text "Keep going, 10 more minutes". No ad here.
+// toggle, primary Start break, text "Keep going, 10 more minutes" and
+// "Done for now" — the session record is already written, so bailing out must
+// not require starting the break. No ad here.
 export function CloseoutScreen({
   colors,
   focusNumber,
@@ -27,6 +29,7 @@ export function CloseoutScreen({
   nextStep,
   onStartBreak,
   onKeepGoing,
+  onDoneForNow,
 }: {
   colors: Palette;
   focusNumber: number;
@@ -39,6 +42,7 @@ export function CloseoutScreen({
   nextStep: LoopStep | null;
   onStartBreak: () => void;
   onKeepGoing: () => void;
+  onDoneForNow: () => void;
 }) {
   const minutes = Math.round(focusedSeconds / 60);
   const breakLabel =
@@ -115,6 +119,7 @@ export function CloseoutScreen({
           onPress={onKeepGoing}
           colors={colors}
         />
+        <TextButton label={t("Done for now")} onPress={onDoneForNow} colors={colors} />
       </View>
     </SafeAreaView>
   );
