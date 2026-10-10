@@ -64,3 +64,8 @@ Captions must fit `frame-template.html` at the longest locale; Vietnamese copy w
 - Dark ink canvas (`#141210`) with ember disc (`#D9480F` / `#FF6A2B`) — the app icon's own visual language, per B-Icon board.
 - Host Grotesk for captions (UI voice); Newsreader only if a frame quotes a user-written intention.
 - Both light and dark product screens may appear in frames; the frame chrome stays ink.
+
+## Stage B outputs (2026-10-10)
+
+- `ASO_STRATEGY.md` — landscape research, field decisions, self-score vs Challenger rubric, console cheat-sheet, rank-tracking plan.
+- `<locale>.md` — 19 locale listing packs (Tier 1 + Tier 2): keyword table, Apple + Play fields, screenshot captions in `render-store-frames.mjs` format.
