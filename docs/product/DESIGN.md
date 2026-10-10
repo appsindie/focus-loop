@@ -105,6 +105,8 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
   outcome.
 - "Start breaks automatically" toggle; primary **Start break 5:00** (break button); text "Keep going, 10 more
   minutes".
+- Text **Done for now** exits to Home without starting the break — the session record is already saved, so
+  leaving never requires starting the next step; the loop is marked abandoned.
 - No ad on this screen.
 
 ### P11 Break

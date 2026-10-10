@@ -519,6 +519,23 @@ export function useLoopController(
     leaveLoopDone("home");
   }, [leaveLoopDone]);
 
+  // P10 "Done for now": the focus record was written before the screen showed
+  // (J2-R4) and the outcome saves on selection — leaving mid-loop abandons the
+  // loop but keeps the logged session. Leaving P10 still counts as the
+  // closeout trigger point.
+  const closeoutDone = useCallback(() => {
+    if (isCloseoutTriggerPoint(engine.currentFocusNumber, false)) {
+      notifyInterstitialTrigger("closeout-leave-second-focus", {
+        firstInstallAt: settings.firstInstallAt,
+        hasAdsRemoval: interstitial?.hasAdsRemoval,
+        show: interstitial?.show,
+      });
+    }
+    engine.discard();
+    afterEngineChange();
+    go("home");
+  }, [engine, go, settings.firstInstallAt, interstitial, afterEngineChange]);
+
   // P13 Welcome back (J9): the focus expired while the app was closed — its record
   // is already written; the user picks the close-out or skips straight to break.
   const welcomeHowDidItGo = useCallback(() => {
@@ -713,6 +730,7 @@ export function useLoopController(
     endEarlyDiscard,
     startLongBreak,
     skipLongBreak,
+    closeoutDone,
     parkThought,
     adoptParked,
     pauseFocus,
