@@ -46,7 +46,7 @@ export default tseslint.config(
     },
   },
   {
-    files: ["*.config.{js,mjs,ts}", "*.config.*.{js,mjs,ts}"],
+    files: ["*.config.{js,mjs,ts}", "*.config.*.{js,mjs,ts}", "scripts/*.mjs"],
     ...tseslint.configs.disableTypeChecked,
     languageOptions: {
       parserOptions: {
@@ -58,6 +58,8 @@ export default tseslint.config(
         exports: "writable",
         __dirname: "readonly",
         __filename: "readonly",
+        process: "readonly",
+        console: "readonly",
       },
     },
   },

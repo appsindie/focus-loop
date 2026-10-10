@@ -57,7 +57,7 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "verify": "npm run verify:types && npm run verify:lint && npm run verify:test && npm run verify:format",
+    "verify": "npm run verify:types && npm run verify:lint && npm run verify:test && npm run verify:format && npm run verify:permissions",
     "verify:fast": "npm run verify:types && npm run verify:lint",
     "verify:types": "tsc --noEmit",
     "verify:lint": "eslint . --max-warnings 0",
@@ -65,7 +65,8 @@
     "verify:format": "prettier --check .",
     "test": "jest --coverage=false",
     "fix": "eslint . --fix && prettier --write .",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "verify:permissions": "node scripts/check-android-permissions.mjs"
   },
   "private": true
 }
