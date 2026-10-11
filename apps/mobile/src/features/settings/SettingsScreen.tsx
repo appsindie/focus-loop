@@ -1,14 +1,5 @@
 import { useState } from "react";
-import {
-  InteractionManager,
-  Linking,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  Text,
-  View,
-} from "react-native";
+import { Linking, Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import { SafeAreaView } from "../../shared/ui/SafeAreaView";
 import { t } from "../../i18n";
@@ -726,11 +717,14 @@ export function SettingsScreen({
           accessibilityRole="button"
           accessibilityLabel={t("Visit appsindie.com")}
           onPress={() => {
-            setContactFallback(false);
-            // Presenting the browser while the Sheet modal is mid-dismissal
-            // leaves an invisible presentation layer eating every touch
-            // (iOS sim E2E, 2/2 wedge). Fire after the slide-out completes.
-            InteractionManager.runAfterInteractions(() => openLink(STUDIO_URL));
+            // Real Safari/Chrome, not the in-app browser: presenting a
+            // browser while the Sheet modal is mid-dismissal leaves an
+            // invisible presentation layer eating every touch (iOS sim E2E,
+            // repro'd twice even deferred via InteractionManager). An
+            // external intent sidesteps the presentation race — and keeps
+            // the sheet's copyable address under it for when a browser
+            // can't be found either.
+            void Linking.openURL(STUDIO_URL).catch(() => {});
           }}
           style={({ pressed }) => [styles.sheetSecondary, pressed && { opacity: 0.55 }]}
         >

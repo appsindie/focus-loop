@@ -3,8 +3,7 @@
 // the ad-choices sheet (J10-R5).
 import { describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
-import * as WebBrowser from "expo-web-browser";
-import { InteractionManager, Linking } from "react-native";
+import { Linking } from "react-native";
 import { palette } from "../../shared/theme";
 import { DEFAULT_SETTINGS, type Settings } from "./SettingsStore";
 import { SettingsScreen } from "./SettingsScreen";
@@ -160,30 +159,23 @@ describe("SettingsScreen (P20)", () => {
     openURL.mockRestore();
   });
 
-  it("defers the studio link until the fallback sheet has dismissed", async () => {
-    // iOS sim E2E: presenting the browser while the Sheet modal is
-    // mid-dismissal wedged the app behind an invisible presentation layer.
-    // The browser open must go through InteractionManager, not fire inline.
-    const openURL = jest.spyOn(Linking, "openURL").mockRejectedValue(new Error("no handler"));
-    const openBrowser = jest.spyOn(WebBrowser, "openBrowserAsync").mockResolvedValue({
-      type: "opened",
-    } as WebBrowser.WebBrowserResult);
-    // Drain the deferred task immediately so we can assert what it opened.
-    const rai = jest
-      .spyOn(InteractionManager, "runAfterInteractions")
-      .mockImplementation((task) => {
-        (task as () => void)();
-        return { cancel: jest.fn(), then: jest.fn(), done: jest.fn() } as never;
-      });
+  it("routes the studio link through the OS intent router, not the in-app browser", async () => {
+    // iOS sim E2E: an in-app browser presented over a mid-dismissal Sheet
+    // wedges the app behind an invisible presentation layer (repro'd even
+    // when deferred via InteractionManager). The external intent sidesteps
+    // the presentation race; the sheet stays under it as the copy path.
+    // mailto has no handler → sheet; https intents route through too.
+    const openURL = jest
+      .spyOn(Linking, "openURL")
+      .mockRejectedValueOnce(new Error("no handler"))
+      .mockResolvedValue(true);
     const { screen } = await renderScreen();
     await drill(screen, "About & legal");
     await fireEvent.press(screen.getByLabelText("Contact & feedback"));
     await screen.findByLabelText("Visit appsindie.com");
+    openURL.mockClear();
     await fireEvent.press(screen.getByLabelText("Visit appsindie.com"));
-    expect(rai).toHaveBeenCalled();
-    expect(openBrowser).toHaveBeenCalledWith(STUDIO_URL);
+    expect(openURL).toHaveBeenCalledWith(STUDIO_URL);
     openURL.mockRestore();
-    openBrowser.mockRestore();
-    rai.mockRestore();
   });
 });
