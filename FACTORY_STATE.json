@@ -29,11 +29,10 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-10-11T12:01:34Z",
-    "round_count": 2,
-    "routine": "code-review",
-    "session_url": "https://claude.ai/code/cse_01RTRd2oZf4bCn2Vv9LUr14J",
-    "verdict": "APPROVE"
+    "phase": "code-review",
+    "pr": 23,
+    "session_url": "https://claude.ai/code/cse_01XcmZLHNhqbspTposXT2oDV",
+    "verdict": null
   },
   "next_action": "Store visual assets pushed (en-US + vi screenshots, Play feature graphic); awaiting human Gate-3 exceptions + production submission",
   "open_exceptions": [
