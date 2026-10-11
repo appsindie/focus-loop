@@ -31,7 +31,7 @@
     "session_url": "https://claude.ai/code/cse_01U5QaCa2KjQtCahZZQp1JoV",
     "verdict": "no-verdict"
   },
-  "next_action": "Convention override (sponsor 2026-10-04, verbatim \"release pr riêng\"): cycle PR #4 merges BEFORE Gate 3; release gets its own release PR. Remaining: real-device SIT (RR-01/02 partial via iOS Simulator pass), console products + declarations, release PR at Gate 3",
+  "next_action": "Post-internal-test fix batch merged (PR#20 safe-area + closeout exit). Android vc6 submitted to Play internal; iOS build 12 uploaded to TestFlight (local build, EAS quota exhausted until 2026-11-01). Remaining: human internal re-test of nav-bar/padding/Done-for-now, then Gate 3 console exceptions RR-04..RR-19.",
   "open_exceptions": [
     {
       "blocking": true,
