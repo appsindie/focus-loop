@@ -35,7 +35,7 @@
     "session_url": "https://claude.ai/code/cse_019a9VDSuWwYe2okSqjkxcnd",
     "verdict": "APPROVE"
   },
-  "next_action": "PR #20 human-reported Android fixes (additive safe-area padding, closeout 'Done for now' exit) open for human merge; Claude APPROVE with minors addressed (living docs + re-verify). After merge: new internal builds (Android vc6 local — EAS quota resets 1/11; iOS build 11) for Justin's re-test. Gate-3 human console work unchanged: declarations (RR-10/12), agreements (RR-09), IAP/ad caps (RR-14), RR-19 device re-test; observability RR-04..08,15-18 by deadlines.",
+  "next_action": "PR #21 fixes Justin's vc6/b12 batch: contact row dead tap (mailto now via OS intent router + no-mail-app fallback sheet, 19 locales), sound preview never stopping (resume-only-if-playing + pause-before-remove), low-quality focus sounds (regenerated from committed deterministic generator — 44.1kHz, -18dBFS, seamless). Open for human merge; after merge: vc7/b13 internal builds for re-test. Gate-3 human console work unchanged: declarations (RR-10/12), agreements (RR-09), IAP/ad caps (RR-14), RR-19 device re-test; observability RR-04..08,15-18 by deadlines.",
   "open_exceptions": [
     {
       "blocking": true,
@@ -214,11 +214,11 @@
       "url": "https://github.com/appsindie/focus-loop/pull/16"
     }
   ],
-  "open_pr": "https://github.com/appsindie/focus-loop/pull/7",
+  "open_pr": "https://github.com/appsindie/focus-loop/pull/21",
   "owner": "justin.nguyen@appsindie.com",
   "phase": 3,
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-10-10T15:45:00Z"
+  "updated_at": "2026-10-11T14:45:00Z"
 }
