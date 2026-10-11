@@ -1,0 +1,40 @@
+appId: com.appsindie.focusloop
+---
+# From Home → focus → relaunch → WelcomeBack (04) → Skip to break (02) → focus → save → Home → week (03) → share (06).
+- extendedWaitUntil:
+    visible: "Start a 25-minute focus"
+    timeout: 10000
+- tapOn: "Start a 25-minute focus"
+- extendedWaitUntil:
+    visible: "End this focus early"
+    timeout: 8000
+- stopApp
+- launchApp
+- extendedWaitUntil:
+    visible: "Skip to break"
+    timeout: 10000
+- takeScreenshot: 04-welcome-back
+- tapOn: "Skip to break"
+- extendedWaitUntil:
+    visible: "\\+5 min"
+    timeout: 8000
+- takeScreenshot: 02-break
+- tapOn: "Focus 1 now"
+- extendedWaitUntil:
+    visible: "End this focus early"
+    timeout: 8000
+- tapOn: "End this focus early"
+- tapOn:
+    point: "50%,84%"
+- extendedWaitUntil:
+    visible: "Open week and history"
+    timeout: 10000
+- tapOn: "Open week and history"
+- extendedWaitUntil:
+    visible: "Share my week"
+    timeout: 8000
+- takeScreenshot: 03-week
+- tapOn: "Share my week"
+- takeScreenshot: 06-share
+- tapOn: "Back"
+- tapOn: "Back to home"

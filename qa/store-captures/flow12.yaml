@@ -1,0 +1,10 @@
+appId: com.appsindie.focusloop
+---
+# Home → Start focus → wait → (terminate + expire snapshot happens outside) → relaunch → WelcomeBack → dismiss toast → 04
+- extendedWaitUntil:
+    visible: "Start a 25-minute focus"
+    timeout: 8000
+- tapOn: "Start a 25-minute focus"
+- extendedWaitUntil:
+    visible: "End early…"
+    timeout: 8000

@@ -96,6 +96,6 @@ top-3 nhanh trên cụm "hẹn giờ tập trung"/"đồng hồ pomodoro".
 1. [hero] Một chạm là vào việc | Disc là đồng hồ của bạn
 2. Tập trung rồi nghỉ, một vòng | Nghỉ cũng là kế hoạch
 3. [callout] 4 ngày/tuần. Không streak gãy. | Mục tiêu tha thứ cho ngày xấu
-4. Bắt đầu từ màn hình chính | Widget và đồng hồ màn khoá
+4. Nghỉ một lát. Quay lại. | Vòng lặp giữ chỗ cho bạn
 5. Dừng sớm vẫn được tính | Tiến bộ không cần hoàn hảo
 6. Chia sẻ tuần của bạn | Con số thật, sẵn sàng khoe

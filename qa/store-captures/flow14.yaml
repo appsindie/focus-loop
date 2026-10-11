@@ -1,0 +1,7 @@
+appId: com.appsindie.focusloop
+---
+- tapOn:
+    point: "94%,94%"
+- waitForAnimationToEnd:
+    timeout: 4000
+- takeScreenshot: 04-welcome-back

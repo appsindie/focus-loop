@@ -1,0 +1,57 @@
+appId: com.appsindie.focusloop
+---
+# ATT already answered on this install; app sits on FirstLaunch.
+- extendedWaitUntil:
+    visible: "How do you want to see time?"
+    timeout: 10000
+- tapOn:
+    point: "50%,45%"
+- extendedWaitUntil:
+    visible: "End early…"
+    timeout: 15000
+- takeScreenshot: 01-focus-running
+- tapOn: "End early…"
+- extendedWaitUntil:
+    visible: "End and save"
+    timeout: 8000
+- takeScreenshot: 05-end-early
+- tapOn: "End and save"
+- extendedWaitUntil:
+    visible: "Start break"
+    timeout: 8000
+- tapOn: "Start break"
+- extendedWaitUntil:
+    visible: "Focus 2 now"
+    timeout: 8000
+- takeScreenshot: 02-break
+# Path home: start the next focus, end it early, then "Done for now".
+- tapOn: "Focus 2 now"
+- extendedWaitUntil:
+    visible: "End early…"
+    timeout: 8000
+- tapOn: "End early…"
+- tapOn: "End and save"
+- extendedWaitUntil:
+    visible: "Done for now"
+    timeout: 8000
+- tapOn: "Done for now"
+- extendedWaitUntil:
+    visible: "Open week and history"
+    timeout: 8000
+- tapOn: "Open week and history"
+- extendedWaitUntil:
+    visible: "Share my week"
+    timeout: 8000
+- takeScreenshot: 03-week
+- tapOn: "Share my week"
+- takeScreenshot: 06-share
+- tapOn: "Back"
+- tapOn: "Back to home"
+# WelcomeBack: start a focus, kill the app, relaunch.
+- tapOn: "Start"
+- extendedWaitUntil:
+    visible: "End early…"
+    timeout: 8000
+- stopApp
+- launchApp
+- takeScreenshot: 04-welcome-back
