@@ -132,17 +132,35 @@ export function previewFocusSound(id: string): void {
   if (source == null) {
     return;
   }
+  let player: AudioPlayer | null = null;
   try {
     ensureAudioMode();
     resumeSessionAfterPreview = current != null && current.player.playing === true;
     pauseFocusSound();
-    const player = createAudioPlayer(source);
+    player = createAudioPlayer(source);
     player.loop = true;
     player.play();
     preview = { player, timer: setTimeout(stopSoundPreview, PREVIEW_MS) };
+    player = null; // ownership moved into `preview`
   } catch {
-    // Half-created player must not leak, and a stale resume flag must not
-    // survive into the next preview's hand-back.
+    // A created-but-never-started player must not orphan a native media
+    // object; a stale resume flag must not survive into the next preview's
+    // hand-back; and the session we paused still deserves its play() back.
+    if (player != null) {
+      try {
+        player.pause();
+        player.remove();
+      } catch {
+        // best-effort
+      }
+    }
+    if (resumeSessionAfterPreview && current != null) {
+      try {
+        current.player.play();
+      } catch {
+        // best-effort
+      }
+    }
     resumeSessionAfterPreview = false;
     preview = null;
   }

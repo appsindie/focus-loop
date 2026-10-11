@@ -175,4 +175,36 @@ describe("previewFocusSound (picker tap-to-hear)", () => {
     expect(previewPlayer.pause).toHaveBeenCalledTimes(1);
     expect(previewPlayer.remove).toHaveBeenCalledTimes(1);
   });
+
+  it("removes the orphaned player and restores the session when play() throws", () => {
+    // Review F1: a player whose play() throws after createAudioPlayer used
+    // to leak — native object released nowhere — and left the session we
+    // paused without its hand-back.
+    startFocusSound("white-noise");
+    const session = lastPlayer;
+    create.mockImplementationOnce(() => {
+      const bad: FakePlayer = {
+        play: jest.fn(() => {
+          throw new Error("native play failed");
+        }),
+        pause: jest.fn(() => {
+          bad.playing = false;
+        }),
+        remove: jest.fn(),
+        loop: false,
+        playing: false,
+      };
+      lastPlayer = bad;
+      return bad as never;
+    });
+    previewFocusSound("brown-noise");
+    const bad = lastPlayer;
+    expect(bad.pause).toHaveBeenCalledTimes(1);
+    expect(bad.remove).toHaveBeenCalledTimes(1);
+    // Session was playing at preview start → it gets its play() back.
+    expect(session.play).toHaveBeenCalledTimes(2); // start + hand-back
+    // The failed preview holds no state for the next one.
+    previewFocusSound("rain-on-window");
+    expect(lastPlayer.play).toHaveBeenCalledTimes(1);
+  });
 });
