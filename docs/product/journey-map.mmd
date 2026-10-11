@@ -20,6 +20,7 @@ flowchart LR
     SHEND -->|End & save partial| CO[P10 Close-out]
     F --> CO
     CO --> B
+    CO -->|Done for now| P04
     B -->|xN rounds| F
     CO -->|loop done| LC[P12 Loop complete]
     LC --> LB[P11 Long break]

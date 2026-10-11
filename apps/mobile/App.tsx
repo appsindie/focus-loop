@@ -284,6 +284,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
     endEarlyDiscard,
     startLongBreak,
     skipLongBreak,
+    closeoutDone,
     parkThought,
     adoptParked,
     pauseFocus,
@@ -494,6 +495,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           nextStep={controller.nextStep}
           onStartBreak={startBreak}
           onKeepGoing={keepGoing}
+          onDoneForNow={closeoutDone}
         />
       ) : null}
       {route === "break" ? (
