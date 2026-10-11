@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { Linking, Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
+import {
+  InteractionManager,
+  Linking,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+} from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import { SafeAreaView } from "../../shared/ui/SafeAreaView";
 import { t } from "../../i18n";
@@ -718,7 +727,10 @@ export function SettingsScreen({
           accessibilityLabel={t("Visit appsindie.com")}
           onPress={() => {
             setContactFallback(false);
-            openLink(STUDIO_URL);
+            // Presenting the browser while the Sheet modal is mid-dismissal
+            // leaves an invisible presentation layer eating every touch
+            // (iOS sim E2E, 2/2 wedge). Fire after the slide-out completes.
+            InteractionManager.runAfterInteractions(() => openLink(STUDIO_URL));
           }}
           style={({ pressed }) => [styles.sheetSecondary, pressed && { opacity: 0.55 }]}
         >
