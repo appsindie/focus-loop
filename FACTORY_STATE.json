@@ -35,7 +35,7 @@
     "session_url": "https://claude.ai/code/cse_01XcmZLHNhqbspTposXT2oDV",
     "verdict": "no-verdict"
   },
-  "next_action": "Store visual assets pushed (en-US + vi screenshots, Play feature graphic); awaiting human Gate-3 exceptions + production submission",
+  "next_action": "Store assets complete: 19-locale screenshots + feature graphic uploaded both stores, asset set store-assets/focus-loop/v1 published; awaiting human Gate-3 exceptions + production submission",
   "open_exceptions": [
     {
       "blocking": true,
