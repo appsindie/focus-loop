@@ -44,4 +44,6 @@ node render-store-frames.mjs \
 Sizes: App Store 6.9" = 1290×2796; Play phone = 1080×1920; feature graphic 1024×500.
 Upload: `fastlane deliver --skip_metadata --skip_binary_upload --overwrite_screenshots`
 (iOS) and `fastlane supply --skip_upload_apk --skip_upload_aab --skip_upload_metadata
---skip_upload_changelogs` (Play), assets under `apps/mobile/fastlane/`.
+--skip_upload_changelogs` (Play), assets staged under `apps/mobile/fastlane/`
+(the standard deliver/supply input layout — gitignored, local artifact only;
+never commit rendered binaries to the repo).
