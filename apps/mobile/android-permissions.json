@@ -1,7 +1,5 @@
 {
   "android.permission.ACCESS_NETWORK_STATE": "AdMob/Firebase connectivity checks",
-  "android.permission.FOREGROUND_SERVICE": "media playback while app backgrounded (expo-audio service)",
-  "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK": "focus sound continues in background during a session",
   "android.permission.INTERNET": "required — RN networking, AdMob, Firebase, expo",
   "android.permission.MODIFY_AUDIO_SETTINGS": "expo-audio focus/ducking control",
   "android.permission.POST_NOTIFICATIONS": "step alerts + reminders (runtime ask, Android 13+)",

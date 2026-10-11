@@ -34,7 +34,7 @@ function ensureAudioMode(): void {
   try {
     void setAudioModeAsync({
       playsInSilentMode: true,
-      shouldPlayInBackground: true,
+      shouldPlayInBackground: false,
     }).catch(() => {});
   } catch {
     // best-effort — module absent in jest/Expo Go

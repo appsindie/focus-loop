@@ -50,7 +50,7 @@ describe("focusSounds (J8)", () => {
     expect(setMode).toHaveBeenCalledTimes(1);
     expect(setMode).toHaveBeenCalledWith({
       playsInSilentMode: true,
-      shouldPlayInBackground: true,
+      shouldPlayInBackground: false,
     });
     startFocusSound("brown-noise");
     expect(setMode).toHaveBeenCalledTimes(1);
