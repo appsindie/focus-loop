@@ -11,13 +11,30 @@ import {
 const create = jest.mocked(createAudioPlayer);
 const setMode = jest.mocked(setAudioModeAsync);
 
-type FakePlayer = { play: jest.Mock; pause: jest.Mock; remove: jest.Mock; loop: boolean };
+type FakePlayer = {
+  play: jest.Mock;
+  pause: jest.Mock;
+  remove: jest.Mock;
+  loop: boolean;
+  playing: boolean;
+};
 let lastPlayer: FakePlayer;
 
 beforeEach(() => {
   stopFocusSound();
   create.mockReset().mockImplementation(() => {
-    lastPlayer = { play: jest.fn(), pause: jest.fn(), remove: jest.fn(), loop: false };
+    const player: FakePlayer = {
+      play: jest.fn(() => {
+        player.playing = true;
+      }),
+      pause: jest.fn(() => {
+        player.playing = false;
+      }),
+      remove: jest.fn(),
+      loop: false,
+      playing: false,
+    };
+    lastPlayer = player;
     return lastPlayer as never;
   });
 });
@@ -127,14 +144,35 @@ describe("previewFocusSound (picker tap-to-hear)", () => {
     stopSoundPreview();
     expect(create).toHaveBeenCalledTimes(1);
     expect(previewPlayer.remove).toHaveBeenCalledTimes(1);
+    expect(previewPlayer.pause).toHaveBeenCalledTimes(1);
   });
 
-  it("resumes the paused session sound when the preview ends", () => {
+  it("resumes a session sound that was playing when the preview ends", () => {
     startFocusSound("white-noise");
     const session = lastPlayer;
     previewFocusSound("brown-noise");
     session.play.mockClear();
     stopSoundPreview();
     expect(session.play).toHaveBeenCalledTimes(1);
+  });
+
+  it("leaves a paused session sound paused when the preview ends", () => {
+    // vc6 defect: the hand-back resumed unconditionally — a paused session's
+    // loop restarted on every preview end and nothing stopped it again.
+    startFocusSound("white-noise");
+    const session = lastPlayer;
+    pauseFocusSound();
+    previewFocusSound("brown-noise");
+    session.play.mockClear();
+    stopSoundPreview();
+    expect(session.play).not.toHaveBeenCalled();
+  });
+
+  it("stops the preview player by pausing before removing", () => {
+    previewFocusSound("white-noise");
+    const previewPlayer = lastPlayer;
+    stopSoundPreview();
+    expect(previewPlayer.pause).toHaveBeenCalledTimes(1);
+    expect(previewPlayer.remove).toHaveBeenCalledTimes(1);
   });
 });

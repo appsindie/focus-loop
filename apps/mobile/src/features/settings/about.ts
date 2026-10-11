@@ -6,3 +6,5 @@ export const PRIVACY_URL = "https://www.appsindie.com/docs/legal/focus-loop/priv
 export const TERMS_URL = "https://www.appsindie.com/docs/legal/focus-loop/tnc/";
 export const LICENSES_URL = "https://www.appsindie.com/docs/legal/focus-loop/licenses/";
 export const CONTACT_URL = "mailto:info@appsindie.com?subject=Focus%20Loop%20feedback";
+export const CONTACT_EMAIL = "info@appsindie.com";
+export const STUDIO_URL = "https://www.appsindie.com/";
