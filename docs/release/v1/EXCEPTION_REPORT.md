@@ -4,7 +4,7 @@
 
 **not ready** — v1.0.0, surfaces ios/android
 
-- Re-audited 2026-10-04 at release/1.0.0 head. Checks run: 26 — passed: 9, waived: 3 (RR-01, RR-02 sponsor waiver + the third-party-sandbox row folded under it), failed-and-remediated: 0, manual: 0, exception rows: 14. Open exceptions: 14 (RR-04..RR-10, RR-12, RR-14..RR-19). RR-13 resolved (release notes + changelog). RR-11 resolved (iOS 1.0.0 build 8 on TestFlight).
+- Re-audited 2026-10-04 at release/1.0.0 head. Checks run: 26 — passed: 9, waived: 3 (RR-01, RR-02 sponsor waiver + the third-party-sandbox row folded under it), failed-and-remediated: 0, manual: 0, exception rows: 14. Open exceptions: 13 (RR-04..RR-08, RR-10, RR-12, RR-14..RR-19). RR-13 resolved (release notes + changelog). RR-11 resolved (iOS 1.0.0 build 8 on TestFlight).
 - Gate 2 status: **open — human signature pending on this PR** (sponsor waived SIT verbally 2026-10-04; the waiver is recorded but the gate stays open until the owner signs here).
 - Gate 3 decision needed: **yes**
 
@@ -19,7 +19,7 @@
 | RR-06 | Rollback command not finalized (owner named)                      | Rollback command        | justin.nguyen@appsindie.com | 2026-10-11 | block   |
 | RR-07 | Rollback not rehearsed                                            | Rollback rehearsed      | justin.nguyen@appsindie.com | 2026-10-11 | block   |
 | RR-08 | Runbook procedures still placeholders                             | Runbook                 | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| RR-09 | Store agreements not verified                                     | Store agreements        | justin.nguyen@appsindie.com | 2026-10-06 | block   |
+| RR-09 | Store agreements — **resolved 2026-10-11**                       | Store agreements        | justin.nguyen@appsindie.com | —          | done    |
 | RR-10 | Store declarations not completed                                  | Declarations            | justin.nguyen@appsindie.com | 2026-10-06 | block   |
 | RR-11 | Internal testing build not produced — **resolved 2026-10-05**   | Internal testing        | justin.nguyen@appsindie.com | —          | —       |
 | RR-12 | Privacy / data-safety declaration not completed                   | Privacy delta           | justin.nguyen@appsindie.com | 2026-10-06 | block   |
@@ -99,8 +99,9 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-11 (before production rollout)
 
-### RR-09. Store agreements not verified
+### RR-09. Store agreements — resolved 2026-10-11
 
+- **Resolution**: owner confirmed account-level Apple/Google developer agreements (incl. paid-app agreements, tax/banking) already in place from previously shipped AppsIndie apps.
 - **Situation**: Apple / Google developer agreements, tax/banking and paid-app agreements have not been verified by a human on either portal.
 - **Options**: A — verify before Gate 3. B — verify before store submission.
 - **Recommendation**: B is acceptable; A removes a blocking surprise at submission time.
