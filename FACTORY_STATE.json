@@ -14,8 +14,8 @@
       "status": "passed"
     },
     "2": {
-      "evidence": "Sponsor merged PR #6 (release/1.0.0 carrying the RR-01/02 SIT waiver + RR-19 re-test condition) and confirmed \"approve hết rồi\" 2026-10-05 — human sign-off recorded on the merge, not a gate-signed label.",
-      "note": "SIT waived: \"k sit, làm release luôn đi. app mới chưa có user mà sit gì men\". Device-only items (haptics, push, Live Activity, IAP sandbox, rewarded fill) re-test under RR-19 during internal testing before production promotion.",
+      "evidence": "Sponsor merged PR #6 (release/1.0.0 carrying the RR-01/02 SIT waiver + RR-19 re-test condition) and confirmed \"approve h\u1ebft r\u1ed3i\" 2026-10-05 \u2014 human sign-off recorded on the merge, not a gate-signed label.",
+      "note": "SIT waived: \"k sit, l\u00e0m release lu\u00f4n \u0111i. app m\u1edbi ch\u01b0a c\u00f3 user m\u00e0 sit g\u00ec men\". Device-only items (haptics, push, Live Activity, IAP sandbox, rewarded fill) re-test under RR-19 during internal testing before production promotion.",
       "signed_at": "2026-10-05",
       "signed_by": "justin.nguyen@appsindie.com",
       "status": "passed"
@@ -35,7 +35,7 @@
     "session_url": "https://claude.ai/code/cse_014HXp6rX3aGSB6nf5hmQpXi",
     "verdict": "APPROVE"
   },
-  "next_action": "PR #21 fixes Justin's vc6/b12 batch: contact row dead tap (mailto now via OS intent router + no-mail-app fallback sheet, 19 locales), sound preview never stopping (resume-only-if-playing + pause-before-remove), low-quality focus sounds (regenerated from committed deterministic generator — 44.1kHz, -18dBFS, seamless). Open for human merge; after merge: vc7/b13 internal builds for re-test. Gate-3 human console work unchanged: declarations (RR-10/12), agreements (RR-09), IAP/ad caps (RR-14), RR-19 device re-test; observability RR-04..08,15-18 by deadlines.",
+  "next_action": "PR #21 fixes Justin's vc6/b12 batch + one E2E-found wedge: contact row dead tap (OS intent router + no-mail-app fallback sheet, 19 locales), sound preview never stopping (resume-only-if-playing + pause-before-remove), low-quality focus sounds (regenerated via committed deterministic generator \u2014 44.1kHz, -18dBFS, seamless), and the contact-fallback 'Visit appsindie.com' button now hands off to real Safari (Linking.openURL) \u2014 presenting a browser over a mid-dismissal RN Modal reproducibly wedged all touches on iOS sim (InteractionManager deferral does NOT fix it). iOS-sim E2E green (PR comment 6108799390); Android emulator verification running on Linux child session. Open for human merge; after merge: vc7/b13 internal builds for re-test. Gate-3 human console work unchanged: declarations (RR-10/12), agreements (RR-09), IAP/ad caps (RR-14), RR-19 device re-test; observability RR-04..08,15-18 by deadlines.",
   "open_exceptions": [
     {
       "blocking": true,
@@ -122,7 +122,7 @@
       "id": "RR-11",
       "owner": "justin.nguyen@appsindie.com",
       "severity": "high",
-      "title": "Internal testing builds delivered — iOS b10 on TestFlight, Android vc5 on Play internal",
+      "title": "Internal testing builds delivered \u2014 iOS b10 on TestFlight, Android vc5 on Play internal",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     },
     {
@@ -199,7 +199,7 @@
       "id": "RR-19",
       "owner": "justin.nguyen@appsindie.com",
       "severity": "high",
-      "title": "SIT waiver re-test condition — device items untested",
+      "title": "SIT waiver re-test condition \u2014 device items untested",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     },
     {
@@ -220,5 +220,5 @@
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-10-11T15:20:00Z"
+  "updated_at": "2026-10-11T12:01:14Z"
 }
