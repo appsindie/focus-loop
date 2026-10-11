@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
+import { Linking, Pressable, ScrollView, StyleSheet, Switch, Text, View } from "react-native";
 import * as WebBrowser from "expo-web-browser";
 import { SafeAreaView } from "../../shared/ui/SafeAreaView";
 import { t } from "../../i18n";
@@ -10,7 +10,14 @@ import { Appearance, DisplayMode, Settings } from "./SettingsStore";
 import { catalogueItem } from "../personalize/catalogue";
 import { PLUS_PRODUCT_IDS } from "../plus/plusProducts";
 import { resolveRhythm } from "../loop/rhythm";
-import { CONTACT_URL, LICENSES_URL, PRIVACY_URL, TERMS_URL } from "./about";
+import {
+  CONTACT_EMAIL,
+  CONTACT_URL,
+  LICENSES_URL,
+  PRIVACY_URL,
+  STUDIO_URL,
+  TERMS_URL,
+} from "./about";
 
 export type AboutLink = "privacy" | "terms" | "licenses" | "contact";
 
@@ -266,6 +273,7 @@ export function SettingsScreen({
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
   const [adChoicesOpen, setAdChoicesOpen] = useState(false);
+  const [contactFallback, setContactFallback] = useState(false);
   // Phone: hub-and-detail — hub lists the sections (no vertical scroll per
   // J-style grouped list); tapping a section drills into its rows. Tablet
   // keeps the master–detail rail with "timer" preselected.
@@ -415,6 +423,18 @@ export function SettingsScreen({
     </>
   );
 
+  const openAboutLink = (link: (typeof ABOUT_LINKS)[number]) => {
+    if (link.id === "contact") {
+      // mailto is not a web page — it goes through the OS intent router, and
+      // when no mail app can take it the address is shown instead (vc6
+      // defect: routing mailto through the in-app browser made the row a
+      // dead tap on every device, mail app installed or not).
+      void Linking.openURL(link.url).catch(() => setContactFallback(true));
+      return;
+    }
+    openLink(link.url);
+  };
+
   const aboutRows = (
     <>
       {ABOUT_LINKS.map((link) => (
@@ -422,7 +442,7 @@ export function SettingsScreen({
           key={link.id}
           colors={colors}
           label={t(link.label)}
-          onPress={() => openLink(link.url)}
+          onPress={() => openAboutLink(link)}
         />
       ))}
       <Row
@@ -676,6 +696,53 @@ export function SettingsScreen({
             value={shareDiagnostics}
           />
         </View>
+      </Sheet>
+
+      {/* Contact fallback: no mail app on the device — show the address
+          (selectable so it can be copied) plus a way to reach the studio
+          site, which also lists the contact email. */}
+      <Sheet
+        visible={contactFallback}
+        onDismiss={() => setContactFallback(false)}
+        colors={colors}
+        accessibilityLabel={t("Contact & feedback")}
+      >
+        <Text style={[styles.sheetTitle, { color: colors.ink }]} allowFontScaling>
+          {t("Couldn't open an email app")}
+        </Text>
+        <Text style={[styles.sheetBody, { color: colors.muted }]} selectable allowFontScaling>
+          {t("Write to us at {email} — long-press to copy.", { email: CONTACT_EMAIL })}
+        </Text>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("Visit appsindie.com")}
+          onPress={() => {
+            // Real Safari/Chrome, not the in-app browser: presenting a
+            // browser while the Sheet modal is mid-dismissal leaves an
+            // invisible presentation layer eating every touch (iOS sim E2E,
+            // repro'd twice even deferred via InteractionManager). An
+            // external intent sidesteps the presentation race — and keeps
+            // the sheet's copyable address under it for when a browser
+            // can't be found either.
+            void Linking.openURL(STUDIO_URL).catch(() => {});
+          }}
+          style={({ pressed }) => [styles.sheetSecondary, pressed && { opacity: 0.55 }]}
+        >
+          <Text style={[styles.sheetSecondaryText, { color: colors.ink }]} allowFontScaling>
+            {t("Visit appsindie.com")}
+          </Text>
+        </Pressable>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("Close")}
+          onPress={() => setContactFallback(false)}
+          hitSlop={8}
+          style={({ pressed }) => [styles.sheetSecondary, pressed && { opacity: 0.55 }]}
+        >
+          <Text style={[styles.sheetSecondaryText, { color: colors.muted }]} allowFontScaling>
+            {t("Close")}
+          </Text>
+        </Pressable>
       </Sheet>
     </SafeAreaView>
   );

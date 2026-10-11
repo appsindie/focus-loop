@@ -11,13 +11,30 @@ import {
 const create = jest.mocked(createAudioPlayer);
 const setMode = jest.mocked(setAudioModeAsync);
 
-type FakePlayer = { play: jest.Mock; pause: jest.Mock; remove: jest.Mock; loop: boolean };
+type FakePlayer = {
+  play: jest.Mock;
+  pause: jest.Mock;
+  remove: jest.Mock;
+  loop: boolean;
+  playing: boolean;
+};
 let lastPlayer: FakePlayer;
 
 beforeEach(() => {
   stopFocusSound();
   create.mockReset().mockImplementation(() => {
-    lastPlayer = { play: jest.fn(), pause: jest.fn(), remove: jest.fn(), loop: false };
+    const player: FakePlayer = {
+      play: jest.fn(() => {
+        player.playing = true;
+      }),
+      pause: jest.fn(() => {
+        player.playing = false;
+      }),
+      remove: jest.fn(),
+      loop: false,
+      playing: false,
+    };
+    lastPlayer = player;
     return lastPlayer as never;
   });
 });
@@ -127,14 +144,67 @@ describe("previewFocusSound (picker tap-to-hear)", () => {
     stopSoundPreview();
     expect(create).toHaveBeenCalledTimes(1);
     expect(previewPlayer.remove).toHaveBeenCalledTimes(1);
+    expect(previewPlayer.pause).toHaveBeenCalledTimes(1);
   });
 
-  it("resumes the paused session sound when the preview ends", () => {
+  it("resumes a session sound that was playing when the preview ends", () => {
     startFocusSound("white-noise");
     const session = lastPlayer;
     previewFocusSound("brown-noise");
     session.play.mockClear();
     stopSoundPreview();
     expect(session.play).toHaveBeenCalledTimes(1);
+  });
+
+  it("leaves a paused session sound paused when the preview ends", () => {
+    // vc6 defect: the hand-back resumed unconditionally — a paused session's
+    // loop restarted on every preview end and nothing stopped it again.
+    startFocusSound("white-noise");
+    const session = lastPlayer;
+    pauseFocusSound();
+    previewFocusSound("brown-noise");
+    session.play.mockClear();
+    stopSoundPreview();
+    expect(session.play).not.toHaveBeenCalled();
+  });
+
+  it("stops the preview player by pausing before removing", () => {
+    previewFocusSound("white-noise");
+    const previewPlayer = lastPlayer;
+    stopSoundPreview();
+    expect(previewPlayer.pause).toHaveBeenCalledTimes(1);
+    expect(previewPlayer.remove).toHaveBeenCalledTimes(1);
+  });
+
+  it("removes the orphaned player and restores the session when play() throws", () => {
+    // Review F1: a player whose play() throws after createAudioPlayer used
+    // to leak — native object released nowhere — and left the session we
+    // paused without its hand-back.
+    startFocusSound("white-noise");
+    const session = lastPlayer;
+    create.mockImplementationOnce(() => {
+      const bad: FakePlayer = {
+        play: jest.fn(() => {
+          throw new Error("native play failed");
+        }),
+        pause: jest.fn(() => {
+          bad.playing = false;
+        }),
+        remove: jest.fn(),
+        loop: false,
+        playing: false,
+      };
+      lastPlayer = bad;
+      return bad as never;
+    });
+    previewFocusSound("brown-noise");
+    const bad = lastPlayer;
+    expect(bad.pause).toHaveBeenCalledTimes(1);
+    expect(bad.remove).toHaveBeenCalledTimes(1);
+    // Session was playing at preview start → it gets its play() back.
+    expect(session.play).toHaveBeenCalledTimes(2); // start + hand-back
+    // The failed preview holds no state for the next one.
+    previewFocusSound("rain-on-window");
+    expect(lastPlayer.play).toHaveBeenCalledTimes(1);
   });
 });

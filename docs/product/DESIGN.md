@@ -138,6 +138,8 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
 - Choosing a locked item opens the trial card: "Try X for 24 hours" with **Watch video** and **Get Plus**.
 - Rewarded video plays only after an explicit tap. Load failure → toast "Couldn't load the video. Try again".
 - Plus-only sounds are labelled "Plus".
+- Tapping an unlocked sound plays a ~4 s preview that pauses a live session sound; the preview ends itself,
+  dies with the screen, and hands back to the session only if it was playing before.
 
 ### P16 Welcome to Plus
 
@@ -164,6 +166,8 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
   · "Focus Loop · Version x.y.z (build n)".
 - Changes save immediately. There is no Save button.
 - "Delete all data…" asks for confirmation.
+- Legal links open in the in-app browser; Contact & feedback opens the OS mail composer — when the device
+  has no mail app, a sheet shows the address (selectable) and a link to appsindie.com.
 
 ### P21 Rhythm / P22 Reminders
 

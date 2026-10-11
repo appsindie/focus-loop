@@ -469,6 +469,8 @@ Design reference per screen is `design/png/<name>.png` rendered from `design/sou
 - **Data**: disc-colour radio swatches (locked = lock badge + "try with an ad" name), focus sounds (Plus-only labelled "Plus"), trial card "Try X for 24 hours" with Watch video / Get Plus.
 - **Primary action**: select item or start rewarded video.
 - **Rules**: R1 Rewarded only on explicit tap; 24h local trial (J8-R2). R2 Load failure -> toast, retry allowed.
+  R3 Tapping an unlocked sound plays a ~4-second loop preview that stops on exit; it pauses a live session
+  sound and restores it only if it was playing.
 - **Metric**: rewarded completion rate. **Design**: `P15-Themes`.
 
 ## SCR-plus-welcome — P16
@@ -512,6 +514,8 @@ Design reference per screen is `design/png/<name>.png` rendered from `design/sou
 - **Data**: per J10-R2 order (Show time as · Appearance · Rhythm · Weekly goal · auto-breaks · Show seconds · Vibrate · Themes & sounds · Reminders · Plus card + Restore · Your data · About · version).
 - **Primary action**: back to Home.
 - **Rules**: R1 Saves immediately. R2 App-blocking toggle explains before the system permission ask. R3 "Delete all data…" confirms.
+  R4 Legal links open in the in-app browser; Contact & feedback opens the OS mail composer, falling back to an
+  in-app sheet with the address + studio site when no mail app exists.
 - **Design**: `P20-Settings`, tablet `T05` master–detail.
 
 ## SCR-rhythm — P21

@@ -88,8 +88,12 @@ export function pauseFocusSound(): void {
 // user hears what they picked before the next focus session. Uses its own
 // player — never touches `current` — except pausing a live session sound so
 // the two don't double up; stopSoundPreview hands playback back explicitly.
+// The hand-back restores by the state CAPTURED at preview start — resuming
+// unconditionally (vc6 defect) un-paused a paused session's loop with no
+// timer left to stop it, so the sound played forever.
 const PREVIEW_MS = 4000;
 let preview: { player: AudioPlayer; timer: ReturnType<typeof setTimeout> } | null = null;
+let resumeSessionAfterPreview = false;
 
 export function stopSoundPreview(): void {
   if (preview == null) {
@@ -97,25 +101,29 @@ export function stopSoundPreview(): void {
   }
   clearTimeout(preview.timer);
   try {
+    // pause() before remove(): even if the native release misbehaves, a
+    // paused player cannot keep sounding.
+    preview.player.pause();
     preview.player.remove();
   } catch {
     // best-effort
   }
   preview = null;
   // Explicit hand-back: start whatever the controller asked for during the
-  // preview, else resume the session sound we paused — no reliance on the
-  // controller's render loop firing again.
+  // preview, else resume the session sound we paused — but only when it was
+  // actually playing before the preview ducked it.
   if (pendingFocusSound != null) {
     const next = pendingFocusSound;
     pendingFocusSound = null;
     startFocusSound(next);
-  } else if (current != null) {
+  } else if (resumeSessionAfterPreview && current != null) {
     try {
       current.player.play();
     } catch {
       // best-effort
     }
   }
+  resumeSessionAfterPreview = false;
 }
 
 export function previewFocusSound(id: string): void {
@@ -124,14 +132,36 @@ export function previewFocusSound(id: string): void {
   if (source == null) {
     return;
   }
+  let player: AudioPlayer | null = null;
   try {
     ensureAudioMode();
+    resumeSessionAfterPreview = current != null && current.player.playing === true;
     pauseFocusSound();
-    const player = createAudioPlayer(source);
+    player = createAudioPlayer(source);
     player.loop = true;
     player.play();
     preview = { player, timer: setTimeout(stopSoundPreview, PREVIEW_MS) };
+    player = null; // ownership moved into `preview`
   } catch {
+    // A created-but-never-started player must not orphan a native media
+    // object; a stale resume flag must not survive into the next preview's
+    // hand-back; and the session we paused still deserves its play() back.
+    if (player != null) {
+      try {
+        player.pause();
+        player.remove();
+      } catch {
+        // best-effort
+      }
+    }
+    if (resumeSessionAfterPreview && current != null) {
+      try {
+        current.player.play();
+      } catch {
+        // best-effort
+      }
+    }
+    resumeSessionAfterPreview = false;
     preview = null;
   }
 }
@@ -139,6 +169,7 @@ export function previewFocusSound(id: string): void {
 export function stopFocusSound(): void {
   pendingFocusSound = null;
   try {
+    current?.player.pause();
     current?.player.remove();
   } catch {
     // best-effort

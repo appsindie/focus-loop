@@ -3,9 +3,11 @@
 // the ad-choices sheet (J10-R5).
 import { describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
+import { Linking } from "react-native";
 import { palette } from "../../shared/theme";
 import { DEFAULT_SETTINGS, type Settings } from "./SettingsStore";
 import { SettingsScreen } from "./SettingsScreen";
+import { CONTACT_URL, STUDIO_URL } from "./about";
 
 const SETTINGS: Settings = { ...DEFAULT_SETTINGS, displayMode: "disc" };
 
@@ -131,5 +133,49 @@ describe("SettingsScreen (P20)", () => {
     await fireEvent.press(getByLabelText("Ad choices & tracking"));
     await fireEvent(getByLabelText("Toggle ad tracking"), "onValueChange", false);
     expect(props.onSetAllowTracking).toHaveBeenCalledWith(false);
+  });
+
+  it("contact goes through the OS intent router, not the in-app browser", async () => {
+    // vc6 defect: mailto routed through WebBrowser was a dead tap on every
+    // device. Legal https links still open the in-app browser.
+    const openURL = jest.spyOn(Linking, "openURL").mockResolvedValue(true);
+    const { screen } = await renderScreen();
+    await drill(screen, "About & legal");
+    await fireEvent.press(screen.getByLabelText("Contact & feedback"));
+    expect(openURL).toHaveBeenCalledWith(CONTACT_URL);
+    openURL.mockRestore();
+  });
+
+  it("shows the contact fallback sheet when no mail app takes the intent", async () => {
+    const openURL = jest.spyOn(Linking, "openURL").mockRejectedValue(new Error("no handler"));
+    const { screen } = await renderScreen();
+    await drill(screen, "About & legal");
+    await fireEvent.press(screen.getByLabelText("Contact & feedback"));
+    // The rejected open resolves the fallback sheet with the address and a
+    // way out to the studio site.
+    await screen.findByLabelText("Visit appsindie.com");
+    await fireEvent.press(screen.getByLabelText("Close"));
+    expect(screen.queryByLabelText("Visit appsindie.com")).toBeNull();
+    openURL.mockRestore();
+  });
+
+  it("routes the studio link through the OS intent router, not the in-app browser", async () => {
+    // iOS sim E2E: an in-app browser presented over a mid-dismissal Sheet
+    // wedges the app behind an invisible presentation layer (repro'd even
+    // when deferred via InteractionManager). The external intent sidesteps
+    // the presentation race; the sheet stays under it as the copy path.
+    // mailto has no handler → sheet; https intents route through too.
+    const openURL = jest
+      .spyOn(Linking, "openURL")
+      .mockRejectedValueOnce(new Error("no handler"))
+      .mockResolvedValue(true);
+    const { screen } = await renderScreen();
+    await drill(screen, "About & legal");
+    await fireEvent.press(screen.getByLabelText("Contact & feedback"));
+    await screen.findByLabelText("Visit appsindie.com");
+    openURL.mockClear();
+    await fireEvent.press(screen.getByLabelText("Visit appsindie.com"));
+    expect(openURL).toHaveBeenCalledWith(STUDIO_URL);
+    openURL.mockRestore();
   });
 });
