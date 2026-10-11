@@ -163,7 +163,7 @@ P06/P07 Focus -> Pause -> P09 End-early sheet
 
 ```
 P24 Widget "Focus 25" -> P06/P07 Focus (skip Home)
-   -> P23 Live Activity (Android parity: foreground-service notification) + "Break time" notification -> P11 Break
+   -> P23 Live Activity (Android parity: persistent local notification, no foreground service) + "Break time" notification -> P11 Break
 ```
 
 **Journey rules**
@@ -320,7 +320,7 @@ OS kill -> relaunch -> P01 Splash
 
 **Journey rules**
 
-- R1: The countdown SHALL continue in the background (foreground service / local notification) so recovery knows real elapsed time.
+- R1: The countdown SHALL continue in the background (persisted timestamps + scheduled local notifications — no foreground service; dropped for the Play FGS-media declaration) so recovery knows real elapsed time.
 - R2: P13 SHALL confirm the session was saved with no blame copy.
 - R3: A recovered-then-ended session counts like any other partial/full session.
 
@@ -471,6 +471,8 @@ Design reference per screen is `design/png/<name>.png` rendered from `design/sou
 - **Rules**: R1 Rewarded only on explicit tap; 24h local trial (J8-R2). R2 Load failure -> toast, retry allowed.
   R3 Tapping an unlocked sound plays a ~4-second loop preview that stops on exit; it pauses a live session
   sound and restores it only if it was playing.
+  R4 A session focus sound pauses when the app is backgrounded (`shouldPlayInBackground: false`); the
+  timer, recovery and step-boundary notifications are unaffected.
 - **Metric**: rewarded completion rate. **Design**: `P15-Themes`.
 
 ## SCR-plus-welcome — P16
@@ -537,7 +539,7 @@ Design reference per screen is `design/png/<name>.png` rendered from `design/sou
 
 - **Intent**: keep the loop visible outside the app.
 - **Data**: follows display choice — disc + intention + "about X min", or numbers + "Break at HH:MM"; Pause action; notifications "Break time", "Back to it", "Time to focus" — no marketing notifications.
-- **Rules**: R1 iOS Live Activity for the running focus/break. R2 Android parity via the foreground-service notification.
+- **Rules**: R1 iOS Live Activity for the running focus/break. R2 Android parity via a persistent local notification (no `FOREGROUND_SERVICE*` permissions — removed so Play shows no FGS declaration).
 - **Design**: `P23-LockScreen` (board).
 
 ## P24 — Widgets (surface)
@@ -565,7 +567,7 @@ Design reference per screen is `design/png/<name>.png` rendered from `design/sou
 | Privacy       | No account, analytics pseudonymised, no PII on servers                | No backend in MVP                 |
 | Accessibility | >= 44x44 dp targets, Dynamic Type (timer capped 1.3x), Reduced Motion | ADHD / accessibility persona      |
 
-Deferred (open questions, not invented): Wear OS / Apple Watch. iOS Live Activity is designed (P23); Android equivalent is the persistent foreground notification.
+Deferred (open questions, not invented): Wear OS / Apple Watch. iOS Live Activity is designed (P23); Android equivalent is the persistent local notification.
 
 ## Journey dependencies
 
@@ -590,7 +592,7 @@ J1+J2 are the minimum the rest builds on; monetisation and stats ride on them.
 | iOS ATT opt-in crushes eCPM                   | High   | Contextual pre-screen; frequency controlled in AdMob console; monitor ARPU as kill criterion.         |
 | IAP added to an ad-funded app confuses tiers  | Medium | Paywall only after value; rewarded trial is Plus preview; Plus removes every ad.                      |
 | Organic ASO too slow                          | Medium | Long-tail keywords first; shareable cards; widget word-of-mouth.                                      |
-| Timer killed by OS                            | Medium | Foreground service / persistent notification on Android; background timer + local notif on iOS.       |
+| Timer killed by OS                            | Medium | Persistent notification + scheduled local alerts on Android; background timer + local notif on iOS. |
 
 ## Open questions
 
