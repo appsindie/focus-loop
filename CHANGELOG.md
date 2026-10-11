@@ -17,7 +17,7 @@ All notable changes to this template are documented in this file.
 
 ### Waived for this release (sponsor, 2026-10-04)
 
-- Physical-device SIT and device failure-mode cases (RR-01/RR-02) — "app mới chưa có user"; iOS Simulator SIT pass evidence retained in the exception report.
+- Physical-device SIT and device failure-mode cases (EX-native-sit-waiver/EX-failure-mode-waiver) — "app mới chưa có user"; iOS Simulator SIT pass evidence retained in the exception report.
 
 ---
 

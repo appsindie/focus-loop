@@ -44,7 +44,7 @@ Claude shaping reviewer, verdict **approve-with-concerns** (session `cse_011AtNq
 - SR-02 (major): all J1–J10 in one cycle before any market signal → v2 split into **release slice** (J1–J4, J9 + trigger points, weekly-goal surfaces) and **fast-follow** (J7 Plus, J8, J5 reminders, J6 share, J10, Live Activity, tablet) gated on the slice's retention signal. Alternative (single v2, <=8-week estimate + sponsor sign-off) flagged for the sponsor at Gate 1.
 - SR-03 (major): weekly goal 4/7 (~17 days/month) vs Gate 0 "20 active days/month" → concept records the in-product goal as a motivational floor; the tracked metric stays >= 20 active days/month; OP-07 gains an instrumented check (share of actives at >= 5 days/week).
 - SR-04 (minor): ADR-003 gaps → new-user grace owned client-side by the Ad Broker (install-age suppression; AdMob caps stay the outer limiter); entitlement re-verified on app start + expiry via store queries, so lapse/refund revokes Plus without user action.
-- SR-05 (minor): RR-08 deadline silently changed → reverted to 2026-08-20; carried RR-* deadlines recorded as re-baselined at Phase 3 planning.
+- SR-05 (minor): EX-runbook-placeholders deadline silently changed → reverted to 2026-08-20; carried RR-* deadlines recorded as re-baselined at Phase 3 planning.
 
 Round-2 re-review (verdict **approve-with-concerns** again): SR-03/04/05 resolved; two follow-up findings, both applied:
 
