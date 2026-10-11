@@ -39,7 +39,7 @@
 
 ## Native-device SIT additions (J4/J6 surfaces — reviewers CR-15..24)
 
-These cases cannot run in jest or the web preview; they ride on the RR-01 native SIT build before Gate 3.
+These cases cannot run in jest or the web preview; they ride on the EX-native-sit-waiver native SIT build before Gate 3.
 
 | Step | Action | Expected result | Source |
 | --- | --- | --- | --- |

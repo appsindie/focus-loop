@@ -26,7 +26,7 @@
 
 ## Dashboards
 
-No custom dashboard for v1 (RR-15, option B accepted): each SLI is watched in
+No custom dashboard for v1 (EX-dashboards, option B accepted): each SLI is watched in
 its vendor console. Links to check during rollout:
 
 | Surface | Console entry | Shows |
@@ -38,9 +38,9 @@ its vendor console. Links to check during rollout:
 
 ## Escalation
 
-Alerting is console-native + a manual check cadence (RR-16/RR-17, option B).
+Alerting is console-native + a manual check cadence (EX-halt-thresholds/EX-rollback-triggers, option B).
 Crashlytics is wired, so the Firebase console is the crash-detail source;
-its email alerts can be enabled per alert type (RR-05/RR-17 follow-up):
+its email alerts can be enabled per alert type (EX-alerts-not-wired/EX-rollback-triggers follow-up):
 
 | Alert                          | Severity | Route                                                        | Wakes a human |
 | ------------------------------ | -------- | ------------------------------------------------------------ | ------------- |
@@ -49,5 +49,5 @@ its email alerts can be enabled per alert type (RR-05/RR-17 follow-up):
 | Ad load failure rate spike     | medium   | AdMob console daily check                                    | no            |
 
 Manual-check cadence: owner checks the consoles once a day while any
-staged rollout is running (RR-16 option B). Enabling Crashlytics email
-alerts + any Slack route is the RR-05/RR-17 follow-up.
+staged rollout is running (EX-halt-thresholds option B). Enabling Crashlytics email
+alerts + any Slack route is the EX-alerts-not-wired/EX-rollback-triggers follow-up.

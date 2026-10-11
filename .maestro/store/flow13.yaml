@@ -1,0 +1,8 @@
+appId: com.appsindie.focusloop
+---
+# WelcomeBack up; dismiss toast X (92%,96%), wait for fade, then 04.
+- tapOn:
+    point: "92%,96%"
+- waitForAnimationToEnd:
+    timeout: 4000
+- takeScreenshot: 04-welcome-back

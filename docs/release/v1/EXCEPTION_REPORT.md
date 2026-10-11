@@ -4,7 +4,7 @@
 
 **not ready** — v1.0.0, surfaces ios/android
 
-- Re-audited 2026-10-04 at release/1.0.0 head. Checks run: 26 — passed: 9, waived: 3 (RR-01, RR-02 sponsor waiver + the third-party-sandbox row folded under it), failed-and-remediated: 0, manual: 0, exception rows: 14. Open exceptions: 14 (RR-04..RR-10, RR-12, RR-14..RR-19). RR-13 resolved (release notes + changelog). RR-11 resolved (iOS 1.0.0 build 8 on TestFlight).
+- Re-audited 2026-10-04 at release/1.0.0 head. Checks run: 26 — passed: 9, waived: 3 (EX-native-sit-waiver, EX-failure-mode-waiver sponsor waiver + the third-party-sandbox row folded under it), failed-and-remediated: 0, manual: 0, exception rows: 14. Open exceptions: 13 (EX-north-star-events..EX-runbook-placeholders, EX-store-declarations, EX-data-safety, EX-console-products..EX-sit-retest-devices). EX-release-record resolved (release notes + changelog). EX-internal-test-build resolved (iOS 1.0.0 build 8 on TestFlight).
 - Gate 2 status: **open — human signature pending on this PR** (sponsor waived SIT verbally 2026-10-04; the waiver is recorded but the gate stays open until the owner signs here).
 - Gate 3 decision needed: **yes**
 
@@ -12,28 +12,28 @@
 
 | ID    | Title                                                             | Rows covered            | Owner                       | Deadline   | Default |
 | ----- | ----------------------------------------------------------------- | ----------------------- | --------------------------- | ---------- | ------- |
-| RR-01 | Native device SIT not run — **waived 2026-10-04**                 | SIT regression          | justin.nguyen@appsindie.com | —          | waived  |
-| RR-02 | Failure-mode cases not verified — **waived 2026-10-04**           | Failure-mode cases      | justin.nguyen@appsindie.com | —          | waived  |
-| RR-04 | North-star analytics events not wired                             | North-star events       | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| RR-05 | Alerts not wired or test-fired                                    | Alerts wired            | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| RR-06 | Rollback command not finalized (owner named)                      | Rollback command        | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| RR-07 | Rollback not rehearsed                                            | Rollback rehearsed      | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| RR-08 | Runbook procedures still placeholders                             | Runbook                 | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| RR-09 | Store agreements not verified                                     | Store agreements        | justin.nguyen@appsindie.com | 2026-10-06 | block   |
-| RR-10 | Store declarations not completed                                  | Declarations            | justin.nguyen@appsindie.com | 2026-10-06 | block   |
-| RR-11 | Internal testing build not produced — **resolved 2026-10-05**   | Internal testing        | justin.nguyen@appsindie.com | —          | —       |
-| RR-12 | Privacy / data-safety declaration not completed                   | Privacy delta           | justin.nguyen@appsindie.com | 2026-10-06 | block   |
-| RR-13 | Release record — **resolved 2026-10-04**                          | Release notes, Changelog, Traceability | justin.nguyen@appsindie.com | — | done |
-| RR-14 | EAS / portal credentials and console products not fully provisioned | Credentials           | justin.nguyen@appsindie.com | 2026-10-06 | block   |
-| RR-15 | Dashboards not created                                            | Dashboards              | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| RR-16 | Rollout halt thresholds not wired to alerts                       | Rollout halt thresholds | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| RR-17 | Rollback trigger conditions not wired                             | Trigger conditions      | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| RR-18 | Escalation path not defined                                       | Escalation path         | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| RR-19 | SIT waiver re-test condition — device items untested               | (waiver condition)      | justin.nguyen@appsindie.com | 2026-10-11 | block   |
+| EX-native-sit-waiver | Native device SIT not run — **waived 2026-10-04**                 | SIT regression          | justin.nguyen@appsindie.com | —          | waived  |
+| EX-failure-mode-waiver | Failure-mode cases not verified — **waived 2026-10-04**           | Failure-mode cases      | justin.nguyen@appsindie.com | —          | waived  |
+| EX-north-star-events | North-star analytics events not wired                             | North-star events       | justin.nguyen@appsindie.com | 2026-10-11 | block   |
+| EX-alerts-not-wired | Alerts not wired or test-fired                                    | Alerts wired            | justin.nguyen@appsindie.com | 2026-10-11 | block   |
+| EX-rollback-command | Rollback command not finalized (owner named)                      | Rollback command        | justin.nguyen@appsindie.com | 2026-10-11 | block   |
+| EX-rollback-rehearsal | Rollback not rehearsed                                            | Rollback rehearsed      | justin.nguyen@appsindie.com | 2026-10-11 | block   |
+| EX-runbook-placeholders | Runbook procedures still placeholders                             | Runbook                 | justin.nguyen@appsindie.com | 2026-10-11 | block   |
+| EX-store-agreements | Store agreements — **resolved 2026-10-11**                       | Store agreements        | justin.nguyen@appsindie.com | —          | done    |
+| EX-store-declarations | Store declarations not completed                                  | Declarations            | justin.nguyen@appsindie.com | 2026-10-06 | block   |
+| EX-internal-test-build | Internal testing build not produced — **resolved 2026-10-05**   | Internal testing        | justin.nguyen@appsindie.com | —          | —       |
+| EX-data-safety | Privacy / data-safety declaration not completed                   | Privacy delta           | justin.nguyen@appsindie.com | 2026-10-06 | block   |
+| EX-release-record | Release record — **resolved 2026-10-04**                          | Release notes, Changelog, Traceability | justin.nguyen@appsindie.com | — | done |
+| EX-console-products | EAS / portal credentials and console products not fully provisioned | Credentials           | justin.nguyen@appsindie.com | 2026-10-06 | block   |
+| EX-dashboards | Dashboards not created                                            | Dashboards              | justin.nguyen@appsindie.com | 2026-10-11 | block   |
+| EX-halt-thresholds | Rollout halt thresholds not wired to alerts                       | Rollout halt thresholds | justin.nguyen@appsindie.com | 2026-10-11 | block   |
+| EX-rollback-triggers | Rollback trigger conditions not wired                             | Trigger conditions      | justin.nguyen@appsindie.com | 2026-10-11 | block   |
+| EX-escalation-path | Escalation path not defined                                       | Escalation path         | justin.nguyen@appsindie.com | 2026-10-11 | block   |
+| EX-sit-retest-devices | SIT waiver re-test condition — device items untested               | (waiver condition)      | justin.nguyen@appsindie.com | 2026-10-11 | block   |
 
 ## Waiver records (closed exceptions)
 
-### RR-01. Native device SIT not run — waived
+### EX-native-sit-waiver. Native device SIT not run — waived
 
 - **Decision**: waive the pre-release native-device SIT cycle for v1.0.0.
 - **Decided by**: justin.nguyen@appsindie.com, 2026-10-04, verbatim: "k sit, làm release luôn đi. app mới chưa có user mà sit gì men" (no users yet — SIT adds nothing pre-release).
@@ -43,9 +43,9 @@
 - **Re-test condition**: these items must be exercised during internal testing (TestFlight / Play internal) **before any production promotion**. Internal testing is the de-facto SIT for v1.
 - **Owner**: justin.nguyen@appsindie.com
 
-### RR-02. Failure-mode cases not verified — waived
+### EX-failure-mode-waiver. Failure-mode cases not verified — waived
 
-- **Decision**: waive pre-release device failure-mode verification (same sponsor decision as RR-01).
+- **Decision**: waive pre-release device failure-mode verification (same sponsor decision as EX-native-sit-waiver).
 - **Decided by**: justin.nguyen@appsindie.com, 2026-10-04 (same quote).
 - **Partial evidence retained**: cancel regression passed on web preview; ATT denial verified on simulator ("Ask App Not to Track" → non-personalized banner still loads); store-product fetch failure degrades to fallback prices on the paywall.
 - **Deliberately untested**: ad load-failure UI on device, notification permission denial flow, offline edge cases, IAP sandbox purchase failure paths.
@@ -54,7 +54,7 @@
 
 ## Open exceptions
 
-### RR-04. North-star analytics events not wired
+### EX-north-star-events. North-star analytics events not wired
 
 - **Situation**: `apps/mobile/src/features/analytics/events.ts` exists as a thin hook but no analytics backend is connected, so north-star events (days-focused per week, retention) are not collected anywhere. **Progress 2026-10-04 (option A)**: sponsor supplied `GoogleService-Info.plist` / `google-services.json` (project `focus-loop-3db4a`); `@react-native-firebase/app+analytics+crashlytics` wired — `setEventSink` forwards all 15 events to `logEvent`, Crashlytics auto-captures on init (verified: `RNFBCrashlyticsInit initialization successful` in the iOS sim boot log). **Consent decision**: Analytics + Crashlytics collect pseudonymous app-instance data by default from first launch — no separate consent screen; ATT governs ad tracking only (recorded here per code-review CR-2). Remaining for closure: first real event rows seen in the Firebase console after a build runs.
 - **Options**: A — wire Firebase Analytics event export before Gate 3. B — defer to post-launch growth phase.
@@ -63,7 +63,7 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-11 (before production rollout)
 
-### RR-05. Alerts not wired or test-fired
+### EX-alerts-not-wired. Alerts not wired or test-fired
 
 - **Situation**: `docs/release/SLO_AND_ALERTING.md` defines SLOs (crash-free 99.9%, ANR <0.3%, ad-fail <5%) but no alert exists in Crashlytics / Play Console / AdMob, and none has been test-fired.
 - **Options**: A — create alerts and test-fire them before Gate 3. B — wire alerts after the first internal-testing build ships.
@@ -72,16 +72,16 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-11 (before production rollout)
 
-### RR-06. Rollback command not finalized (owner named)
+### EX-rollback-command. Rollback command not finalized (owner named)
 
 - **Situation**: Rollback owner is named in `RUNBOOK_mobile.md` (justin.nguyen@appsindie.com). Mobile binaries cannot be recalled, so the rollback action is halt-rollout + hotfix; the halt step is written as console/API actions but has not been executed end-to-end.
 - **Options**: A — rehearse the halt + hotfix sequence on the internal track before Gate 3. B — treat the first internal-test build as the rehearsal.
-- **Recommendation**: B — the internal build is the natural rehearsal vehicle (see RR-07).
+- **Recommendation**: B — the internal build is the natural rehearsal vehicle (see EX-rollback-rehearsal).
 - **Default if you say nothing**: blocks production rollout.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-11 (before production rollout)
 
-### RR-07. Rollback not rehearsed
+### EX-rollback-rehearsal. Rollback not rehearsed
 
 - **Situation**: No EAS build exists yet, so the halt + hotfix flow has never been exercised.
 - **Options**: A — rehearse during internal testing. B — full dress rehearsal before Gate 3.
@@ -90,7 +90,7 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-11 (before 100% rollout)
 
-### RR-08. Runbook procedures still placeholders
+### EX-runbook-placeholders. Runbook procedures still placeholders
 
 - **Situation**: `docs/release/RUNBOOK_mobile.md` has owner, operate and diagnose rows, but the diagnose table and escalate routes are not yet validated against a real incident.
 - **Options**: A — complete during internal testing with the first real signals. B — block Gate 3 until fully written.
@@ -99,8 +99,9 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-11 (before production rollout)
 
-### RR-09. Store agreements not verified
+### EX-store-agreements. Store agreements — resolved 2026-10-11
 
+- **Resolution**: owner confirmed account-level Apple/Google developer agreements (incl. paid-app agreements, tax/banking) already in place from previously shipped AppsIndie apps.
 - **Situation**: Apple / Google developer agreements, tax/banking and paid-app agreements have not been verified by a human on either portal.
 - **Options**: A — verify before Gate 3. B — verify before store submission.
 - **Recommendation**: B is acceptable; A removes a blocking surprise at submission time.
@@ -108,7 +109,7 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-06 (before first submission)
 
-### RR-10. Store declarations not completed
+### EX-store-declarations. Store declarations not completed
 
 - **Situation**: Age rating, app-store permission/ATT/ads declarations not yet completed on either console. Legal pages exist at `appsindie.com/docs/legal/focus-loop/{privacy,tnc,disclaimer,licenses}` (appsindie-landing#5). **Progress 2026-10-04**: all form answers drafted in `docs/release/v1/STORE_DECLARATIONS.md` — owner copies them into the consoles.
 - **Options**: A — complete before Gate 3. B — complete before public store submission; internal testing does not require them.
@@ -117,12 +118,12 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-06 (before public submission)
 
-### RR-11. Internal testing build not produced — resolved 2026-10-05
+### EX-internal-test-build. Internal testing build not produced — resolved 2026-10-05
 
 - **Resolution**: sponsor go-ahead "go" (2026-10-05) — `eas build --platform ios --profile production` → build `d19deb41` (app version 1.0.0, build number 8) submitted to TestFlight via `eas submit` (`submit.production`, ASC API key `KHJLUQ98Z9`). Artifact includes Firebase Analytics + Crashlytics and all six production ad units (built from the PR #7 head). Android AAB pending — opens the Play product console, separately confirmed.
 - **Owner**: justin.nguyen@appsindie.com
 
-### RR-12. Privacy / data-safety declaration not completed
+### EX-data-safety. Privacy / data-safety declaration not completed
 
 - **Situation**: The app's actual data collection (local AsyncStorage, AdMob/ATT, Firebase Analytics — wired 2026-10-04) has not been mapped to a store data-safety declaration. **Progress 2026-10-04**: mapping drafted in `docs/release/v1/STORE_DECLARATIONS.md` (Play data-safety table + ASC App Privacy + ATT note, both updated for the wired Firebase SDKs); iOS `PrivacyInfo.xcprivacy` verified auto-generated correctly.
 - **Options**: A — complete before Gate 3. B — complete before public store submission.
@@ -131,25 +132,25 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-06 (before public submission)
 
-### RR-13. Release record — resolved 2026-10-04
+### EX-release-record. Release record — resolved 2026-10-04
 
 - **Resolution**: `docs/release/v1/RELEASE_NOTES.md` written (rollout/monitoring/rollback, compliance, traceability to PR #4 + J1–J10 + 297-test verify); `CHANGELOG.md` carries the v1.0.0 product entry.
 - **Owner**: justin.nguyen@appsindie.com
 
-### RR-19. SIT waiver re-test condition — device items untested
+### EX-sit-retest-devices. SIT waiver re-test condition — device items untested
 
-- **Situation**: The RR-01/02 waiver drops pre-release device SIT, but the items it names (haptics, real push, Live Activity, IAP sandbox purchase, ad-failure UI on device, notification-denial flow, offline edge cases) still have to be exercised somewhere — the waiver moves them to internal testing, it does not delete them.
+- **Situation**: The EX-native-sit-waiver/EX-failure-mode-waiver waiver drops pre-release device SIT, but the items it names (haptics, real push, Live Activity, IAP sandbox purchase, ad-failure UI on device, notification-denial flow, offline edge cases) still have to be exercised somewhere — the waiver moves them to internal testing, it does not delete them.
 - **Options**: A — exercise each item on the internal-testing build before production promotion and record the result on this report. B — drop silently.
 - **Recommendation**: A — internal testing is the de-facto SIT; the waiver is void if the items are never run.
 - **Default if you say nothing**: blocks production promotion (internal testing itself is unblocked).
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-11 (before production promotion)
 
-### RR-14. EAS / portal credentials and console products not fully provisioned
+### EX-console-products. EAS / portal credentials and console products not fully provisioned
 
 - **Situation**: `EXPO_TOKEN` valid (account tuan3.nguyen@gmail.com). ASC app "Your Focus Loop" (id 6818991496) exists; ASC API key works (app visible via API). `EXPO_APPLE_ID`, iOS distribution credentials and EAS env vars (`ANDROID_SERVICE_ACCOUNT_JSON`, `IOS_STORE_CONNECT_P8`, `EXPO_APPLE_ID`) still to be provisioned on the EAS project. Console products:
   - IAP `com.appsindie.focusloop.plus.yearly` (auto-renewable, 7-day trial, $19.99) and `com.appsindie.focusloop.plus.lifetime` (non-consumable, $49.99) — sponsor created the ids on ASC; Play products blocked until first AAB upload.
-  - AdMob rewarded unit for J8 24h-trial — production banner/interstitial ids exist (RR-03 resolved). **Progress 2026-10-05**: rewarded units wired on both platforms (iOS `…/6917716345`, Android `…/9703661782`).
+  - AdMob rewarded unit for J8 24h-trial — production banner/interstitial ids exist (EX-admob-prod-ids resolved). **Progress 2026-10-05**: rewarded units wired on both platforms (iOS `…/6917716345`, Android `…/9703661782`).
   - AdMob console frequency caps on the interstitial unit (sponsor decision: limits live server-side).
 - **Options**: A — provision before Gate 3. B — provision before first store submission.
 - **Recommendation**: A — without products, Plus and J8 trials cannot be exercised in internal testing.
@@ -157,7 +158,7 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-06 (before first submission)
 
-### RR-15. Dashboards not created
+### EX-dashboards. Dashboards not created
 
 - **Situation**: No dashboard exists for crash-free rate, ANR, or ad metrics. **Progress 2026-10-04**: `SLO_AND_ALERTING.md` now lists the vendor consoles that cover each SLI (ASC Metrics/Crashes, Play Vitals, AdMob reports) — the option-B resolution is written down; owner confirms the choice.
 - **Options**: A — create a minimal dashboard (Crashlytics + AdMob links collected in one place) before production rollout. B — rely on per-vendor consoles.
@@ -166,25 +167,25 @@
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-11 (before production rollout)
 
-### RR-16. Rollout halt thresholds not wired to alerts
+### EX-halt-thresholds. Rollout halt thresholds not wired to alerts
 
-- **Situation**: `SLO_AND_ALERTING.md` defines numeric halt thresholds per rollout stage, but they are not wired to a live alert — a breach would need manual watching of the consoles. **Progress 2026-10-04**: a concrete daily manual-check cadence is written into `SLO_AND_ALERTING.md` (option B); sources are Play Vitals + ASC Metrics + AdMob + the Firebase console (Crashlytics wired 2026-10-04 — email alerts can be enabled in the Firebase console as part of RR-05/RR-17).
+- **Situation**: `SLO_AND_ALERTING.md` defines numeric halt thresholds per rollout stage, but they are not wired to a live alert — a breach would need manual watching of the consoles. **Progress 2026-10-04**: a concrete daily manual-check cadence is written into `SLO_AND_ALERTING.md` (option B); sources are Play Vitals + ASC Metrics + AdMob + the Firebase console (Crashlytics wired 2026-10-04 — email alerts can be enabled in the Firebase console as part of EX-alerts-not-wired/EX-rollback-triggers).
 - **Options**: A — wire Crashlytics/Play Console alerts to the thresholds before production rollout. B — manual daily check during staged rollout (owner does it).
 - **Recommendation**: B is honest for a low-volume first release if the owner commits to the daily check; A before any paid push.
 - **Default if you say nothing**: blocks production rollout.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-11 (before production rollout)
 
-### RR-17. Rollback trigger conditions not wired
+### EX-rollback-triggers. Rollback trigger conditions not wired
 
-- **Situation**: The conditions that trigger a rollback decision (SLO breaches in `SLO_AND_ALERTING.md`) are documented but not connected to an alerting channel that wakes the owner. **Progress 2026-10-04**: escalation routes drafted (owner daily check + Play Console auto-email on crash spikes); a real alert channel still needs an SDK or wiring — tracked under RR-04/RR-05.
-- **Options**: A — route Crashlytics alerts to email/Slack before production rollout. B — same manual daily check as RR-16.
+- **Situation**: The conditions that trigger a rollback decision (SLO breaches in `SLO_AND_ALERTING.md`) are documented but not connected to an alerting channel that wakes the owner. **Progress 2026-10-04**: escalation routes drafted (owner daily check + Play Console auto-email on crash spikes); a real alert channel still needs an SDK or wiring — tracked under EX-north-star-events/EX-alerts-not-wired.
+- **Options**: A — route Crashlytics alerts to email/Slack before production rollout. B — same manual daily check as EX-halt-thresholds.
 - **Recommendation**: A — Crashlytics email alerts are free and one-time setup.
 - **Default if you say nothing**: blocks production rollout.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-11 (before production rollout)
 
-### RR-18. Escalation path not defined
+### EX-escalation-path. Escalation path not defined
 
 - **Situation**: `SLO_AND_ALERTING.md` escalation routes were `TBD`. **Progress 2026-10-04**: routes now written — owner daily console check during rollout + Play Console auto-emails for crash spikes; the waking-human channel is the account-owner email.
 - **Options**: A — record the owner's contact route (email/Slack) in `SLO_AND_ALERTING.md` before production rollout. B — n/a for internal testing.
@@ -196,7 +197,7 @@
 ## What ships
 
 - Focus Loop v1.0.0: no-account focus–break loop (Disc/Numbers, weekly goal 4-of-7 replacing streak), widgets + Live Activity, reminders, share card, Plus (Yearly $19.99 7-day trial / Lifetime $49.99), rewarded 24h theme/sound trials, session history, local notifications, and AdMob banner + interstitial ads.
-- Rollout plan: internal testing first (TestFlight + Play internal track, full cohort — internal tracks are not percentage-staged). After internal testing clears the waived RR-01/02 items, the owner promotes to production and runs the staged rollout 5% → 25% → 100% per `docs/release/SLO_AND_ALERTING.md`.
+- Rollout plan: internal testing first (TestFlight + Play internal track, full cohort — internal tracks are not percentage-staged). After internal testing clears the waived EX-native-sit-waiver/EX-failure-mode-waiver items, the owner promotes to production and runs the staged rollout 5% → 25% → 100% per `docs/release/SLO_AND_ALERTING.md`.
 - Build/submission model: `.eas/workflows/release.yml` is `workflow_dispatch`-only — pushing to `release/*` does **not** build or submit. Every build and every submission is a separate confirmed go-ahead.
 - Rollback: mobile binary cannot be recalled; rollout is halted and a hotfix is submitted. Owner and command in `RUNBOOK_mobile.md`.
 - Store submission and promotion to production App Store / Play Store remains a human action after Gate 3; this release artifact does not perform a store submission.
@@ -206,7 +207,7 @@
 | Risk                                                             | Accepted by                 | Date       | Revisit at                                                                   |
 | ---------------------------------------------------------------- | --------------------------- | ---------- | ---------------------------------------------------------------------------- |
 | AdMob SDK collecting device/usage data per Google/Apple policies | justin.nguyen@appsindie.com | 2026-08-08 | Before store submission (`docs/security/ads-integration-security-review.md` — predates production AdMob IDs and `write-store-credentials.sh`; refresh before production promotion if the ad config changes again) |
-| No pre-release device SIT (RR-01/02 waiver)                      | justin.nguyen@appsindie.com | 2026-10-04 | Internal testing before any production promotion                             |
+| No pre-release device SIT (EX-native-sit-waiver/EX-failure-mode-waiver waiver)                      | justin.nguyen@appsindie.com | 2026-10-04 | Internal testing before any production promotion                             |
 
 ## After the release
 

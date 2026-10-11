@@ -1,0 +1,13 @@
+appId: com.appsindie.focusloop
+---
+# Home → Start focus → 01-focus-running → end-early sheet → 05-end-early
+- extendedWaitUntil:
+    visible: "Start a 25-minute focus"
+    timeout: 8000
+- tapOn: "Start a 25-minute focus"
+- extendedWaitUntil:
+    visible: "End early…"
+    timeout: 8000
+- takeScreenshot: 01-focus-running
+- tapOn: "End early…"
+- takeScreenshot: 05-end-early

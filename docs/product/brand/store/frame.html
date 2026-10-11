@@ -1,0 +1,382 @@
+<!doctype html>
+<!--
+  Store frame template — copy to docs/product/brand/store/frame.html once per product
+  and replace the :root tokens with values from DESIGN.md. Fonts and background images
+  live next to it and are referenced relatively. Rendered by
+  .agents/skills/go-to-market/assets/render-store-frames.mjs; placeholders:
+  {{lang}} {{variant}} {{crop}} {{headline}} {{sub}} {{screenshot}}.
+
+  Sizing: --u is 1% of min(width, height / 2) in portrait and 1% of the height in
+  landscape, so one template serves iPhone 6.9", Play 9:16, iPad 13" and Play 16:9
+  tablets without the type blowing up on the wider canvases.
+
+  Layout: caption above the device in portrait, caption left of it in landscape. The
+  device is sized by __fit() to the space left under the caption, so it is never clipped
+  by accident; --device-mode: bleed lets it run off the bottom edge on purpose.
+
+  Variants (per frame, from the caption line — see render-store-frames.mjs):
+    standard  default
+    hero      bigger headline, up to 3 lines, shows .brand (fill it in below)
+    callout   adds a zoomed card of a region of the same capture
+-->
+<html lang="{{lang}}">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      /* Pin the product font so every host renders the same pixels; name it in
+     --font-required and __fit() fails the frame if it did not load. */
+      @font-face {
+        font-family: 'Host Grotesk';
+        font-weight: 300 800;
+        src: url(fonts/HostGrotesk-Variable.woff2) format('woff2');
+        unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6,
+          U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122,
+          U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+      }
+      @font-face {
+        font-family: 'Host Grotesk';
+        font-weight: 300 800;
+        src: url(fonts/HostGrotesk-LatinExt.woff2) format('woff2');
+        unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7,
+          U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
+          U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F,
+          U+A720-A7FF;
+      }
+      :root {
+        --bg: #141210;
+        --bg-image: none;
+        --headline: #F6F3EE;
+        --sub: #9A9289;
+        --accent: #FF6A2B;
+        --bezel: #000000;
+        --bezel-ring: rgba(255, 106, 43, 0.25);
+        --font:
+          'Host Grotesk', 'Noto Sans', 'Noto Sans CJK JP', system-ui,
+          sans-serif;
+        --font-required: 'Host Grotesk';
+        --headline-max-lines: 2;
+        --hero-max-lines: 3;
+        --sub-max-lines: 2;
+        --headline-min-ratio: 0.7; /* shrink the headline to at most 70% of its design size */
+        --device-mode: fit; /* fit | bleed */
+        --bleed-max: 0.2; /* bleed: at most 20% of the device may run off the edge */
+        --device-min-ratio: 0.42; /* fail when the device ends up narrower than 42% of the frame */
+        --screen-radius-ratio: 0.1; /* screen corner radius as a share of the screen width */
+        --u: calc(min(var(--w), var(--h) / 2) / 100);
+      }
+      @media (orientation: landscape) {
+        :root {
+          --u: calc(var(--h) / 100);
+          --device-min-ratio: 0.3;
+        }
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      html,
+      body {
+        width: var(--w);
+        height: var(--h);
+        overflow: hidden;
+      }
+      body {
+        background: var(--bg) var(--bg-image) center / cover no-repeat;
+        font-family: var(--font);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: calc(var(--u) * 6);
+        padding: calc(var(--u) * 9) calc(var(--u) * 7) calc(var(--u) * 6);
+      }
+      header {
+        width: 100%;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .brand {
+        display: none;
+        align-items: center;
+        gap: calc(var(--u) * 2.5);
+        margin-bottom: calc(var(--u) * 4.5);
+      }
+      .brand:empty {
+        display: none !important;
+      }
+      body[data-variant='hero'] .brand {
+        display: flex;
+      }
+      .brand img {
+        width: calc(var(--u) * 9);
+        height: calc(var(--u) * 9);
+        border-radius: 22%;
+      }
+      .brand span {
+        color: var(--sub);
+        font-weight: 700;
+        font-size: calc(var(--u) * 4);
+      }
+      h1 {
+        color: var(--headline);
+        font-weight: 800;
+        line-height: 1.12;
+        font-size: calc(var(--u) * 8.5);
+        letter-spacing: -0.01em;
+        text-wrap: balance;
+      }
+      body[data-variant='hero'] h1 {
+        font-size: calc(var(--u) * 10);
+      }
+      h1 em {
+        font-style: normal;
+        color: var(--accent);
+      }
+      p {
+        color: var(--sub);
+        font-weight: 500;
+        line-height: 1.3;
+        font-size: calc(var(--u) * 4.2);
+        margin-top: calc(var(--u) * 2.5);
+        text-wrap: balance;
+      }
+      p:empty {
+        display: none;
+      }
+      .device {
+        flex: 1;
+        width: 100%;
+        min-width: 0;
+        min-height: 0;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      body.bleed .device {
+        align-items: flex-start;
+      }
+      .bezel {
+        padding: calc(var(--u) * 1.4);
+        background: var(--bezel);
+        box-shadow:
+          0 0 0 calc(var(--u) * 0.2) var(--bezel-ring),
+          0 calc(var(--u) * 3) calc(var(--u) * 10) rgba(0, 0, 0, 0.45);
+        line-height: 0;
+      }
+      .bezel img {
+        display: block;
+      }
+      .callout {
+        display: none;
+        position: absolute;
+        right: 0;
+        border-radius: calc(var(--u) * 3);
+        background-repeat: no-repeat;
+        box-shadow:
+          0 0 0 calc(var(--u) * 0.5) var(--accent),
+          0 calc(var(--u) * 4) calc(var(--u) * 9) rgba(0, 0, 0, 0.5);
+      }
+      @media (orientation: landscape) {
+        body {
+          flex-direction: row;
+          padding: calc(var(--u) * 9);
+          gap: calc(var(--u) * 7);
+        }
+        header {
+          width: 38%;
+          flex-shrink: 0;
+          text-align: start;
+          align-items: flex-start;
+        }
+        h1 {
+          font-size: calc(var(--u) * 7.5);
+        }
+        body[data-variant='hero'] h1 {
+          font-size: calc(var(--u) * 8.5);
+        }
+        p {
+          font-size: calc(var(--u) * 3.8);
+        }
+        .device {
+          width: auto;
+          height: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body data-variant="{{variant}}" data-crop="{{crop}}">
+    <header>
+      <!-- Hero frames only. Put the product icon and name here, e.g.
+         <img src="icon.png" alt=""><span>App name</span> — leave empty to show nothing. -->
+      <div class="brand"></div>
+      <h1 id="headline">{{headline}}</h1>
+      <p id="sub">{{sub}}</p>
+    </header>
+    <div class="device">
+      <div class="bezel"><img src="{{screenshot}}" alt="" /></div>
+      <div class="callout"></div>
+    </div>
+    <script>
+      // Lays out the frame and checks it. Returns { ok, reason, ... } instead of clipping, so
+      // a caption too long for a locale, a missing font or a device squeezed too small fails
+      // the render rather than shipping a bad frame.
+      window.__fit = async () => {
+        const root = getComputedStyle(document.documentElement);
+        const num = (name) => Number(root.getPropertyValue(name));
+        const str = (name) =>
+          root
+            .getPropertyValue(name)
+            .trim()
+            .replace(/^["']|["']$/g, '');
+        const W = innerWidth,
+          H = innerHeight;
+        const body = document.body;
+        const variant = body.dataset.variant || 'standard';
+        const img = document.querySelector('.bezel img');
+        await img.decode().catch(() => {});
+        if (!img.naturalWidth)
+          return { ok: false, reason: 'screenshot did not load' };
+
+        const required = str('--font-required');
+        const fontOk =
+          !required ||
+          [...document.fonts].some(
+            (f) =>
+              f.family.replace(/["']/g, '') === required &&
+              f.status === 'loaded',
+          );
+        if (!fontOk)
+          return { ok: false, reason: `font "${required}" did not load` };
+
+        // Headline and sub-line: shrink the headline down to its floor, then give up.
+        const lines = (el) =>
+          Math.round(
+            el.getBoundingClientRect().height /
+              parseFloat(getComputedStyle(el).lineHeight),
+          );
+        const h = document.getElementById('headline');
+        const sub = document.getElementById('sub');
+        const maxLines =
+          variant === 'hero'
+            ? num('--hero-max-lines')
+            : num('--headline-max-lines');
+        const designPx = parseFloat(getComputedStyle(h).fontSize);
+        const minPx = designPx * num('--headline-min-ratio');
+        let px = designPx;
+        while (lines(h) > maxLines && px - 1 >= minPx) {
+          px -= 1;
+          h.style.fontSize = px + 'px';
+        }
+        if (lines(h) > maxLines)
+          return {
+            ok: false,
+            reason: `headline needs ${lines(h)} lines (max ${maxLines}) at ${px.toFixed(0)}px`,
+            fontPx: px,
+          };
+        if (sub.textContent.trim() && lines(sub) > num('--sub-max-lines')) {
+          return {
+            ok: false,
+            reason: `sub-line needs ${lines(sub)} lines (max ${num('--sub-max-lines')})`,
+            fontPx: px,
+          };
+        }
+
+        // Device: fit inside the box left under (or beside) the caption; bleed widens it and
+        // lets the bottom run off the canvas by at most --bleed-max.
+        const bleed = str('--device-mode') === 'bleed';
+        body.classList.toggle('bleed', bleed);
+        const box = document.querySelector('.device').getBoundingClientRect();
+        const bezel = document.querySelector('.bezel');
+        const pad = parseFloat(getComputedStyle(bezel).paddingLeft);
+        const aspect = img.naturalWidth / img.naturalHeight;
+        const maxW = box.width * (W > H ? 1 : 0.84) - 2 * pad;
+        const fitW = Math.min(maxW, (box.height - 2 * pad) * aspect);
+        const imgW = Math.floor(
+          bleed
+            ? Math.min(
+                maxW,
+                ((box.height - 2 * pad) * aspect) / (1 - num('--bleed-max')),
+              )
+            : fitW,
+        );
+        const imgH = Math.round(imgW / aspect);
+        img.style.width = imgW + 'px';
+        img.style.height = imgH + 'px';
+        const r = imgW * num('--screen-radius-ratio');
+        img.style.borderRadius = r + 'px';
+        bezel.style.borderRadius = r + pad + 'px';
+        if (imgW + 2 * pad < W * num('--device-min-ratio')) {
+          return {
+            ok: false,
+            reason: `device only ${Math.round(imgW + 2 * pad)}px wide — caption leaves too little room`,
+            fontPx: px,
+          };
+        }
+        const dev = bezel.getBoundingClientRect();
+        const headerBox = document
+          .querySelector('header')
+          .getBoundingClientRect();
+        const overflowX =
+          dev.left < -0.5 ||
+          dev.right > W + 0.5 ||
+          headerBox.bottom > H + 0.5 ||
+          headerBox.right > W + 0.5;
+        const overflowY = dev.bottom > H + 0.5;
+        if (overflowX || (overflowY && !bleed))
+          return {
+            ok: false,
+            reason: 'layout runs outside the canvas',
+            fontPx: px,
+          };
+
+        // Callout: a zoomed card of region x,y,w,h (fractions of the capture), aligned to it.
+        if (variant === 'callout') {
+          const c = (body.dataset.crop || '').split(',').map(Number);
+          if (
+            c.length !== 4 ||
+            c.some((v) => !(v >= 0 && v <= 1)) ||
+            !c[2] ||
+            !c[3]
+          ) {
+            return {
+              ok: false,
+              reason: 'callout needs a crop x,y,w,h in 0..1',
+            };
+          }
+          const [cx, cy, cw, ch] = c;
+          const card = document.querySelector('.callout');
+          const cardW = Math.min(box.width, cw * imgW * 2);
+          const zoom = cardW / (cw * imgW);
+          if (zoom < 1.2)
+            return {
+              ok: false,
+              reason: `callout region too wide to zoom (${zoom.toFixed(2)}×) — crop a narrower part`,
+            };
+          const cardH = ch * imgH * zoom;
+          Object.assign(card.style, {
+            display: 'block',
+            width: cardW + 'px',
+            height: cardH + 'px',
+            top:
+              Math.max(
+                0,
+                dev.top - box.top + pad + cy * imgH + (ch * imgH - cardH) / 2,
+              ) + 'px',
+            backgroundImage: `url("${img.src}")`,
+            backgroundSize: `${imgW * zoom}px ${imgH * zoom}px`,
+            backgroundPosition: `${-cx * imgW * zoom}px ${-cy * imgH * zoom}px`,
+          });
+        }
+        return {
+          ok: true,
+          fontPx: px,
+          lines: lines(h),
+          deviceW: Math.round(imgW + 2 * pad),
+          fontPinned: !!required,
+        };
+      };
+    </script>
+  </body>
+</html>

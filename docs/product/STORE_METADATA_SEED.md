@@ -2,8 +2,8 @@
 
 Stage A (shaping) outputs for store listing work. Stage B turns this into `store_metadata/<locale>.md` listing copy and `docs/release/<v>/STORE_ASSETS.md` evidence before Gate 3.
 
-- **Positioning sentence**: `../PRODUCT_CONCEPT.md` §Positioning — _"For adults with ADHD and knowledge workers whose phone keeps pulling them out of work, Focus Loop is the no-account Pomodoro app that starts a session in one tap and runs the whole focus–break loop — unlike gamified timers (Forest) or bloated hybrids (Focus To-Do)."_
-- **Store frame theme**: `../brand/store/frame-template.html` (tokens from `docs/brand/design/tokens.json`, canvas `1791071241-7cd3`).
+- **Positioning sentence**: `./PRODUCT_CONCEPT.md` §Positioning — _"For adults with ADHD and knowledge workers whose phone keeps pulling them out of work, Focus Loop is the no-account Pomodoro app that starts a session in one tap and runs the whole focus–break loop — unlike gamified timers (Forest) or bloated hybrids (Focus To-Do)."_
+- **Store frame theme**: `./brand/store/frame-template.html` (tokens from `docs/brand/design/tokens.json`, canvas `1791071241-7cd3`).
 
 ## Keyword seed (expand in Stage B — sources: OPPORTUNITY_DECISION.json, MARKET_RESEARCH_LIVE.md §5.1)
 

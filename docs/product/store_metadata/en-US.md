@@ -117,6 +117,6 @@ Difficulty = rating mass of the term's top results.
 1. [hero] Focus starts in one tap | The Disc is your timer
 2. Focus and breaks, one loop | Breaks are part of the plan
 3. [callout] 4 days a week. No broken streaks. | Goals that forgive a bad day
-4. Start from your home screen | Widgets and lock-screen timer
+4. Step away. Come back. | Your loop keeps your place
 5. Park it. End early. Still counts. | Progress without the shame
 6. Share your week | Real numbers, ready to show
