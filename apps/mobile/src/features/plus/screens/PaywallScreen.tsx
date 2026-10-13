@@ -185,16 +185,18 @@ export function PaywallScreen({
       </View>
 
       <View style={styles.footer}>
-        {busy == null && selectedProduct != null ? (
+        {busy != null ? (
+          <View style={styles.busySlot}>
+            <ActivityIndicator color={colors.focus} />
+          </View>
+        ) : selectedProduct != null ? (
           <PrimaryButton
             label={plan === "yearly" ? t("Start free trial") : t("Get Plus")}
             onPress={() => void buy()}
             colors={colors}
           />
         ) : (
-          <View style={styles.busySlot}>
-            <ActivityIndicator color={colors.focus} />
-          </View>
+          <View style={styles.busySlot} />
         )}
         <View style={styles.legalRow}>
           <TextButton

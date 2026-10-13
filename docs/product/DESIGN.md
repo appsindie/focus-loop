@@ -200,7 +200,7 @@ Selected-state styling: solid focus fill is for compact chips/segments only; car
 - 48 padding. Home and Week/History are two columns; Settings is master–detail (sections left, detail right).
 - Focus landscape: 540px disc left, intention, time, strip, parked thoughts and controls right. Portrait Numbers:
   minutes at 380px.
-- Banner ad on tablet is 320 × 50 in the right column, free tier only.
+- Banner ad on tablet is 320 × 50 in the right column in landscape only; portrait tablets pin it to the bottom like phones, free tier only.
 
 ## 5. Ads and Plus
 

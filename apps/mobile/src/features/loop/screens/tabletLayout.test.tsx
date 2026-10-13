@@ -2,8 +2,9 @@
 // layout hooks are mocked off globally in jest-setup; each test spies them on.
 import { describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render, screen } from "@testing-library/react-native";
-import { StyleSheet, type StyleProp, type ViewStyle } from "react-native";
+import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
 import * as layout from "../../../shared/layout";
+import { homeBannerPlacement } from "../../../shared/layout";
 import { palette } from "../../../shared/theme";
 import { HomeScreen } from "./HomeScreen";
 import { WeekScreen } from "./WeekScreen";
@@ -55,9 +56,9 @@ const PARKED: ParkedThought[] = [
   { id: "p1", text: "Book the dentist", createdAt: new Date().toISOString(), usedAt: null },
 ];
 
-function asTablet() {
+function asTablet(isLandscape = true) {
   const t = jest.spyOn(layout, "useIsTablet").mockReturnValue(true);
-  const l = jest.spyOn(layout, "useIsLandscape").mockReturnValue(true);
+  const l = jest.spyOn(layout, "useIsLandscape").mockReturnValue(isLandscape);
   return () => {
     t.mockRestore();
     l.mockRestore();
@@ -107,6 +108,15 @@ describe("HomeScreen (T01 tablet)", () => {
   it("phone keeps the single-column home (no schedule list)", async () => {
     const { queryByText } = await render(<HomeScreen {...makeProps()} />);
     expect(queryByText("REST OF TODAY’S LOOP")).toBeNull();
+  });
+
+  it("does not render a banner in the portrait tablet columns", async () => {
+    const restore = asTablet(false);
+    const bannerPlacement = homeBannerPlacement(true, false);
+    const bannerSlot = bannerPlacement === "column" ? <View testID="home-banner" /> : undefined;
+    const { queryByTestId } = await render(<HomeScreen {...makeProps()} bannerSlot={bannerSlot} />);
+    expect(queryByTestId("home-banner")).toBeNull();
+    restore();
   });
 });
 

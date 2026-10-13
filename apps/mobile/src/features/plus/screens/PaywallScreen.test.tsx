@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react-native";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
 import { describe, expect, it, jest } from "@jest/globals";
 import { StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from "react-native";
 import { palette } from "../../../shared/theme";
@@ -83,5 +83,61 @@ describe("PaywallScreen (P14)", () => {
     expect(StyleSheet.flatten(planName.props["style"] as StyleProp<TextStyle>).color).toBe(
       palette.light.ink,
     );
+  });
+
+  it("keeps Restore available without a footer spinner after product loading fails", async () => {
+    mockLoadProducts.mockImplementationOnce(() => Promise.reject(new Error("offline")));
+    const { container } = await render(
+      <PaywallScreen
+        colors={palette.light}
+        onClose={() => {}}
+        onPurchased={() => {}}
+        onRestored={() => {}}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getByText("We couldn't load prices. Check your connection and try again."),
+      ).toBeTruthy(),
+    );
+    expect(container.queryAll((node) => node.type === "ActivityIndicator")).toHaveLength(0);
+    await fireEvent.press(screen.getByText("Restore purchases"));
+    await waitFor(() =>
+      expect(screen.getByText("No purchases found for this store account.")).toBeTruthy(),
+    );
+  });
+
+  it("shows the error state when the store returns no products", async () => {
+    mockLoadProducts.mockImplementationOnce(() => Promise.resolve([]));
+    const { container } = await render(
+      <PaywallScreen
+        colors={palette.light}
+        onClose={() => {}}
+        onPurchased={() => {}}
+        onRestored={() => {}}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getByText("We couldn't load prices. Check your connection and try again."),
+      ).toBeTruthy(),
+    );
+    expect(container.queryAll((node) => node.type === "ActivityIndicator")).toHaveLength(0);
+  });
+
+  it("shows one body spinner while products are loading", async () => {
+    mockLoadProducts.mockImplementationOnce(() => new Promise<StoreProduct[]>(() => {}));
+    const { container } = await render(
+      <PaywallScreen
+        colors={palette.light}
+        onClose={() => {}}
+        onPurchased={() => {}}
+        onRestored={() => {}}
+      />,
+    );
+
+    expect(container.queryAll((node) => node.type === "ActivityIndicator")).toHaveLength(1);
   });
 });

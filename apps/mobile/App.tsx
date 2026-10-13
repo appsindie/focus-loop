@@ -1,4 +1,5 @@
 import { StatusBar } from "expo-status-bar";
+import { NavigationBar } from "expo-navigation-bar";
 import { useKeepAwake } from "expo-keep-awake";
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
@@ -70,7 +71,7 @@ import { WeekScreen } from "./src/features/loop/screens/WeekScreen";
 import { WelcomeBackScreen } from "./src/features/loop/screens/WelcomeBackScreen";
 import { parseFocusLoopUrl, type FocusLoopIntent } from "./src/linking";
 import { palette, typography, usePalette } from "./src/shared/theme";
-import { useIsTablet } from "./src/shared/layout";
+import { homeBannerPlacement, useIsLandscape, useIsTablet } from "./src/shared/layout";
 import { t } from "./src/i18n";
 
 function KeepAwakeActivator() {
@@ -319,6 +320,8 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
   // DESIGN.md §4: phones stay portrait; tablets may rotate to reach the
   // T02 landscape layout (app.json orientation moved to "default").
   const isTablet = useIsTablet();
+  const isLandscape = useIsLandscape();
+  const bannerPlacement = homeBannerPlacement(isTablet, isLandscape);
   useEffect(() => {
     try {
       /* eslint-disable @typescript-eslint/no-require-imports -- lazy require: the
@@ -405,8 +408,8 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
   }, [persistSettings, resetAllData]);
 
   // P04 free-tier banner — one node shared by both Home paths (S10-01):
-  // phone pins it to the bottom, tablet renders it in Home's right column
-  // (T01). The entitlement gate lives inside HomeBanner.
+  // phones and portrait tablets pin it to the bottom; landscape tablets use
+  // Home's right column (T01). The entitlement gate lives inside HomeBanner.
   const homeBanner = (
     <HomeBanner
       entitlementLoaded={entitlementLoaded}
@@ -451,12 +454,12 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           onStart={startFocus}
           onOpenSettings={() => go("settings")}
           onOpenWeek={() => go("week")}
-          bannerSlot={isTablet ? homeBanner : undefined}
+          bannerSlot={bannerPlacement === "column" ? homeBanner : undefined}
         />
       ) : null}
-      {route === "home" && !isTablet ? (
-        // Phone path renders the banner outside Home's SafeAreaView — it must
-        // still clear the bottom inset (home indicator / gesture bar).
+      {route === "home" && bannerPlacement === "bottom" ? (
+        // Bottom path renders outside Home's SafeAreaView — it must still clear
+        // the bottom inset (home indicator / gesture bar).
         <SafeAreaView edges={["bottom"]} style={{ backgroundColor: colors.bg }}>
           {homeBanner}
         </SafeAreaView>
@@ -663,6 +666,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
         onNotNow={() => answerNotifAsk(false)}
       />
       <StatusBar style={darkStatus ? "light" : "dark"} />
+      <NavigationBar style={darkStatus ? "light" : "dark"} />
     </>
   );
 }
