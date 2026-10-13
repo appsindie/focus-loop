@@ -2,7 +2,7 @@
 // layout hooks are mocked off globally in jest-setup; each test spies them on.
 import { describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render, screen } from "@testing-library/react-native";
-import { StyleSheet, View, type StyleProp, type ViewStyle } from "react-native";
+import { StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from "react-native";
 import * as layout from "../../../shared/layout";
 import { homeBannerPlacement } from "../../../shared/layout";
 import { palette } from "../../../shared/theme";
@@ -63,6 +63,35 @@ function asTablet(isLandscape = true) {
     t.mockRestore();
     l.mockRestore();
   };
+}
+
+function asPhone() {
+  const t = jest.spyOn(layout, "useIsTablet").mockReturnValue(false);
+  const l = jest.spyOn(layout, "useIsLandscape").mockReturnValue(false);
+  return () => {
+    t.mockRestore();
+    l.mockRestore();
+  };
+}
+
+async function layoutAt(testId: string, width: number, height: number) {
+  await fireEvent(screen.getByTestId(testId), "layout", {
+    nativeEvent: { layout: { x: 0, y: 0, width, height } },
+  });
+}
+
+function discSize(): number {
+  return screen.getByTestId("focus-disc").props["width"] as number;
+}
+
+function reservedHeightAt(testId: string, caption: RegExp | string): number {
+  const area = screen.getByTestId(testId);
+  const captionText = screen.getByText(caption);
+  const gap = StyleSheet.flatten(area.props["style"] as StyleProp<ViewStyle>).gap;
+  const lineHeight = StyleSheet.flatten(
+    captionText.props["style"] as StyleProp<TextStyle>,
+  ).lineHeight;
+  return Number(gap ?? 0) + (lineHeight ?? 0);
 }
 
 describe("HomeScreen (T01 tablet)", () => {
@@ -185,6 +214,63 @@ describe("FocusScreen (T02 tablet landscape)", () => {
     expect(queryByText("PARKED")).toBeNull();
     restore();
   });
+
+  it("sizes the portrait tablet disc to the measured area width", async () => {
+    const restore = asTablet(false);
+    await render(<FocusScreen {...makeProps()} displayMode="disc" />);
+    expect(discSize()).toBe(280);
+    await layoutAt("focus-time-area", 936, 1100);
+    expect(discSize()).toBe(936);
+    expect(discSize()).toBeGreaterThan(280);
+    restore();
+  });
+
+  it("fits the split tablet disc below its caption", async () => {
+    const restore = asTablet();
+    await render(<FocusScreen {...makeProps()} displayMode="disc" />);
+    expect(discSize()).toBe(280);
+    await layoutAt("focus-split-left", 560, 504);
+    const reserved = reservedHeightAt("focus-split-left", "about 11 min left");
+    expect(discSize()).toBe(504 - reserved);
+    restore();
+  });
+
+  it("keeps the phone disc capped at 280 in a large area", async () => {
+    const restore = asPhone();
+    await render(<FocusScreen {...makeProps()} displayMode="disc" />);
+    await layoutAt("focus-time-area", 936, 1100);
+    expect(discSize()).toBe(280);
+    restore();
+  });
+
+  it("derives portrait tablet Numbers size from the measured area", async () => {
+    const restore = asTablet(false);
+    await render(<FocusScreen {...makeProps()} />);
+    const initialMinutes = screen.getByText("10");
+    expect(StyleSheet.flatten(initialMinutes.props["style"] as StyleProp<TextStyle>).fontSize).toBe(
+      380,
+    );
+    await layoutAt("focus-time-area", 504, 1100);
+    const minutes = screen.getByText("10");
+    const minuteStyle = StyleSheet.flatten(minutes.props["style"] as StyleProp<TextStyle>);
+    expect(minuteStyle.fontSize).toBe(Math.floor(Math.min(1100 * 0.6, 504 * 0.45)));
+    expect(minutes.props["maxFontSizeMultiplier"]).toBe(1.3);
+    expect(minutes.props["adjustsFontSizeToFit"]).toBe(true);
+    expect(minutes.props["numberOfLines"]).toBe(1);
+    restore();
+  });
+
+  it("fits split tablet Numbers within a 520 by 410 area", async () => {
+    const restore = asTablet();
+    await render(<FocusScreen {...makeProps()} />);
+    await layoutAt("focus-split-left", 520, 410);
+    const minutes = screen.getAllByText("10")[0]!;
+    const minuteStyle = StyleSheet.flatten(minutes.props["style"] as StyleProp<TextStyle>);
+    expect(minuteStyle.fontSize).toBe(Math.floor(Math.min(410 * 0.6, 520 * 0.45)));
+    expect(minutes.props["adjustsFontSizeToFit"]).toBe(true);
+    expect(minutes.props["numberOfLines"]).toBe(1);
+    restore();
+  });
 });
 
 describe("BreakScreen (T03 tablet)", () => {
@@ -211,6 +297,50 @@ describe("BreakScreen (T03 tablet)", () => {
       StyleSheet.flatten(root.props["style"] as StyleProp<ViewStyle>).maxWidth,
     ).toBeUndefined();
     expect(StyleSheet.flatten(content.props["style"] as StyleProp<ViewStyle>).maxWidth).toBe(640);
+    restore();
+  });
+
+  it("fits the tablet disc below the return-time caption", async () => {
+    const restore = asTablet(false);
+    await render(
+      <BreakScreen
+        colors={palette.light}
+        displayMode="disc"
+        remainingSeconds={300}
+        durationSeconds={300}
+        nextFocusNumber={2}
+        autoStart={false}
+        onExtend={jest.fn()}
+        onStartFocus={jest.fn()}
+      />,
+    );
+    expect(discSize()).toBe(220);
+    await layoutAt("break-time-area", 900, 700);
+    const reserved = reservedHeightAt("break-time-area", /^Back at /);
+    expect(discSize()).toBe(700 - reserved);
+    restore();
+  });
+
+  it("fits tablet Numbers within a 520 by 410 area", async () => {
+    const restore = asTablet();
+    await render(
+      <BreakScreen
+        colors={palette.light}
+        displayMode="numbers"
+        remainingSeconds={300}
+        durationSeconds={300}
+        nextFocusNumber={2}
+        autoStart={false}
+        onExtend={jest.fn()}
+        onStartFocus={jest.fn()}
+      />,
+    );
+    await layoutAt("break-time-area", 520, 410);
+    const minutes = screen.getByText("5:00");
+    const minuteStyle = StyleSheet.flatten(minutes.props["style"] as StyleProp<TextStyle>);
+    expect(minuteStyle.fontSize).toBe(Math.floor(Math.min(410 * 0.5, 520 * 0.3)));
+    expect(minutes.props["adjustsFontSizeToFit"]).toBe(true);
+    expect(minutes.props["numberOfLines"]).toBe(1);
     restore();
   });
 });

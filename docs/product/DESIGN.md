@@ -53,6 +53,8 @@ Selected-state styling: solid focus fill is for compact chips/segments only; car
 
 ## 4. Screens
 
+- Tablet sizes are derived from the measured area, never fixed px.
+
 ### P01 Splash
 
 - Mark + wordmark only, `bg` of the active theme. No loading spinner.
@@ -81,9 +83,9 @@ Selected-state styling: solid focus fill is for compact chips/segments only; car
 
 - Header: "FOCUS N OF M" (`focus-text`), display toggle on the right.
 - Intention in serif, 26px, under the header (omitted if empty).
-- Disc mode: 280px disc + "about X min left" (rounded up). Numbers mode: minutes 200px, seconds 56px in `faint`,
-  "minutes left · ends HH:MM". Disc never shows seconds. In Numbers, Settings → Show seconds controls the small
-  seconds (default: open point OP-03 in `DESIGN_REVIEW.md`).
+- Disc mode: phone 280px disc + "about X min left" (rounded up); tablet uses the largest square that fits the
+  measured time area after the caption. Numbers digits scale with that same area. Disc never shows seconds. In
+  Numbers, Settings → Show seconds controls the small seconds (default: open point OP-03 in `DESIGN_REVIEW.md`).
 - Loop strip + "Next: 5 min break".
 - "Later, not now…" opens SHT-later; the timer keeps running.
 - Pause (secondary) / Resume; "End early…" (text) opens SHT-end-early. There is no one-tap cancel.
@@ -113,7 +115,8 @@ Selected-state styling: solid focus fill is for compact chips/segments only; car
 
 ### P11 Break
 
-- Full-screen `break-bg`. Follows the display choice (disc in white, or numbers).
+- Full-screen `break-bg`. Follows the display choice (phone disc 220px; tablet uses the largest square that fits the
+  measured time area after the "Back at / Focus starts at" caption; Numbers digits scale with the same area).
 - Three off-screen suggestions. Actions: +5 min (secondary), **Focus N now** (primary, white).
 - If auto-start is on, the next focus starts when the break ends, with a notification.
 
@@ -198,8 +201,9 @@ Selected-state styling: solid focus fill is for compact chips/segments only; car
 ### Tablet (T01–T06)
 
 - 48 padding. Home and Week/History are two columns; Settings is master–detail (sections left, detail right).
-- Focus landscape: 540px disc left, intention, time, strip, parked thoughts and controls right. Portrait Numbers:
-  minutes at 380px.
+- Focus landscape keeps the disc left with intention, time, strip, parked thoughts and controls right. Phone Focus
+  uses a 280px disc (Break uses 220px); tablet discs use the largest square that fits the measured time area after
+  the caption, and Numbers digits scale with that same area.
 - Banner ad on tablet is 320 × 50 in the right column in landscape only; portrait tablets pin it to the bottom like phones, free tier only.
 
 ## 5. Ads and Plus

@@ -15,7 +15,16 @@ import {
 import { Sheet } from "../../../shared/ui/Sheet";
 import { FocusDisc } from "../ui/FocusDisc";
 import { LoopStrip } from "../ui/LoopStrip";
-import { useIsLandscape, useIsTablet, TABLET_PADDING } from "../../../shared/layout";
+import {
+  Area,
+  discStrokeWidth,
+  fitDiscSize,
+  useIsLandscape,
+  useIsTablet,
+  TABLET_PADDING,
+} from "../../../shared/layout";
+
+const TIME_AREA_GAP = 20;
 
 function fmtMMSS(totalSeconds: number): { minutes: string; seconds: string } {
   const m = Math.floor(totalSeconds / 60);
@@ -79,6 +88,7 @@ export function FocusScreen({
   const isTablet = useIsTablet();
   const isLandscape = useIsLandscape();
   const tabletSplit = isTablet && isLandscape;
+  const [timerArea, setTimerArea] = useState<Area | null>(null);
   const [laterOpen, setLaterOpen] = useState(false);
   const [endEarlyOpen, setEndEarlyOpen] = useState(false);
   const [draft, setDraft] = useState("");
@@ -121,10 +131,35 @@ export function FocusScreen({
     setLaterOpen(false);
   };
 
-  // T02 (landscape): 540px disc left; intention, time, strip, parked list and
-  // controls right. T06 (portrait numbers): the minutes readout grows to 380pt.
-  const tabletMinutesSize = isTablet ? (isLandscape ? 200 : 380) : undefined;
-  const tabletSecondsSize = isTablet ? (isLandscape ? 96 : 200) : undefined;
+  const timeAreaStyle = tabletSplit ? styles.splitLeft : styles.timeArea;
+  const reservedHeight =
+    StyleSheet.flatten(styles.about).lineHeight + Number(StyleSheet.flatten(timeAreaStyle).gap);
+  const discSize =
+    timerArea == null ? 280 : fitDiscSize(timerArea, reservedHeight, isTablet ? Infinity : 280);
+  const tabletMinutesSize = isTablet
+    ? timerArea == null
+      ? isLandscape
+        ? 200
+        : 380
+      : Math.floor(Math.min(timerArea.height * 0.6, timerArea.width * 0.45))
+    : undefined;
+  const tabletSecondsSize =
+    tabletMinutesSize == null
+      ? undefined
+      : timerArea == null
+        ? isLandscape
+          ? 96
+          : 200
+        : Math.floor(tabletMinutesSize * 0.5);
+
+  const onTimerAreaLayout = (event: {
+    nativeEvent: { layout: { width: number; height: number } };
+  }) => {
+    setTimerArea({
+      width: event.nativeEvent.layout.width,
+      height: event.nativeEvent.layout.height,
+    });
+  };
 
   const headerBlock = (
     <View style={styles.header}>
@@ -149,7 +184,9 @@ export function FocusScreen({
           progress={progress}
           remainingMinutes={formatMinutesLeft(remainingSeconds)}
           colors={colors}
-          {...(tabletSplit ? { size: 540 } : {})}
+          testID="focus-disc"
+          size={discSize}
+          strokeWidth={isTablet ? discStrokeWidth(discSize) : 14}
         />
         <Text style={[styles.about, { color: colors.muted }]}>
           {t("about {minutes} min left", { minutes: formatMinutesLeft(remainingSeconds) })}
@@ -165,6 +202,8 @@ export function FocusScreen({
               tabletMinutesSize != null ? { fontSize: tabletMinutesSize } : null,
             ]}
             maxFontSizeMultiplier={1.3}
+            adjustsFontSizeToFit
+            numberOfLines={1}
           >
             {mmss.minutes}
           </Text>
@@ -175,6 +214,9 @@ export function FocusScreen({
                 { color: colors.faint },
                 tabletSecondsSize != null ? { fontSize: tabletSecondsSize } : null,
               ]}
+              maxFontSizeMultiplier={1.3}
+              adjustsFontSizeToFit
+              numberOfLines={1}
             >
               {mmss.seconds}
             </Text>
@@ -244,7 +286,9 @@ export function FocusScreen({
     >
       {tabletSplit ? (
         <View style={styles.splitRow}>
-          <View style={styles.splitLeft}>{timeBlock}</View>
+          <View testID="focus-split-left" onLayout={onTimerAreaLayout} style={styles.splitLeft}>
+            {timeBlock}
+          </View>
           <ScrollView
             style={styles.splitRight}
             contentContainerStyle={styles.splitRightContent}
@@ -263,7 +307,9 @@ export function FocusScreen({
         <>
           {headerBlock}
           {intentionBlock}
-          <View style={styles.timeArea}>{timeBlock}</View>
+          <View testID="focus-time-area" onLayout={onTimerAreaLayout} style={styles.timeArea}>
+            {timeBlock}
+          </View>
           {stripBlock}
           {controlsBlock}
         </>
@@ -350,7 +396,7 @@ const styles = StyleSheet.create({
   },
   kicker: { ...typography.label, letterSpacing: 1.5 },
   intention: { ...typography.userWords, marginTop: 8 },
-  timeArea: { flex: 1, alignItems: "center", justifyContent: "center", gap: 20 },
+  timeArea: { flex: 1, alignItems: "center", justifyContent: "center", gap: TIME_AREA_GAP },
   about: { ...typography.body },
   numbersWrap: { alignItems: "center", gap: 8 },
   numbersRow: { flexDirection: "row", alignItems: "baseline" },
@@ -366,7 +412,13 @@ const styles = StyleSheet.create({
   stripArea: { gap: 10 },
   next: { ...typography.caption, fontSize: 14 },
   splitRow: { flex: 1, flexDirection: "row", alignItems: "center", gap: 32 },
-  splitLeft: { alignItems: "center", justifyContent: "center" },
+  splitLeft: {
+    flex: 1,
+    alignSelf: "stretch",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: TIME_AREA_GAP,
+  },
   splitRight: { flex: 1, alignSelf: "stretch" },
   splitRightContent: { gap: 14, justifyContent: "center", flexGrow: 1 },
   parkedPanel: { gap: 4, marginTop: 4 },

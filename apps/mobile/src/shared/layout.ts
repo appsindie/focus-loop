@@ -6,6 +6,16 @@ import { useWindowDimensions } from "react-native";
 export const TABLET_MIN_SHORT_SIDE = 600;
 export const TABLET_PADDING = 48;
 
+export type Area = { width: number; height: number };
+
+export function fitDiscSize(area: Area, reservedHeight: number, cap = Infinity): number {
+  return Math.floor(Math.max(160, Math.min(area.width, area.height - reservedHeight, cap)));
+}
+
+export function discStrokeWidth(size: number): number {
+  return Math.max(12, Math.round(size / 20));
+}
+
 export function useIsTablet(): boolean {
   const { width, height } = useWindowDimensions();
   return Math.min(width, height) >= TABLET_MIN_SHORT_SIDE;

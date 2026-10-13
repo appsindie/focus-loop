@@ -1,9 +1,16 @@
+import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { DisplayMode } from "../../settings/SettingsStore";
 import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
-import { TABLET_PADDING, useIsTablet } from "../../../shared/layout";
+import {
+  Area,
+  discStrokeWidth,
+  fitDiscSize,
+  TABLET_PADDING,
+  useIsTablet,
+} from "../../../shared/layout";
 import { PrimaryButton, SecondaryButton } from "../../../shared/ui/Buttons";
 import { FocusDisc } from "../ui/FocusDisc";
 
@@ -53,6 +60,16 @@ export function BreakScreen({
   };
 
   const isTablet = useIsTablet();
+  const [timerArea, setTimerArea] = useState<Area | null>(null);
+  const reservedHeight =
+    StyleSheet.flatten(styles.until).lineHeight + Number(StyleSheet.flatten(styles.timeArea).gap);
+  const discSize =
+    timerArea == null ? 220 : fitDiscSize(timerArea, reservedHeight, isTablet ? Infinity : 220);
+  const tabletMinutesSize =
+    isTablet && timerArea != null
+      ? Math.floor(Math.min(timerArea.height * 0.5, timerArea.width * 0.3))
+      : undefined;
+
   return (
     <SafeAreaView
       style={[styles.root, { backgroundColor: colors.breakBg }]}
@@ -71,17 +88,36 @@ export function BreakScreen({
         ]}
       >
         <Text style={[styles.kicker, { color: sub }]}>{t("BREAK")}</Text>
-        <View style={styles.timeArea}>
+        <View
+          testID="break-time-area"
+          onLayout={(event) =>
+            setTimerArea({
+              width: event.nativeEvent.layout.width,
+              height: event.nativeEvent.layout.height,
+            })
+          }
+          style={styles.timeArea}
+        >
           {displayMode === "disc" ? (
             <FocusDisc
               progress={progress}
               remainingMinutes={Math.ceil(remainingSeconds / 60)}
               colors={discColors}
-              size={220}
-              strokeWidth={12}
+              testID="focus-disc"
+              size={discSize}
+              strokeWidth={isTablet ? discStrokeWidth(discSize) : 12}
             />
           ) : (
-            <Text style={[styles.minutes, { color: ink }]} maxFontSizeMultiplier={1.3}>
+            <Text
+              style={[
+                styles.minutes,
+                { color: ink },
+                tabletMinutesSize != null ? { fontSize: tabletMinutesSize } : null,
+              ]}
+              maxFontSizeMultiplier={1.3}
+              adjustsFontSizeToFit
+              numberOfLines={1}
+            >
               {minutes}:{String(seconds).padStart(2, "0")}
             </Text>
           )}
