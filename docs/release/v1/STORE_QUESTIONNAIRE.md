@@ -3,9 +3,18 @@
 Answer pack for the store-console questionnaires (Play "App content" + App Store
 Connect). Every answer is traced to the repo or a live console read on
 2026-10-13. `[HUMAN]` = only the sponsor can supply or confirm it.
-Supersedes the data-type rows in `STORE_DECLARATIONS.md` where they differ
-(approximate location via the Google Mobile Ads SDK, deletion contact, crash
-toggle = optional).
+This file is the **single source** for every console answer; `STORE_DECLARATIONS.md`
+is now a pointer here. Live console state and drift: `STORE_COMPLIANCE.md`.
+
+**Diagnostics consent (what "Optional" means below).**
+`src/features/analytics/diagnosticsConsent.ts` gates **Firebase Analytics and
+Firebase Crashlytics** (`setAnalyticsCollectionEnabled` /
+`setCrashlyticsCollectionEnabled`). It is **ON by default** at first launch (no
+stored pref → `true`) and the user can turn it off in Settings → "Crash & usage
+reports"; the choice persists under `focus-loop/diagnostics-consent`. It does
+**not** gate AdMob. So: crash logs and diagnostics = Optional (user can opt
+out); app interactions and device IDs = Required, because AdMob collects them
+regardless of the toggle (only the Firebase share of them stops).
 
 App identity: `com.appsindie.focusloop` (iOS + Android), ASC app `6818991496`,
 EAS `592916ef-5e3c-4257-b853-cbcf0d21aa78`, AdMob
