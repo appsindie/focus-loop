@@ -4,7 +4,7 @@
 
 **not ready** — v1.0.0, surfaces ios/android. Binaries under review: Android versionCode 8 (Play internal), iOS build 21 (TestFlight); fixes land in vc9 / b22.
 
-- Re-run 2026-10-13 (`READINESS.md`, `STORE_COMPLIANCE.md`, raw reads in `evidence/2026-10-13/`). Checks run 46 — pass 19, n/a 2, exception 25 (the three waived rows count as exceptions until EX-waiver-signature closes).
+- Re-run 2026-10-13 (`READINESS.md`, `STORE_COMPLIANCE.md`, raw reads in `evidence/2026-10-13/`). Checks run 46 — pass 18, n/a 2, exception 26 (the three waived rows count as exceptions until EX-waiver-signature closes).
 - Gate 2: **passed** 2026-10-05 (signed by the sponsor, `FACTORY_STATE.json` `gates.2`).
 - Gate 3 decision needed: **yes** — default if silent is **block**.
 - "Waived" below always means a **closed sponsor decision** recorded with date and quote; it is never a proceed-by-silence default.
@@ -42,6 +42,7 @@ Every open item has default **block**; Devin implements the code/asset items, th
 | EX-privacy-contact-email       | Privacy page contact email — **resolved 2026-10-13 (false positive)**                             | Legal — Privacy Policy                   | justin.nguyen@appsindie.com | —          | done              |
 | EX-asc-iap-metadata            | ASC IAPs MISSING_METADATA                                                                         | Pass A 2.1, Pass B IAP                   | justin.nguyen@appsindie.com | 2026-10-17 | block             |
 | EX-asc-version-setup           | ASC 1.0: no category or build; es-MX screenshots verified                                         | Pass B ASC                               | justin.nguyen@appsindie.com | 2026-10-17 | block             |
+| EX-store-assets-check-reuse    | iOS screenshots not check-reuse verified against b23                                              | Store assets from this build             | justin.nguyen@appsindie.com | 2026-10-20 | block             |
 | EX-tablet-screenshots          | iPad 13" / Android tablet screenshot sets complete — resolved 2026-10-13                          | Store assets + readback evidence         | justin.nguyen@appsindie.com | —          | done              |
 | EX-tablet-e2e                  | Tablet layouts T01–T06 not verified on tablets                                                    | Spec completeness, E2E coverage          | justin.nguyen@appsindie.com | 2026-10-17 | block             |
 | EX-owasp-checklist             | No OWASP Mobile Top 10 disposition; review predates prod AdMob IDs                                | OWASP coverage, Findings by severity     | justin.nguyen@appsindie.com | 2026-10-17 | block             |
@@ -318,6 +319,19 @@ Every open item has default **block**; Devin implements the code/asset items, th
 - **Default if you say nothing**: block Gate 3.
 - **Owner**: justin.nguyen@appsindie.com — sponsor (category, build)
 - **Deadline**: 2026-10-17
+- **Status**: open
+
+### EX-store-assets-check-reuse. iOS screenshot capture not verified against b23
+
+- **Situation**: The iOS screenshots in `v1-ed073a8-r2` were captured from a Release simulator build of tree `ed073a8`; iOS b23 has not been built. Android vc10 is a real build from `0ee3241` (the same tree), but there is no iOS binary yet.
+- **Options**: A — once b23 is cut, run `asset-set.mjs check-reuse` for `v1-ed073a8-r2` against b23's commit. If it passes, close this exception; if it fails, re-capture iOS and publish r3. B — mark the readiness row pass now based on the same-tree claim alone.
+- **Recommendation**: A — run `check-reuse` when b23 exists.
+- **Rejected**: B, because Android vc10 is real (`0ee3241`, same tree as `ed073a8`) but iOS has no binary yet.
+- **Default if you say nothing**: block Gate 3.
+- **Owner**: justin.nguyen@appsindie.com
+- **Deadline**: 2026-10-20
+- **Severity**: medium
+- **Blocking**: true
 - **Status**: open
 
 ### EX-tablet-e2e. Tablet layouts T01–T06 not verified on a tablet device/orientation

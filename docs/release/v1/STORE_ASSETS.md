@@ -2,7 +2,7 @@
 
 - Asset set: `store-assets/focus-loop/v1-ed073a8-r2` ([published release](https://github.com/appsindie/focus-loop/releases/tag/store-assets/focus-loop/v1-ed073a8-r2))
 - Supersedes r1: its rounded screen corners clipped Android tablet status-bar glyphs; r2 removes the tablet status-bar strip.
-- Source tree: `main` at `ed073a8235dd8d39281ffc9a99ed2b784b2a8b0a`
+- Capture source commit: `main` at `ed073a8235dd8d39281ffc9a99ed2b784b2a8b0a`
 - Captured build: iOS `ed073a8-sim` — Release simulator capture from this tree; b23 is not built yet and will be cut from the same tree, with `check-reuse` to run then. Android versionCode `10`.
 - Flows: `.maestro/store/*.yaml` from `ed073a8`
 - Theme: `docs/product/brand/store/` from `ed073a8`

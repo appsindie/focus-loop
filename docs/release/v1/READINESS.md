@@ -58,10 +58,10 @@ Not applicable — v1 uses Expo managed workflow and Firebase/AdMob SaaS; no Ter
 
 ## Store listing (mobile)
 
-| Item                         | Check                 | Status | Evidence                                                                                                                                                                                                                     |
-| ---------------------------- | --------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Store assets from this build | `STORE_ASSETS.md`     | pass   | Asset set `v1-ed073a8-r2` read back on 2026-10-13: 20 ASC locales incl. es-MX and 20 Play locales incl. es-419; Play tablet buckets corrected and all slots verified (`evidence/2026-10-13/store-screenshots-readback.json`) |
-| Store compliance, two passes | `STORE_COMPLIANCE.md` | pass   | Pass A and Pass B recorded 2026-10-13                                                                                                                                                                                        |
+| Item                         | Check                 | Status    | Evidence                                                                                                                                                                                                                                 |
+| ---------------------------- | --------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Store assets from this build | `STORE_ASSETS.md`     | exception | Asset set `v1-ed073a8-r2` read back on 2026-10-13: 20 ASC locales incl. es-MX and 20 Play locales incl. es-419; iOS reuse awaits b23 check-reuse → `EX-store-assets-check-reuse` (`evidence/2026-10-13/store-screenshots-readback.json`) |
+| Store compliance, two passes | `STORE_COMPLIANCE.md` | pass      | Pass A and Pass B recorded 2026-10-13                                                                                                                                                                                                    |
 
 ## Store compliance (mobile)
 
