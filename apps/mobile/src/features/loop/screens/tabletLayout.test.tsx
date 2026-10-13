@@ -375,7 +375,7 @@ describe("FocusScreen (T02 tablet landscape)", () => {
 });
 
 describe("BreakScreen (T03 tablet)", () => {
-  it("keeps the break background full-bleed around its centered content", async () => {
+  it("keeps the background full-bleed and constrains tablet controls only", async () => {
     const restore = asTablet();
     await render(
       <BreakScreen
@@ -391,17 +391,23 @@ describe("BreakScreen (T03 tablet)", () => {
     );
     const root = screen.getByTestId("break-background");
     const content = screen.getByTestId("break-content");
+    const controls = screen.getByTestId("break-controls");
     expect(StyleSheet.flatten(root.props["style"] as StyleProp<ViewStyle>).backgroundColor).toBe(
       palette.light.breakBg,
     );
     expect(
       StyleSheet.flatten(root.props["style"] as StyleProp<ViewStyle>).maxWidth,
     ).toBeUndefined();
-    expect(StyleSheet.flatten(content.props["style"] as StyleProp<ViewStyle>).maxWidth).toBe(640);
+    const contentStyle = StyleSheet.flatten(content.props["style"] as StyleProp<ViewStyle>);
+    const controlsStyle = StyleSheet.flatten(controls.props["style"] as StyleProp<ViewStyle>);
+    expect(contentStyle.maxWidth).toBeUndefined();
+    expect(contentStyle.width).toBe("100%");
+    expect(contentStyle.paddingHorizontal).toBe(layout.TABLET_PADDING);
+    expect(controlsStyle.maxWidth).toBe(640);
     restore();
   });
 
-  it("fits the tablet disc below the return-time caption", async () => {
+  it("fills the measured tablet time area with the break disc", async () => {
     const restore = asTablet(false);
     await render(
       <BreakScreen
@@ -416,13 +422,14 @@ describe("BreakScreen (T03 tablet)", () => {
       />,
     );
     expect(discSize()).toBe(220);
-    await layoutAt("break-time-area", 900, 700);
+    await layoutAt("break-time-area", 1504, 1400);
     const reserved = reservedHeightAt("break-time-area", /^Back at /);
-    expect(discSize()).toBe(700 - reserved);
+    expect(discSize()).toBe(layout.fitDiscSize({ width: 1504, height: 1400 }, reserved));
+    expect(discSize()).toBeGreaterThan(640);
     restore();
   });
 
-  it("fits tablet Numbers within a 520 by 410 area", async () => {
+  it("uses Focus's measured-area sizing for tablet Numbers", async () => {
     const restore = asTablet();
     await render(
       <BreakScreen
@@ -436,12 +443,57 @@ describe("BreakScreen (T03 tablet)", () => {
         onStartFocus={jest.fn()}
       />,
     );
-    await layoutAt("break-time-area", 520, 410);
+    await layoutAt("break-time-area", 1504, 1400);
     const minutes = screen.getByText("5:00");
     const minuteStyle = StyleSheet.flatten(minutes.props["style"] as StyleProp<TextStyle>);
-    expect(minuteStyle.fontSize).toBe(Math.floor(Math.min(410 * 0.5, 520 * 0.3)));
+    expect(minuteStyle.fontSize).toBe(Math.floor(Math.min(1400 * 0.6, 1504 * 0.45)));
     expect(minutes.props["adjustsFontSizeToFit"]).toBe(true);
     expect(minutes.props["numberOfLines"]).toBe(1);
+    restore();
+  });
+
+  it("keeps phone Break sizing unchanged", async () => {
+    const restore = asPhone();
+    const disc = await render(
+      <BreakScreen
+        colors={palette.light}
+        displayMode="disc"
+        remainingSeconds={300}
+        durationSeconds={300}
+        nextFocusNumber={2}
+        autoStart={false}
+        onExtend={jest.fn()}
+        onStartFocus={jest.fn()}
+      />,
+    );
+    await layoutAt("break-time-area", 1504, 1400);
+    expect(discSize()).toBe(220);
+    const group = screen.getByTestId("focus-disc").children[0];
+    if (group == null || typeof group === "string") {
+      throw new Error("Focus disc should render an SVG group");
+    }
+    expect(
+      group.children.map((circle) =>
+        typeof circle === "string" ? null : (circle.props["strokeWidth"] as number),
+      ),
+    ).toEqual([12, 12]);
+    await disc.unmount();
+
+    await render(
+      <BreakScreen
+        colors={palette.light}
+        displayMode="numbers"
+        remainingSeconds={300}
+        durationSeconds={300}
+        nextFocusNumber={2}
+        autoStart={false}
+        onExtend={jest.fn()}
+        onStartFocus={jest.fn()}
+      />,
+    );
+    await layoutAt("break-time-area", 1504, 1400);
+    const minutes = screen.getByText("5:00");
+    expect(StyleSheet.flatten(minutes.props["style"] as StyleProp<TextStyle>).fontSize).toBe(120);
     restore();
   });
 });

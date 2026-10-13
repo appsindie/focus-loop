@@ -12,6 +12,10 @@ export function fitDiscSize(area: Area, reservedHeight: number, cap = Infinity):
   return Math.floor(Math.max(160, Math.min(area.width, area.height - reservedHeight, cap)));
 }
 
+export function fitTimerFontSize(area: Area): number {
+  return Math.floor(Math.min(area.height * 0.6, area.width * 0.45));
+}
+
 export function discStrokeWidth(size: number): number {
   return Math.max(12, Math.round(size / 20));
 }

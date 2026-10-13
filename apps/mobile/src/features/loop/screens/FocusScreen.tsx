@@ -19,6 +19,7 @@ import {
   Area,
   discStrokeWidth,
   fitDiscSize,
+  fitTimerFontSize,
   useIsLandscape,
   useIsTablet,
   TABLET_PADDING,
@@ -141,7 +142,7 @@ export function FocusScreen({
       ? isLandscape
         ? 200
         : 380
-      : Math.floor(Math.min(timerArea.height * 0.6, timerArea.width * 0.45))
+      : fitTimerFontSize(timerArea)
     : undefined;
   const tabletSecondsSize =
     tabletMinutesSize == null

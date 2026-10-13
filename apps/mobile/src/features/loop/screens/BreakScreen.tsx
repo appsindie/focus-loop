@@ -8,6 +8,7 @@ import {
   Area,
   discStrokeWidth,
   fitDiscSize,
+  fitTimerFontSize,
   TABLET_PADDING,
   useIsTablet,
 } from "../../../shared/layout";
@@ -65,10 +66,7 @@ export function BreakScreen({
     StyleSheet.flatten(styles.until).lineHeight + Number(StyleSheet.flatten(styles.timeArea).gap);
   const discSize =
     timerArea == null ? 220 : fitDiscSize(timerArea, reservedHeight, isTablet ? Infinity : 220);
-  const tabletMinutesSize =
-    isTablet && timerArea != null
-      ? Math.floor(Math.min(timerArea.height * 0.5, timerArea.width * 0.3))
-      : undefined;
+  const tabletMinutesSize = isTablet && timerArea != null ? fitTimerFontSize(timerArea) : undefined;
 
   return (
     <SafeAreaView
@@ -77,15 +75,7 @@ export function BreakScreen({
     >
       <View
         testID="break-content"
-        style={[
-          styles.content,
-          isTablet && {
-            paddingHorizontal: TABLET_PADDING,
-            maxWidth: 640,
-            alignSelf: "center",
-            width: "100%",
-          },
-        ]}
+        style={[styles.content, isTablet && { paddingHorizontal: TABLET_PADDING, width: "100%" }]}
       >
         <Text style={[styles.kicker, { color: sub }]}>{t("BREAK")}</Text>
         <View
@@ -128,22 +118,24 @@ export function BreakScreen({
           </Text>
         </View>
 
-        <View style={styles.suggestions}>
-          {SUGGESTIONS.map((suggestion, i) => (
-            <Text key={i} style={[styles.suggestion, { color: sub }]}>
-              · {suggestion()}
-            </Text>
-          ))}
-        </View>
+        <View testID="break-controls" style={isTablet ? styles.tabletControls : undefined}>
+          <View style={[styles.suggestions, !isTablet && styles.phoneSuggestions]}>
+            {SUGGESTIONS.map((suggestion, i) => (
+              <Text key={i} style={[styles.suggestion, { color: sub }]}>
+                · {suggestion()}
+              </Text>
+            ))}
+          </View>
 
-        <View style={styles.actions}>
-          <SecondaryButton label={t("+5 min")} onPress={onExtend} colors={{ ...colors, ink }} />
-          <PrimaryButton
-            label={t("Focus {n} now", { n: nextFocusNumber })}
-            onPress={onStartFocus}
-            colors={colors}
-            variant="light"
-          />
+          <View style={styles.actions}>
+            <SecondaryButton label={t("+5 min")} onPress={onExtend} colors={{ ...colors, ink }} />
+            <PrimaryButton
+              label={t("Focus {n} now", { n: nextFocusNumber })}
+              onPress={onStartFocus}
+              colors={colors}
+              variant="light"
+            />
+          </View>
         </View>
       </View>
     </SafeAreaView>
@@ -162,6 +154,8 @@ const styles = StyleSheet.create({
   },
   until: { ...typography.body },
   suggestions: { gap: 6, alignItems: "center" },
+  tabletControls: { maxWidth: 640, alignSelf: "center", width: "100%", gap: 12 },
+  phoneSuggestions: { marginBottom: 12 },
   suggestion: { ...typography.caption, fontSize: 14 },
   actions: { gap: 10 },
 });

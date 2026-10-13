@@ -206,7 +206,8 @@ Selected-state styling: solid focus fill is for compact chips/segments only; car
 - Landscape Home scrolls the left column above a pinned Start button and scrolls the right column, so short tablet heights never push Start off-screen.
 - Focus landscape keeps the timer (disc or Numbers digits) left, with intention, strip, parked thoughts and controls
   right. Phone Focus uses a 280px disc (Break uses 220px); tablet discs use the largest square that fits the measured
-  time area after the caption, and Numbers digits scale with that same area.
+  time area after the caption, and Numbers digits scale with that same area. Tablet Break uses the same measured-area
+  sizing as Focus; only its suggestions and buttons are constrained to a 640pt column.
 - The free-tier anchored adaptive Home banner is full width and bottom-pinned on every device/orientation; it spans
   the device width, so it cannot sit in a column.
 

@@ -1,5 +1,11 @@
 import { describe, expect, it } from "@jest/globals";
-import { discStrokeWidth, fitDiscSize } from "./layout";
+import { discStrokeWidth, fitDiscSize, fitTimerFontSize } from "./layout";
+
+describe("fitTimerFontSize", () => {
+  it("uses the Focus tablet height and width factors", () => {
+    expect(fitTimerFontSize({ width: 1504, height: 1400 })).toBe(676);
+  });
+});
 
 describe("fitDiscSize", () => {
   it("uses the available width when it is the limiting dimension", () => {
