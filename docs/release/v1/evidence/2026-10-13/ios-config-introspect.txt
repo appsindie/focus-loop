@@ -1,0 +1,7 @@
+# 2026-10-13T08:08:06Z — cd apps/mobile && npx expo config --type introspect --json (iOS Info.plist subset; full JSON not committed)
+supportsTablet: true | orientation: default
+NSUserTrackingUsageDescription: This identifier will be used to deliver personalized ads to you.
+SKAdNetworkItems: 49
+ITSAppUsesNonExemptEncryption: false
+UIBackgroundModes: ["audio"]
+NS*UsageDescription keys: NSUserTrackingUsageDescription

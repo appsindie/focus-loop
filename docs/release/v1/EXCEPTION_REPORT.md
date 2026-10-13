@@ -2,34 +2,47 @@
 
 ## Verdict
 
-**not ready** — v1.0.0, surfaces ios/android
+**not ready** — v1.0.0, surfaces ios/android. Binaries under review: Android versionCode 8 (Play internal), iOS build 21 (TestFlight); fixes land in vc9 / b22.
 
-- Re-audited 2026-10-04 at release/1.0.0 head. Checks run: 26 — passed: 9, waived: 3 (EX-native-sit-waiver, EX-failure-mode-waiver sponsor waiver + the third-party-sandbox row folded under it), failed-and-remediated: 0, manual: 0, exception rows: 14. Open exceptions: 13 (EX-north-star-events..EX-runbook-placeholders, EX-store-declarations, EX-data-safety, EX-console-products..EX-sit-retest-devices). EX-release-record resolved (release notes + changelog). EX-internal-test-build resolved (iOS 1.0.0 build 8 on TestFlight).
-- Gate 2 status: **open — human signature pending on this PR** (sponsor waived SIT verbally 2026-10-04; the waiver is recorded but the gate stays open until the owner signs here).
-- Gate 3 decision needed: **yes**
+- Re-run 2026-10-13 (`READINESS.md`, `STORE_COMPLIANCE.md`, raw reads in `evidence/2026-10-13/`). Checks run 46 — pass 19, waived 3, n/a 2, exception 22.
+- Gate 2: **passed** 2026-10-05 (signed by the sponsor, `FACTORY_STATE.json` `gates.2`).
+- Gate 3 decision needed: **yes** — default if silent is **block**.
+- "Waived" below always means a **closed sponsor decision** recorded with date and quote; it is never a proceed-by-silence default.
 
 ## Exception summary
 
-| ID    | Title                                                             | Rows covered            | Owner                       | Deadline   | Default |
-| ----- | ----------------------------------------------------------------- | ----------------------- | --------------------------- | ---------- | ------- |
-| EX-native-sit-waiver | Native device SIT not run — **waived 2026-10-04**                 | SIT regression          | justin.nguyen@appsindie.com | —          | waived  |
-| EX-failure-mode-waiver | Failure-mode cases not verified — **waived 2026-10-04**           | Failure-mode cases      | justin.nguyen@appsindie.com | —          | waived  |
-| EX-north-star-events | North-star analytics events not wired                             | North-star events       | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| EX-alerts-not-wired | Alerts not wired or test-fired                                    | Alerts wired            | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| EX-rollback-command | Rollback command not finalized (owner named)                      | Rollback command        | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| EX-rollback-rehearsal | Rollback not rehearsed                                            | Rollback rehearsed      | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| EX-runbook-placeholders | Runbook procedures still placeholders                             | Runbook                 | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| EX-store-agreements | Store agreements — **resolved 2026-10-11**                       | Store agreements        | justin.nguyen@appsindie.com | —          | done    |
-| EX-store-declarations | Store declarations not completed                                  | Declarations            | justin.nguyen@appsindie.com | 2026-10-06 | block   |
-| EX-internal-test-build | Internal testing build not produced — **resolved 2026-10-05**   | Internal testing        | justin.nguyen@appsindie.com | —          | —       |
-| EX-data-safety | Privacy / data-safety declaration not completed                   | Privacy delta           | justin.nguyen@appsindie.com | 2026-10-06 | block   |
-| EX-release-record | Release record — **resolved 2026-10-04**                          | Release notes, Changelog, Traceability | justin.nguyen@appsindie.com | — | done |
-| EX-console-products | EAS / portal credentials and console products not fully provisioned | Credentials           | justin.nguyen@appsindie.com | 2026-10-06 | block   |
-| EX-dashboards | Dashboards not created                                            | Dashboards              | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| EX-halt-thresholds | Rollout halt thresholds not wired to alerts                       | Rollout halt thresholds | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| EX-rollback-triggers | Rollback trigger conditions not wired                             | Trigger conditions      | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| EX-escalation-path | Escalation path not defined                                       | Escalation path         | justin.nguyen@appsindie.com | 2026-10-11 | block   |
-| EX-sit-retest-devices | SIT waiver re-test condition — device items untested               | (waiver condition)      | justin.nguyen@appsindie.com | 2026-10-11 | block   |
+| ID                           | Title                                                                                                        | Rows covered                           | Owner                               | Deadline          | Default                |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------ | -------------------------------------- | ----------------------------------- | ----------------- | ---------------------- |
+| EX-native-sit-waiver         | Native device SIT not run — **waived 2026-10-04 (closed sponsor decision)**                                  | SIT regression                         | justin.nguyen@appsindie.com         | —                 | waived                 |
+| EX-failure-mode-waiver       | Failure-mode cases not verified — **waived 2026-10-04 (closed sponsor decision)**                            | Failure-mode cases                     | justin.nguyen@appsindie.com         | —                 | waived                 |
+| EX-north-star-events         | North-star analytics events not wired                                                                        | North-star events                      | justin.nguyen@appsindie.com         | 2026-10-11        | block                  |
+| EX-alerts-not-wired          | Alerts not wired or test-fired                                                                               | Alerts wired                           | justin.nguyen@appsindie.com         | 2026-10-11        | block                  |
+| EX-rollback-command          | Rollback command not finalized (owner named)                                                                 | Rollback command                       | justin.nguyen@appsindie.com         | 2026-10-11        | block                  |
+| EX-rollback-rehearsal        | Rollback not rehearsed                                                                                       | Rollback rehearsed                     | justin.nguyen@appsindie.com         | 2026-10-11        | block                  |
+| EX-runbook-placeholders      | Runbook procedures still placeholders                                                                        | Runbook                                | justin.nguyen@appsindie.com         | 2026-10-11        | block                  |
+| EX-store-agreements          | Store agreements — **resolved 2026-10-11**                                                                   | Store agreements                       | justin.nguyen@appsindie.com         | —                 | done                   |
+| EX-store-declarations        | Store declarations not completed                                                                             | Declarations                           | justin.nguyen@appsindie.com         | 2026-10-06        | block                  |
+| EX-internal-test-build       | Internal testing build not produced — **resolved 2026-10-05**                                                | Internal testing                       | justin.nguyen@appsindie.com         | —                 | —                      |
+| EX-data-safety               | Privacy / data-safety declaration not completed                                                              | Privacy delta                          | justin.nguyen@appsindie.com         | 2026-10-06        | block                  |
+| EX-release-record            | Release record — **resolved 2026-10-04**                                                                     | Release notes, Changelog, Traceability | justin.nguyen@appsindie.com         | —                 | done                   |
+| EX-console-products          | EAS / portal credentials and console products not fully provisioned                                          | Credentials                            | justin.nguyen@appsindie.com         | 2026-10-06        | block                  |
+| EX-dashboards                | Dashboards not created                                                                                       | Dashboards                             | justin.nguyen@appsindie.com         | 2026-10-11        | block                  |
+| EX-halt-thresholds           | Rollout halt thresholds not wired to alerts                                                                  | Rollout halt thresholds                | justin.nguyen@appsindie.com         | 2026-10-11        | block                  |
+| EX-rollback-triggers         | Rollback trigger conditions not wired                                                                        | Trigger conditions                     | justin.nguyen@appsindie.com         | 2026-10-11        | block                  |
+| EX-escalation-path           | Escalation path not defined                                                                                  | Escalation path                        | justin.nguyen@appsindie.com         | 2026-10-11        | block                  |
+| EX-sit-retest-devices        | SIT waiver re-test condition — device items untested                                                         | (waiver condition)                     | justin.nguyen@appsindie.com         | 2026-10-11        | block                  |
+| EX-ump-consent               | No Google UMP consent before ad requests (EEA/UK)                                                            | Ads (UMP)                              | Devin / justin.nguyen@appsindie.com | 2026-10-15        | block                  |
+| EX-permission-gate-drift     | AAB merged manifest has 16 permissions, allowlist 8; CI gate blind to library-injected permissions           | Merged-manifest permission audit       | Devin / justin.nguyen@appsindie.com | 2026-10-15        | block                  |
+| EX-att-e2e                   | ATT prompt not asserted by an E2E flow on clean launch                                                       | Ads (ATT), E2E coverage                | Devin / justin.nguyen@appsindie.com | 2026-10-15        | block                  |
+| EX-ios-background-audio-mode | UIBackgroundModes=audio declared while sound pauses on background (App Review 2.5.4)                         | Pass A 2.5.4                           | Devin / justin.nguyen@appsindie.com | before b22        | block                  |
+| EX-privacy-contact-email     | Privacy policy page has no contact email                                                                     | Legal — Privacy Policy, 5.1.1          | Devin / justin.nguyen@appsindie.com | 2026-10-15        | block                  |
+| EX-asc-iap-metadata          | ASC IAPs plus.yearly + plus.lifetime MISSING_METADATA                                                        | Pass A 2.1, Pass B IAP                 | justin.nguyen@appsindie.com         | before iOS submit | block                  |
+| EX-asc-version-setup         | ASC 1.0: primary category null, no build attached, es-MX without screenshots                                 | Pass B ASC                             | justin.nguyen@appsindie.com         | before iOS submit | block                  |
+| EX-tablet-screenshots        | No iPad 13" / Android tablet screenshot sets although supportsTablet=true                                    | Store assets from this build           | Devin / justin.nguyen@appsindie.com | before iOS submit | block                  |
+| EX-tablet-e2e                | Tablet layouts T01–T06 not verified on a tablet device/orientation                                           | Spec completeness, E2E coverage        | Devin / justin.nguyen@appsindie.com | 2026-10-16        | block                  |
+| EX-owasp-checklist           | No OWASP Mobile Top 10 / MASVS disposition per category                                                      | OWASP coverage                         | Devin / justin.nguyen@appsindie.com | 2026-10-16        | block                  |
+| EX-dependency-triage         | 28 outdated deps not triaged by major; npm audit 1 critical (shell-quote, dev-only path) + 67 high untriaged | Dependency freshness                   | Devin / justin.nguyen@appsindie.com | 2026-10-16        | block                  |
+| EX-AI-REVIEW-TIMEOUT         | Claude review no verdict on PR #16 (non-blocking)                                                            | AI review                              | justin.nguyen@appsindie.com         | 2026-10-12        | proceed (non-blocking) |
 
 ## Waiver records (closed exceptions)
 
@@ -111,7 +124,7 @@
 
 ### EX-store-declarations. Store declarations not completed
 
-- **Situation**: Age rating, app-store permission/ATT/ads declarations not yet completed on either console. Legal pages exist at `appsindie.com/docs/legal/focus-loop/{privacy,tnc,disclaimer,licenses}` (appsindie-landing#5). **Progress 2026-10-04**: all form answers drafted in `docs/release/v1/STORE_DECLARATIONS.md` — owner copies them into the consoles.
+- **Situation**: Answers: `STORE_QUESTIONNAIRE.md` (single source; `STORE_DECLARATIONS.md` is now a pointer). Console forms not submitted as of 2026-10-13 (Pass B). Age rating, app-store permission/ATT/ads declarations not yet completed on either console. Legal pages exist at `appsindie.com/docs/legal/focus-loop/{privacy,tnc,disclaimer,licenses}` (appsindie-landing#5). **Progress 2026-10-04**: all form answers drafted in `docs/release/v1/STORE_DECLARATIONS.md` — owner copies them into the consoles.
 - **Options**: A — complete before Gate 3. B — complete before public store submission; internal testing does not require them.
 - **Recommendation**: B for internal testing; A for public submission.
 - **Default if you say nothing**: blocks public store submission.
@@ -125,7 +138,7 @@
 
 ### EX-data-safety. Privacy / data-safety declaration not completed
 
-- **Situation**: The app's actual data collection (local AsyncStorage, AdMob/ATT, Firebase Analytics — wired 2026-10-04) has not been mapped to a store data-safety declaration. **Progress 2026-10-04**: mapping drafted in `docs/release/v1/STORE_DECLARATIONS.md` (Play data-safety table + ASC App Privacy + ATT note, both updated for the wired Firebase SDKs); iOS `PrivacyInfo.xcprivacy` verified auto-generated correctly.
+- **Situation**: Answers: `STORE_QUESTIONNAIRE.md` (single source; `STORE_DECLARATIONS.md` is now a pointer). Console forms not submitted as of 2026-10-13 (Pass B). The app's actual data collection (local AsyncStorage, AdMob/ATT, Firebase Analytics — wired 2026-10-04) has not been mapped to a store data-safety declaration. **Progress 2026-10-04**: mapping drafted in `docs/release/v1/STORE_DECLARATIONS.md` (Play data-safety table + ASC App Privacy + ATT note, both updated for the wired Firebase SDKs); iOS `PrivacyInfo.xcprivacy` verified auto-generated correctly.
 - **Options**: A — complete before Gate 3. B — complete before public store submission.
 - **Recommendation**: B for internal testing; A for public submission.
 - **Default if you say nothing**: blocks public store submission.
@@ -148,15 +161,13 @@
 
 ### EX-console-products. EAS / portal credentials and console products not fully provisioned
 
-- **Situation**: `EXPO_TOKEN` valid (account tuan3.nguyen@gmail.com). ASC app "Your Focus Loop" (id 6818991496) exists; ASC API key works (app visible via API). `EXPO_APPLE_ID`, iOS distribution credentials and EAS env vars (`ANDROID_SERVICE_ACCOUNT_JSON`, `IOS_STORE_CONNECT_P8`, `EXPO_APPLE_ID`) still to be provisioned on the EAS project. Console products:
-  - IAP `com.appsindie.focusloop.plus.yearly` (auto-renewable, 7-day trial, $19.99) and `com.appsindie.focusloop.plus.lifetime` (non-consumable, $49.99) — sponsor created the ids on ASC; Play products blocked until first AAB upload.
-  - AdMob rewarded unit for J8 24h-trial — production banner/interstitial ids exist (EX-admob-prod-ids resolved). **Progress 2026-10-05**: rewarded units wired on both platforms (iOS `…/6917716345`, Android `…/9703661782`).
-  - AdMob console frequency caps on the interstitial unit (sponsor decision: limits live server-side).
+- **Situation (2026-10-13 read-back)**: Play `plus.yearly` base plan `yearly` ACTIVE but **no offers** (7-day free trial missing); Play `plus.lifetime` purchase option ACTIVE. ASC side split out to EX-asc-iap-metadata. AdMob rewarded units wired; interstitial frequency cap is a console setting (sponsor).
+- **Remaining action**: add the 7-day free-trial offer on Play yearly; confirm $19.99 / $49.99 price points.
 - **Options**: A — provision before Gate 3. B — provision before first store submission.
 - **Recommendation**: A — without products, Plus and J8 trials cannot be exercised in internal testing.
 - **Default if you say nothing**: blocks store submission and J7/J8 sandbox verification.
 - **Owner**: justin.nguyen@appsindie.com
-- **Deadline**: 2026-10-06 (before first submission)
+- **Deadline**: before Android production promote
 
 ### EX-dashboards. Dashboards not created
 
@@ -204,11 +215,112 @@
 
 ## Accepted risks carried into production
 
-| Risk                                                             | Accepted by                 | Date       | Revisit at                                                                   |
-| ---------------------------------------------------------------- | --------------------------- | ---------- | ---------------------------------------------------------------------------- |
-| AdMob SDK collecting device/usage data per Google/Apple policies | justin.nguyen@appsindie.com | 2026-08-08 | Before store submission (`docs/security/ads-integration-security-review.md` — predates production AdMob IDs and `write-store-credentials.sh`; refresh before production promotion if the ad config changes again) |
-| No pre-release device SIT (EX-native-sit-waiver/EX-failure-mode-waiver waiver)                      | justin.nguyen@appsindie.com | 2026-10-04 | Internal testing before any production promotion                             |
+| Risk                                                                           | Accepted by                 | Date       | Revisit at                                                                                                                                                                                                        |
+| ------------------------------------------------------------------------------ | --------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AdMob SDK collecting device/usage data per Google/Apple policies               | justin.nguyen@appsindie.com | 2026-08-08 | Before store submission (`docs/security/ads-integration-security-review.md` — predates production AdMob IDs and `write-store-credentials.sh`; refresh before production promotion if the ad config changes again) |
+| No pre-release device SIT (EX-native-sit-waiver/EX-failure-mode-waiver waiver) | justin.nguyen@appsindie.com | 2026-10-04 | Internal testing before any production promotion                                                                                                                                                                  |
 
 ## After the release
 
 - Day 7 / day 14 north-star comparison scheduled for: TBD
+
+## New exceptions — 2026-10-13 re-run
+
+### EX-ump-consent. No Google UMP consent before ad requests (EEA/UK)
+
+- **Situation**: see `STORE_COMPLIANCE.md` / `READINESS.md` row "Ads (UMP)"; evidence `evidence/2026-10-13/`.
+- **Recommendation**: A — add UMP gatherConsent + Privacy options row, rebuild vc9/b22 (sponsor chose A 2026-10-13: "Fix hết đi").
+- **Default if you say nothing**: block Gate 3.
+- **Owner**: Devin implements; sponsor verifies on device
+- **Deadline**: 2026-10-15
+- **Status**: open
+
+### EX-permission-gate-drift. AAB merged manifest has 16 permissions, allowlist 8; CI gate blind to library-injected permissions
+
+- **Situation**: see `STORE_COMPLIANCE.md` / `READINESS.md` row "Merged-manifest permission audit"; evidence `evidence/2026-10-13/`.
+- **Recommendation**: Allowlist justified ones, strip unused, add AAB-level check to the release runbook.
+- **Default if you say nothing**: block Gate 3.
+- **Owner**: Devin
+- **Deadline**: 2026-10-15
+- **Status**: open
+
+### EX-att-e2e. ATT prompt not asserted by an E2E flow on clean launch
+
+- **Situation**: see `STORE_COMPLIANCE.md` / `READINESS.md` row "Ads (ATT), E2E coverage"; evidence `evidence/2026-10-13/`.
+- **Recommendation**: Hard-assert Maestro flow + deny path on iOS sim.
+- **Default if you say nothing**: block Gate 3.
+- **Owner**: Devin
+- **Deadline**: 2026-10-15
+- **Status**: open
+
+### EX-ios-background-audio-mode. UIBackgroundModes=audio declared while sound pauses on background (App Review 2.5.4)
+
+- **Situation**: see `STORE_COMPLIANCE.md` / `READINESS.md` row "Pass A 2.5.4"; evidence `evidence/2026-10-13/`.
+- **Recommendation**: Strip the mode in the b22 config; b21 is consistent (still plays in background).
+- **Default if you say nothing**: block Gate 3.
+- **Owner**: Devin
+- **Deadline**: before b22
+- **Status**: open
+
+### EX-privacy-contact-email. Privacy policy page has no contact email
+
+- **Situation**: see `STORE_COMPLIANCE.md` / `READINESS.md` row "Legal — Privacy Policy, 5.1.1"; evidence `evidence/2026-10-13/`.
+- **Recommendation**: Add info@appsindie.com on the landing privacy page.
+- **Default if you say nothing**: block Gate 3.
+- **Owner**: Devin
+- **Deadline**: 2026-10-15
+- **Status**: open
+
+### EX-asc-iap-metadata. ASC IAPs plus.yearly + plus.lifetime MISSING_METADATA
+
+- **Situation**: see `STORE_COMPLIANCE.md` / `READINESS.md` row "Pass A 2.1, Pass B IAP"; evidence `evidence/2026-10-13/`.
+- **Recommendation**: Sponsor fills display name/description/review screenshot, attaches to 1.0.
+- **Default if you say nothing**: block Gate 3.
+- **Owner**: human
+- **Deadline**: before iOS submit
+- **Status**: open
+
+### EX-asc-version-setup. ASC 1.0: primary category null, no build attached, es-MX without screenshots
+
+- **Situation**: see `STORE_COMPLIANCE.md` / `READINESS.md` row "Pass B ASC"; evidence `evidence/2026-10-13/`.
+- **Recommendation**: Sponsor sets Productivity + attaches b22; Devin uploads es-MX set.
+- **Default if you say nothing**: block Gate 3.
+- **Owner**: human + Devin
+- **Deadline**: before iOS submit
+- **Status**: open
+
+### EX-tablet-screenshots. No iPad 13" / Android tablet screenshot sets although supportsTablet=true
+
+- **Situation**: see `STORE_COMPLIANCE.md` / `READINESS.md` row "Store assets from this build"; evidence `evidence/2026-10-13/`.
+- **Recommendation**: Capture tablet sets from vc9/b22 for 19 locales and upload.
+- **Default if you say nothing**: block Gate 3.
+- **Owner**: Devin
+- **Deadline**: before iOS submit
+- **Status**: open
+
+### EX-tablet-e2e. Tablet layouts T01–T06 not verified on a tablet device/orientation
+
+- **Situation**: see `STORE_COMPLIANCE.md` / `READINESS.md` row "Spec completeness, E2E coverage"; evidence `evidence/2026-10-13/`.
+- **Recommendation**: iPad sim + Android tablet emulator pass, portrait + landscape.
+- **Default if you say nothing**: block Gate 3.
+- **Owner**: Devin
+- **Deadline**: 2026-10-16
+- **Status**: open
+
+### EX-owasp-checklist. No OWASP Mobile Top 10 / MASVS disposition per category
+
+- **Situation**: see `STORE_COMPLIANCE.md` / `READINESS.md` row "OWASP coverage"; evidence `evidence/2026-10-13/`.
+- **Recommendation**: Write docs/security/v1-owasp-mobile.md.
+- **Default if you say nothing**: block Gate 3.
+- **Owner**: Devin
+- **Deadline**: 2026-10-16
+- **Status**: open
+
+### EX-dependency-triage. 28 outdated deps not triaged by major; npm audit 1 critical (shell-quote, dev-only path) + 67 high untriaged
+
+- **Situation**: see `STORE_COMPLIANCE.md` / `READINESS.md` row "Dependency freshness"; evidence `evidence/2026-10-13/`.
+- **Recommendation**: Triage each major + advisory reachability; exception rows for any dep that cannot move.
+- **Default if you say nothing**: block Gate 3.
+- **Owner**: Devin
+- **Deadline**: 2026-10-16
+- **Status**: open
