@@ -368,6 +368,7 @@ Every open item has default **block**; Devin implements the code/asset items, th
 
 ### EX-tablet-screenshots. iPad 13" and Android tablet screenshot sets
 
-- **Resolution**: Replaced the iPhone 6.9" set and uploaded iPad 13", Play phone, 7-inch, and 10-inch screenshot sets for all required locales on 2026-10-13; confirmed counts, order, delivery state, dimensions, and downloaded image hashes.
+- **Resolution**: Published r2 and uploaded Play 7-inch and 10-inch screenshot buckets for all 20 locales on 2026-10-13; confirmed counts, order, dimensions, and downloaded image hashes. ASC and Play phone assets are byte-identical to r1, so they were not re-uploaded.
+- **Supersession**: r1 was superseded because its rounded Android tablet screen corners clipped status-bar glyphs.
 - **Evidence**: `evidence/2026-10-13/store-screenshots-readback.json`
 - **Status**: resolved 2026-10-13
