@@ -35,7 +35,7 @@
     "session_url": "https://claude.ai/code/cse_01BHxN2AwUQew8dm3dZsra1o",
     "verdict": "APPROVE"
   },
-  "next_action": "Local builds vc9/b22 from PR #26 head, AAB permission check, tablet + es-MX screenshot sets, then sponsor console forms (STORE_QUESTIONNAIRE.md) and Gate 3",
+  "next_action": "vc9 (internal, COMPLETED) + b22 (TestFlight, processing) built from PR #26 098168d; next: tablet + es-MX screenshot sets, ATT E2E on b22, then sponsor console forms (STORE_QUESTIONNAIRE.md) and Gate 3",
   "open_exceptions": [
     {
       "blocking": true,
