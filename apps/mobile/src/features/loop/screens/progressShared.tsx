@@ -70,6 +70,8 @@ export function SessionDayList({
     <FlatList
       data={groups}
       keyExtractor={(g) => g.dayLabel}
+      showsVerticalScrollIndicator={false}
+      showsHorizontalScrollIndicator={false}
       renderItem={({ item }) => (
         <View style={styles.group}>
           <Text style={[styles.dayLabel, { color: colors.muted }]}>{item.dayLabel}</Text>

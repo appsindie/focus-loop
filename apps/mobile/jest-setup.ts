@@ -58,6 +58,10 @@ jest.mock("expo-localization", () => ({
   getLocales: jest.fn(() => [{ languageTag: "en-US" }]),
 }));
 
+jest.mock("expo-navigation-bar", () => ({
+  NavigationBar: () => null,
+}));
+
 jest.mock("expo-notifications", () => ({
   getPermissionsAsync: jest.fn(() => Promise.resolve({ status: 0 })),
   requestPermissionsAsync: jest.fn(() => Promise.resolve({ status: 0 })),

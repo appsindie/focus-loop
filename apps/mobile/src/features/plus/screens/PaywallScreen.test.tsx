@@ -1,5 +1,6 @@
-import { render, screen, waitFor } from "@testing-library/react-native";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react-native";
 import { describe, expect, it, jest } from "@jest/globals";
+import { StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from "react-native";
 import { palette } from "../../../shared/theme";
 import { PaywallScreen } from "./PaywallScreen";
 import type { StoreProduct } from "../iapPort";
@@ -53,5 +54,90 @@ describe("PaywallScreen (P14)", () => {
     expect(mockLoadProducts).toHaveBeenCalledTimes(1);
     expect(screen.getByText("$19.99")).toBeTruthy();
     expect(screen.getByText("$49.99")).toBeTruthy();
+  });
+
+  it("shows the selected plan as an accessible outline card", async () => {
+    await render(
+      <PaywallScreen
+        colors={palette.light}
+        onClose={() => {}}
+        onPurchased={() => {}}
+        onRestored={() => {}}
+      />,
+    );
+    await waitFor(() => expect(screen.getByText("Start free trial")).toBeTruthy());
+
+    const card = screen.getByLabelText("Plus Yearly $19.99");
+    const state = card.props["accessibilityState"] as { checked?: boolean };
+    const flattened = StyleSheet.flatten(card.props["style"] as StyleProp<ViewStyle>);
+    const planName = screen.getByText("Yearly", { exact: true });
+    const children = Array.isArray(card.props["children"])
+      ? card.props["children"]
+      : [card.props["children"]];
+
+    expect(card.props["accessibilityRole"]).toBe("radio");
+    expect(state.checked).toBe(true);
+    expect(flattened.backgroundColor).toBe(palette.light.surface);
+    expect(flattened.borderColor).toBe(palette.light.focus);
+    expect(children.some((child: { type?: unknown } | null) => child?.type === View)).toBe(false);
+    expect(StyleSheet.flatten(planName.props["style"] as StyleProp<TextStyle>).color).toBe(
+      palette.light.ink,
+    );
+  });
+
+  it("keeps Restore available without a footer spinner after product loading fails", async () => {
+    mockLoadProducts.mockImplementationOnce(() => Promise.reject(new Error("offline")));
+    const { container } = await render(
+      <PaywallScreen
+        colors={palette.light}
+        onClose={() => {}}
+        onPurchased={() => {}}
+        onRestored={() => {}}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getByText("We couldn't load prices. Check your connection and try again."),
+      ).toBeTruthy(),
+    );
+    expect(container.queryAll((node) => node.type === "ActivityIndicator")).toHaveLength(0);
+    await fireEvent.press(screen.getByText("Restore purchases"));
+    await waitFor(() =>
+      expect(screen.getByText("No purchases found for this store account.")).toBeTruthy(),
+    );
+  });
+
+  it("shows the error state when the store returns no products", async () => {
+    mockLoadProducts.mockImplementationOnce(() => Promise.resolve([]));
+    const { container } = await render(
+      <PaywallScreen
+        colors={palette.light}
+        onClose={() => {}}
+        onPurchased={() => {}}
+        onRestored={() => {}}
+      />,
+    );
+
+    await waitFor(() =>
+      expect(
+        screen.getByText("We couldn't load prices. Check your connection and try again."),
+      ).toBeTruthy(),
+    );
+    expect(container.queryAll((node) => node.type === "ActivityIndicator")).toHaveLength(0);
+  });
+
+  it("shows one body spinner while products are loading", async () => {
+    mockLoadProducts.mockImplementationOnce(() => new Promise<StoreProduct[]>(() => {}));
+    const { container } = await render(
+      <PaywallScreen
+        colors={palette.light}
+        onClose={() => {}}
+        onPurchased={() => {}}
+        onRestored={() => {}}
+      />,
+    );
+
+    expect(container.queryAll((node) => node.type === "ActivityIndicator")).toHaveLength(1);
   });
 });

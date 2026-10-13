@@ -57,6 +57,6 @@ TEMPORIZADOR DE ESTUDIO Y TRABAJO
 1. [hero] Un toque y a enfocar | El Disc es tu temporizador
 2. Enfoque y pausas, un ciclo | Las pausas también cuentan
 3. [callout] 4 días a la semana. Sin rachas rotas. | Metas que perdonan un mal día
-4. Empieza desde tu pantalla | Widget y timer en pantalla de bloqueo
+4. Sal un rato. Vuelve. | Tu ciclo guarda tu lugar
 5. Pausa, termina antes, igual cuenta | Progreso sin vergüenza
 6. Comparte tu semana | Números reales, listos para mostrar

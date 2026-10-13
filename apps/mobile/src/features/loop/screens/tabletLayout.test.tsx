@@ -1,18 +1,37 @@
 // T01–T06 (DESIGN.md §4): the tablet variants of the same screens — the
 // layout hooks are mocked off globally in jest-setup; each test spies them on.
 import { describe, expect, it, jest } from "@jest/globals";
-import { fireEvent, render } from "@testing-library/react-native";
+import { fireEvent, render, screen, within } from "@testing-library/react-native";
+import { StyleSheet, type StyleProp, type TextStyle, type ViewStyle } from "react-native";
+import { SafeAreaProvider, type Metrics } from "react-native-safe-area-context";
 import * as layout from "../../../shared/layout";
 import { palette } from "../../../shared/theme";
+import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
+import { HomeBanner } from "../../ads/HomeBanner";
 import { HomeScreen } from "./HomeScreen";
 import { WeekScreen } from "./WeekScreen";
 import { FocusScreen } from "./FocusScreen";
+import { BreakScreen } from "./BreakScreen";
 import { SettingsScreen } from "../../settings/SettingsScreen";
 import { DEFAULT_SETTINGS } from "../../settings/SettingsStore";
 import { WeekProgress } from "../weeklyGoal";
 import { FocusSession } from "../SessionLog";
 import { LoopStep } from "../loopPlan";
 import { ParkedThought } from "../parkedThoughts";
+
+jest.mock("@appsindie/react-native-ads", () => ({
+  Banner: () => null,
+}));
+
+jest.mock("../../ads/AdsProvider", () => ({
+  useAdsConsent: () => ({
+    adsReady: true,
+    canRequestAds: true,
+    privacyOptionsRequired: false,
+    resolved: true,
+    showPrivacyOptions: async () => {},
+  }),
+}));
 
 const TABLET_STEPS: LoopStep[] = [
   { kind: "focus", roundIndex: 1, durationSeconds: 1500 },
@@ -53,13 +72,52 @@ const PARKED: ParkedThought[] = [
   { id: "p1", text: "Book the dentist", createdAt: new Date().toISOString(), usedAt: null },
 ];
 
-function asTablet() {
+const HOME_METRICS: Metrics = {
+  insets: { top: 0, right: 0, bottom: 34, left: 0 },
+  frame: { x: 0, y: 0, width: 1280, height: 800 },
+};
+
+const HOME_METRICS_WITHOUT_BOTTOM_INSET: Metrics = {
+  ...HOME_METRICS,
+  insets: { ...HOME_METRICS.insets, bottom: 0 },
+};
+
+function asTablet(isLandscape = true) {
   const t = jest.spyOn(layout, "useIsTablet").mockReturnValue(true);
-  const l = jest.spyOn(layout, "useIsLandscape").mockReturnValue(true);
+  const l = jest.spyOn(layout, "useIsLandscape").mockReturnValue(isLandscape);
   return () => {
     t.mockRestore();
     l.mockRestore();
   };
+}
+
+function asPhone() {
+  const t = jest.spyOn(layout, "useIsTablet").mockReturnValue(false);
+  const l = jest.spyOn(layout, "useIsLandscape").mockReturnValue(false);
+  return () => {
+    t.mockRestore();
+    l.mockRestore();
+  };
+}
+
+async function layoutAt(testId: string, width: number, height: number) {
+  await fireEvent(screen.getByTestId(testId), "layout", {
+    nativeEvent: { layout: { x: 0, y: 0, width, height } },
+  });
+}
+
+function discSize(): number {
+  return screen.getByTestId("focus-disc").props["width"] as number;
+}
+
+function reservedHeightAt(testId: string, caption: RegExp | string): number {
+  const area = screen.getByTestId(testId);
+  const captionText = screen.getByText(caption);
+  const gap = StyleSheet.flatten(area.props["style"] as StyleProp<ViewStyle>).gap;
+  const lineHeight = StyleSheet.flatten(
+    captionText.props["style"] as StyleProp<TextStyle>,
+  ).lineHeight;
+  return Number(gap ?? 0) + (lineHeight ?? 0);
 }
 
 describe("HomeScreen (T01 tablet)", () => {
@@ -83,8 +141,31 @@ describe("HomeScreen (T01 tablet)", () => {
       onStart: jest.fn(),
       onOpenSettings: jest.fn(),
       onOpenWeek: jest.fn(),
-      bannerSlot: undefined,
     };
+  }
+
+  async function renderHomeWithBanner(
+    props: ReturnType<typeof makeProps>,
+    metrics: Metrics = HOME_METRICS,
+  ) {
+    return render(
+      <SafeAreaProvider initialMetrics={metrics}>
+        <>
+          <HomeScreen {...props} />
+          <SafeAreaView
+            testID="home-banner-dock"
+            edges={["bottom"]}
+            style={{ backgroundColor: palette.light.bg }}
+          >
+            <HomeBanner
+              entitlementLoaded={true}
+              hasAdsRemoval={false}
+              backgroundColor={palette.light.bg}
+            />
+          </SafeAreaView>
+        </>
+      </SafeAreaProvider>,
+    );
   }
 
   it("lays out the two columns — loop left, stats/parked right", async () => {
@@ -103,8 +184,62 @@ describe("HomeScreen (T01 tablet)", () => {
   });
 
   it("phone keeps the single-column home (no schedule list)", async () => {
-    const { queryByText } = await render(<HomeScreen {...makeProps()} />);
+    const restore = asPhone();
+    const { getAllByTestId, getByTestId, queryByTestId, queryByText } =
+      await renderHomeWithBanner(makeProps());
     expect(queryByText("REST OF TODAY’S LOOP")).toBeNull();
+    expect(queryByTestId("home-main-scroll")).toBeNull();
+    expect(queryByTestId("home-side-scroll")).toBeNull();
+    expect(getAllByTestId("home-banner")).toHaveLength(1);
+    expect(within(getByTestId("home-banner-dock")).getByTestId("home-banner")).toBeTruthy();
+    restore();
+  });
+
+  it("keeps the portrait tablet banner below Home, outside its columns", async () => {
+    const restore = asTablet(false);
+    const { getAllByTestId, getByTestId } = await renderHomeWithBanner(makeProps());
+    expect(getAllByTestId("home-banner")).toHaveLength(1);
+    expect(within(getByTestId("home-side-column")).queryByTestId("home-banner")).toBeNull();
+    expect(within(getByTestId("home-banner-dock")).getByTestId("home-banner")).toBeTruthy();
+    restore();
+  });
+
+  it("pins the landscape banner below Home and leaves the bottom inset to its dock", async () => {
+    const restore = asTablet(true);
+    const { getAllByTestId, getByTestId, unmount } = await renderHomeWithBanner(makeProps());
+    expect(getAllByTestId("home-banner")).toHaveLength(1);
+    const root = getByTestId("home-root");
+    const rootStyle = StyleSheet.flatten(root.props["style"] as StyleProp<ViewStyle>);
+    const bannerDock = getByTestId("home-banner-dock");
+    const bannerDockStyle = StyleSheet.flatten(bannerDock.props["style"] as StyleProp<ViewStyle>);
+    expect(bannerDockStyle.paddingBottom).toBe(HOME_METRICS.insets.bottom);
+    expect(within(root).queryByTestId("home-banner")).toBeNull();
+    expect(within(getByTestId("home-side-column")).queryByTestId("home-banner")).toBeNull();
+    expect(within(bannerDock).getByTestId("home-banner")).toBeTruthy();
+    const paddingWithInset = Number(rootStyle.paddingBottom);
+    await unmount();
+
+    const withoutInset = await renderHomeWithBanner(makeProps(), HOME_METRICS_WITHOUT_BOTTOM_INSET);
+    const rootStyleWithoutInset = StyleSheet.flatten(
+      withoutInset.getByTestId("home-root").props["style"] as StyleProp<ViewStyle>,
+    );
+    expect(paddingWithInset - Number(rootStyleWithoutInset.paddingBottom)).toBe(0);
+    restore();
+  });
+
+  it("scrolls landscape columns above a pinned Start button", async () => {
+    const restore = asTablet(true);
+    const { getByTestId } = await render(<HomeScreen {...makeProps()} />);
+    const mainColumn = getByTestId("home-main-column");
+    const mainScroll = within(mainColumn).getByTestId("home-main-scroll");
+    expect(within(mainScroll).getByText("REST OF TODAY’S LOOP")).toBeTruthy();
+    expect(within(mainColumn).getByLabelText("Start a 25-minute focus")).toBeTruthy();
+    expect(within(mainScroll).queryByLabelText("Start a 25-minute focus")).toBeNull();
+
+    const sideScroll = within(getByTestId("home-side-column")).getByTestId("home-side-scroll");
+    expect(within(sideScroll).getByText("Today 1 focus · 25 min")).toBeTruthy();
+    expect(within(sideScroll).getByText("Book the dentist")).toBeTruthy();
+    restore();
   });
 });
 
@@ -171,6 +306,194 @@ describe("FocusScreen (T02 tablet landscape)", () => {
     const restore = asTablet();
     const { queryByText } = await render(<FocusScreen {...makeProps()} parkedThoughts={[]} />);
     expect(queryByText("PARKED")).toBeNull();
+    restore();
+  });
+
+  it("renders tablet landscape Numbers timer only in the left measured area", async () => {
+    const restore = asTablet();
+    await render(<FocusScreen {...makeProps()} />);
+    expect(screen.getAllByText("10")).toHaveLength(1);
+    restore();
+  });
+
+  it("sizes the portrait tablet disc to the measured area width", async () => {
+    const restore = asTablet(false);
+    await render(<FocusScreen {...makeProps()} displayMode="disc" />);
+    expect(discSize()).toBe(280);
+    await layoutAt("focus-time-area", 936, 1100);
+    expect(discSize()).toBe(936);
+    expect(discSize()).toBeGreaterThan(280);
+    restore();
+  });
+
+  it("fits the split tablet disc below its caption", async () => {
+    const restore = asTablet();
+    await render(<FocusScreen {...makeProps()} displayMode="disc" />);
+    expect(discSize()).toBe(280);
+    await layoutAt("focus-split-left", 560, 504);
+    const reserved = reservedHeightAt("focus-split-left", "about 11 min left");
+    expect(discSize()).toBe(504 - reserved);
+    restore();
+  });
+
+  it("keeps the phone disc capped at 280 in a large area", async () => {
+    const restore = asPhone();
+    await render(<FocusScreen {...makeProps()} displayMode="disc" />);
+    await layoutAt("focus-time-area", 936, 1100);
+    expect(discSize()).toBe(280);
+    restore();
+  });
+
+  it("derives portrait tablet Numbers size from the measured area", async () => {
+    const restore = asTablet(false);
+    await render(<FocusScreen {...makeProps()} />);
+    const initialMinutes = screen.getByText("10");
+    expect(StyleSheet.flatten(initialMinutes.props["style"] as StyleProp<TextStyle>).fontSize).toBe(
+      380,
+    );
+    await layoutAt("focus-time-area", 504, 1100);
+    const minutes = screen.getByText("10");
+    const minuteStyle = StyleSheet.flatten(minutes.props["style"] as StyleProp<TextStyle>);
+    expect(minuteStyle.fontSize).toBe(Math.floor(Math.min(1100 * 0.6, 504 * 0.45)));
+    expect(minutes.props["maxFontSizeMultiplier"]).toBe(1.3);
+    expect(minutes.props["adjustsFontSizeToFit"]).toBe(true);
+    expect(minutes.props["numberOfLines"]).toBe(1);
+    restore();
+  });
+
+  it("fits split tablet Numbers within a 520 by 410 area", async () => {
+    const restore = asTablet();
+    await render(<FocusScreen {...makeProps()} />);
+    await layoutAt("focus-split-left", 520, 410);
+    const minutes = screen.getAllByText("10")[0]!;
+    const minuteStyle = StyleSheet.flatten(minutes.props["style"] as StyleProp<TextStyle>);
+    expect(minuteStyle.fontSize).toBe(Math.floor(Math.min(410 * 0.6, 520 * 0.45)));
+    expect(minutes.props["adjustsFontSizeToFit"]).toBe(true);
+    expect(minutes.props["numberOfLines"]).toBe(1);
+    restore();
+  });
+});
+
+describe("BreakScreen (T03 tablet)", () => {
+  it("keeps the background full-bleed and constrains tablet controls only", async () => {
+    const restore = asTablet();
+    await render(
+      <BreakScreen
+        colors={palette.light}
+        displayMode="disc"
+        remainingSeconds={300}
+        durationSeconds={300}
+        nextFocusNumber={2}
+        autoStart={false}
+        onExtend={jest.fn()}
+        onStartFocus={jest.fn()}
+      />,
+    );
+    const root = screen.getByTestId("break-background");
+    const content = screen.getByTestId("break-content");
+    const controls = screen.getByTestId("break-controls");
+    expect(StyleSheet.flatten(root.props["style"] as StyleProp<ViewStyle>).backgroundColor).toBe(
+      palette.light.breakBg,
+    );
+    expect(
+      StyleSheet.flatten(root.props["style"] as StyleProp<ViewStyle>).maxWidth,
+    ).toBeUndefined();
+    const contentStyle = StyleSheet.flatten(content.props["style"] as StyleProp<ViewStyle>);
+    const controlsStyle = StyleSheet.flatten(controls.props["style"] as StyleProp<ViewStyle>);
+    expect(contentStyle.maxWidth).toBeUndefined();
+    expect(contentStyle.width).toBe("100%");
+    expect(contentStyle.paddingHorizontal).toBe(layout.TABLET_PADDING);
+    expect(controlsStyle.maxWidth).toBe(640);
+    restore();
+  });
+
+  it("fills the measured tablet time area with the break disc", async () => {
+    const restore = asTablet(false);
+    await render(
+      <BreakScreen
+        colors={palette.light}
+        displayMode="disc"
+        remainingSeconds={300}
+        durationSeconds={300}
+        nextFocusNumber={2}
+        autoStart={false}
+        onExtend={jest.fn()}
+        onStartFocus={jest.fn()}
+      />,
+    );
+    expect(discSize()).toBe(220);
+    await layoutAt("break-time-area", 1504, 1400);
+    const reserved = reservedHeightAt("break-time-area", /^Back at /);
+    expect(discSize()).toBe(layout.fitDiscSize({ width: 1504, height: 1400 }, reserved));
+    expect(discSize()).toBeGreaterThan(640);
+    restore();
+  });
+
+  it("uses Focus's measured-area sizing for tablet Numbers", async () => {
+    const restore = asTablet();
+    await render(
+      <BreakScreen
+        colors={palette.light}
+        displayMode="numbers"
+        remainingSeconds={300}
+        durationSeconds={300}
+        nextFocusNumber={2}
+        autoStart={false}
+        onExtend={jest.fn()}
+        onStartFocus={jest.fn()}
+      />,
+    );
+    await layoutAt("break-time-area", 1504, 1400);
+    const minutes = screen.getByText("5:00");
+    const minuteStyle = StyleSheet.flatten(minutes.props["style"] as StyleProp<TextStyle>);
+    expect(minuteStyle.fontSize).toBe(Math.floor(Math.min(1400 * 0.6, 1504 * 0.45)));
+    expect(minutes.props["adjustsFontSizeToFit"]).toBe(true);
+    expect(minutes.props["numberOfLines"]).toBe(1);
+    restore();
+  });
+
+  it("keeps phone Break sizing unchanged", async () => {
+    const restore = asPhone();
+    const disc = await render(
+      <BreakScreen
+        colors={palette.light}
+        displayMode="disc"
+        remainingSeconds={300}
+        durationSeconds={300}
+        nextFocusNumber={2}
+        autoStart={false}
+        onExtend={jest.fn()}
+        onStartFocus={jest.fn()}
+      />,
+    );
+    await layoutAt("break-time-area", 1504, 1400);
+    expect(discSize()).toBe(220);
+    const group = screen.getByTestId("focus-disc").children[0];
+    if (group == null || typeof group === "string") {
+      throw new Error("Focus disc should render an SVG group");
+    }
+    expect(
+      group.children.map((circle) =>
+        typeof circle === "string" ? null : (circle.props["strokeWidth"] as number),
+      ),
+    ).toEqual([12, 12]);
+    await disc.unmount();
+
+    await render(
+      <BreakScreen
+        colors={palette.light}
+        displayMode="numbers"
+        remainingSeconds={300}
+        durationSeconds={300}
+        nextFocusNumber={2}
+        autoStart={false}
+        onExtend={jest.fn()}
+        onStartFocus={jest.fn()}
+      />,
+    );
+    await layoutAt("break-time-area", 1504, 1400);
+    const minutes = screen.getByText("5:00");
+    expect(StyleSheet.flatten(minutes.props["style"] as StyleProp<TextStyle>).fontSize).toBe(120);
     restore();
   });
 });

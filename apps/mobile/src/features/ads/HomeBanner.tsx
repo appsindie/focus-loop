@@ -2,11 +2,9 @@ import { StyleSheet, View } from "react-native";
 import { Banner } from "@appsindie/react-native-ads";
 import { useAdsConsent } from "./AdsProvider";
 
-// P04 free-tier banner, 320x50. One component shared by both Home paths
-// (S10-01): the phone path pins it to the bottom of Home, the tablet path
-// slots it into Home's right column (T01). Renders nothing until the
-// entitlement read lands so Plus never flashes an ad (CR-25 — the tablet
-// path leaked this until the shared node).
+// P04 free-tier anchored adaptive banner. It spans the device width, so App
+// pins the shared slot below Home on every device and orientation. Renders
+// nothing until the entitlement read lands so Plus never flashes an ad (CR-25).
 export function HomeBanner({
   entitlementLoaded,
   hasAdsRemoval,

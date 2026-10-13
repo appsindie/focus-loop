@@ -57,6 +57,6 @@ Use como timer de estudo, timer de deep work ou timer de concentração. Comece 
 1. [hero] Um toque e foco | O Disc é seu timer
 2. Foco e pausas, um ciclo | Pausar também é plano
 3. [callout] 4 dias por semana. Sem sequências quebradas. | Metas que perdoam um dia ruim
-4. Comece da sua tela inicial | Widget e timer na tela de bloqueio
+4. Saia um pouco. Volte. | Seu ciclo guarda seu lugar
 5. Pare antes, conta igual | Progresso sem culpa
 6. Compartilhe sua semana | Números reais, prontos pra mostrar

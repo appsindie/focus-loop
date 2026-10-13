@@ -46,6 +46,7 @@ export function AppearanceControl({
                 { color: selectedTextColor(colors, selected) },
                 selected && { fontWeight: "600" },
               ]}
+              numberOfLines={1}
             >
               {t(option.label)}
             </Text>
@@ -59,11 +60,12 @@ export function AppearanceControl({
 const styles = StyleSheet.create({
   container: { flexDirection: "row" },
   option: {
-    flex: 1,
+    flexGrow: 1,
+    flexShrink: 0,
     minHeight: 44,
     alignItems: "center",
     justifyContent: "center",
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
   },
   label: { ...typography.caption },
 });

@@ -26,6 +26,16 @@ and open points are in [`DESIGN_REVIEW.md`](DESIGN_REVIEW.md).
 Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; map them to theme roles.
 
 - Appearance: Light, Dark, System (default System). Both themes ship together; no screen may exist in one only.
+- System bars follow the app's Appearance; green Break uses light icons. On Android SDK 30–34, the
+  `expo-navigation-bar` patch also sets the platform appearance flag because, after React Native's `StatusBarModule`
+  takes control, the compat call only writes a legacy system-UI bit.
+- The Kotlin patch reaches the APK only because `expo-navigation-bar` is listed in
+  `apps/mobile/package.json`'s `expo.autolinking.android.buildFromSource`; otherwise Expo links a prebuilt AAR.
+  `apps/mobile/src/shared/nativePatches.test.ts` enforces this.
+- Known limitation: on Android 15 with 3-button navigation, the launcher Taskbar ignores the app's light-nav-bar
+  icon-colour flag. When the app and phone themes differ, its buttons follow the phone theme (1.7:1 contrast).
+  Android 16 and gesture navigation are unaffected. Following the system theme instead measured 2.1:1, still below
+  3:1, so that option was rejected.
 - `focus` is for fills only. Coloured text uses `focus-text` / `break` (light) or `break-text` (dark) so contrast stays
   ≥ 4.5:1.
 - On dark, text on a `break` fill is `on-break` (#0B0A09), not white.
@@ -49,7 +59,11 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
 | Sheet            | Bottom sheet, radius 24 top, `surface`, over `scrim`. Primary action first (top), then secondary, then text action.                     |
 | Toast            | Inverted surface, 4 s, polite live region. Used for rewarded-ad failure.                                                                |
 
+Selected-state styling: solid focus fill is for compact chips/segments only; cards and rows use the outline style (`selectedCardStyle`).
+
 ## 4. Screens
+
+- Tablet sizes are derived from the measured area, never fixed px.
 
 ### P01 Splash
 
@@ -73,15 +87,17 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
   thought with a "use this" action, today and week summary, primary Start button with duration.
 - Intention is optional; empty is fine. Placeholder: "What will you work on?"
 - P05 (first day of a week): headline "A new week.", goal strip with any-N-days copy. Never shows zeros as failure.
-- Banner ad 320 × 50 at the very bottom, free tier only.
+- Anchored adaptive banner, full width and bottom-pinned on every device/orientation, free tier only; it spans the
+  device width, so it cannot sit in a column.
 
 ### P06 / P07 Focus (Disc / Numbers)
 
 - Header: "FOCUS N OF M" (`focus-text`), display toggle on the right.
 - Intention in serif, 26px, under the header (omitted if empty).
-- Disc mode: 280px disc + "about X min left" (rounded up). Numbers mode: minutes 200px, seconds 56px in `faint`,
-  "minutes left · ends HH:MM". Disc never shows seconds. In Numbers, Settings → Show seconds controls the small
-  seconds (default: open point OP-03 in `DESIGN_REVIEW.md`).
+- Disc mode: phone 280px disc + "about X min left" (rounded up); tablet uses the largest square that fits the
+  measured time area after the caption. Numbers mode: phone minutes 200px, seconds 56px in `faint`, "minutes left ·
+  ends HH:MM"; tablet digits scale with that same area. Disc never shows seconds. In
+  Numbers, Settings → Show seconds controls the small seconds (default: open point OP-03 in `DESIGN_REVIEW.md`).
 - Loop strip + "Next: 5 min break".
 - "Later, not now…" opens SHT-later; the timer keeps running.
 - Pause (secondary) / Resume; "End early…" (text) opens SHT-end-early. There is no one-tap cancel.
@@ -111,7 +127,8 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
 
 ### P11 Break
 
-- Full-screen `break-bg`. Follows the display choice (disc in white, or numbers).
+- Full-screen `break-bg`. Follows the display choice (phone disc 220px; tablet uses the largest square that fits the
+  measured time area after the "Back at / Focus starts at" caption; Numbers digits scale with the same area).
 - Three off-screen suggestions. Actions: +5 min (secondary), **Focus N now** (primary, white).
 - If auto-start is on, the next focus starts when the break ends, with a notification.
 
@@ -130,6 +147,7 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
 
 - Close (×) always visible top right. Five benefits, plan picker (Yearly with 7-day trial, Lifetime), primary
   "Start free trial", trial terms, Restore / Terms / Privacy links.
+- Plan picker uses outline cards, a 2px focus border on the selected plan, and surface fill — same as Rhythm presets; the primary CTA is the only filled element.
 - Prices come from the store; never hard-code.
 
 ### P15 Themes & sounds
@@ -175,6 +193,7 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
 
 - Rhythm presets: Classic 25/5×4, Gentle start 15/5, Deep work 50/10×3, Custom. Steppers for focus, break, long
   break, rounds; the strip and "One loop = …" update live.
+- Rhythm keeps a fixed header while presets and fine-tuning content scroll below it.
 - Reminders: list of times with weekday chips and a toggle each; "Add a reminder"; optional one gentle evening note
   on goal days, off by default.
 
@@ -194,9 +213,13 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
 ### Tablet (T01–T06)
 
 - 48 padding. Home and Week/History are two columns; Settings is master–detail (sections left, detail right).
-- Focus landscape: 540px disc left, intention, time, strip, parked thoughts and controls right. Portrait Numbers:
-  minutes at 380px.
-- Banner ad on tablet is 320 × 50 in the right column, free tier only.
+- Landscape Home scrolls the left column above a pinned Start button and scrolls the right column, so short tablet heights never push Start off-screen.
+- Focus landscape keeps the timer (disc or Numbers digits) left, with intention, strip, parked thoughts and controls
+  right. Phone Focus uses a 280px disc (Break uses 220px); tablet discs use the largest square that fits the measured
+  time area after the caption, and Numbers digits scale with that same area. Tablet Break uses the same measured-area
+  sizing as Focus; only its suggestions and buttons are constrained to a 640pt column.
+- The free-tier anchored adaptive Home banner is full width and bottom-pinned on every device/orientation; it spans
+  the device width, so it cannot sit in a column.
 
 ## 5. Ads and Plus
 

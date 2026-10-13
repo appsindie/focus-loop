@@ -1,9 +1,17 @@
+import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { DisplayMode } from "../../settings/SettingsStore";
 import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
-import { TABLET_PADDING, useIsTablet } from "../../../shared/layout";
+import {
+  Area,
+  discStrokeWidth,
+  fitDiscSize,
+  fitTimerFontSize,
+  TABLET_PADDING,
+  useIsTablet,
+} from "../../../shared/layout";
 import { PrimaryButton, SecondaryButton } from "../../../shared/ui/Buttons";
 import { FocusDisc } from "../ui/FocusDisc";
 
@@ -53,65 +61,90 @@ export function BreakScreen({
   };
 
   const isTablet = useIsTablet();
+  const [timerArea, setTimerArea] = useState<Area | null>(null);
+  const reservedHeight =
+    StyleSheet.flatten(styles.until).lineHeight + Number(StyleSheet.flatten(styles.timeArea).gap);
+  const discSize =
+    timerArea == null ? 220 : fitDiscSize(timerArea, reservedHeight, isTablet ? Infinity : 220);
+  const tabletMinutesSize = isTablet && timerArea != null ? fitTimerFontSize(timerArea) : undefined;
+
   return (
     <SafeAreaView
-      style={[
-        styles.root,
-        { backgroundColor: colors.breakBg },
-        // T03: the same centered break column, just wider margins.
-        isTablet && {
-          paddingHorizontal: TABLET_PADDING,
-          maxWidth: 640,
-          alignSelf: "center",
-          width: "100%",
-        },
-      ]}
+      style={[styles.root, { backgroundColor: colors.breakBg }]}
+      testID="break-background"
     >
-      <Text style={[styles.kicker, { color: sub }]}>{t("BREAK")}</Text>
-      <View style={styles.timeArea}>
-        {displayMode === "disc" ? (
-          <FocusDisc
-            progress={progress}
-            remainingMinutes={Math.ceil(remainingSeconds / 60)}
-            colors={discColors}
-            size={220}
-            strokeWidth={12}
-          />
-        ) : (
-          <Text style={[styles.minutes, { color: ink }]} maxFontSizeMultiplier={1.3}>
-            {minutes}:{String(seconds).padStart(2, "0")}
+      <View
+        testID="break-content"
+        style={[styles.content, isTablet && { paddingHorizontal: TABLET_PADDING, width: "100%" }]}
+      >
+        <Text style={[styles.kicker, { color: sub }]}>{t("BREAK")}</Text>
+        <View
+          testID="break-time-area"
+          onLayout={(event) =>
+            setTimerArea({
+              width: event.nativeEvent.layout.width,
+              height: event.nativeEvent.layout.height,
+            })
+          }
+          style={styles.timeArea}
+        >
+          {displayMode === "disc" ? (
+            <FocusDisc
+              progress={progress}
+              remainingMinutes={Math.ceil(remainingSeconds / 60)}
+              colors={discColors}
+              testID="focus-disc"
+              size={discSize}
+              strokeWidth={isTablet ? discStrokeWidth(discSize) : 12}
+            />
+          ) : (
+            <Text
+              style={[
+                styles.minutes,
+                { color: ink },
+                tabletMinutesSize != null ? { fontSize: tabletMinutesSize } : null,
+              ]}
+              maxFontSizeMultiplier={1.3}
+              adjustsFontSizeToFit
+              numberOfLines={1}
+            >
+              {minutes}:{String(seconds).padStart(2, "0")}
+            </Text>
+          )}
+          <Text style={[styles.until, { color: sub }]}>
+            {autoStart
+              ? t("Focus starts at {endsAt}", { endsAt })
+              : t("Back at {endsAt}", { endsAt })}
           </Text>
-        )}
-        <Text style={[styles.until, { color: sub }]}>
-          {autoStart
-            ? t("Focus starts at {endsAt}", { endsAt })
-            : t("Back at {endsAt}", { endsAt })}
-        </Text>
-      </View>
+        </View>
 
-      <View style={styles.suggestions}>
-        {SUGGESTIONS.map((suggestion, i) => (
-          <Text key={i} style={[styles.suggestion, { color: sub }]}>
-            · {suggestion()}
-          </Text>
-        ))}
-      </View>
+        <View testID="break-controls" style={isTablet ? styles.tabletControls : undefined}>
+          <View style={[styles.suggestions, !isTablet && styles.phoneSuggestions]}>
+            {SUGGESTIONS.map((suggestion, i) => (
+              <Text key={i} style={[styles.suggestion, { color: sub }]}>
+                · {suggestion()}
+              </Text>
+            ))}
+          </View>
 
-      <View style={styles.actions}>
-        <SecondaryButton label={t("+5 min")} onPress={onExtend} colors={{ ...colors, ink }} />
-        <PrimaryButton
-          label={t("Focus {n} now", { n: nextFocusNumber })}
-          onPress={onStartFocus}
-          colors={colors}
-          variant="light"
-        />
+          <View style={styles.actions}>
+            <SecondaryButton label={t("+5 min")} onPress={onExtend} colors={{ ...colors, ink }} />
+            <PrimaryButton
+              label={t("Focus {n} now", { n: nextFocusNumber })}
+              onPress={onStartFocus}
+              colors={colors}
+              variant="light"
+            />
+          </View>
+        </View>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, padding: 24, gap: 12 },
+  root: { flex: 1 },
+  content: { flex: 1, padding: 24, gap: 12 },
   kicker: { ...typography.label, letterSpacing: 2, textAlign: "center" },
   timeArea: { flex: 1, alignItems: "center", justifyContent: "center", gap: 18 },
   minutes: {
@@ -121,6 +154,8 @@ const styles = StyleSheet.create({
   },
   until: { ...typography.body },
   suggestions: { gap: 6, alignItems: "center" },
+  tabletControls: { maxWidth: 640, alignSelf: "center", width: "100%", gap: 12 },
+  phoneSuggestions: { marginBottom: 12 },
   suggestion: { ...typography.caption, fontSize: 14 },
   actions: { gap: 10 },
 });

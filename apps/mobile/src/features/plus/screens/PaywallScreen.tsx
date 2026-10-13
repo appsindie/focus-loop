@@ -4,7 +4,7 @@ import * as WebBrowser from "expo-web-browser";
 import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
-import { selectedStyle, selectedTextColor } from "../../../shared/ui/selectedStyle";
+import { selectedCardStyle } from "../../../shared/ui/selectedStyle";
 import { TABLET_PADDING, useIsTablet } from "../../../shared/layout";
 import { PrimaryButton, TextButton } from "../../../shared/ui/Buttons";
 import { trackEvent } from "../../analytics/events";
@@ -150,36 +150,24 @@ export function PaywallScreen({
               return (
                 <Pressable
                   key={product.plan}
-                  accessibilityRole="button"
+                  accessibilityRole="radio"
                   accessibilityLabel={`${product.title} ${product.priceText}`}
-                  accessibilityState={{ selected }}
+                  accessibilityState={{ checked: selected }}
                   onPress={() => setPlan(product.plan)}
                   style={({ pressed }) => [
                     styles.planCard,
-                    {
-                      backgroundColor: colors.surface,
-                    },
-                    selectedStyle(colors, selected),
+                    selectedCardStyle(colors, selected),
                     pressed && { opacity: 0.55 },
                   ]}
                 >
-                  <Text
-                    style={[styles.planName, { color: selectedTextColor(colors, selected) }]}
-                    allowFontScaling
-                  >
+                  <Text style={[styles.planName, { color: colors.ink }]} allowFontScaling>
                     {product.plan === "yearly" ? t("Yearly") : t("Lifetime")}
                   </Text>
-                  <Text
-                    style={[styles.planPrice, { color: selectedTextColor(colors, selected) }]}
-                    allowFontScaling
-                  >
+                  <Text style={[styles.planPrice, { color: colors.ink }]} allowFontScaling>
                     {product.priceText}
                   </Text>
                   {product.plan === "yearly" ? (
-                    <Text
-                      style={[styles.planNote, { color: selectedTextColor(colors, selected) }]}
-                      allowFontScaling
-                    >
+                    <Text style={[styles.planNote, { color: colors.muted }]} allowFontScaling>
                       {t("7-day free trial")}
                     </Text>
                   ) : null}
@@ -197,16 +185,18 @@ export function PaywallScreen({
       </View>
 
       <View style={styles.footer}>
-        {busy == null && selectedProduct != null ? (
+        {busy != null ? (
+          <View style={styles.busySlot}>
+            <ActivityIndicator color={colors.focus} />
+          </View>
+        ) : selectedProduct != null ? (
           <PrimaryButton
             label={plan === "yearly" ? t("Start free trial") : t("Get Plus")}
             onPress={() => void buy()}
             colors={colors}
           />
         ) : (
-          <View style={styles.busySlot}>
-            <ActivityIndicator color={colors.focus} />
-          </View>
+          <View style={styles.busySlot} />
         )}
         <View style={styles.legalRow}>
           <TextButton
@@ -248,7 +238,6 @@ const styles = StyleSheet.create({
   errorBox: { alignItems: "center", gap: 4 },
   plans: { gap: 12 },
   planCard: {
-    borderWidth: 2,
     borderRadius: 16,
     paddingVertical: 14,
     paddingHorizontal: 18,

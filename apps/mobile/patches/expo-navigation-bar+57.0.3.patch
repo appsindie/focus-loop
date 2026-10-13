@@ -1,0 +1,26 @@
+diff --git a/node_modules/expo-navigation-bar/android/src/main/java/expo/modules/navigationbar/NavigationBarModule.kt b/node_modules/expo-navigation-bar/android/src/main/java/expo/modules/navigationbar/NavigationBarModule.kt
+index 699b1bb..d567956 100644
+--- a/node_modules/expo-navigation-bar/android/src/main/java/expo/modules/navigationbar/NavigationBarModule.kt
++++ b/node_modules/expo-navigation-bar/android/src/main/java/expo/modules/navigationbar/NavigationBarModule.kt
+@@ -7,6 +7,7 @@ import android.util.TypedValue
+ import android.view.View
+ import android.view.Window
+ import android.view.WindowInsets
++import android.view.WindowInsetsController
+ import androidx.core.view.ViewCompat
+ import androidx.core.view.WindowCompat
+ import androidx.core.view.WindowInsetsCompat
+@@ -50,6 +51,13 @@ internal fun Window.setNavigationBarStyle(
+   WindowInsetsControllerCompat(this, decorView).run {
+     isAppearanceLightNavigationBars = hasLightBackground
+   }
++  // SDK 30-34: compat only writes the legacy sysui bit once the platform controller owns appearance (RN StatusBar), so set the platform flag too.
++  if (Build.VERSION.SDK_INT in Build.VERSION_CODES.R..Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
++    insetsController?.setSystemBarsAppearance(
++      if (hasLightBackground) WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS else 0,
++      WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
++    )
++  }
+ }
+ 
+ internal fun Window.setNavigationBarHidden(hidden: Boolean) {

@@ -1,4 +1,5 @@
 import { StatusBar } from "expo-status-bar";
+import { NavigationBar } from "expo-navigation-bar";
 import { useKeepAwake } from "expo-keep-awake";
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
@@ -404,9 +405,9 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
     })();
   }, [persistSettings, resetAllData]);
 
-  // P04 free-tier banner — one node shared by both Home paths (S10-01):
-  // phone pins it to the bottom, tablet renders it in Home's right column
-  // (T01). The entitlement gate lives inside HomeBanner.
+  // P04 free-tier anchored adaptive banner. It spans the device width, so
+  // Home pins it below the content on every device and orientation.
+  // The entitlement gate lives inside HomeBanner.
   const homeBanner = (
     <HomeBanner
       entitlementLoaded={entitlementLoaded}
@@ -451,13 +452,14 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           onStart={startFocus}
           onOpenSettings={() => go("settings")}
           onOpenWeek={() => go("week")}
-          bannerSlot={isTablet ? homeBanner : undefined}
         />
       ) : null}
-      {route === "home" && !isTablet ? (
-        // Phone path renders the banner outside Home's SafeAreaView — it must
-        // still clear the bottom inset (home indicator / gesture bar).
-        <SafeAreaView edges={["bottom"]} style={{ backgroundColor: colors.bg }}>
+      {route === "home" ? (
+        <SafeAreaView
+          testID="home-banner-dock"
+          edges={["bottom"]}
+          style={{ backgroundColor: colors.bg }}
+        >
           {homeBanner}
         </SafeAreaView>
       ) : null}
@@ -663,6 +665,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
         onNotNow={() => answerNotifAsk(false)}
       />
       <StatusBar style={darkStatus ? "light" : "dark"} />
+      <NavigationBar style={darkStatus ? "light" : "dark"} />
     </>
   );
 }

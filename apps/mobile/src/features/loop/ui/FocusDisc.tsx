@@ -10,12 +10,14 @@ export function FocusDisc({
   progress,
   remainingMinutes,
   colors,
+  testID,
   size = 280,
   strokeWidth = 14,
 }: {
   progress: number; // 0..1 elapsed fraction
   remainingMinutes: number;
   colors: Palette;
+  testID?: string;
   size?: number;
   strokeWidth?: number;
 }) {
@@ -36,7 +38,7 @@ export function FocusDisc({
       accessibilityRole="image"
       accessibilityLabel={t("About {minutes} minutes left", { minutes: remainingMinutes })}
     >
-      <Svg width={size} height={size}>
+      <Svg {...(testID != null ? { testID } : {})} width={size} height={size}>
         {/* Remaining time = focus colour */}
         <Circle
           cx={size / 2}

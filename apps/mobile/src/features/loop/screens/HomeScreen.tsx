@@ -3,6 +3,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -65,7 +66,7 @@ function buildLoopSchedule(plan: readonly LoopStep[], focusNumber: number): Loop
 
 // P04 / P05. P05 = first day of the ISO week with zero sessions met — "A new week."
 // Never shows zeros as failure. T01: same screen as two columns — loop left,
-// day stats + parked + banner right.
+// day stats + parked right.
 export function HomeScreen({
   colors,
   now,
@@ -85,7 +86,6 @@ export function HomeScreen({
   onStart,
   onOpenSettings,
   onOpenWeek,
-  bannerSlot,
 }: {
   colors: Palette;
   now: Date;
@@ -105,7 +105,6 @@ export function HomeScreen({
   onStart: () => void;
   onOpenSettings: () => void;
   onOpenWeek: () => void;
-  bannerSlot?: React.ReactNode;
 }) {
   const isTablet = useIsTablet();
   const firstFocus = plan.find((s) => s.kind === "focus");
@@ -176,6 +175,8 @@ export function HomeScreen({
 
   return (
     <SafeAreaView
+      testID="home-root"
+      edges={["top", "left", "right"]}
       style={[styles.root, { backgroundColor: colors.bg }, isTablet && { padding: TABLET_PADDING }]}
     >
       <KeyboardAvoidingView
@@ -212,67 +213,83 @@ export function HomeScreen({
 
         {isTablet ? (
           // T01: left column = loop state + intention + rest-of-loop + Start;
-          // right column = today/week stats, parked thoughts, banner slot.
-          <View style={styles.columns}>
-            <View style={styles.colMain}>
-              {hero}
-              {intentionField}
-              {loopSchedule.length > 0 ? (
-                <View style={styles.restLoop}>
-                  <Text style={[styles.restLoopTitle, { color: colors.faint }]}>
-                    {t("REST OF TODAY’S LOOP")}
-                  </Text>
-                  {loopSchedule.map((row) => (
-                    <View key={row.key} style={styles.restLoopRow}>
-                      <Text style={[styles.restLoopLabel, { color: colors.ink }]}>{row.label}</Text>
-                      <Text style={[styles.restLoopRange, { color: colors.muted }]}>
-                        {row.range}
-                      </Text>
-                    </View>
-                  ))}
-                </View>
-              ) : null}
-              <View style={styles.spacer} />
+          // right column = today/week stats and parked thoughts.
+          <View testID="home-columns" style={styles.columns}>
+            <View testID="home-main-column" style={styles.colMain}>
+              <ScrollView
+                testID="home-main-scroll"
+                style={styles.mainScroll}
+                contentContainerStyle={styles.mainScrollContent}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+              >
+                {hero}
+                {intentionField}
+                {loopSchedule.length > 0 ? (
+                  <View style={styles.restLoop}>
+                    <Text style={[styles.restLoopTitle, { color: colors.faint }]}>
+                      {t("REST OF TODAY’S LOOP")}
+                    </Text>
+                    {loopSchedule.map((row) => (
+                      <View key={row.key} style={styles.restLoopRow}>
+                        <Text style={[styles.restLoopLabel, { color: colors.ink }]}>
+                          {row.label}
+                        </Text>
+                        <Text style={[styles.restLoopRange, { color: colors.muted }]}>
+                          {row.range}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                ) : null}
+              </ScrollView>
               {startButton}
             </View>
-            <View style={styles.colSide}>
-              <View style={[styles.statsCard, { backgroundColor: colors.surface }]}>
-                <Text style={[styles.statsLine, { color: colors.ink2 }]}>
-                  {t("Today {count} focus · {minutes} min", {
-                    count: todayFocusCount,
-                    minutes: todayMinutes,
-                  })}
-                </Text>
-                <Text style={[styles.statsLine, { color: colors.ink2 }]}>
-                  {t("This week {daysMet} of {goalDays} days", {
-                    daysMet: week.daysMet,
-                    goalDays: week.goalDays,
-                  })}
-                  {week.goalMet ? t(" · goal met") : ""}
-                </Text>
-              </View>
-              {parkedList.length > 0 ? (
-                <View style={[styles.parkedCard, { backgroundColor: colors.surface }]}>
-                  <Text style={[styles.parkedLabel, { color: colors.faint }]}>
-                    {t("WAITING FROM LAST TIME")}
+            <View testID="home-side-column" style={styles.colSide}>
+              <ScrollView
+                testID="home-side-scroll"
+                style={styles.sideScroll}
+                contentContainerStyle={styles.sideScrollContent}
+                showsVerticalScrollIndicator={false}
+                showsHorizontalScrollIndicator={false}
+              >
+                <View style={[styles.statsCard, { backgroundColor: colors.surface }]}>
+                  <Text style={[styles.statsLine, { color: colors.ink2 }]}>
+                    {t("Today {count} focus · {minutes} min", {
+                      count: todayFocusCount,
+                      minutes: todayMinutes,
+                    })}
                   </Text>
-                  {parkedList.map((thought) => (
-                    <Pressable
-                      key={thought.id}
-                      onPress={() => onUseParkedThought(thought)}
-                      accessibilityRole="button"
-                      accessibilityLabel={t("Use parked thought: {text}", { text: thought.text })}
-                      hitSlop={8}
-                    >
-                      <Text style={[styles.parkedText, { color: colors.ink2 }]} numberOfLines={2}>
-                        {thought.text}
-                      </Text>
-                    </Pressable>
-                  ))}
+                  <Text style={[styles.statsLine, { color: colors.ink2 }]}>
+                    {t("This week {daysMet} of {goalDays} days", {
+                      daysMet: week.daysMet,
+                      goalDays: week.goalDays,
+                    })}
+                    {week.goalMet ? t(" · goal met") : ""}
+                  </Text>
                 </View>
-              ) : null}
-              <View style={styles.spacer} />
-              {bannerSlot}
+                {parkedList.length > 0 ? (
+                  <View style={[styles.parkedCard, { backgroundColor: colors.surface }]}>
+                    <Text style={[styles.parkedLabel, { color: colors.faint }]}>
+                      {t("WAITING FROM LAST TIME")}
+                    </Text>
+                    {parkedList.map((thought) => (
+                      <Pressable
+                        key={thought.id}
+                        onPress={() => onUseParkedThought(thought)}
+                        accessibilityRole="button"
+                        accessibilityLabel={t("Use parked thought: {text}", { text: thought.text })}
+                        hitSlop={8}
+                      >
+                        <Text style={[styles.parkedText, { color: colors.ink2 }]} numberOfLines={2}>
+                          {thought.text}
+                        </Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                ) : null}
+              </ScrollView>
             </View>
           </View>
         ) : (
@@ -340,8 +357,11 @@ const styles = StyleSheet.create({
   bar: { width: 4, borderRadius: 1 },
   columns: { flex: 1, flexDirection: "row", gap: 32 },
   colMain: { flex: 1.4, gap: 18 },
-  colSide: { flex: 1, gap: 16 },
-  spacer: { flex: 1 },
+  mainScroll: { flex: 1 },
+  mainScrollContent: { gap: 18 },
+  colSide: { flex: 1 },
+  sideScroll: { flex: 1 },
+  sideScrollContent: { gap: 16 },
   hero: { gap: 10 },
   headline: { ...typography.h1Screen },
   sub: { ...typography.body },

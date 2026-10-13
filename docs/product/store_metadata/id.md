@@ -57,6 +57,6 @@ Pakai sebagai timer belajar, timer deep work menulis dan coding, atau timer kons
 1. [hero] Satu ketukan dan fokus | Disc adalah timer-mu
 2. Fokus dan jeda, satu siklus | Jeda juga bagian rencana
 3. [callout] 4 hari seminggu. Tanpa streak putus. | Target yang memaafkan
-4. Mulai dari layar utama | Widget dan timer lockscreen
+4. Pergi sebentar. Kembali lagi. | Loop menyimpan posisimu
 5. Berhenti lebih awal tetap dihitung | Progres tanpa malu
 6. Bagikan minggumu | Angka nyata siap pamer

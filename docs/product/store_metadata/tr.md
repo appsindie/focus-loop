@@ -57,6 +57,6 @@ Sınav için ders sayacı, yazı ve kod için derin çalışma sayacı, okuma i�
 1. [hero] Tek dokunuş ve odak | Disc senin sayacın
 2. Odak ve mola, tek döngü | Mola da planın parçası
 3. [callout] Haftada 4 gün. Kırılan seri yok. | Kötü günü affeden hedefler
-4. Ana ekrandan başlat | Widget ve kilit ekranı sayacı
+4. Ara ver. Geri dön. | Döngün yerini korur
 5. Erken bitirmek de sayılır | Utançsız ilerleme
 6. Haftanı paylaş | Gösterilecek gerçek sayılar

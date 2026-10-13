@@ -2,6 +2,15 @@
   "name": "mobile",
   "version": "1.0.0",
   "main": "index.ts",
+  "expo": {
+    "autolinking": {
+      "android": {
+        "buildFromSource": [
+          "expo-navigation-bar"
+        ]
+      }
+    }
+  },
   "dependencies": {
     "@appsindie/react-native-ads": "^3.0.0",
     "@react-native-async-storage/async-storage": "^3.1.1",
@@ -17,6 +26,7 @@
     "expo-iap": "^5.8.2",
     "expo-keep-awake": "^57.0.1",
     "expo-localization": "~57.0.2",
+    "expo-navigation-bar": "~57.0.3",
     "expo-notifications": "^57.0.9",
     "expo-screen-orientation": "~57.0.2",
     "expo-sharing": "~57.0.22",

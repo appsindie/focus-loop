@@ -57,6 +57,6 @@ Als Lern-Timer für Klausuren, Deep-Work-Timer zum Schreiben und Coden oder Konz
 1. [hero] Ein Tipp und du bist drin | Der Disc ist dein Timer
 2. Fokus und Pause, eine Schleife | Pausen gehören zum Plan
 3. [callout] 4 Tage pro Woche. Keine Streaks mehr. | Ziele, die schlechte Tage verzeihen
-4. Start vom Homescreen | Widget und Lockscreen-Timer
+4. Kurz weg. Wieder da. | Dein Loop merkt sich, wo du warst
 5. Früher aufhören zählt auch | Fortschritt ohne Scham
 6. Teile deine Woche | Echte Zahlen zum Zeigen
