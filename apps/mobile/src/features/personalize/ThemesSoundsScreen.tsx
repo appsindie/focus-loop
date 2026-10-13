@@ -182,7 +182,11 @@ export function ThemesSoundsScreen({
         <View style={styles.backButton} />
       </View>
 
-      <ScrollView contentContainerStyle={styles.scroll}>
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+      >
         <Text style={[styles.sectionTitle, { color: colors.ink }]} allowFontScaling>
           {t("Appearance")}
         </Text>

@@ -55,63 +55,68 @@ export function BreakScreen({
   const isTablet = useIsTablet();
   return (
     <SafeAreaView
-      style={[
-        styles.root,
-        { backgroundColor: colors.breakBg },
-        // T03: the same centered break column, just wider margins.
-        isTablet && {
-          paddingHorizontal: TABLET_PADDING,
-          maxWidth: 640,
-          alignSelf: "center",
-          width: "100%",
-        },
-      ]}
+      style={[styles.root, { backgroundColor: colors.breakBg }]}
+      testID="break-background"
     >
-      <Text style={[styles.kicker, { color: sub }]}>{t("BREAK")}</Text>
-      <View style={styles.timeArea}>
-        {displayMode === "disc" ? (
-          <FocusDisc
-            progress={progress}
-            remainingMinutes={Math.ceil(remainingSeconds / 60)}
-            colors={discColors}
-            size={220}
-            strokeWidth={12}
+      <View
+        testID="break-content"
+        style={[
+          styles.content,
+          isTablet && {
+            paddingHorizontal: TABLET_PADDING,
+            maxWidth: 640,
+            alignSelf: "center",
+            width: "100%",
+          },
+        ]}
+      >
+        <Text style={[styles.kicker, { color: sub }]}>{t("BREAK")}</Text>
+        <View style={styles.timeArea}>
+          {displayMode === "disc" ? (
+            <FocusDisc
+              progress={progress}
+              remainingMinutes={Math.ceil(remainingSeconds / 60)}
+              colors={discColors}
+              size={220}
+              strokeWidth={12}
+            />
+          ) : (
+            <Text style={[styles.minutes, { color: ink }]} maxFontSizeMultiplier={1.3}>
+              {minutes}:{String(seconds).padStart(2, "0")}
+            </Text>
+          )}
+          <Text style={[styles.until, { color: sub }]}>
+            {autoStart
+              ? t("Focus starts at {endsAt}", { endsAt })
+              : t("Back at {endsAt}", { endsAt })}
+          </Text>
+        </View>
+
+        <View style={styles.suggestions}>
+          {SUGGESTIONS.map((suggestion, i) => (
+            <Text key={i} style={[styles.suggestion, { color: sub }]}>
+              · {suggestion()}
+            </Text>
+          ))}
+        </View>
+
+        <View style={styles.actions}>
+          <SecondaryButton label={t("+5 min")} onPress={onExtend} colors={{ ...colors, ink }} />
+          <PrimaryButton
+            label={t("Focus {n} now", { n: nextFocusNumber })}
+            onPress={onStartFocus}
+            colors={colors}
+            variant="light"
           />
-        ) : (
-          <Text style={[styles.minutes, { color: ink }]} maxFontSizeMultiplier={1.3}>
-            {minutes}:{String(seconds).padStart(2, "0")}
-          </Text>
-        )}
-        <Text style={[styles.until, { color: sub }]}>
-          {autoStart
-            ? t("Focus starts at {endsAt}", { endsAt })
-            : t("Back at {endsAt}", { endsAt })}
-        </Text>
-      </View>
-
-      <View style={styles.suggestions}>
-        {SUGGESTIONS.map((suggestion, i) => (
-          <Text key={i} style={[styles.suggestion, { color: sub }]}>
-            · {suggestion()}
-          </Text>
-        ))}
-      </View>
-
-      <View style={styles.actions}>
-        <SecondaryButton label={t("+5 min")} onPress={onExtend} colors={{ ...colors, ink }} />
-        <PrimaryButton
-          label={t("Focus {n} now", { n: nextFocusNumber })}
-          onPress={onStartFocus}
-          colors={colors}
-          variant="light"
-        />
+        </View>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, padding: 24, gap: 12 },
+  root: { flex: 1 },
+  content: { flex: 1, padding: 24, gap: 12 },
   kicker: { ...typography.label, letterSpacing: 2, textAlign: "center" },
   timeArea: { flex: 1, alignItems: "center", justifyContent: "center", gap: 18 },
   minutes: {

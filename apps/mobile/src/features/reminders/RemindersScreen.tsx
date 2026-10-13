@@ -194,7 +194,11 @@ export function RemindersScreen({ colors, prefs, onChange, onBack }: RemindersSc
 
       {/* S9-03: reminder cards + evening note can overflow a phone screen —
           everything below the header scrolls, like SettingsScreen. */}
-      <ScrollView testID="reminders-scroll">
+      <ScrollView
+        testID="reminders-scroll"
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+      >
         <Text style={[styles.explainer, { color: colors.muted }]} allowFontScaling>
           {t("A nudge at the times you plan to focus. Tapping it starts your rhythm right away.")}
         </Text>

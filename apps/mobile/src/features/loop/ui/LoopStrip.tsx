@@ -18,7 +18,6 @@ export function LoopStrip({
   colors: Palette;
   height?: number;
 }) {
-  const total = steps.reduce((sum, s) => sum + s.durationSeconds, 0);
   return (
     <View style={[styles.row, { height }]} accessibilityLabel={t("Loop progress")}>
       {steps.map((step, i) => {
@@ -28,11 +27,14 @@ export function LoopStrip({
         // reads as a plan (orange-focus / green-break), not a grey rule.
         const base = step.kind === "focus" ? colors.trackFocus : colors.trackBreak;
         const fill = step.kind === "focus" ? colors.focus : colors.break;
-        const width = `${Math.max(2, (step.durationSeconds / total) * 100)}%` as const;
         return (
           <View
             key={i}
-            style={[styles.segment, { width, backgroundColor: isDone ? fill : base, height }]}
+            testID={`loop-strip-segment-${i}`}
+            style={[
+              styles.segment,
+              { flex: step.durationSeconds, backgroundColor: isDone ? fill : base, height },
+            ]}
           >
             {isCurrent && currentProgress > 0 ? (
               <View

@@ -160,26 +160,17 @@ export function PaywallScreen({
                     pressed && { opacity: 0.55 },
                   ]}
                 >
-                  <View style={styles.planDetails}>
-                    <Text style={[styles.planName, { color: colors.ink }]} allowFontScaling>
-                      {product.plan === "yearly" ? t("Yearly") : t("Lifetime")}
+                  <Text style={[styles.planName, { color: colors.ink }]} allowFontScaling>
+                    {product.plan === "yearly" ? t("Yearly") : t("Lifetime")}
+                  </Text>
+                  <Text style={[styles.planPrice, { color: colors.ink }]} allowFontScaling>
+                    {product.priceText}
+                  </Text>
+                  {product.plan === "yearly" ? (
+                    <Text style={[styles.planNote, { color: colors.muted }]} allowFontScaling>
+                      {t("7-day free trial")}
                     </Text>
-                    <Text style={[styles.planPrice, { color: colors.ink }]} allowFontScaling>
-                      {product.priceText}
-                    </Text>
-                    {product.plan === "yearly" ? (
-                      <Text style={[styles.planNote, { color: colors.muted }]} allowFontScaling>
-                        {t("7-day free trial")}
-                      </Text>
-                    ) : null}
-                  </View>
-                  <View
-                    style={[styles.radio, { borderColor: selected ? colors.focus : colors.rule }]}
-                  >
-                    {selected ? (
-                      <View style={[styles.radioDot, { backgroundColor: colors.focus }]} />
-                    ) : null}
-                  </View>
+                  ) : null}
                 </Pressable>
               );
             })}
@@ -245,23 +236,10 @@ const styles = StyleSheet.create({
   errorBox: { alignItems: "center", gap: 4 },
   plans: { gap: 12 },
   planCard: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
     borderRadius: 16,
     paddingVertical: 14,
     paddingHorizontal: 18,
   },
-  planDetails: { flex: 1 },
-  radio: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 2,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  radioDot: { width: 10, height: 10, borderRadius: 5 },
   busySlot: { height: 64, alignItems: "center", justifyContent: "center" },
   planName: { ...typography.title },
   planPrice: { ...typography.body, marginTop: 2 },

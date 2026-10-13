@@ -129,6 +129,7 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
         testID="rhythm-scroll"
         style={styles.scroll}
         showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: spacing.lg }}
       >
         {PRESET_ORDER.map((id) => {

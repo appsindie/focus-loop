@@ -57,6 +57,6 @@ Timer da studio per gli esami, timer deep work per scrivere e programmare, timer
 1. [hero] Un tocco e sei dentro | Il Disc è il tuo timer
 2. Concentrazione e pausa, un ciclo | La pausa fa parte del piano
 3. [callout] 4 giorni a settimana. Niente streak spezzate. | Obiettivi che perdonano
-4. Parti dalla home | Widget e timer in lock screen
+4. Allontanati. Poi torna. | Il tuo ciclo tiene il posto
 5. Finire prima conta | Progressi senza vergogna
 6. Condividi la tua settimana | Numeri veri da mostrare

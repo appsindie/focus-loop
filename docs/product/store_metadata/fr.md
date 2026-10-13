@@ -57,6 +57,6 @@ Minuteur d'étude pour les examens, minuteur deep work pour écrire ou coder, mi
 1. [hero] Un toucher et c'est parti | Le Disc est votre minuteur
 2. Concentration et pause, un cycle | La pause fait partie du plan
 3. [callout] 4 jours par semaine. Fini les séries brisées. | Des objectifs qui pardonnent
-4. Lancez depuis l'écran d'accueil | Widget et minuteur verrouillé
+4. Partez. Revenez. | Votre boucle garde votre place
 5. Arrêter tôt compte aussi | Du progrès, pas de la honte
 6. Partagez votre semaine | De vrais chiffres à montrer

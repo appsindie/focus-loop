@@ -3,7 +3,7 @@
 // the conditional UMP privacy-options row.
 import { describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
-import { Linking } from "react-native";
+import { Linking, StyleSheet, type StyleProp, type ViewStyle } from "react-native";
 import { palette } from "../../shared/theme";
 import { DEFAULT_SETTINGS, type Settings } from "./SettingsStore";
 import { SettingsScreen } from "./SettingsScreen";
@@ -103,6 +103,19 @@ describe("SettingsScreen (P20)", () => {
     await drill(screen, "Timer & display");
     await fireEvent.press(getByLabelText("Appearance: Dark", { includeHiddenElements: true }));
     expect(props.onChange).toHaveBeenCalledWith({ appearance: "dark" });
+  });
+
+  it("stacks the appearance label and full-width options in its card", async () => {
+    const { screen } = await renderScreen();
+    await drill(screen, "Timer & display");
+    screen.getByText("Appearance");
+    screen.getByText("Light");
+    screen.getByText("Dark");
+    screen.getByText("System");
+    const card = screen.getByTestId("settings-appearance-card");
+    const style = StyleSheet.flatten(card.props["style"] as StyleProp<ViewStyle>);
+
+    expect(style.flexDirection).toBe("column");
   });
 
   it("deletes only after the confirm sheet (J10-R4)", async () => {

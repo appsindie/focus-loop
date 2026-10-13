@@ -290,13 +290,23 @@ export function SettingsScreen({
         />
       </Row>
 
-      <Row colors={colors} label={t("Appearance")}>
+      <View
+        testID="settings-appearance-card"
+        style={[
+          styles.row,
+          styles.appearanceCard,
+          { backgroundColor: colors.surface, borderColor: colors.rule },
+        ]}
+      >
+        <Text style={[styles.rowLabel, { color: colors.ink }]} allowFontScaling>
+          {t("Appearance")}
+        </Text>
         <AppearanceControl
           colors={colors}
           appearance={settings.appearance}
           onChange={(appearance) => onChange({ appearance })}
         />
-      </Row>
+      </View>
 
       <Row colors={colors} label={t("Rhythm")} value={rhythmSummary} onPress={onOpenRhythm} />
 
@@ -545,7 +555,11 @@ export function SettingsScreen({
               </Text>
             </View>
           </View>
-          <ScrollView style={styles.detail}>
+          <ScrollView
+            style={styles.detail}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+          >
             <Text style={[styles.saveHint, { color: colors.faint }]} allowFontScaling>
               {t("Changes save as you go.")}
             </Text>
@@ -590,7 +604,11 @@ export function SettingsScreen({
           {versionFooter}
         </View>
       ) : (
-        <ScrollView style={styles.detail}>
+        <ScrollView
+          style={styles.detail}
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+        >
           <Text style={[styles.saveHint, { color: colors.faint }]} allowFontScaling>
             {t("Changes save as you go.")}
           </Text>
@@ -749,6 +767,12 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
     minHeight: 56,
     gap: spacing.md,
+  },
+  appearanceCard: {
+    flexDirection: "column",
+    alignItems: "stretch",
+    justifyContent: "flex-start",
+    gap: spacing.sm,
   },
   rowLabel: { ...typography.body, flexShrink: 1 },
   rowRight: { flexDirection: "row", alignItems: "center", gap: spacing.xs, flexShrink: 1 },

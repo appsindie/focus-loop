@@ -67,7 +67,11 @@ export function WeekScreen({
         <View style={styles.back} />
       </View>
       <ProgressTabs active="week" onWeek={() => {}} onHistory={onHistory} colors={colors} />
-      <ScrollView contentContainerStyle={styles.body}>
+      <ScrollView
+        contentContainerStyle={styles.body}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+      >
         <WeekCard week={week} totals={totals} insight={insight} onShare={onShare} colors={colors} />
       </ScrollView>
     </SafeAreaView>

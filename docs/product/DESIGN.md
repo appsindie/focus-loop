@@ -132,7 +132,7 @@ Selected-state styling: solid focus fill is for compact chips/segments only; car
 
 - Close (×) always visible top right. Five benefits, plan picker (Yearly with 7-day trial, Lifetime), primary
   "Start free trial", trial terms, Restore / Terms / Privacy links.
-- Plan picker uses outline cards (2px focus border and a radio when selected, surface fill); the primary CTA is the only filled element.
+- Plan picker uses outline cards, a 2px focus border on the selected plan, and surface fill — same as Rhythm presets; the primary CTA is the only filled element.
 - Prices come from the store; never hard-code.
 
 ### P15 Themes & sounds

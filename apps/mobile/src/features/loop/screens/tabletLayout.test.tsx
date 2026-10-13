@@ -1,12 +1,14 @@
 // T01–T06 (DESIGN.md §4): the tablet variants of the same screens — the
 // layout hooks are mocked off globally in jest-setup; each test spies them on.
 import { describe, expect, it, jest } from "@jest/globals";
-import { fireEvent, render } from "@testing-library/react-native";
+import { fireEvent, render, screen } from "@testing-library/react-native";
+import { StyleSheet, type StyleProp, type ViewStyle } from "react-native";
 import * as layout from "../../../shared/layout";
 import { palette } from "../../../shared/theme";
 import { HomeScreen } from "./HomeScreen";
 import { WeekScreen } from "./WeekScreen";
 import { FocusScreen } from "./FocusScreen";
+import { BreakScreen } from "./BreakScreen";
 import { SettingsScreen } from "../../settings/SettingsScreen";
 import { DEFAULT_SETTINGS } from "../../settings/SettingsStore";
 import { WeekProgress } from "../weeklyGoal";
@@ -171,6 +173,34 @@ describe("FocusScreen (T02 tablet landscape)", () => {
     const restore = asTablet();
     const { queryByText } = await render(<FocusScreen {...makeProps()} parkedThoughts={[]} />);
     expect(queryByText("PARKED")).toBeNull();
+    restore();
+  });
+});
+
+describe("BreakScreen (T03 tablet)", () => {
+  it("keeps the break background full-bleed around its centered content", async () => {
+    const restore = asTablet();
+    await render(
+      <BreakScreen
+        colors={palette.light}
+        displayMode="disc"
+        remainingSeconds={300}
+        durationSeconds={300}
+        nextFocusNumber={2}
+        autoStart={false}
+        onExtend={jest.fn()}
+        onStartFocus={jest.fn()}
+      />,
+    );
+    const root = screen.getByTestId("break-background");
+    const content = screen.getByTestId("break-content");
+    expect(StyleSheet.flatten(root.props["style"] as StyleProp<ViewStyle>).backgroundColor).toBe(
+      palette.light.breakBg,
+    );
+    expect(
+      StyleSheet.flatten(root.props["style"] as StyleProp<ViewStyle>).maxWidth,
+    ).toBeUndefined();
+    expect(StyleSheet.flatten(content.props["style"] as StyleProp<ViewStyle>).maxWidth).toBe(640);
     restore();
   });
 });

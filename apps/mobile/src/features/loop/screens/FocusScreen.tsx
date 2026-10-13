@@ -245,7 +245,12 @@ export function FocusScreen({
       {tabletSplit ? (
         <View style={styles.splitRow}>
           <View style={styles.splitLeft}>{timeBlock}</View>
-          <ScrollView style={styles.splitRight} contentContainerStyle={styles.splitRightContent}>
+          <ScrollView
+            style={styles.splitRight}
+            contentContainerStyle={styles.splitRightContent}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+          >
             {headerBlock}
             {intentionBlock}
             {displayMode === "numbers" ? timeBlock : null}

@@ -57,6 +57,6 @@ Jako timer nauki przed egzaminami, timer deep work do pisania i kodu albo timer 
 1. [hero] Jedno dotknięcie i jesteś w tym | Disc to twój timer
 2. Skupienie i przerwa, jeden cykl | Przerwa też jest planem
 3. [callout] 4 dni w tygodniu. Bez przerwanych serii. | Cele, które wybaczają
-4. Start z ekranu głównego | Widżet i timer blokady
+4. Odejdź. Wróć. | Pętla pamięta, gdzie skończyłeś
 5. Kończysz wcześniej — też się liczy | Postęp bez wstydu
 6. Podziel się tygodniem | Prawdziwe liczby do pokazania

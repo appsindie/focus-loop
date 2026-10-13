@@ -57,6 +57,6 @@ Gebruik het als studietimer voor tentamens, deep-work-timer voor schrijven en co
 1. [hero] Eén tik en je bent erbij | De Disc is jouw timer
 2. Focus en pauze, één cyclus | Pauze hoort bij het plan
 3. [callout] 4 dagen per week. Geen gebroken streaks. | Doelen die vergeven
-4. Start vanaf je beginscherm | Widget en lockscreen-timer
+4. Even weg. Weer terug. | Je loop onthoudt waar je was
 5. Eerder stoppen telt ook | Vooruitgang zonder schaamte
 6. Deel je week | Echte cijfers om te laten zien
