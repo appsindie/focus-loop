@@ -226,17 +226,6 @@
     },
     {
       "blocking": true,
-      "deadline": "2026-10-20",
-      "default_if_silent": "block",
-      "gate": 3,
-      "id": "EX-android15-taskbar-nav-icons",
-      "owner": "justin.nguyen@appsindie.com",
-      "severity": "medium",
-      "title": "Android 15 three-button Taskbar icon contrast",
-      "url": "docs/release/v1/EXCEPTION_REPORT.md"
-    },
-    {
-      "blocking": true,
       "deadline": "2026-10-17",
       "default_if_silent": "block",
       "gate": 3,
@@ -254,18 +243,18 @@
       "id": "EX-asc-version-setup",
       "owner": "justin.nguyen@appsindie.com",
       "severity": "high",
-      "title": "ASC 1.0: primary category null, no build attached, es-MX without screenshots",
+      "title": "ASC 1.0: primary category null, no build attached",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     },
     {
       "blocking": true,
-      "deadline": "2026-10-17",
+      "deadline": "2026-10-20",
       "default_if_silent": "block",
       "gate": 3,
-      "id": "EX-tablet-screenshots",
+      "id": "EX-store-assets-check-reuse",
       "owner": "justin.nguyen@appsindie.com",
-      "severity": "high",
-      "title": "No iPad 13\" / Android tablet screenshot sets although supportsTablet=true",
+      "severity": "medium",
+      "title": "iOS store screenshots not check-reuse verified against b23",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     },
     {
@@ -308,5 +297,5 @@
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-10-13T14:03:00Z"
+  "updated_at": "2026-10-13T23:59:00Z"
 }
