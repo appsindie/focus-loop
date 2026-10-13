@@ -3,11 +3,11 @@ import { useKeepAwake } from "expo-keep-awake";
 import Constants from "expo-constants";
 import * as Notifications from "expo-notifications";
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { AdsContext, useFullScreenAds } from "@appsindie/react-native-ads";
+import { AdsContext } from "@appsindie/react-native-ads";
 
-import { AppState, Linking, StyleSheet, Text, View } from "react-native";
+import { AppState, Linking, Platform, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "./src/shared/ui/SafeAreaView";
-import { AdsProvider } from "./src/features/ads/AdsProvider";
+import { AdsProvider, useAdsConsent } from "./src/features/ads/AdsProvider";
 import { useLoopController } from "./src/features/loop/useLoopController";
 import { BreakScreen } from "./src/features/loop/screens/BreakScreen";
 import { CloseoutScreen } from "./src/features/loop/screens/CloseoutScreen";
@@ -40,6 +40,7 @@ import {
 } from "./src/features/personalize/focusSounds";
 import { watchForReward } from "./src/features/ads/rewardedAd";
 import { ADS_CONFIG } from "./src/features/ads/adsConfig";
+import { useInterstitialAd } from "./src/features/ads/useInterstitialAd";
 import { HomeBanner } from "./src/features/ads/HomeBanner";
 import { SettingsScreen } from "./src/features/settings/SettingsScreen";
 import { RhythmScreen } from "./src/features/settings/RhythmScreen";
@@ -129,7 +130,8 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
   const hasAdsRemoval = isPlusActive(entitlement, new Date());
   const adsBlocked = !entitlementLoaded || hasAdsRemoval;
   const ads = useContext(AdsContext);
-  const { showFullscreenAds } = useFullScreenAds(adsBlocked);
+  const adsConsent = useAdsConsent();
+  const { showFullscreenAds } = useInterstitialAd(adsBlocked);
   const interstitial = useMemo(
     () => ({ show: showFullscreenAds, hasAdsRemoval: adsBlocked }),
     [showFullscreenAds, adsBlocked],
@@ -213,14 +215,15 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
 
   // J8-R1: the rewarded video buys a 24h trial — the port lazy-loads RNGMA so
   // jest/Expo Go stay native-free; null unit → "unavailable" → retry copy.
-  const watchVideo = useCallback(
-    () =>
-      watchForReward(ADS_CONFIG.rewardedId, {
-        keywords: ADS_CONFIG.keywords,
-        requestNonPersonalizedAdsOnly: ads.allowTracking === false,
-      }),
-    [ads.allowTracking],
-  );
+  const watchVideo = useCallback(() => {
+    if (!adsConsent.adsReady || !adsConsent.canRequestAds) {
+      return Promise.resolve("unavailable" as const);
+    }
+    return watchForReward(ADS_CONFIG.rewardedId, {
+      keywords: ADS_CONFIG.keywords,
+      requestNonPersonalizedAdsOnly: Platform.OS === "ios" && ads.allowTracking === false,
+    });
+  }, [ads.allowTracking, adsConsent.adsReady, adsConsent.canRequestAds]);
   const onTrialEarned = useCallback(async (itemId: string) => {
     await startTrial(itemId, new Date());
   }, []);
@@ -547,8 +550,8 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
           onExportData={onExportData}
           exportMessage={exportMessage}
           onDeleteAll={onDeleteAll}
-          allowTracking={ads.allowTracking}
-          onSetAllowTracking={(allow) => ads.setAllowTracking?.(allow)}
+          privacyOptionsRequired={adsConsent.privacyOptionsRequired}
+          onShowPrivacyOptions={adsConsent.showPrivacyOptions}
           shareDiagnostics={shareDiagnostics}
           onSetShareDiagnostics={setDiagnosticsConsent}
           version={Constants.expoConfig?.version ?? "1.0.0"}
@@ -616,6 +619,7 @@ function AppBody({ settings, settingsLoading, persistSettings }: AppBodyProps) {
       {route === "themes" ? (
         <ThemesSoundsScreen
           colors={colors}
+          appearance={settings.appearance}
           discColorId={settings.discColorId}
           focusSoundId={settings.focusSoundId}
           isPlus={hasAdsRemoval}

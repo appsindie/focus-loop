@@ -1,0 +1,9 @@
+appId: com.appsindie.focusloop
+---
+- launchApp:
+    permissions:
+      userTracking: unset
+- extendedWaitUntil:
+    visible: "Ask App Not to Track"
+    timeout: 20000
+- assertVisible: "Ask App Not to Track"

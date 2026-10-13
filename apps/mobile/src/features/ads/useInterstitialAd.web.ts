@@ -1,3 +1,3 @@
-export function useInterstitialAd() {
-  return { isLoaded: false, isClosed: false };
+export function useInterstitialAd(_hasAdsRemoval = false, _navigate?: () => void) {
+  return { isLoaded: false, isClosed: false, showFullscreenAds: () => {} };
 }

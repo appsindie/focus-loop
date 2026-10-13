@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
+import { selectedStyle, selectedTextColor } from "../../../shared/ui/selectedStyle";
 
 // P17/P18 share a segmented header — "Week | History" per J6 internal nav.
 export function ProgressTabs({
@@ -25,20 +26,18 @@ export function ProgressTabs({
         onPress={onPress}
         style={({ pressed }) => [
           styles.tab,
-          {
-            backgroundColor: selected ? colors.ink : "transparent",
-          },
+          selectedStyle(colors, selected),
           pressed && { opacity: 0.55 },
         ]}
       >
-        <Text style={[styles.tabText, { color: selected ? colors.onPrimary : colors.muted }]}>
+        <Text style={[styles.tabText, { color: selectedTextColor(colors, selected) }]}>
           {label}
         </Text>
       </Pressable>
     );
   };
   return (
-    <View style={[styles.track, { backgroundColor: colors.chip }]} accessibilityRole="tablist">
+    <View style={styles.track} accessibilityRole="tablist">
       {tab("week", t("Week"), onWeek)}
       {tab("history", t("History"), onHistory)}
     </View>

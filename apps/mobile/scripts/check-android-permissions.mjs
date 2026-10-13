@@ -1,8 +1,6 @@
 #!/usr/bin/env node
-// Merged-manifest permission audit vs android-permissions.json allowlist.
-// models the real merge: app manifest (regenerated via expo prebuild) minus
-// tools:node="remove" entries, plus every bundled library manifest. Drift in
-// either direction fails — an allowlist edit IS the review surface.
+// Source-manifest permission audit vs android-permissions.json. AAR-only
+// permissions are checked against the built artifact by check-aab-permissions.mjs.
 import { execSync } from "node:child_process";
 import { readFileSync, readdirSync, statSync, existsSync } from "node:fs";
 import { join, dirname } from "node:path";
@@ -59,15 +57,13 @@ const drift = (a, b) => [...a].filter((p) => !b.has(p));
 
 const unknown = drift(merged, expected);
 const stale = drift(expected, merged);
-if (unknown.length || stale.length) {
-  if (unknown.length) {
-    console.error("Permissions in merged manifest with no allowlist entry — justify or block:");
-    unknown.forEach((p) => console.error(`  + ${p}`));
-  }
-  if (stale.length) {
-    console.error("Allowlist entries no longer in the merged manifest:");
-    stale.forEach((p) => console.error(`  - ${p}`));
-  }
+if (unknown.length) {
+  console.error("Permissions in source manifests with no allowlist entry — justify or block:");
+  unknown.forEach((p) => console.error(`  + ${p}`));
   process.exit(1);
 }
-console.log(`android-permissions: ${merged.size} permission(s) audited OK.`);
+console.log(`android-permissions: ${merged.size} source permission(s) audited OK.`);
+if (stale.length) {
+  console.log("Allowlisted permissions absent from source manifests (checked in AAB):");
+  stale.forEach((p) => console.log(`  - ${p}`));
+}

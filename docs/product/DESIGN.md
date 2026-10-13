@@ -134,6 +134,8 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
 
 ### P15 Themes & sounds
 
+- Appearance (Light / Dark / System) is the first section; the selection saves immediately
+  (sponsor feedback, 2026-10-13).
 - Disc colours as radio swatches; locked ones carry a lock badge and an accessible name ending "try with an ad".
 - Choosing a locked item opens the trial card: "Try X for 24 hours" with **Watch video** and **Get Plus**.
 - Rewarded video plays only after an explicit tap. Load failure → toast "Couldn't load the video. Try again".
@@ -162,7 +164,7 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
 
 - Order: Show time as · Appearance · timer rows (Rhythm, Weekly goal, Start breaks automatically, Show seconds,
   Vibrate at the end, Themes & sounds, Reminders) · Plus card with Restore purchases · Your data (Export CSV, Delete
-  all data…) · About (Privacy Policy, Terms of Use, Ad choices & tracking, Open-source licenses, Contact & feedback)
+  all data…) · About (Privacy Policy, Terms of Use, Privacy options (EEA/UK, UMP), Open-source licenses, Contact & feedback)
   · "Focus Loop · Version x.y.z (build n)".
 - Changes save immediately. There is no Save button.
 - "Delete all data…" asks for confirmation.

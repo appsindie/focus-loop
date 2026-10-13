@@ -1,12 +1,27 @@
-import { describe, expect, it, jest } from "@jest/globals";
+import { beforeEach, describe, expect, it, jest } from "@jest/globals";
 import { render } from "@testing-library/react-native";
 import { HomeBanner } from "./HomeBanner";
+import { useAdsConsent } from "./AdsProvider";
 
 // The ads package pulls RNGMA's TurboModule at import — stub the leaf so the
 // gate itself can render in jest (the real Banner's own Plus gate is theirs).
 jest.mock("@appsindie/react-native-ads", () => ({
   Banner: jest.fn(() => null),
 }));
+
+jest.mock("./AdsProvider", () => ({
+  useAdsConsent: jest.fn(),
+}));
+
+beforeEach(() => {
+  jest.mocked(useAdsConsent).mockReturnValue({
+    canRequestAds: true,
+    privacyOptionsRequired: false,
+    resolved: true,
+    adsReady: true,
+    showPrivacyOptions: async () => {},
+  });
+});
 
 describe("HomeBanner (S10-01)", () => {
   it("renders nothing before the entitlement read lands (CR-25 gate)", async () => {

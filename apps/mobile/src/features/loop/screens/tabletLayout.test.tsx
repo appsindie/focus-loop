@@ -193,10 +193,10 @@ describe("SettingsScreen (T05 tablet)", () => {
       remindersSummary: "Off",
       onExportData: jest.fn(),
       onDeleteAll: jest.fn(),
-      allowTracking: null,
+      privacyOptionsRequired: false,
+      onShowPrivacyOptions: async () => {},
       shareDiagnostics: true,
       onSetShareDiagnostics: jest.fn(),
-      onSetAllowTracking: jest.fn(),
       version: "1.0.0",
     };
   }
@@ -246,10 +246,10 @@ describe("Settings keepScreenOn (T05 row)", () => {
       remindersSummary: "Off",
       onExportData: jest.fn(),
       onDeleteAll: jest.fn(),
-      allowTracking: null,
+      privacyOptionsRequired: false,
+      onShowPrivacyOptions: async () => {},
       shareDiagnostics: true,
       onSetShareDiagnostics: jest.fn(),
-      onSetAllowTracking: jest.fn(),
       version: "1.0.0",
     };
     // Phone hub: drill into the section holding the row.

@@ -1,0 +1,26 @@
+appId: com.appsindie.focusloop
+---
+- launchApp:
+    permissions:
+      userTracking: unset
+- extendedWaitUntil:
+    visible: "Ask App Not to Track"
+    timeout: 20000
+- assertVisible: "Ask App Not to Track"
+- tapOn: "Ask App Not to Track"
+- extendedWaitUntil:
+    visible: "How do you want to see time?"
+    timeout: 20000
+- tapOn: "See it — a disc that shrinks as time passes"
+- extendedWaitUntil:
+    visible: "End early…"
+    timeout: 15000
+- tapOn: "End early…"
+- extendedWaitUntil:
+    visible: "End and save 0 min"
+    timeout: 10000
+- tapOn: "End and save 0 min"
+- extendedWaitUntil:
+    visible: "Open settings"
+    timeout: 15000
+- assertVisible: "Open settings"

@@ -1,6 +1,6 @@
 // P20 tests: hub lists the sections, drill-in shows each section's rows,
 // save-immediately writes (J10-R3), the confirmed delete-all (J10-R4), and
-// the ad-choices sheet (J10-R5).
+// the conditional UMP privacy-options row.
 import { describe, expect, it, jest } from "@jest/globals";
 import { fireEvent, render } from "@testing-library/react-native";
 import { Linking } from "react-native";
@@ -28,10 +28,10 @@ async function renderScreen(overrides: Record<string, unknown> = {}) {
     remindersSummary: "Weekdays 9:00",
     onExportData: jest.fn(),
     onDeleteAll: jest.fn(),
-    allowTracking: null,
+    privacyOptionsRequired: false,
+    onShowPrivacyOptions: jest.fn(async () => {}),
     shareDiagnostics: true,
     onSetShareDiagnostics: jest.fn(),
-    onSetAllowTracking: jest.fn(),
     version: "1.0.0",
     ...overrides,
   };
@@ -76,7 +76,7 @@ describe("SettingsScreen (P20)", () => {
 
     await fireEvent.press(getByLabelText("Back to settings"));
     await drill(screen, "About & legal");
-    getByText("Ad choices & tracking");
+    expect(queryByText("Privacy options")).toBeNull();
     getByText("Privacy Policy");
   });
 
@@ -126,13 +126,15 @@ describe("SettingsScreen (P20)", () => {
     expect(queryByLabelText("Delete all data")).toBeNull();
   });
 
-  it("the ad-tracking switch reports the user's choice (J10-R5)", async () => {
-    const { screen, props } = await renderScreen();
-    const { getByLabelText } = screen;
+  it("shows and opens UMP privacy options only when required", async () => {
+    const { screen, props } = await renderScreen({
+      privacyOptionsRequired: true,
+    });
+    const { getByLabelText, getByText } = screen;
     await drill(screen, "About & legal");
-    await fireEvent.press(getByLabelText("Ad choices & tracking"));
-    await fireEvent(getByLabelText("Toggle ad tracking"), "onValueChange", false);
-    expect(props.onSetAllowTracking).toHaveBeenCalledWith(false);
+    getByText("Privacy options");
+    await fireEvent.press(getByLabelText("Privacy options"));
+    expect(props.onShowPrivacyOptions).toHaveBeenCalledTimes(1);
   });
 
   it("contact goes through the OS intent router, not the in-app browser", async () => {

@@ -35,7 +35,7 @@
     "session_url": "https://claude.ai/code/cse_01TsWouFNXcnUNptS11udrqr",
     "verdict": "pending"
   },
-  "next_action": "Store assets complete: 19-locale screenshots + feature graphic uploaded both stores, asset set store-assets/focus-loop/v1 published; awaiting human Gate-3 exceptions + production submission",
+  "next_action": "vc9/b22 local builds after UMP/permission PR merge",
   "open_exceptions": [
     {
       "blocking": true,

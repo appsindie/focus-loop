@@ -6,7 +6,9 @@ import { t } from "../../i18n";
 import { Palette, radii, spacing, typography } from "../../shared/theme";
 import { TABLET_PADDING, useIsTablet } from "../../shared/layout";
 import { Sheet } from "../../shared/ui/Sheet";
-import { Appearance, DisplayMode, Settings } from "./SettingsStore";
+import { selectedStyle, selectedTextColor } from "../../shared/ui/selectedStyle";
+import { AppearanceControl } from "../../shared/ui/AppearanceControl";
+import { DisplayMode, Settings } from "./SettingsStore";
 import { catalogueItem } from "../personalize/catalogue";
 import { PLUS_PRODUCT_IDS } from "../plus/plusProducts";
 import { resolveRhythm } from "../loop/rhythm";
@@ -34,12 +36,6 @@ export const ABOUT_LINKS: { id: AboutLink; label: string; url: string }[] = [
 export const DISPLAY_MODE_OPTIONS: { id: DisplayMode; label: string }[] = [
   { id: "disc", label: "Disc" },
   { id: "numbers", label: "Numbers" },
-];
-
-export const APPEARANCE_OPTIONS: { id: Appearance; label: string }[] = [
-  { id: "light", label: "Light" },
-  { id: "dark", label: "Dark" },
-  { id: "system", label: "System" },
 ];
 
 function openLink(url: string): void {
@@ -73,11 +69,10 @@ type SettingsScreenProps = {
   onExportData: () => void;
   exportMessage?: string | null;
   onDeleteAll: () => void;
-  // P20 About: ad tracking choice + the store app version string.
-  allowTracking: boolean | null;
+  privacyOptionsRequired: boolean;
+  onShowPrivacyOptions: () => Promise<void>;
   shareDiagnostics: boolean;
   onSetShareDiagnostics: (on: boolean) => void;
-  onSetAllowTracking: (allow: boolean) => void;
   version: string;
 };
 
@@ -150,15 +145,16 @@ function Segmented<T extends string>({
             accessibilityState={{ selected }}
             style={({ pressed }) => [
               styles.segmentOption,
-              selected && { backgroundColor: colors.chip, borderRadius: radii.pill },
+              selectedStyle(colors, selected),
+              { borderRadius: radii.pill },
               pressed && { opacity: 0.55 },
             ]}
           >
             <Text
               style={[
                 styles.segmentText,
-                { color: colors.muted },
-                selected && { color: colors.ink, fontWeight: "600" },
+                { color: selectedTextColor(colors, selected) },
+                selected && { fontWeight: "600" },
               ]}
             >
               {t(o.label)}
@@ -262,17 +258,16 @@ export function SettingsScreen({
   onExportData,
   exportMessage,
   onDeleteAll,
-  allowTracking,
+  privacyOptionsRequired,
+  onShowPrivacyOptions,
   shareDiagnostics,
   onSetShareDiagnostics,
-  onSetAllowTracking,
   version,
 }: SettingsScreenProps) {
   const isTablet = useIsTablet();
   const rhythm = resolveRhythm(settings.rhythmPresetId, settings.customRhythm);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
-  const [adChoicesOpen, setAdChoicesOpen] = useState(false);
   const [contactFallback, setContactFallback] = useState(false);
   // Phone: hub-and-detail — hub lists the sections (no vertical scroll per
   // J-style grouped list); tapping a section drills into its rows. Tablet
@@ -296,11 +291,9 @@ export function SettingsScreen({
       </Row>
 
       <Row colors={colors} label={t("Appearance")}>
-        <Segmented<Appearance>
+        <AppearanceControl
           colors={colors}
-          accessibilityLabel={t("Appearance")}
-          options={APPEARANCE_OPTIONS}
-          value={settings.appearance}
+          appearance={settings.appearance}
           onChange={(appearance) => onChange({ appearance })}
         />
       </Row>
@@ -445,11 +438,13 @@ export function SettingsScreen({
           onPress={() => openAboutLink(link)}
         />
       ))}
-      <Row
-        colors={colors}
-        label={t("Ad choices & tracking")}
-        onPress={() => setAdChoicesOpen(true)}
-      />
+      {privacyOptionsRequired ? (
+        <Row
+          colors={colors}
+          label={t("Privacy options")}
+          onPress={() => void onShowPrivacyOptions()}
+        />
+      ) : null}
       <Row
         colors={colors}
         label={t("Crash & usage reports")}
@@ -530,12 +525,13 @@ export function SettingsScreen({
                   }}
                   style={({ pressed }) => [
                     styles.railItem,
-                    selected && { backgroundColor: colors.chip, borderRadius: radii.md },
+                    selectedStyle(colors, selected),
+                    { borderRadius: radii.md },
                     pressed && { opacity: 0.55 },
                   ]}
                 >
                   <Text
-                    style={[styles.railItemText, { color: selected ? colors.ink : colors.ink2 }]}
+                    style={[styles.railItemText, { color: selectedTextColor(colors, selected) }]}
                     allowFontScaling
                   >
                     {t(item.label)}
@@ -644,32 +640,6 @@ export function SettingsScreen({
             {t("Keep my data")}
           </Text>
         </Pressable>
-      </Sheet>
-
-      <Sheet
-        visible={adChoicesOpen}
-        onDismiss={() => setAdChoicesOpen(false)}
-        colors={colors}
-        accessibilityLabel={t("Ad choices and tracking")}
-      >
-        <Text style={[styles.sheetTitle, { color: colors.ink }]} allowFontScaling>
-          {t("Ad choices & tracking")}
-        </Text>
-        <Text style={[styles.sheetBody, { color: colors.muted }]} allowFontScaling>
-          {t(
-            "Focus Loop shows ads from Google AdMob. Turning this off asks AdMob for non-personalised ads only — ads still appear, they just don't use cross-app tracking.",
-          )}
-        </Text>
-        <View style={styles.adChoiceRow}>
-          <Text style={[styles.adChoiceLabel, { color: colors.ink }]} allowFontScaling>
-            {t("Allow ad tracking")}
-          </Text>
-          <Switch
-            accessibilityLabel={t("Toggle ad tracking")}
-            onValueChange={onSetAllowTracking}
-            value={allowTracking === true}
-          />
-        </View>
       </Sheet>
 
       <Sheet

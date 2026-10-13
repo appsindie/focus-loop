@@ -6,11 +6,13 @@ import { Palette, radii, spacing, typography } from "../../shared/theme";
 import { TABLET_PADDING, useIsTablet } from "../../shared/layout";
 import { PrimaryButton, SecondaryButton, TextButton } from "../../shared/ui/Buttons";
 import { Sheet } from "../../shared/ui/Sheet";
+import { AppearanceControl } from "../../shared/ui/AppearanceControl";
 import { trackEvent } from "../analytics/events";
 import type { RewardedResult } from "../ads/rewardedAd";
 import { trackRewardedResult } from "../ads/rewardedAd";
 import { CatalogueItem, DISC_COLORS, FOCUS_SOUNDS } from "./catalogue";
 import { previewFocusSound, stopSoundPreview } from "./focusSounds";
+import type { Appearance } from "../settings/SettingsStore";
 
 // P15 / J8: disc colours + focus sounds. Locked tiers resolve like this —
 // "trial" opens the 24h trial card (watch one rewarded video, or Get Plus),
@@ -20,10 +22,11 @@ type ThemesSoundsScreenProps = {
   colors: Palette;
   discColorId: string;
   focusSoundId: string;
+  appearance: Appearance;
   isPlus: boolean;
   isItemUnlocked: (itemId: string) => boolean;
   trialEndsAt: (itemId: string) => Date | null;
-  onPick: (patch: { discColorId?: string; focusSoundId?: string }) => void;
+  onPick: (patch: { discColorId?: string; focusSoundId?: string; appearance?: Appearance }) => void;
   // Locked-item paywall entry — parent routes back here after close/purchase.
   onUpgrade: () => void;
   // Injectable rewarded-ad port (real: watchForReward + ADS_CONFIG.rewardedId).
@@ -55,6 +58,7 @@ export function ThemesSoundsScreen({
   colors,
   discColorId,
   focusSoundId,
+  appearance,
   isPlus,
   isItemUnlocked,
   trialEndsAt,
@@ -179,6 +183,15 @@ export function ThemesSoundsScreen({
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll}>
+        <Text style={[styles.sectionTitle, { color: colors.ink }]} allowFontScaling>
+          {t("Appearance")}
+        </Text>
+        <AppearanceControl
+          colors={colors}
+          appearance={appearance}
+          onChange={(nextAppearance) => onPick({ appearance: nextAppearance })}
+        />
+
         <Text style={[styles.sectionTitle, { color: colors.ink }]} allowFontScaling>
           {t("Disc colour")}
         </Text>

@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { t } from "../../i18n";
 import { Palette, radii, typography } from "../theme";
+import { selectedStyle, selectedTextColor } from "./selectedStyle";
 
 // §3 buttons: primary 64h pill ink fill (may carry a right-aligned duration in
 // primary-accent); break = primary with break fill; secondary = 1.5px ink outline;
@@ -120,12 +121,12 @@ export function DisplayToggle({
         accessibilityState={{ selected: mode === "disc" }}
         style={({ pressed }) => [
           styles.segment,
-          mode === "disc" && { backgroundColor: colors.chip },
+          selectedStyle(colors, mode === "disc"),
           pressed && { opacity: 0.55 },
         ]}
       >
         <View
-          style={[styles.discGlyph, { borderColor: mode === "disc" ? colors.ink : colors.muted }]}
+          style={[styles.discGlyph, { borderColor: selectedTextColor(colors, mode === "disc") }]}
         />
       </Pressable>
       <Pressable
@@ -135,12 +136,12 @@ export function DisplayToggle({
         accessibilityState={{ selected: mode === "numbers" }}
         style={({ pressed }) => [
           styles.segment,
-          mode === "numbers" && { backgroundColor: colors.chip },
+          selectedStyle(colors, mode === "numbers"),
           pressed && { opacity: 0.55 },
         ]}
       >
         <Text
-          style={[styles.segmentLabel, { color: mode === "numbers" ? colors.ink : colors.muted }]}
+          style={[styles.segmentLabel, { color: selectedTextColor(colors, mode === "numbers") }]}
         >
           12:34
         </Text>
