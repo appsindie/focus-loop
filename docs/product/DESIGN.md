@@ -203,6 +203,7 @@ Selected-state styling: solid focus fill is for compact chips/segments only; car
 ### Tablet (T01–T06)
 
 - 48 padding. Home and Week/History are two columns; Settings is master–detail (sections left, detail right).
+- Landscape Home scrolls the left column above a pinned Start button and scrolls the right column, so short tablet heights never push Start off-screen.
 - Focus landscape keeps the timer (disc or Numbers digits) left, with intention, strip, parked thoughts and controls
   right. Phone Focus uses a 280px disc (Break uses 220px); tablet discs use the largest square that fits the measured
   time area after the caption, and Numbers digits scale with that same area.

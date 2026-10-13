@@ -185,8 +185,11 @@ describe("HomeScreen (T01 tablet)", () => {
 
   it("phone keeps the single-column home (no schedule list)", async () => {
     const restore = asPhone();
-    const { getAllByTestId, getByTestId, queryByText } = await renderHomeWithBanner(makeProps());
+    const { getAllByTestId, getByTestId, queryByTestId, queryByText } =
+      await renderHomeWithBanner(makeProps());
     expect(queryByText("REST OF TODAY’S LOOP")).toBeNull();
+    expect(queryByTestId("home-main-scroll")).toBeNull();
+    expect(queryByTestId("home-side-scroll")).toBeNull();
     expect(getAllByTestId("home-banner")).toHaveLength(1);
     expect(within(getByTestId("home-banner-dock")).getByTestId("home-banner")).toBeTruthy();
     restore();
@@ -201,7 +204,7 @@ describe("HomeScreen (T01 tablet)", () => {
     restore();
   });
 
-  it("pins the landscape tablet banner below Home, outside the columns", async () => {
+  it("pins the landscape banner below Home and leaves the bottom inset to its dock", async () => {
     const restore = asTablet(true);
     const { getAllByTestId, getByTestId, unmount } = await renderHomeWithBanner(makeProps());
     expect(getAllByTestId("home-banner")).toHaveLength(1);
@@ -220,9 +223,22 @@ describe("HomeScreen (T01 tablet)", () => {
     const rootStyleWithoutInset = StyleSheet.flatten(
       withoutInset.getByTestId("home-root").props["style"] as StyleProp<ViewStyle>,
     );
-    expect(paddingWithInset - Number(rootStyleWithoutInset.paddingBottom)).toBe(
-      HOME_METRICS.insets.bottom,
-    );
+    expect(paddingWithInset - Number(rootStyleWithoutInset.paddingBottom)).toBe(0);
+    restore();
+  });
+
+  it("scrolls landscape columns above a pinned Start button", async () => {
+    const restore = asTablet(true);
+    const { getByTestId } = await render(<HomeScreen {...makeProps()} />);
+    const mainColumn = getByTestId("home-main-column");
+    const mainScroll = within(mainColumn).getByTestId("home-main-scroll");
+    expect(within(mainScroll).getByText("REST OF TODAY’S LOOP")).toBeTruthy();
+    expect(within(mainColumn).getByLabelText("Start a 25-minute focus")).toBeTruthy();
+    expect(within(mainScroll).queryByLabelText("Start a 25-minute focus")).toBeNull();
+
+    const sideScroll = within(getByTestId("home-side-column")).getByTestId("home-side-scroll");
+    expect(within(sideScroll).getByText("Today 1 focus · 25 min")).toBeTruthy();
+    expect(within(sideScroll).getByText("Book the dentist")).toBeTruthy();
     restore();
   });
 });
