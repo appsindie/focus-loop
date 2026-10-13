@@ -84,7 +84,8 @@ Selected-state styling: solid focus fill is for compact chips/segments only; car
 - Header: "FOCUS N OF M" (`focus-text`), display toggle on the right.
 - Intention in serif, 26px, under the header (omitted if empty).
 - Disc mode: phone 280px disc + "about X min left" (rounded up); tablet uses the largest square that fits the
-  measured time area after the caption. Numbers digits scale with that same area. Disc never shows seconds. In
+  measured time area after the caption. Numbers mode: phone minutes 200px, seconds 56px in `faint`, "minutes left ·
+  ends HH:MM"; tablet digits scale with that same area. Disc never shows seconds. In
   Numbers, Settings → Show seconds controls the small seconds (default: open point OP-03 in `DESIGN_REVIEW.md`).
 - Loop strip + "Next: 5 min break".
 - "Later, not now…" opens SHT-later; the timer keeps running.
