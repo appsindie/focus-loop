@@ -13,38 +13,39 @@
 
 Every open item has default **block**; Devin implements the code/asset items, the sponsor decides and owns them.
 
-| ID                           | Title                                                                                             | Rows covered                             | Owner                       | Deadline   | Default if silent |
-| ---------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------- | --------------------------- | ---------- | ----------------- |
-| EX-native-sit-waiver         | Native device SIT not run — waived 2026-10-04, signed 2026-10-13                                  | SIT regression                           | justin.nguyen@appsindie.com | —          | waived (closed)   |
-| EX-failure-mode-waiver       | Failure-mode cases not verified — waived 2026-10-04, signed 2026-10-13                            | Failure-mode cases                       | justin.nguyen@appsindie.com | —          | waived (closed)   |
-| EX-north-star-events         | North-star analytics events not wired                                                             | North-star events                        | justin.nguyen@appsindie.com | 2026-10-20 | block             |
-| EX-alerts-not-wired          | Alerts not wired or test-fired                                                                    | Alerts wired                             | justin.nguyen@appsindie.com | 2026-10-20 | block             |
-| EX-rollback-command          | Rollback command not finalized                                                                    | Rollback command                         | justin.nguyen@appsindie.com | 2026-10-20 | block             |
-| EX-rollback-rehearsal        | Rollback not rehearsed                                                                            | Rollback rehearsed                       | justin.nguyen@appsindie.com | 2026-10-20 | block             |
-| EX-runbook-placeholders      | Runbook procedures still placeholders                                                             | Runbook                                  | justin.nguyen@appsindie.com | 2026-10-20 | block             |
-| EX-store-agreements          | Store agreements — **resolved 2026-10-11**                                                        | Store agreements                         | justin.nguyen@appsindie.com | —          | done              |
-| EX-store-declarations        | Store declarations not completed                                                                  | Declarations                             | justin.nguyen@appsindie.com | 2026-10-17 | block             |
-| EX-internal-test-build       | Internal testing build — **resolved 2026-10-05**                                                  | Internal testing                         | justin.nguyen@appsindie.com | —          | done              |
-| EX-data-safety               | Privacy / data-safety declaration not completed                                                   | Privacy delta                            | justin.nguyen@appsindie.com | 2026-10-17 | block             |
-| EX-release-record            | Release record — **resolved 2026-10-04**                                                          | Release notes, Changelog                 | justin.nguyen@appsindie.com | —          | done              |
-| EX-console-products          | Console products: Play yearly trial offer missing                                                 | Credentials, Pass B Play                 | justin.nguyen@appsindie.com | 2026-10-17 | block             |
-| EX-dashboards                | Dashboards not created                                                                            | Dashboards                               | justin.nguyen@appsindie.com | 2026-10-20 | block             |
-| EX-halt-thresholds           | Rollout halt thresholds not wired to alerts                                                       | Rollout halt thresholds                  | justin.nguyen@appsindie.com | 2026-10-20 | block             |
-| EX-rollback-triggers         | Rollback trigger conditions not wired                                                             | Trigger conditions                       | justin.nguyen@appsindie.com | 2026-10-20 | block             |
-| EX-escalation-path           | Escalation path not defined                                                                       | Escalation path                          | justin.nguyen@appsindie.com | 2026-10-20 | block             |
-| EX-sit-retest-devices        | SIT waiver re-test condition — device items untested                                              | Third-party sandboxes (waiver condition) | justin.nguyen@appsindie.com | 2026-10-20 | block             |
-| EX-ump-consent               | No Google UMP consent before ad requests (EEA/UK)                                                 | Ads (UMP)                                | justin.nguyen@appsindie.com | 2026-10-15 | block             |
-| EX-analytics-consent         | Firebase Analytics runs before any consent in EEA/UK — **resolved 2026-10-13: option B accepted** | Privacy delta, Ads (UMP)                 | justin.nguyen@appsindie.com | —          | done              |
-| EX-permission-gate-drift     | AAB has 16 permissions, allowlist 8; CI gate blind to injected ones                               | Merged-manifest permission audit         | justin.nguyen@appsindie.com | 2026-10-15 | block             |
-| EX-att-e2e                   | ATT prompt not asserted by an E2E flow                                                            | Ads (ATT), E2E coverage                  | justin.nguyen@appsindie.com | 2026-10-15 | block             |
-| EX-ios-background-audio-mode | UIBackgroundModes=audio declared but unused (2.5.4)                                               | Pass A 2.5.4                             | justin.nguyen@appsindie.com | 2026-10-15 | block             |
-| EX-privacy-contact-email     | Privacy page contact email — **resolved 2026-10-13 (false positive)**                             | Legal — Privacy Policy                   | justin.nguyen@appsindie.com | —          | done              |
-| EX-asc-iap-metadata          | ASC IAPs MISSING_METADATA                                                                         | Pass A 2.1, Pass B IAP                   | justin.nguyen@appsindie.com | 2026-10-17 | block             |
-| EX-asc-version-setup         | ASC 1.0: no category, no build, es-MX screenshots                                                 | Pass B ASC                               | justin.nguyen@appsindie.com | 2026-10-17 | block             |
-| EX-tablet-screenshots        | No iPad 13" / Android tablet screenshot sets                                                      | Store assets                             | justin.nguyen@appsindie.com | 2026-10-17 | block             |
-| EX-tablet-e2e                | Tablet layouts T01–T06 not verified on tablets                                                    | Spec completeness, E2E coverage          | justin.nguyen@appsindie.com | 2026-10-17 | block             |
-| EX-owasp-checklist           | No OWASP Mobile Top 10 disposition; review predates prod AdMob IDs                                | OWASP coverage, Findings by severity     | justin.nguyen@appsindie.com | 2026-10-17 | block             |
-| EX-dependency-triage         | 28 outdated + npm audit 1 critical / 67 high untriaged                                            | Dependency freshness                     | justin.nguyen@appsindie.com | 2026-10-17 | block             |
+| ID                             | Title                                                                                             | Rows covered                             | Owner                       | Deadline   | Default if silent |
+| ------------------------------ | ------------------------------------------------------------------------------------------------- | ---------------------------------------- | --------------------------- | ---------- | ----------------- |
+| EX-native-sit-waiver           | Native device SIT not run — waived 2026-10-04, signed 2026-10-13                                  | SIT regression                           | justin.nguyen@appsindie.com | —          | waived (closed)   |
+| EX-failure-mode-waiver         | Failure-mode cases not verified — waived 2026-10-04, signed 2026-10-13                            | Failure-mode cases                       | justin.nguyen@appsindie.com | —          | waived (closed)   |
+| EX-north-star-events           | North-star analytics events not wired                                                             | North-star events                        | justin.nguyen@appsindie.com | 2026-10-20 | block             |
+| EX-alerts-not-wired            | Alerts not wired or test-fired                                                                    | Alerts wired                             | justin.nguyen@appsindie.com | 2026-10-20 | block             |
+| EX-rollback-command            | Rollback command not finalized                                                                    | Rollback command                         | justin.nguyen@appsindie.com | 2026-10-20 | block             |
+| EX-rollback-rehearsal          | Rollback not rehearsed                                                                            | Rollback rehearsed                       | justin.nguyen@appsindie.com | 2026-10-20 | block             |
+| EX-runbook-placeholders        | Runbook procedures still placeholders                                                             | Runbook                                  | justin.nguyen@appsindie.com | 2026-10-20 | block             |
+| EX-store-agreements            | Store agreements — **resolved 2026-10-11**                                                        | Store agreements                         | justin.nguyen@appsindie.com | —          | done              |
+| EX-store-declarations          | Store declarations not completed                                                                  | Declarations                             | justin.nguyen@appsindie.com | 2026-10-17 | block             |
+| EX-internal-test-build         | Internal testing build — **resolved 2026-10-05**                                                  | Internal testing                         | justin.nguyen@appsindie.com | —          | done              |
+| EX-data-safety                 | Privacy / data-safety declaration not completed                                                   | Privacy delta                            | justin.nguyen@appsindie.com | 2026-10-17 | block             |
+| EX-release-record              | Release record — **resolved 2026-10-04**                                                          | Release notes, Changelog                 | justin.nguyen@appsindie.com | —          | done              |
+| EX-console-products            | Console products: Play yearly trial offer missing                                                 | Credentials, Pass B Play                 | justin.nguyen@appsindie.com | 2026-10-17 | block             |
+| EX-dashboards                  | Dashboards not created                                                                            | Dashboards                               | justin.nguyen@appsindie.com | 2026-10-20 | block             |
+| EX-halt-thresholds             | Rollout halt thresholds not wired to alerts                                                       | Rollout halt thresholds                  | justin.nguyen@appsindie.com | 2026-10-20 | block             |
+| EX-rollback-triggers           | Rollback trigger conditions not wired                                                             | Trigger conditions                       | justin.nguyen@appsindie.com | 2026-10-20 | block             |
+| EX-escalation-path             | Escalation path not defined                                                                       | Escalation path                          | justin.nguyen@appsindie.com | 2026-10-20 | block             |
+| EX-sit-retest-devices          | SIT waiver re-test condition — device items untested                                              | Third-party sandboxes (waiver condition) | justin.nguyen@appsindie.com | 2026-10-20 | block             |
+| EX-ump-consent                 | No Google UMP consent before ad requests (EEA/UK)                                                 | Ads (UMP)                                | justin.nguyen@appsindie.com | 2026-10-15 | block             |
+| EX-analytics-consent           | Firebase Analytics runs before any consent in EEA/UK — **resolved 2026-10-13: option B accepted** | Privacy delta, Ads (UMP)                 | justin.nguyen@appsindie.com | —          | done              |
+| EX-permission-gate-drift       | AAB has 16 permissions, allowlist 8; CI gate blind to injected ones                               | Merged-manifest permission audit         | justin.nguyen@appsindie.com | 2026-10-15 | block             |
+| EX-att-e2e                     | ATT prompt not asserted by an E2E flow                                                            | Ads (ATT), E2E coverage                  | justin.nguyen@appsindie.com | 2026-10-15 | block             |
+| EX-ios-background-audio-mode   | UIBackgroundModes=audio declared but unused (2.5.4)                                               | Pass A 2.5.4                             | justin.nguyen@appsindie.com | 2026-10-15 | block             |
+| EX-android15-taskbar-nav-icons | Android 15 three-button Taskbar icon contrast                                                     | Android system bars                      | justin.nguyen@appsindie.com | 2026-10-20 | block             |
+| EX-privacy-contact-email       | Privacy page contact email — **resolved 2026-10-13 (false positive)**                             | Legal — Privacy Policy                   | justin.nguyen@appsindie.com | —          | done              |
+| EX-asc-iap-metadata            | ASC IAPs MISSING_METADATA                                                                         | Pass A 2.1, Pass B IAP                   | justin.nguyen@appsindie.com | 2026-10-17 | block             |
+| EX-asc-version-setup           | ASC 1.0: no category, no build, es-MX screenshots                                                 | Pass B ASC                               | justin.nguyen@appsindie.com | 2026-10-17 | block             |
+| EX-tablet-screenshots          | No iPad 13" / Android tablet screenshot sets                                                      | Store assets                             | justin.nguyen@appsindie.com | 2026-10-17 | block             |
+| EX-tablet-e2e                  | Tablet layouts T01–T06 not verified on tablets                                                    | Spec completeness, E2E coverage          | justin.nguyen@appsindie.com | 2026-10-17 | block             |
+| EX-owasp-checklist             | No OWASP Mobile Top 10 disposition; review predates prod AdMob IDs                                | OWASP coverage, Findings by severity     | justin.nguyen@appsindie.com | 2026-10-17 | block             |
+| EX-dependency-triage           | 28 outdated + npm audit 1 critical / 67 high untriaged                                            | Dependency freshness                     | justin.nguyen@appsindie.com | 2026-10-17 | block             |
 
 ## Waiver records (closed exceptions)
 
@@ -358,6 +359,16 @@ Every open item has default **block**; Devin implements the code/asset items, th
 - **Owner**: justin.nguyen@appsindie.com — Devin triages, sponsor accepts any residual
 - **Deadline**: 2026-10-17
 - **Status**: open
+
+### EX-android15-taskbar-nav-icons. Android 15 three-button Taskbar icon contrast
+
+- **Situation**: On Android 15 with 3-button navigation, the launcher Taskbar ignores the app's light-nav-bar flag for icon colour. When app and phone themes differ, the buttons follow the phone theme; measured contrast is 1.7:1. Android 16 and gesture navigation are unaffected.
+- **Options**: A — accept the scoped platform limitation (recommended). B — follow the system theme (rejected; measured contrast is 2.1:1, still below 3:1).
+- **Recommendation**: A — the limitation is confined to Android 15's 3-button Taskbar; option B also misses 3:1 contrast.
+- **Default if you say nothing**: stays open and blocks Gate 3.
+- **Owner**: justin.nguyen@appsindie.com
+- **Deadline**: 2026-10-20
+- **Status**: open (non-blocking)
 
 ## Resolved / non-gate items
 

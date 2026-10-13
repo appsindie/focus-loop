@@ -26,6 +26,13 @@ and open points are in [`DESIGN_REVIEW.md`](DESIGN_REVIEW.md).
 Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; map them to theme roles.
 
 - Appearance: Light, Dark, System (default System). Both themes ship together; no screen may exist in one only.
+- System bars follow the app's Appearance; green Break uses light icons. On Android SDK 30–34, the
+  `expo-navigation-bar` patch also sets the platform appearance flag because, after React Native's `StatusBarModule`
+  takes control, the compat call only writes a legacy system-UI bit.
+- Known limitation: on Android 15 with 3-button navigation, the launcher Taskbar ignores the app's light-nav-bar
+  icon-colour flag. When the app and phone themes differ, its buttons follow the phone theme (1.7:1 contrast).
+  Android 16 and gesture navigation are unaffected. Following the system theme instead measured 2.1:1, still below
+  3:1, so that option was rejected.
 - `focus` is for fills only. Coloured text uses `focus-text` / `break` (light) or `break-text` (dark) so contrast stays
   ≥ 4.5:1.
 - On dark, text on a `break` fill is `on-break` (#0B0A09), not white.
