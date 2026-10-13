@@ -1,0 +1,27 @@
+UTC timestamp: 2026-10-13T07:56:38Z
+Exact command(s):
+- `stat -f '%N %z bytes' apps/mobile/build-vc8.aab`
+- `BundleToolMain 1.18.1 dump manifest --bundle=apps/mobile/build-vc8.aab`
+- `BundleToolMain 1.18.1 build-apks --bundle=apps/mobile/build-vc8.aab --mode=universal --aapt2=/Users/devin/.gradle/caches/9.3.1/transforms/619d46907cfcabac8d785557fc95e0b4/transformed/aapt2-8.12.0-13700139-osx/aapt2`
+- `BundleToolMain 1.18.1 get-size total` on the generated universal APK set and device spec
+- `find "$HOME" apps/mobile -type f -name '*.ipa' -print`
+
+Android:
+- AAB path: `apps/mobile/build-vc8.aab`
+- Raw AAB size: 72,802,628 bytes
+- Bundletool: 1.18.1; AAPT2: `Android Asset Packaging Tool (aapt) 2.20-13700139`
+- Generated universal APK set using a temporary local debug keystore and this device spec: `{"supportedLocales":["en"],"supportedAbis":["arm64-v8a"],"screenDensity":420,"sdkVersion":35}`
+- `get-size total` output:
+  ```text
+  MIN,MAX
+  43931900,43931900
+  ```
+  The measured total is 43,931,900 bytes for the listed device spec.
+- `apps/mobile/app.json`: `expo-build-properties.android.enableProguardInReleaseBuilds=true`; `enableShrinkResourcesInReleaseBuilds=true` (lines 68–69).
+
+iOS:
+- iOS build 21 IPA: not found in the searched home directory or `apps/mobile`.
+- Two `.ipa` candidates found; both are simulator `SerializedPlaceholder.ipa` files, not build 21:
+  - `/Users/devin/Library/Developer/CoreSimulator/Devices/E0224A22-F874-4B8C-83FB-EB084492C493/data/Containers/Bundle/Application/A9F0403B-E63B-4971-9913-70F807333D03/SerializedPlaceholder.ipa` — 845,220 bytes; `CFBundleIdentifier=com.appsindie.focusloop`, `CFBundleShortVersionString=1.0.0`, `CFBundleVersion=1`.
+  - `/Users/devin/Library/Developer/CoreSimulator/Devices/EDD9B083-63F1-44E6-9A7B-0A6964CC2561/data/Containers/Bundle/Application/6081226D-10E1-46FE-AFB8-56F593278588/SerializedPlaceholder.ipa` — 845,218 bytes; `CFBundleIdentifier=com.appsindie.focusloop`, `CFBundleShortVersionString=1.0.0`, `CFBundleVersion=1`.
+- Since an iOS build 21 IPA was not found, its requested `Info.plist` values (`NSUserTrackingUsageDescription`, `SKAdNetworkItems`, `GADApplicationIdentifier`, `ITSAppUsesNonExemptEncryption`, `UIBackgroundModes`, and all `NS*UsageDescription` keys), `PrivacyInfo.xcprivacy` collected-data types, and IPA byte size could not be read.

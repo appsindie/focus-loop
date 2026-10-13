@@ -1,0 +1,38 @@
+UTC timestamp: 2026-10-13T07:59:18.220Z
+Exact command(s):
+- curl --location --silent --show-error --compressed --write-out "\\n__FINAL__%{url_effective}\\n__STATUS__%{http_code}\\n" "https://www.appsindie.com/docs/legal/focus-loop/privacy/"
+- curl --location --silent --show-error --compressed --write-out "\\n__FINAL__%{url_effective}\\n__STATUS__%{http_code}\\n" "https://www.appsindie.com/docs/legal/focus-loop/tnc/"
+- curl --location --silent --show-error --compressed --write-out "\\n__FINAL__%{url_effective}\\n__STATUS__%{http_code}\\n" "https://www.appsindie.com/docs/legal/focus-loop/disclaimer/"
+- curl --location --silent --show-error --compressed --write-out "\\n__FINAL__%{url_effective}\\n__STATUS__%{http_code}\\n" "https://www.appsindie.com/docs/legal/focus-loop/licenses/"
+
+HTTP statuses (final response after redirects):
+- https://www.appsindie.com/docs/legal/focus-loop/privacy/: 200 (final URL: https://www.appsindie.com/docs/legal/focus-loop/privacy/)
+- https://www.appsindie.com/docs/legal/focus-loop/tnc/: 200 (final URL: https://www.appsindie.com/docs/legal/focus-loop/tnc/)
+- https://www.appsindie.com/docs/legal/focus-loop/disclaimer/: 200 (final URL: https://www.appsindie.com/docs/legal/focus-loop/disclaimer/)
+- https://www.appsindie.com/docs/legal/focus-loop/licenses/: 200 (final URL: https://www.appsindie.com/docs/legal/focus-loop/licenses/)
+
+Privacy page text matches:
+- AdMob / Google Mobile Ads: mentioned
+  - "The App displays advertisements served by Google AdMob (Google Mobile Ads SDK) — a home-screen banner, occasional interstitials, and opt-in rewarded ads that unlock temporary theme/sound trials."
+  - "AdMob may collect device and usage information (such as device identifiers, IP-derived location, and ad interaction data) under Google's own privacy policy: https://policies.google.com/privacy"
+  - "Third-party advertising SDKs (AdMob) may use device identifiers and similar technologies as described above."
+- Firebase Analytics: mentioned
+  - "Firebase Analytics collects pseudonymous feature-usage events (for example, a focus session completing, a paywall being shown, or a rewarded ad finishing) together with a random app-instance identifier, device model, operating system version, and app version."
+- Crashlytics: mentioned
+  - "Firebase Crashlytics collects crash stack traces and the device state at the moment of a crash so we can find and fix defects."
+- IP address / approximate location: mentioned
+  - "AdMob may collect device and usage information (such as device identifiers, IP-derived location, and ad interaction data) under Google's own privacy policy: https://policies.google.com/privacy"
+- Advertising ID: mentioned
+  - "On iOS, the App asks for App Tracking Transparency permission before using the advertising identifier for personalized ads; you can change your choice at any time in iOS Settings or in the App's Settings → Ad choices & tracking."
+- Opt-out / toggle wording: not mentioned
+- Ad-choice setting / change of choice: mentioned
+  - "On iOS, the App asks for App Tracking Transparency permission before using the advertising identifier for personalized ads; you can change your choice at any time in iOS Settings or in the App's Settings → Ad choices & tracking."
+- Deletion: mentioned
+  - "You can export your session history to a CSV file yourself, or delete everything in the App's Settings → Delete all data."
+- Contact email: not mentioned
+- Raw HTML source search for email addresses and mailto links: no matches.
+
+## Correction 2026-10-13T08:09:58Z
+- Source: appsindie/appsindie-landing@cbb7704 `docs/legal/focus-loop/1. privacy.md` line 86, "## Contact Us": "please contact us at info@appsindie.com."
+- Live: `curl -sL https://www.appsindie.com/docs/legal/focus-loop/privacy/` shows the Contact Us section with "[email protected]" — Cloudflare Email Address Obfuscation rewrites the address in raw HTML and decodes it client-side, so the earlier raw-HTML search was a false negative. The address is visible to a browser user.
+- Gap that remains: the page says telemetry is "enabled by default" but does not name the in-app opt-out (Settings → "Crash & usage reports") — tracked for the landing update that adds UMP wording.

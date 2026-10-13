@@ -1,0 +1,5 @@
+UTC timestamp: 2026-10-13T07:58:04.477Z
+Exact command: NODE_AUTH_TOKEN=$GITHUB_PAT npm audit --json
+Working directory: apps/mobile
+Exit code: 1
+Vulnerability counts: {"info":0,"low":0,"moderate":11,"high":67,"critical":1,"total":79}

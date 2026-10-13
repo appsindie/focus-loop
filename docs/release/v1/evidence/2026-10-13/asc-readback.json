@@ -1,0 +1,269 @@
+{
+  "_evidence": {
+    "utcTimestamp": "2026-10-13T07:50:30.304Z",
+    "exactCommand": "node scripts/store-readback/asc-read.mjs > docs/release/v1/evidence/2026-10-13/asc-readback.json"
+  },
+  "appInfos": [
+    {
+      "id": "73e74127-8fc4-4fdd-b911-f418d0efdd9a",
+      "state": "PREPARE_FOR_SUBMISSION",
+      "primaryCategoryId": null,
+      "secondaryCategoryId": null,
+      "primaryCategory": null,
+      "secondaryCategory": null,
+      "ageRatingDeclarationId": null,
+      "ageRatingDeclaration": {
+        "advertising": null,
+        "alcoholTobaccoOrDrugUseOrReferences": null,
+        "contests": null,
+        "gambling": null,
+        "gamblingSimulated": null,
+        "gunsOrOtherWeapons": null,
+        "healthOrWellnessTopics": null,
+        "kidsAgeBand": null,
+        "lootBox": null,
+        "medicalOrTreatmentInformation": null,
+        "messagingAndChat": null,
+        "parentalControls": null,
+        "profanityOrCrudeHumor": null,
+        "ageAssurance": null,
+        "sexualContentGraphicAndNudity": null,
+        "sexualContentOrNudity": null,
+        "socialMedia": null,
+        "socialMediaAgeRestricted": null,
+        "horrorOrFearThemes": null,
+        "matureOrSuggestiveThemes": null,
+        "unrestrictedWebAccess": null,
+        "userGeneratedContent": null,
+        "violenceCartoonOrFantasy": null,
+        "violenceRealisticProlongedGraphicOrSadistic": null,
+        "violenceRealistic": null,
+        "ageRatingOverride": "NONE",
+        "ageRatingOverrideV2": "NONE",
+        "koreaAgeRatingOverride": "NONE",
+        "gracRatingClassificationNumber": null,
+        "developerAgeRatingInfoUrl": null
+      }
+    }
+  ],
+  "appStoreVersions": [
+    {
+      "versionString": "1.0",
+      "appStoreState": "PREPARE_FOR_SUBMISSION",
+      "buildId": null,
+      "build": null,
+      "localizationCount": 20,
+      "locales": [
+        {
+          "locale": "en-US",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "it",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "pt-BR",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "pl",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "zh-Hant",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "hi",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "nl-NL",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "es-MX",
+          "screenshotSets": []
+        },
+        {
+          "locale": "id",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "de-DE",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "ko",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "ja",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "tr",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "zh-Hans",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "fr-FR",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "ru",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "ar-SA",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "vi",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "es-ES",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        },
+        {
+          "locale": "th",
+          "screenshotSets": [
+            {
+              "displayType": "APP_IPHONE_67",
+              "screenshotCount": 6
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "appStoreVersionsReturned": 1,
+  "build21": [
+    {
+      "version": "21",
+      "processingState": "VALID",
+      "usesNonExemptEncryption": false
+    }
+  ],
+  "subscriptionGroups": [
+    {
+      "id": "22439115",
+      "referenceName": "Focus Loop Plus",
+      "subscriptions": [
+        {
+          "productId": "com.appsindie.focusloop.plus.yearly",
+          "state": "MISSING_METADATA",
+          "hasPrices": true,
+          "localizationCount": 1
+        }
+      ]
+    }
+  ],
+  "inAppPurchasesV2": {
+    "source": "/v1/apps/6818991496/inAppPurchasesV2?limit=200",
+    "products": [
+      {
+        "productId": "com.appsindie.focusloop.plus.lifetime",
+        "state": "MISSING_METADATA",
+        "localizationCount": 1
+      }
+    ]
+  },
+  "reviewSubmissions": [],
+  "rejectedHistory": []
+}

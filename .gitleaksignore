@@ -1,3 +1,9 @@
 # eas.json ascApiKeyIssuerId — Apple issuer ID is a public identifier, not a credential;
 # the actual secret is the .p8 key which lives only in EAS env vars (never committed).
 2b73c2fd69a0c546888fd084addb48f31a0bcb0e:apps/mobile/eas.json:generic-api-key:49
+# Same public ascApiKeyIssuerId as above, at its earlier lines in commit 9f830fc.
+9f830fcc357b12adf95c20bc51e021c4f9eafe14:apps/mobile/eas.json:generic-api-key:33
+9f830fcc357b12adf95c20bc51e021c4f9eafe14:apps/mobile/eas.json:generic-api-key:47
+# Firebase Android client API key in google-services.json — a public client identifier
+# shipped in every APK (Firebase docs: not a secret); access is restricted by package/SHA in GCP.
+155c0d75f4be876af02f862769317288a2a18b62:apps/mobile/google-services.json:gcp-api-key:18
