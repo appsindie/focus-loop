@@ -29,13 +29,13 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-10-13T08:20:00Z",
-    "round_count": 3,
-    "routine": "release",
-    "session_url": "https://claude.ai/code/cse_01BgqTGpYN4uyh8nRGPWKgF7",
-    "verdict": "APPROVE WITH CORRECTIONS"
+    "fired_at": "2026-10-13T09:20:00Z",
+    "round_count": 2,
+    "routine": "code-review",
+    "session_url": "https://claude.ai/code/cse_01BHxN2AwUQew8dm3dZsra1o",
+    "verdict": "APPROVE"
   },
-  "next_action": "Merge UMP/permission code PR, local builds vc9/b22, tablet + es-MX screenshot sets, then sponsor console forms (STORE_QUESTIONNAIRE.md) and Gate 3",
+  "next_action": "vc9 (internal, COMPLETED) + b22 (TestFlight, processing) built from PR #26 098168d; next: tablet + es-MX screenshot sets, ATT E2E on b22, then sponsor console forms (STORE_QUESTIONNAIRE.md) and Gate 3",
   "open_exceptions": [
     {
       "blocking": true,

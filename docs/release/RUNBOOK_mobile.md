@@ -33,6 +33,19 @@ Start here when an alert fires.
 
 If the symptom is not in this table and the rollout is in progress: **halt the staged rollout first, diagnose after.**
 
+## Release permission gates
+
+Before submitting an Android release, run both checks from `apps/mobile`:
+
+```bash
+npm run verify:permissions
+npm run verify:permissions:aab -- <path-to-release.aab>
+```
+
+The first check audits the generated merged manifest. The second reads the built
+AAB manifest with `bundletool`; every bundled permission must be allowlisted and
+every allowlisted permission must be present.
+
 ## Roll back
 
 Mobile binaries cannot be recalled from user devices. The rollback action is to **halt the staged rollout** and submit a hotfix.

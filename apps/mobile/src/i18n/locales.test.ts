@@ -6,12 +6,8 @@ import { SUPPORTED_LOCALES } from "./index";
 import { CATALOGUE } from "../features/personalize/catalogue";
 import { RHYTHM_PRESET_NAMES } from "../features/loop/rhythm";
 import { STYLE_LABELS } from "../features/loop/screens/ShareScreen";
-import {
-  ABOUT_LINKS,
-  APPEARANCE_OPTIONS,
-  DISPLAY_MODE_OPTIONS,
-  RAIL,
-} from "../features/settings/SettingsScreen";
+import { APPEARANCE_OPTIONS } from "../shared/ui/AppearanceControl";
+import { ABOUT_LINKS, DISPLAY_MODE_OPTIONS, RAIL } from "../features/settings/SettingsScreen";
 
 const LOCALES_DIR = join(__dirname, "locales");
 const NATIVE_DIR = join(__dirname, "native");

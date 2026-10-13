@@ -14,6 +14,7 @@ function makeProps(overrides: Partial<Props> = {}): Props {
     colors,
     discColorId: "ember",
     focusSoundId: "silence",
+    appearance: "system",
     isPlus: false,
     isItemUnlocked: (id) =>
       id === "ember" || id === "silence" || id === "white-noise" || id === "brown-noise",
@@ -32,6 +33,13 @@ beforeEach(() => {
 });
 
 describe("ThemesSoundsScreen (J8 / P15)", () => {
+  it("updates appearance from the Themes & sounds screen", async () => {
+    const props = makeProps();
+    const { getByLabelText } = await render(<ThemesSoundsScreen {...props} />);
+    await fireEvent.press(getByLabelText("Appearance: Dark"));
+    expect(props.onPick).toHaveBeenCalledWith({ appearance: "dark" });
+  });
+
   it("selects a free item immediately", async () => {
     const props = makeProps();
     const { getByLabelText } = await render(<ThemesSoundsScreen {...props} />);

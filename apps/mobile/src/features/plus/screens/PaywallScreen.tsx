@@ -4,6 +4,7 @@ import * as WebBrowser from "expo-web-browser";
 import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
+import { selectedStyle, selectedTextColor } from "../../../shared/ui/selectedStyle";
 import { TABLET_PADDING, useIsTablet } from "../../../shared/layout";
 import { PrimaryButton, TextButton } from "../../../shared/ui/Buttons";
 import { trackEvent } from "../../analytics/events";
@@ -156,21 +157,29 @@ export function PaywallScreen({
                   style={({ pressed }) => [
                     styles.planCard,
                     {
-                      borderColor: selected ? colors.focus : colors.rule,
                       backgroundColor: colors.surface,
                     },
-                    selected && { backgroundColor: colors.chip },
+                    selectedStyle(colors, selected),
                     pressed && { opacity: 0.55 },
                   ]}
                 >
-                  <Text style={[styles.planName, { color: colors.ink }]} allowFontScaling>
+                  <Text
+                    style={[styles.planName, { color: selectedTextColor(colors, selected) }]}
+                    allowFontScaling
+                  >
                     {product.plan === "yearly" ? t("Yearly") : t("Lifetime")}
                   </Text>
-                  <Text style={[styles.planPrice, { color: colors.ink2 }]} allowFontScaling>
+                  <Text
+                    style={[styles.planPrice, { color: selectedTextColor(colors, selected) }]}
+                    allowFontScaling
+                  >
                     {product.priceText}
                   </Text>
                   {product.plan === "yearly" ? (
-                    <Text style={[styles.planNote, { color: colors.muted }]} allowFontScaling>
+                    <Text
+                      style={[styles.planNote, { color: selectedTextColor(colors, selected) }]}
+                      allowFontScaling
+                    >
                       {t("7-day free trial")}
                     </Text>
                   ) : null}

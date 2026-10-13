@@ -36,6 +36,8 @@
         "android.permission.SYSTEM_ALERT_WINDOW",
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.FOREGROUND_SERVICE",
+        "com.google.android.c2dm.permission.RECEIVE",
         "android.permission.READ_APP_BADGE",
         "com.anddoes.launcher.permission.UPDATE_COUNT",
         "com.htc.launcher.permission.READ_SETTINGS",
@@ -181,7 +183,8 @@
       "@react-native-firebase/app",
       "@react-native-firebase/analytics",
       "@react-native-firebase/crashlytics",
-      "expo-web-browser"
+      "expo-web-browser",
+      "./plugins/withoutBackgroundAudio.js"
     ],
     "extra": {
       "eas": {

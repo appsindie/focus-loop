@@ -1,0 +1,8 @@
+UTC timestamp: 2026-10-13T09:06:48Z
+Exact command: npm run verify:permissions:aab -- build-vc9.aab
+
+> mobile@1.0.0 verify:permissions:aab
+> node scripts/check-aab-permissions.mjs build-vc9.aab
+
+AAB permissions: 14; allowlisted: 14.
+AAB permissions match android-permissions.json.

@@ -343,7 +343,7 @@ OS kill -> relaunch -> P01 Splash
 **Journey rules**
 
 - R1: Rhythm SHALL offer presets Classic 25/5×4, Gentle start 15/5, Deep work 50/10×3, and Custom (steppers for focus, break, long break, rounds); the loop strip and "One loop = …" SHALL update live.
-- R2: Settings SHALL cover: display (Disc/Numbers), appearance (Light/Dark/System), Show seconds (default **on** — sponsor, 2026-10-03; affects Numbers only), vibrate at end, weekly goal, auto-start breaks, themes & sounds, reminders, app-blocking (Android, opt-in with explanation — **deferred**: absent from the approved P20 canvas and not buildable in the Expo managed workflow without a native module; revisit if a dev-client/Digital-Wellbeing approach lands — Level-A decision, Phase 2 slice 9), Plus card + Restore, data export (CSV) and delete-all (confirmed), About (Privacy, Terms, Ad choices, licenses, contact), app version.
+- R2: Settings SHALL cover: display (Disc/Numbers), appearance (Light/Dark/System), Show seconds (default **on** — sponsor, 2026-10-03; affects Numbers only), vibrate at end, weekly goal, auto-start breaks, themes & sounds, reminders, app-blocking (Android, opt-in with explanation — **deferred**: absent from the approved P20 canvas and not buildable in the Expo managed workflow without a native module; revisit if a dev-client/Digital-Wellbeing approach lands — Level-A decision, Phase 2 slice 9), Plus card + Restore, data export (CSV) and delete-all (confirmed), About (Privacy, Terms, Privacy options (EEA/UK, UMP), licenses, contact), app version.
 - R3: Changes SHALL save immediately; there is no Save button.
 - R4: "Delete all data…" SHALL ask for confirmation.
 
@@ -466,7 +466,7 @@ Design reference per screen is `design/png/<name>.png` rendered from `design/sou
 
 - **Intent**: personalise within the design system.
 - **Entry**: Settings.
-- **Data**: disc-colour radio swatches (locked = lock badge + "try with an ad" name), focus sounds (Plus-only labelled "Plus"), trial card "Try X for 24 hours" with Watch video / Get Plus.
+- **Data**: Appearance (Light / Dark / System, sponsor feedback 2026-10-13), disc-colour radio swatches (locked = lock badge + "try with an ad" name), focus sounds (Plus-only labelled "Plus"), trial card "Try X for 24 hours" with Watch video / Get Plus.
 - **Primary action**: select item or start rewarded video.
 - **Rules**: R1 Rewarded only on explicit tap; 24h local trial (J8-R2). R2 Load failure -> toast, retry allowed.
   R3 Tapping an unlocked sound plays a ~4-second loop preview that stops on exit; it pauses a live session
@@ -592,7 +592,7 @@ J1+J2 are the minimum the rest builds on; monetisation and stats ride on them.
 | iOS ATT opt-in crushes eCPM                   | High   | Contextual pre-screen; frequency controlled in AdMob console; monitor ARPU as kill criterion.         |
 | IAP added to an ad-funded app confuses tiers  | Medium | Paywall only after value; rewarded trial is Plus preview; Plus removes every ad.                      |
 | Organic ASO too slow                          | Medium | Long-tail keywords first; shareable cards; widget word-of-mouth.                                      |
-| Timer killed by OS                            | Medium | Persistent notification + scheduled local alerts on Android; background timer + local notif on iOS. |
+| Timer killed by OS                            | Medium | Persistent notification + scheduled local alerts on Android; background timer + local notif on iOS.   |
 
 ## Open questions
 

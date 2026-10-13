@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuites>
+  <testsuite name="Test Suite" device="iPhone 17 - iOS 26.5 - EDD9B083-63F1-44E6-9A7B-0A6964CC2561" tests="1" failures="0" time="8.735" timestamp="2026-10-13T01:43:25">
+    <testcase id="att-deny" name="att-deny" classname="att-deny" file=".maestro/att-deny.yaml" time="8.729" timestamp="2026-10-13T01:43:25" status="SUCCESS"/>
+  </testsuite>
+</testsuites>

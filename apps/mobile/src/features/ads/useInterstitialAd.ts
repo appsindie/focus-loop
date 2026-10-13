@@ -1,25 +1,65 @@
-import { useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect, useRef } from "react";
 import { AdsContext } from "@appsindie/react-native-ads";
+import { Platform } from "react-native";
 import { useInterstitialAd as useRNInterstitialAd } from "react-native-google-mobile-ads";
+import { useAdsConsent } from "./AdsProvider";
 
-export function useInterstitialAd() {
+export function useInterstitialAd(hasAdsRemoval = false, navigate?: () => void) {
   const ads = useContext(AdsContext);
+  const consent = useAdsConsent();
   const { isLoaded, isClosed, load, show, error } = useRNInterstitialAd(ads.interstitialId, {
-    requestNonPersonalizedAdsOnly: ads.allowTracking === false,
+    requestNonPersonalizedAdsOnly: Platform.OS === "ios" && ads.allowTracking === false,
     keywords: ads.keywords,
   });
+  const initialLoadRequested = useRef(false);
+  const closeReloadRequested = useRef(false);
 
   useEffect(() => {
-    if (ads.allowTracking !== null && ads.interstitialId && !error) {
+    const canLoad =
+      consent.adsReady && consent.canRequestAds && !hasAdsRemoval && Boolean(ads.interstitialId);
+
+    if (!isClosed) {
+      closeReloadRequested.current = false;
+      if (!canLoad) {
+        initialLoadRequested.current = false;
+        return;
+      }
+      if (!initialLoadRequested.current && !error) {
+        initialLoadRequested.current = true;
+        load();
+      }
+      return;
+    }
+
+    if (canLoad && !closeReloadRequested.current) {
+      closeReloadRequested.current = true;
       load();
     }
-  }, [ads.allowTracking, ads.interstitialId, error, load]);
+  }, [
+    ads.interstitialId,
+    consent.adsReady,
+    consent.canRequestAds,
+    error,
+    hasAdsRemoval,
+    isClosed,
+    load,
+  ]);
 
   useEffect(() => {
-    if (isLoaded) {
-      show();
+    if (isClosed && navigate) {
+      navigate();
     }
-  }, [isLoaded, show]);
+  }, [isClosed, navigate]);
 
-  return { isLoaded, isClosed };
+  const showFullscreenAds = useCallback(() => {
+    if (!consent.adsReady || !consent.canRequestAds || hasAdsRemoval) {
+      navigate?.();
+    } else if (isLoaded) {
+      show();
+    } else {
+      navigate?.();
+    }
+  }, [consent.adsReady, consent.canRequestAds, hasAdsRemoval, isLoaded, navigate, show]);
+
+  return { isLoaded, isClosed, showFullscreenAds };
 }

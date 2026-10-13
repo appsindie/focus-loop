@@ -1,5 +1,6 @@
 import { Pressable, StyleSheet, Switch, Text, View } from "react-native";
 import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
+import { selectedStyle, selectedTextColor } from "../../../shared/ui/selectedStyle";
 import { SessionOutcome } from "../SessionLog";
 import { LoopStep } from "../loopPlan";
 import { t } from "../../../i18n";
@@ -86,14 +87,13 @@ export function CloseoutScreen({
               accessibilityState={{ selected }}
               style={({ pressed }) => [
                 styles.outcomeRow,
-                {
-                  borderColor: selected ? colors.ink : colors.rule,
-                  backgroundColor: selected ? colors.chip : "transparent",
-                },
+                selectedStyle(colors, selected),
                 pressed && { opacity: 0.55 },
               ]}
             >
-              <Text style={[styles.outcomeLabel, { color: colors.ink }]}>{label}</Text>
+              <Text style={[styles.outcomeLabel, { color: selectedTextColor(colors, selected) }]}>
+                {label}
+              </Text>
             </Pressable>
           );
         })}

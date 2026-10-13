@@ -1,0 +1,7 @@
+Picked up JAVA_TOOL_OPTIONS: --enable-native-access=ALL-UNNAMED
+Picked up JAVA_TOOL_OPTIONS: --enable-native-access=ALL-UNNAMED
+Running on iPhone 17 - iOS 26.5 - EDD9B083-63F1-44E6-9A7B-0A6964CC2561
+ > Flow att-prompt
+Launch app "com.appsindie.focusloop"... COMPLETED
+Assert that "Ask App Not to Track" is visible... COMPLETED
+Assert that "Ask App Not to Track" is visible... COMPLETED

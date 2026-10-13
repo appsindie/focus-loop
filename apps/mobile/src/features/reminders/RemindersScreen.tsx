@@ -12,6 +12,7 @@ import {
 import * as Notifications from "expo-notifications";
 import { PermissionStatus } from "expo-notifications";
 import { SafeAreaView } from "../../shared/ui/SafeAreaView";
+import { selectedStyle, selectedTextColor } from "../../shared/ui/selectedStyle";
 import { t } from "../../i18n";
 import { Palette, radii, spacing, typography } from "../../shared/theme";
 import { TABLET_PADDING, useIsTablet } from "../../shared/layout";
@@ -281,12 +282,11 @@ export function RemindersScreen({ colors, prefs, onChange, onBack }: RemindersSc
                     accessibilityState={{ selected: active }}
                     style={({ pressed }) => [
                       styles.chip,
-                      { borderColor: colors.rule },
-                      active && { backgroundColor: colors.chip, borderColor: colors.chip },
+                      selectedStyle(colors, active),
                       pressed && { opacity: 0.55 },
                     ]}
                   >
-                    <Text style={[styles.chipText, { color: active ? colors.ink : colors.faint }]}>
+                    <Text style={[styles.chipText, { color: selectedTextColor(colors, active) }]}>
                       {chipLetters[index] ?? ""}
                     </Text>
                   </Pressable>

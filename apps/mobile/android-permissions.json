@@ -1,4 +1,7 @@
 {
+  "android.permission.ACCESS_ADSERVICES_AD_ID": "Google Mobile Ads privacy-safe ad measurement (play-services-ads-api)",
+  "android.permission.ACCESS_ADSERVICES_ATTRIBUTION": "Google Mobile Ads attribution measurement (play-services-ads-api)",
+  "android.permission.ACCESS_ADSERVICES_TOPICS": "Google Mobile Ads Topics measurement (play-services-ads-api)",
   "android.permission.ACCESS_NETWORK_STATE": "AdMob/Firebase connectivity checks",
   "android.permission.INTERNET": "required — RN networking, AdMob, Firebase, expo",
   "android.permission.MODIFY_AUDIO_SETTINGS": "expo-audio focus/ducking control",
@@ -6,5 +9,8 @@
   "android.permission.RECEIVE_BOOT_COMPLETED": "expo-notifications reschedules reminders after reboot",
   "android.permission.VIBRATE": "focus-complete haptics (vibrationEnabled setting)",
   "android.permission.WAKE_LOCK": "keep-screen-on during focus (keepScreenOn setting)",
-  "com.android.vending.BILLING": "expo-iap subscriptions (Plus)"
+  "com.android.vending.BILLING": "expo-iap subscriptions (Plus)",
+  "com.appsindie.focusloop.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION": "AndroidX Core dynamic receiver protection (androidx.core:core)",
+  "com.google.android.gms.permission.AD_ID": "Google Mobile Ads (play-services-ads-api)",
+  "com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE": "Firebase Analytics install attribution (play-services-measurement)"
 }
