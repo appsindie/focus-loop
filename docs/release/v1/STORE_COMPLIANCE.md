@@ -149,8 +149,8 @@ approximate location **Required** (no in-app off switch beyond ATT/ad choices).
 
 ## Verdict
 
-- **Pass A**: run · 31 rows · passed 21 · failed 6 (2.1, 2.5.4-next-build, 5.1.1 contact, permissions, ATT E2E, UMP) · n/a 8
+- **Pass A**: run · 31 rows · passed 23 · failed 5 (2.1, 2.5.4-next-build, permissions, ATT E2E, UMP) · n/a 8
 - **Pass B**: run · 21 rows · matched 11 · drift 2 open (D1, D3) · 8 open console items (human)
 - **Drift items found / corrected**: 4 / 2
-- **Exceptions raised**: `EX-ump-consent`, `EX-permission-gate-drift`, `EX-att-e2e`, `EX-ios-background-audio-mode`, `EX-privacy-contact-email`, `EX-asc-iap-metadata`, `EX-asc-version-setup`, plus existing `EX-store-declarations`, `EX-data-safety`, `EX-console-products`
+- **Exceptions raised**: `EX-ump-consent`, `EX-permission-gate-drift`, `EX-att-e2e`, `EX-ios-background-audio-mode`, `EX-asc-iap-metadata`, `EX-asc-version-setup`, plus existing `EX-store-declarations`, `EX-data-safety`, `EX-console-products`
 - Store compliance verdict: **`not ready`** — UMP and the permission gate need code + new builds (vc9 / b22); console items are human.

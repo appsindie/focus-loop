@@ -67,7 +67,7 @@ Not applicable — v1 uses Expo managed workflow and Firebase/AdMob SaaS; no Ter
 
 | Item                             | Check                                                                   | Status            | Evidence                                                                                                                                                                            |
 | -------------------------------- | ----------------------------------------------------------------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Pass A — metadata                | `STORE_COMPLIANCE.md` Pass A                                            | fail → exceptions | 6 failing rows: EX-asc-iap-metadata (2.1), EX-ios-background-audio-mode (2.5.4), EX-privacy-contact-email (5.1.1), EX-permission-gate-drift, EX-att-e2e, EX-ump-consent             |
+| Pass A — metadata                | `STORE_COMPLIANCE.md` Pass A                                            | fail → exceptions | 5 failing rows: EX-asc-iap-metadata (2.1), EX-ios-background-audio-mode (2.5.4), EX-permission-gate-drift, EX-att-e2e, EX-ump-consent                                               |
 | Pass B — store verification      | `STORE_COMPLIANCE.md` Pass B, `asc-readback.json`, `play-readback.json` | fail → exceptions | Console forms not submitted (EX-store-declarations, EX-data-safety); ASC category + build not set (EX-asc-version-setup); Play yearly has no free-trial offer (EX-console-products) |
 | Both passes recorded             | `STORE_COMPLIANCE.md` committed                                         | pass              | this PR                                                                                                                                                                             |
 | Drift corrected                  | Drift table D1–D4                                                       | exception         | D2 (Play es-419) and D4 (declarations) corrected; D1 (ASC es-MX screenshots) → EX-tablet-screenshots, D3 (Play trial offer) → EX-console-products                                   |
@@ -111,5 +111,5 @@ Not applicable — v1 uses Expo managed workflow and Firebase/AdMob SaaS; no Ter
 
 Counts are of rows above; the verdict lives in `EXCEPTION_REPORT.md`.
 
-- **Checks run**: 46 · **pass**: 19 · **waived**: 3 (closed sponsor decisions 2026-10-04 — not a proceed-by-silence default) · **n/a**: 2 · **exception / fail→exception**: 22
+- **Checks run**: 46 · **pass**: 20 · **waived**: 3 (closed sponsor decisions 2026-10-04 — not a proceed-by-silence default) · **n/a**: 2 · **exception / fail→exception**: 21
 - **Exception IDs referenced**: see `EXCEPTION_REPORT.md` summary — every ID there matches `FACTORY_STATE.json` `open_exceptions[].id`

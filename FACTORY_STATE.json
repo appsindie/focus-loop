@@ -226,17 +226,6 @@
     },
     {
       "blocking": true,
-      "deadline": "2026-10-15",
-      "default_if_silent": "block",
-      "gate": 3,
-      "id": "EX-privacy-contact-email",
-      "owner": "justin.nguyen@appsindie.com",
-      "severity": "low",
-      "title": "Privacy policy page has no contact email",
-      "url": "docs/release/v1/EXCEPTION_REPORT.md"
-    },
-    {
-      "blocking": true,
       "deadline": "before iOS submit",
       "default_if_silent": "block",
       "gate": 3,

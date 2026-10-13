@@ -4,7 +4,7 @@
 
 **not ready** — v1.0.0, surfaces ios/android. Binaries under review: Android versionCode 8 (Play internal), iOS build 21 (TestFlight); fixes land in vc9 / b22.
 
-- Re-run 2026-10-13 (`READINESS.md`, `STORE_COMPLIANCE.md`, raw reads in `evidence/2026-10-13/`). Checks run 46 — pass 19, waived 3, n/a 2, exception 22.
+- Re-run 2026-10-13 (`READINESS.md`, `STORE_COMPLIANCE.md`, raw reads in `evidence/2026-10-13/`). Checks run 46 — pass 20, waived 3, n/a 2, exception 21.
 - Gate 2: **passed** 2026-10-05 (signed by the sponsor, `FACTORY_STATE.json` `gates.2`).
 - Gate 3 decision needed: **yes** — default if silent is **block**.
 - "Waived" below always means a **closed sponsor decision** recorded with date and quote; it is never a proceed-by-silence default.
@@ -269,7 +269,7 @@
 - **Default if you say nothing**: block Gate 3.
 - **Owner**: Devin
 - **Deadline**: 2026-10-15
-- **Status**: open
+- **Status**: resolved 2026-10-13 — false positive (see `evidence/2026-10-13/legal-pages.txt` correction)
 
 ### EX-asc-iap-metadata. ASC IAPs plus.yearly + plus.lifetime MISSING_METADATA
 

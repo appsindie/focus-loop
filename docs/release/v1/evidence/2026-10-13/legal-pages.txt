@@ -31,3 +31,8 @@ Privacy page text matches:
   - "You can export your session history to a CSV file yourself, or delete everything in the App's Settings → Delete all data."
 - Contact email: not mentioned
 - Raw HTML source search for email addresses and mailto links: no matches.
+
+## Correction 2026-10-13T08:09:58Z
+- Source: appsindie/appsindie-landing@cbb7704 `docs/legal/focus-loop/1. privacy.md` line 86, "## Contact Us": "please contact us at info@appsindie.com."
+- Live: `curl -sL https://www.appsindie.com/docs/legal/focus-loop/privacy/` shows the Contact Us section with "[email protected]" — Cloudflare Email Address Obfuscation rewrites the address in raw HTML and decodes it client-side, so the earlier raw-HTML search was a false negative. The address is visible to a browser user.
+- Gap that remains: the page says telemetry is "enabled by default" but does not name the in-app opt-out (Settings → "Crash & usage reports") — tracked for the landing update that adds UMP wording.
