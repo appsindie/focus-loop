@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect } from "react";
+import { useCallback, useContext, useEffect, useRef } from "react";
 import { AdsContext } from "@appsindie/react-native-ads";
 import { Platform } from "react-native";
 import { useInterstitialAd as useRNInterstitialAd } from "react-native-google-mobile-ads";
@@ -11,18 +11,39 @@ export function useInterstitialAd(hasAdsRemoval = false, navigate?: () => void) 
     requestNonPersonalizedAdsOnly: Platform.OS === "ios" && ads.allowTracking === false,
     keywords: ads.keywords,
   });
+  const initialLoadRequested = useRef(false);
+  const closeReloadRequested = useRef(false);
 
   useEffect(() => {
-    if (
-      consent.adsReady &&
-      consent.canRequestAds &&
-      !hasAdsRemoval &&
-      ads.interstitialId &&
-      !error
-    ) {
+    const canLoad =
+      consent.adsReady && consent.canRequestAds && !hasAdsRemoval && Boolean(ads.interstitialId);
+
+    if (!isClosed) {
+      closeReloadRequested.current = false;
+      if (!canLoad) {
+        initialLoadRequested.current = false;
+        return;
+      }
+      if (!initialLoadRequested.current && !error) {
+        initialLoadRequested.current = true;
+        load();
+      }
+      return;
+    }
+
+    if (canLoad && !closeReloadRequested.current) {
+      closeReloadRequested.current = true;
       load();
     }
-  }, [ads.interstitialId, consent.adsReady, consent.canRequestAds, error, hasAdsRemoval, load]);
+  }, [
+    ads.interstitialId,
+    consent.adsReady,
+    consent.canRequestAds,
+    error,
+    hasAdsRemoval,
+    isClosed,
+    load,
+  ]);
 
   useEffect(() => {
     if (isClosed && navigate) {
