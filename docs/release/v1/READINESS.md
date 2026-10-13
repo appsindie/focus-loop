@@ -12,8 +12,8 @@
 
 | Item                    | Check                                                            | Status    | Evidence                                                                                                                                                                                       |
 | ----------------------- | ---------------------------------------------------------------- | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| SIT regression          | QA plan run recorded in `docs/qa/`                               | exception | Sponsor waived device SIT 2026-10-04 (EX-native-sit-waiver), unsigned → EX-waiver-signature. Web-preview E2E + iOS Simulator pass retained as partial evidence.                                |
-| Failure-mode cases      | `docs/qa/` failure-mode suite results                            | exception | Sponsor waived 2026-10-04 (EX-failure-mode-waiver), unsigned → EX-waiver-signature. Cancel regression, ATT-deny and paywall fallback verified on simulator.                                    |
+| SIT regression          | QA plan run recorded in `docs/qa/`                               | waived    | Sponsor waived device SIT 2026-10-04 (EX-native-sit-waiver), signed by sponsor 2026-10-13 ("ko cần sít"). Web-preview E2E + iOS Simulator pass retained as partial evidence.                   |
+| Failure-mode cases      | `docs/qa/` failure-mode suite results                            | waived    | Sponsor waived 2026-10-04 (EX-failure-mode-waiver), signed by sponsor 2026-10-13 ("ko cần sít"). Cancel regression, ATT-deny and paywall fallback verified on simulator.                       |
 | Spec completeness       | `PRODUCT_SPEC_LIVE.md` screens + rules mapped to code and a test | exception | Phone journeys J1–J10 mapped at Gate 2 (passed 2026-10-05). Tablet layouts T01–T06 shipped (`supportsTablet: true`, orientation `default`) but not verified on a tablet device → EX-tablet-e2e |
 | E2E automation coverage | `docs/qa/LIVE_E2E_INDEX.md`                                      | exception | ATT prompt not asserted (no hard `assertVisible` flow) → EX-att-e2e; no tablet flows → EX-tablet-e2e                                                                                           |
 | Open defects            | Defect list for this version                                     | pass      | No open defects. Gate 2 exception E1 deferred/closed: https://github.com/appsindie/focus-loop/pull/1#issuecomment-5211987117.                                                                  |
@@ -111,5 +111,5 @@ Not applicable — v1 uses Expo managed workflow and Firebase/AdMob SaaS; no Ter
 
 Counts are of rows above; the verdict lives in `EXCEPTION_REPORT.md`.
 
-- **Checks run**: 46 · **pass**: 19 · **n/a**: 2 · **exception / fail→exception**: 25 (waived rows count as exceptions until the waivers are signed)
+- **Checks run**: 46 · **pass**: 19 · **waived**: 2 · **n/a**: 2 · **exception / fail→exception**: 23
 - **Exception IDs referenced**: see `EXCEPTION_REPORT.md` summary — every ID there matches `FACTORY_STATE.json` `open_exceptions[].id`

@@ -14,7 +14,7 @@ stored pref → `true`) and the user can turn it off in Settings → "Crash & us
 reports"; the choice persists under `focus-loop/diagnostics-consent`. It does
 **not** gate AdMob. So: crash logs and diagnostics = Optional (user can opt
 out); app interactions and device IDs = Required, because AdMob collects them
-regardless of the toggle (only the Firebase share of them stops). There is no opt-in screen; whether EEA/UK should get opt-in for Analytics is the open decision EX-analytics-consent in `EXCEPTION_REPORT.md` (if option A ships, these answers stay the same).
+regardless of the toggle (only the Firebase share of them stops). There is no opt-in screen; the sponsor accepted this default-ON + opt-out model for EEA/UK too on 2026-10-13 (EX-analytics-consent, option B), so these answers are final.
 
 App identity: `com.appsindie.focusloop` (iOS + Android), ASC app `6818991496`,
 EAS `592916ef-5e3c-4257-b853-cbcf0d21aa78`, AdMob

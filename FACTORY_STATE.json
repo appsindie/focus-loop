@@ -289,28 +289,6 @@
       "severity": "medium",
       "title": "28 outdated deps not triaged by major; npm audit 1 critical (shell-quote, dev-only path) + 67 high untriaged",
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
-    },
-    {
-      "blocking": true,
-      "deadline": "2026-10-15",
-      "default_if_silent": "block",
-      "gate": 3,
-      "id": "EX-analytics-consent",
-      "owner": "justin.nguyen@appsindie.com",
-      "severity": "high",
-      "title": "Firebase Analytics runs before any consent in EEA/UK",
-      "url": "docs/release/v1/EXCEPTION_REPORT.md"
-    },
-    {
-      "blocking": true,
-      "deadline": "2026-10-17",
-      "default_if_silent": "block",
-      "gate": 3,
-      "id": "EX-waiver-signature",
-      "owner": "justin.nguyen@appsindie.com",
-      "severity": "high",
-      "title": "EX-native-sit-waiver / EX-failure-mode-waiver not signed by the sponsor",
-      "url": "docs/release/v1/EXCEPTION_REPORT.md"
     }
   ],
   "open_pr": "https://github.com/appsindie/focus-loop/pull/25",
