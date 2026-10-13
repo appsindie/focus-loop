@@ -368,7 +368,7 @@ Every open item has default **block**; Devin implements the code/asset items, th
 - **Default if you say nothing**: stays open and blocks Gate 3.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-20
-- **Status**: open (non-blocking)
+- **Status**: open (blocks Gate 3 pending Justin's acceptance)
 
 ## Resolved / non-gate items
 

@@ -29,6 +29,9 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
 - System bars follow the app's Appearance; green Break uses light icons. On Android SDK 30–34, the
   `expo-navigation-bar` patch also sets the platform appearance flag because, after React Native's `StatusBarModule`
   takes control, the compat call only writes a legacy system-UI bit.
+- The Kotlin patch reaches the APK only because `expo-navigation-bar` is listed in
+  `apps/mobile/package.json`'s `expo.autolinking.android.buildFromSource`; otherwise Expo links a prebuilt AAR.
+  `apps/mobile/src/shared/nativePatches.test.ts` enforces this.
 - Known limitation: on Android 15 with 3-button navigation, the launcher Taskbar ignores the app's light-nav-bar
   icon-colour flag. When the app and phone themes differ, its buttons follow the phone theme (1.7:1 contrast).
   Android 16 and gesture navigation are unaffected. Following the system theme instead measured 2.1:1, still below

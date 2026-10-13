@@ -225,7 +225,7 @@
       "url": "docs/release/v1/EXCEPTION_REPORT.md"
     },
     {
-      "blocking": false,
+      "blocking": true,
       "deadline": "2026-10-20",
       "default_if_silent": "block",
       "gate": 3,
@@ -308,5 +308,5 @@
   "product": "focus-loop",
   "repo": "appsindie/focus-loop",
   "schema_version": "1",
-  "updated_at": "2026-10-13T13:31:26Z"
+  "updated_at": "2026-10-13T14:03:00Z"
 }
