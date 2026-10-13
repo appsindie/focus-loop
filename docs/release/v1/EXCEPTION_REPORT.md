@@ -38,7 +38,7 @@ Every open item has default **block**; Devin implements the code/asset items, th
 | EX-permission-gate-drift       | AAB has 16 permissions, allowlist 8; CI gate blind to injected ones                               | Merged-manifest permission audit         | justin.nguyen@appsindie.com | 2026-10-15 | block             |
 | EX-att-e2e                     | ATT prompt not asserted by an E2E flow                                                            | Ads (ATT), E2E coverage                  | justin.nguyen@appsindie.com | 2026-10-15 | block             |
 | EX-ios-background-audio-mode   | UIBackgroundModes=audio declared but unused (2.5.4)                                               | Pass A 2.5.4                             | justin.nguyen@appsindie.com | 2026-10-15 | block             |
-| EX-android15-taskbar-nav-icons | Android 15 three-button Taskbar icon contrast                                                     | Android system bars                      | justin.nguyen@appsindie.com | 2026-10-20 | block             |
+| EX-android15-taskbar-nav-icons | Android 15 three-button Taskbar icon contrast — **resolved 2026-10-13: accepted**                 | Android system bars                      | justin.nguyen@appsindie.com | —          | done              |
 | EX-privacy-contact-email       | Privacy page contact email — **resolved 2026-10-13 (false positive)**                             | Legal — Privacy Policy                   | justin.nguyen@appsindie.com | —          | done              |
 | EX-asc-iap-metadata            | ASC IAPs MISSING_METADATA                                                                         | Pass A 2.1, Pass B IAP                   | justin.nguyen@appsindie.com | 2026-10-17 | block             |
 | EX-asc-version-setup           | ASC 1.0: no category or build; es-MX screenshots verified                                         | Pass B ASC                               | justin.nguyen@appsindie.com | 2026-10-17 | block             |
@@ -224,6 +224,7 @@ Every open item has default **block**; Devin implements the code/asset items, th
 | AdMob SDK collecting device/usage data per Google/Apple policies                                                 | justin.nguyen@appsindie.com                                               | 2026-08-08 | Before store submission (`docs/security/ads-integration-security-review.md` — predates production AdMob IDs and `write-store-credentials.sh`; refresh before production promotion if the ad config changes again) |
 | No pre-release device SIT (EX-native-sit-waiver/EX-failure-mode-waiver waiver)                                   | signed 2026-10-13 ("ko cần sít") — decided by justin.nguyen@appsindie.com | 2026-10-04 | Internal testing before any production promotion                                                                                                                                                                  |
 | Firebase Analytics/Crashlytics default-ON before consent in EEA/UK, opt-out only (EX-analytics-consent option B) | justin.nguyen@appsindie.com                                               | 2026-10-13 | regulator/store flag, or the 1.1 privacy review                                                                                                                                                                   |
+| Android 15 3-button nav: icon contrast ~1.7:1 when app/phone themes differ (Taskbar ignores the app flag)      | justin.nguyen@appsindie.com                                               | 2026-10-13 | Android 16 devices in the field, or a user complaint about nav-button visibility                                                                                                                                  |
 
 ## After the release
 
@@ -372,7 +373,7 @@ Every open item has default **block**; Devin implements the code/asset items, th
 - **Default if you say nothing**: stays open and blocks Gate 3.
 - **Owner**: justin.nguyen@appsindie.com
 - **Deadline**: 2026-10-20
-- **Status**: open (blocks Gate 3 pending Justin's acceptance)
+- **Status**: resolved 2026-10-13 — sponsor accepted option A ("yess" in reply to the offered "accept EX-android15" prompt): the scoped Android 15 3-button Taskbar limitation ships as-is; Android 14/16 and gesture navigation verified unaffected (see Accepted risks)
 
 ## Resolved / non-gate items
 
