@@ -1,0 +1,349 @@
+{
+  "_evidence": {
+    "utcTimestamp": "2026-10-13T07:50:34.346Z",
+    "exactCommand": "node scripts/store-readback/play-read.mjs > docs/release/v1/evidence/2026-10-13/play-readback.json"
+  },
+  "listings": [
+    {
+      "language": "en-US",
+      "title": "Pomodoro Timer: Focus Loop",
+      "shortDescription": "Pomodoro timer for ADHD minds — one-tap focus loops, weekly goals, no account",
+      "fullDescription": "Focus Loop is a pomodoro timer and focus timer built for ADHD minds and knowledge workers — start a deep work session in one tap and let the app run the whole focus–break loop. No account, no signup, no setup.\n\n  HOW THE LOOP WORKS\n  Tap once and a focus session starts on the Disc. When the focus timer ends, your break starts automatically — then the next session follows. It's the pomodoro technique (the tomato timer method) minus the fiddling: a work timer and break timer in one continuous loop.\n\n  MADE FOR ADHD FOCUS\n  People looking for an adhd focus app or adhd timer don't need another streak to break. Focus Loop uses weekly goals instead — aim for 4 focus days a week, and a rough day doesn't wipe your progress. Park a session, end it early, it still counts. Gentle haptic and sound transitions mark the boundary between focus and break so time stops evaporating.\n\n  A STUDY TIMER THAT STAYS WITH YOU\n  Use it as a study timer for exam prep, a deep work timer for writing and coding, or a concentration timer for reading. Start sessions from the home-screen widget, keep the countdown visible with Live Activity on the lock screen, and glance at progress without opening the app.\n\n  HONEST PROGRESS, NOT STREAK SHAME\n  The weekly view shows focus days, sessions and total focus time — real numbers you can share as a card or review with a coach. It's a productivity timer that treats a missed day as a day, not a failure.\n\n  FEATURES\n  • One-tap pomodoro timer with automatic break loop\n  • Home-screen widget and lock-screen Live Activity\n  • Weekly focus goal — forgiving by design\n  • Session history and weekly focus stats\n  • Focus-day streaks that don't punish rest days\n  • Haptics and gentle sounds at phase changes\n  • Dark and light themes\n  • Works offline, no account required\n  • Free with optional Plus (yearly or lifetime)\n\n  Built for students, remote workers and ADHD adults who want a focus app that removes friction instead of adding it."
+    },
+    {
+      "language": "fr-FR",
+      "title": "Pomodoro Timer: Focus Loop",
+      "shortDescription": "Pomodoro pour esprits TDAH — focus en un toucher, objectifs hebdo, sans compte",
+      "fullDescription": "Focus Loop est un minuteur pomodoro conçu pour les esprits TDAH et les travailleurs du savoir : lancez une session de deep work en un toucher et l'app gère tout le cycle concentration–pause. Sans compte, sans réglages.\n\nCOMMENT ÇA MARCHE\nUn toucher et le minuteur démarre. La concentration terminée, la pause s'enchaîne toute seule — puis le cycle continue. La technique pomodoro sans bidouillage.\n\nPENSÉ POUR LE TDAH\nQui cherche une app de concentration TDAH n'a pas besoin d'une énième série à briser. Focus Loop mise sur des objectifs hebdo : 4 jours de focus par semaine, et une mauvaise journée n'efface rien. Arrêter tôt compte aussi.\n\nMINUTEUR POUR ÉTUDE ET TRAVAIL\nMinuteur d'étude pour les examens, minuteur deep work pour écrire ou coder, minuteur de concentration pour lire. Lancez depuis le widget, le temps reste visible sur l'écran verrouillé.\n\n• Pomodoro en un toucher, pauses automatiques\n• Widget et Live Activity sur écran verrouillé\n• Objectif hebdo qui pardonne une mauvaise journée\n• Historique et stats hebdo\n• Thèmes clair et sombre, marche hors ligne\n• Gratuit, Plus en option (annuel ou à vie)"
+    },
+    {
+      "language": "es-419",
+      "title": "Pomodoro Timer: Focus Loop",
+      "shortDescription": "Pomodoro para mentes TDAH — enfoque de un toque, metas semanales, sin cuenta",
+      "fullDescription": "Focus Loop es un temporizador pomodoro pensado para mentes TDAH y trabajadores del conocimiento: empieza una sesión de deep work con un toque y la app corre todo el ciclo enfoque–descanso. Sin cuenta, sin configuración.\n\nCÓMO FUNCIONA\nUn toque y el temporizador arranca. Al terminar el enfoque, el descanso empieza solo — y el ciclo continúa. La técnica pomodoro sin ajustes.\n\nHECHO PARA TDAH\nQuien busca una app de enfoque para TDAH no necesita otra racha que romper. Focus Loop usa metas semanales: 4 días de enfoque por semana, y un mal día no borra tu progreso. Pausar o terminar antes también cuenta.\n\nTEMPORIZADOR DE ESTUDIO Y TRABAJO\nÚsalo como temporizador de estudio, timer de deep work o temporizador de concentración. Empieza desde el widget y mira el tiempo sin abrir la app.\n\n• Pomodoro de un toque con descansos automáticos\n• Widget y Live Activity en pantalla de bloqueo\n• Meta semanal que perdona un mal día\n• Historial y estadísticas semanales\n• Temas claro y oscuro, funciona offline\n• Gratis con Plus opcional (anual o de por vida)"
+    },
+    {
+      "language": "ar",
+      "title": "بومودورو: Focus Loop",
+      "shortDescription": "بومودورو لعقول ADHD — تركيز بلمسة واحدة، أهداف أسبوعية، بدون حساب",
+      "fullDescription": "Focus Loop مؤقت بومودورو مصمم لعقول ADHD والعاملين المعرفيين: ابدأ جلسة عمل عميق بلمسة واحدة ودع التطبيق يدير دورة التركيز–الاستراحة كاملة. بدون حساب وبدون إعداد.\n\nكيف تعمل الدورة\nلمسة واحدة ويبدأ المؤقت. عند انتهاء التركيز تبدأ الاستراحة تلقائياً ثم تستمر الدورة. تقنية بومودورو بلا عناء.\n\nمصمم لـ ADHD\nمن يبحث عن تطبيق تركيز لـ ADHD لا يحتاج سلسلة أخرى تنقطع. Focus Loop يعتمد أهدافاً أسبوعية: 4 أيام تركيز في الأسبوع، واليوم السيئ لا يمسح تقدمك. الإنهاء المبكر يُحسب أيضاً.\n\nمؤقت للدراسة والعمل\nاستخدمه مؤقتاً للدراسة قبل الامتحانات، أو مؤقت عمل عميق للكتابة والبرمجة، أو مؤقت تركيز للقراءة. ابدأ من الودجة والوقت ظاهر على شاشة القفل.\n\n• بومودورو بلمسة واحدة واستراحات تلقائية\n• ودجة الشاشة الرئيسية + Live Activity على شاشة القفل\n• هدف أسبوعي يسامح اليوم السيئ\n• سجل الجلسات وإحصاءات أسبوعية\n• ثيم فاتح وداكن، يعمل دون اتصال\n• مجاني مع Plus اختياري (سنوي أو مدى الحياة)"
+    },
+    {
+      "language": "es-ES",
+      "title": "Pomodoro Timer: Focus Loop",
+      "shortDescription": "Pomodoro para mentes TDAH — enfoque de un toque, metas semanales, sin cuenta",
+      "fullDescription": "Focus Loop es un temporizador pomodoro pensado para mentes TDAH y trabajadores del conocimiento: empieza una sesión de deep work con un toque y la app corre todo el ciclo enfoque–descanso. Sin cuenta, sin configuración.\n\nCÓMO FUNCIONA\nUn toque y el temporizador arranca. Al terminar el enfoque, el descanso empieza solo — y el ciclo continúa. La técnica pomodoro sin ajustes.\n\nHECHO PARA TDAH\nQuien busca una app de enfoque para TDAH no necesita otra racha que romper. Focus Loop usa metas semanales: 4 días de enfoque por semana, y un mal día no borra tu progreso. Pausar o terminar antes también cuenta.\n\nTEMPORIZADOR DE ESTUDIO Y TRABAJO\nÚsalo como temporizador de estudio, timer de deep work o temporizador de concentración. Empieza desde el widget y mira el tiempo sin abrir la app.\n\n• Pomodoro de un toque con descansos automáticos\n• Widget y Live Activity en pantalla de bloqueo\n• Meta semanal que perdona un mal día\n• Historial y estadísticas semanales\n• Temas claro y oscuro, funciona offline\n• Gratis con Plus opcional (anual o de por vida)"
+    },
+    {
+      "language": "de-DE",
+      "title": "Pomodoro Timer: Focus Loop",
+      "shortDescription": "Pomodoro für ADHD-Köpfe — Fokus per Tipp, Wochenziele, kein Konto",
+      "fullDescription": "Focus Loop ist ein Pomodoro-Timer für ADHD-Köpfe und Wissensarbeiter: starte eine Deep-Work-Session mit einem Tipp und die App führt die ganze Fokus–Pausen-Schleife. Kein Konto, keine Einrichtung.\n\nSO FUNKTIONIERT DIE SCHLEIFE\nEin Tipp und der Timer läuft. Endet die Fokusphase, startet die Pause automatisch — und die Schleife geht weiter. Die Pomodoro-Technik ohne Gefrickel.\n\nGEBAUT FÜR ADHD\nWer eine ADHD-Fokus-App sucht, braucht keine weitere Streak, die er bricht. Focus Loop nutzt Wochenziele: 4 Fokustage pro Woche, und ein schlechter Tag löscht deinen Fortschritt nicht. Früher aufhören zählt trotzdem.\n\nTIMER FÜR ARBEIT UND LERNEN\nAls Lern-Timer für Klausuren, Deep-Work-Timer zum Schreiben und Coden oder Konzentrations-Timer zum Lesen. Sessions per Widget starten, die Zeit läuft sichtbar im Sperrbildschirm.\n\n• Ein-Tipp-Pomodoro mit automatischen Pausen\n• Widget und Live Activity im Sperrbildschirm\n• Wochenziel, das einen schlechten Tag verzeiht\n• Verlauf und Wochenstatistik\n• Helle und dunkle Themes, offline nutzbar\n• Kostenlos, Plus optional (jährlich oder einmalig)"
+    },
+    {
+      "language": "hi-IN",
+      "title": "पोमोडोरो: Focus Loop",
+      "shortDescription": "ADHD के लिए पोमोडोरो — एक-टैप फोकस, साप्ताहिक लक्ष्य, कोई अकाउंट नहीं",
+      "fullDescription": "Focus Loop ADHD दिमागों और नॉलेज वर्कर्स के लिए बना पोमोडोरो टाइमर है: एक टैप में deep work शुरू करें और पूरा फोकस–ब्रेक लूप ऐप चलाएगा. न अकाउंट, न सेटअप.\n\nलूप कैसे चलता है\nएक टैप और फोकस टाइमर शुरू। फोकस खत्म होते ही ब्रेक अपने आप शुरू — फिर लूप चलता रहता है। बिना झंझट की पोमोडोरो तकनीक।\n\nADHD के लिए बनाया गया\nADHD के लिए फोकस ऐप खोजने वालों को टूटने वाली एक और स्ट्रीक नहीं चाहिए। Focus Loop साप्ताहिक लक्ष्य देता है: हफ्ते में 4 फोकस दिन, एक बुरा दिन आपकी प्रगति नहीं मिटाता। जल्दी खत्म करना भी गिना जाता है।\n\nपढ़ाई और काम का टाइमर\nपरीक्षा के लिए पढ़ाई का टाइमर, लिखने-कोडिंग के लिए deep work टाइमर, या पढ़ने के लिए फोकस टाइमर की तरह इस्तेमाल करें। विजेट से शुरू करें, समय लॉक स्क्रीन पर दिखता रहता है।\n\n• एक-टैप पोमोडोरो, ऑटो ब्रेक\n• होम-स्क्रीन विजेट + लॉक स्क्रीन Live Activity\n• बुरे दिन को माफ करने वाला साप्ताहिक लक्ष्य\n• इतिहास और साप्ताहिक आँकड़े\n• लाइट/डार्क थीम, ऑफलाइन चलता है\n• मुफ़्त, Plus वैकल्पिक (सालाना या लाइफ़टाइम)"
+    },
+    {
+      "language": "it-IT",
+      "title": "Pomodoro Timer: Focus Loop",
+      "shortDescription": "Pomodoro per menti ADHD — focus in un tocco, obiettivi settimanali, no account",
+      "fullDescription": "Focus Loop è un timer pomodoro pensato per menti ADHD e knowledge worker: avvia una sessione di deep work con un tocco e l'app gestisce tutto il ciclo concentrazione–pausa. Nessun account, nessuna configurazione.\n\nCOME FUNZIONA\nUn tocco e il timer parte. Finita la concentrazione, la pausa parte da sola — e il ciclo continua. La tecnica pomodoro senza smanettamenti.\n\nFATTO PER L'ADHD\nChi cerca un'app di concentrazione per l'ADHD non ha bisogno di un'altra streak da spezzare. Focus Loop usa obiettivi settimanali: 4 giorni di focus a settimana, e una brutta giornata non azzera nulla. Finire prima conta lo stesso.\n\nTIMER PER STUDIO E LAVORO\nTimer da studio per gli esami, timer deep work per scrivere e programmare, timer di concentrazione per leggere. Si avvia dal widget, il tempo resta in lock screen.\n\n• Pomodoro in un tocco con pause automatiche\n• Widget e Live Activity in lock screen\n• Obiettivo settimanale che perdona\n• Cronologia e statistiche settimanali\n• Temi chiaro e scuro, funziona offline\n• Gratis, Plus opzionale (annuale o a vita)"
+    },
+    {
+      "language": "id",
+      "title": "Pomodoro Timer: Focus Loop",
+      "shortDescription": "Pomodoro untuk ADHD — fokus satu ketukan, target mingguan, tanpa akun",
+      "fullDescription": "Focus Loop adalah timer pomodoro untuk pikiran ADHD dan pekerja pengetahuan: mulai sesi deep work dengan satu ketukan dan biarkan aplikasi menjalankan seluruh siklus fokus–jeda. Tanpa akun, tanpa pengaturan.\n\nCARA KERJANYA\nSatu ketukan dan timer berjalan. Saat fokus selesai, jeda mulai otomatis — siklus berlanjut. Teknik pomodoro tanpa ribet.\n\nUNTUK ADHD\nPencari aplikasi fokus ADHD tak butuh streak lain untuk patah. Focus Loop memakai target mingguan: 4 hari fokus seminggu, dan hari buruk tak menghapus progresmu. Berhenti lebih awal tetap dihitung.\n\nTIMER BELAJAR DAN KERJA\nPakai sebagai timer belajar, timer deep work menulis dan coding, atau timer konsentrasi membaca. Mulai dari widget, waktu terlihat di lockscreen.\n\n• Pomodoro satu ketukan, jeda otomatis\n• Widget layar utama + Live Activity di lockscreen\n• Target mingguan yang memaafkan\n• Riwayat dan statistik mingguan\n• Tema terang/gelap, berfungsi offline\n• Gratis, Plus opsional (tahunan atau seumur hidup)"
+    },
+    {
+      "language": "ja-JP",
+      "title": "ポモドーロ: Focus Loop",
+      "shortDescription": "ADHDのためのポモドーロ — ワンタップ集中、週間ゴール、アカウント不要",
+      "fullDescription": "Focus LoopはADHDの人とナレッジワーカーのためのポモドーロタイマー。ワンタップでディープワークを始め、集中と休憩のループをアプリがまわします。アカウントも設定も不要。\n\nループのしくみ\nタップするだけで集中タイマーがスタート。集中が終われば休憩が自動ではじまり、また次の集中へ。面倒な設定のないポモドーロテクニックです。\n\nADHDのために\n集中アプリを探す人に、また切れてしまうストリークはいりません。Focus Loopは週間ゴール制 — 週4日の集中を目指し、悪い一日があってもリセットされません。早めに終えてもカウントされます。\n\n勉強・作業タイマーとして\n試験勉強のタイマー、執筆やコーディングのディープワークタイマー、読書の集中タイマーに。ウィジェットから開始でき、残り時間はロック画面に表示されます。\n\n・ワンタップのポモドーロと自動休憩\n・ホーム画面ウィジェット＋ロック画面Live Activity\n・悪い日をゆるす週間ゴール\n・履歴と週間レポート\n・ダーク/ライトテーマ、オフライン対応\n・無料、Plusは年額または買い切り"
+    },
+    {
+      "language": "ko-KR",
+      "title": "뽀모도로: Focus Loop",
+      "shortDescription": "ADHD를 위한 뽀모도로 — 탭 한 번 집중, 주간 목표, 계정 없이",
+      "fullDescription": "Focus Loop는 ADHD인 사람과 지식 노동자를 위한 뽀모도로 타이머입니다. 한 번의 탭으로 딥워크를 시작하고, 집중–휴식 루프는 앱이 돌립니다. 계정도 설정도 필요 없습니다.\n\n루프는 이렇게 돌아가요\n탭 한 번이면 집중 타이머가 시작됩니다. 집중이 끝나면 휴식이 자동으로 시작되고 다시 루프가 이어집니다. 복잡한 설정 없는 뽀모도로 기법입니다.\n\nADHD를 위한 설계\n집중 앱을 찾는 사람에게 또 깨질 스트릭은 필요 없습니다. Focus Loop는 주간 목표 — 주 4일 집중을 목표로 하고, 힘든 하루가 있어도 리셋되지 않습니다. 일찍 끝내도 인정됩니다.\n\n공부·작업 타이머\n시험 공부 타이머, 글쓰기와 코딩의 딥워크 타이머, 독서 집중 타이머로 쓰세요. 위젯에서 바로 시작하고 남은 시간은 잠금화면에 표시됩니다.\n\n· 탭 한 번의 뽀모도로와 자동 휴식\n· 홈 화면 위젯 + 잠금화면 Live Activity\n· 나쁜 날도 용서하는 주간 목표\n· 기록과 주간 리포트\n· 다크/라이트 테마, 오프라인 지원\n· 무료, Plus는 연간 또는 평생"
+    },
+    {
+      "language": "nl-NL",
+      "title": "Pomodoro Timer: Focus Loop",
+      "shortDescription": "Pomodoro voor ADHD — focus met één tik, weekdoelen, geen account",
+      "fullDescription": "Focus Loop is een pomodoro-timer voor ADHD-hoofden en kenniswerkers: start een deep-work-sessie met één tik en de app draait de hele focus–pauze-cyclus. Geen account, geen instellingen.\n\nHOE DE CYCLUS WERKT\nEén tik en de timer loopt. Is de focus voorbij, dan start de pauze vanzelf — en de cyclus gaat door. De pomodorotechniek zonder gedoe.\n\nGEBOUWD VOOR ADHD\nWie een focus-app voor ADHD zoekt, heeft geen nieuwe streak nodig om te breken. Focus Loop werkt met weekdoelen: 4 focusdagen per week, en een slechte dag wist je voortgang niet. Eerder stoppen telt ook.\n\nTIMER VOOR STUDIE EN WERK\nGebruik het als studietimer voor tentamens, deep-work-timer voor schrijven en coderen of concentratietimer voor lezen. Start vanaf de widget, de tijd blijft op je lockscreen zichtbaar.\n\n• Pomodoro met één tik, automatische pauzes\n• Widget op het beginscherm + Live Activity\n• Weekdoel dat een slechte dag vergeeft\n• Geschiedenis en weekstatistieken\n• Licht en donker thema, werkt offline\n• Gratis, Plus optioneel (per jaar of lifetime)"
+    },
+    {
+      "language": "pl-PL",
+      "title": "Pomodoro Timer: Focus Loop",
+      "shortDescription": "Pomodoro dla ADHD — skupienie jednym dotknięciem, cele tygodniowe, bez konta",
+      "fullDescription": "Focus Loop to timer pomodoro dla osób z ADHD i pracowników umysłowych: zacznij sesję deep work jednym dotknięciem, a cały cykl skupienie–przerwa poprowadzi aplikacja. Bez konta, bez konfiguracji.\n\nJAK DZIAŁA CYKL\nJedno dotknięcie i timer rusza. Gdy skupienie się kończy, przerwa startuje automatycznie — i cykl leci dalej. Technika pomodoro bez kombinowania.\n\nDLA ADHD\nSzukający aplikacji do skupienia przy ADHD nie potrzebuje kolejnej serii do przerwania. Focus Loop stawia na tygodniowe cele: 4 dni skupienia w tygodniu, a zły dzień nie kasuje postępu. Wcześniejsze zakończenie też się liczy.\n\nTIMER DO NAUKI I PRACY\nJako timer nauki przed egzaminami, timer deep work do pisania i kodu albo timer koncentracji do czytania. Start z widżetu, czas widać na ekranie blokady.\n\n• Pomodoro jednym dotknięciem, auto-przerwy\n• Widżet na ekranie głównym + Live Activity\n• Tygodniowy cel, który wybacza\n• Historia i tygodniowe statystyki\n• Jasny i ciemny motyw, działa offline\n• Za darmo, Plus opcjonalny (rocznie lub dożywotnio)"
+    },
+    {
+      "language": "pt-BR",
+      "title": "Pomodoro Timer: Focus Loop",
+      "shortDescription": "Pomodoro para mentes TDAH — foco de um toque, metas semanais, sem conta",
+      "fullDescription": "Focus Loop é um timer pomodoro feito para mentes TDAH e profissionais do conhecimento: comece uma sessão de deep work com um toque e o app cuida de todo o ciclo foco–pausa. Sem conta, sem configuração.\n\nCOMO FUNCIONA\nUm toque e o timer começa. Quando o foco termina, a pausa começa sozinha — e o ciclo continua. A técnica pomodoro sem complicação.\n\nFEITO PARA TDAH\nQuem procura um app de foco para TDAH não precisa de mais uma sequência para quebrar. O Focus Loop usa metas semanais: 4 dias de foco por semana, e um dia ruim não apaga seu progresso. Parar antes também conta.\n\nTIMER DE ESTUDO E TRABALHO\nUse como timer de estudo, timer de deep work ou timer de concentração. Comece pelo widget e acompanhe o tempo sem abrir o app.\n\n• Pomodoro de um toque com pausas automáticas\n• Widget e Live Activity na tela de bloqueio\n• Meta semanal que perdoa um dia ruim\n• Histórico e estatísticas semanais\n• Temas claro e escuro, funciona offline\n• Grátis com Plus opcional (anual ou vitalício)"
+    },
+    {
+      "language": "ru-RU",
+      "title": "Помодоро: Focus Loop",
+      "shortDescription": "Помодоро для СДВГ — фокус в одно касание, недельные цели, без аккаунта",
+      "fullDescription": "Focus Loop — помодоро-таймер для людей с СДВГ и работников умственного труда: начните глубокую работу в одно касание, а цикл фокус–перерыв приложение поведёт само. Без аккаунта и настроек.\n\nКАК РАБОТАЕТ ЦИКЛ\nОдно касание — и таймер фокуса запущен. Когда фокус заканчивается, перерыв начинается сам, затем цикл продолжается. Техника помодоро без возни.\n\nДЛЯ СДВГ\nТем, кто ищет приложение для фокуса при СДВГ, не нужна ещё одна серия, которую обидно сорвать. Focus Loop работает с недельными целями: 4 фокус-дня в неделю, и плохой день не обнуляет прогресс. Закончить раньше — тоже считается.\n\nТАЙМЕР ДЛЯ УЧЁБЫ И РАБОТЫ\nКак таймер учёбы перед экзаменами, таймер глубокой работы для письма и кода или таймер концентрации для чтения. Запуск из виджета, время видно на экране блокировки.\n\n• Помодоро в одно касание с авто-перерывами\n• Виджет и Live Activity на экране блокировки\n• Недельная цель, которая прощает\n• История и недельная статистика\n• Светлая и тёмная темы, работает офлайн\n• Бесплатно, Plus по желанию (год или навсегда)"
+    },
+    {
+      "language": "th",
+      "title": "โพโมโดโร: Focus Loop",
+      "shortDescription": "โพโมโดโรสำหรับ ADHD — แตะครั้งเดียวเข้าสมาธิ เป้าหมายรายสัปดาห์ ไม่ต้องมีบัญชี",
+      "fullDescription": "Focus Loop คือตัวจับเวลาโพโมโดโรสำหรับคน ADHD และนักทำงานสมอง: แตะครั้งเดียวเริ่มเซสชั่น deep work แล้วแอปจะหมุนลูปสมาธิ–พักให้เอง ไม่ต้องมีบัญชี ไม่ต้องตั้งค่า\n\nลูปทำงานยังไง\nแตะครั้งเดียวตัวจับเวลาเริ่มทันที หมดเวลาสมาธิก็เข้าพักอัตโนมัติ แล้วลูปก็ไปต่อ — เทคนิคโพโมโดโรแบบไม่ต้องปรับอะไร\n\nออกแบบมาเพื่อ ADHD\nคนที่หาแอปสมาธิสำหรับ ADHD ไม่ต้องการสตรีคอีกอันที่ต้องมาหัก Focus Loop ใช้เป้าหมายรายสัปดาห์: ตั้งเป้าสมาธิ 4 วันต่อสัปดาห์ วันที่แย่ไม่ลบความคืบหน้า หยุดก่อนก็นับให้\n\nตัวจับเวลาเรียนและงาน\nใช้เป็นตัวจับเวลาอ่านหนังสือสอบ ตัวจับเวลา deep work เขียนและโค้ด หรือตัวจับเวลาสมาธิอ่านหนังสือ เริ่มจากวิดเจ็ตได้ เวลาอยู่บนหน้าจอล็อกเสมอ\n\n• โพโมโดโรแตะครั้งเดียว พักอัตโนมัติ\n• วิดเจ็ตหน้าจอหลัก + Live Activity บนหน้าจอล็อก\n• เป้าหมายรายสัปดาห์ที่ให้อภัย\n• ประวัติและสถิติรายสัปดาห์\n• ธีมสว่าง/มืด ใช้ออฟไลน์ได้\n• ฟรี มี Plus เสริม (รายปีหรือตลอดชีพ)"
+    },
+    {
+      "language": "tr-TR",
+      "title": "Pomodoro Timer: Focus Loop",
+      "shortDescription": "DEHB için pomodoro — tek dokunuş odak, haftalık hedef, hesapsız",
+      "fullDescription": "Focus Loop, DEHB'li zihinler ve bilgi çalışanları için bir pomodoro sayacı: tek dokunuşla derin çalışmaya başlayın, odak–mola döngüsünü uygulama yönetsin. Hesap yok, kurulum yok.\n\nDÖNGÜ NASIL ÇALIŞIR\nBir dokunuş ve sayaç başlar. Odak bitince mola otomatik başlar — döngü devam eder. Uğraşmadan pomodoro tekniği.\n\nDEHB İÇİN TASARLANDI\nDEHB odağı arayanların kırılacak bir seri daha değil, affedici bir hedef lazım. Focus Loop haftalık hedef kullanır: haftada 4 odak günü, kötü bir gün ilerlemenizi silmez. Erken bitirmek de sayılır.\n\nDERS VE İŞ SAYACI\nSınav için ders sayacı, yazı ve kod için derin çalışma sayacı, okuma için konsantrasyon sayacı olarak kullanın. Widget'tan başlatın, süre kilit ekranında görünsün.\n\n• Tek dokunuş pomodoro, otomatik mola\n• Ana ekran widget'ı + kilit ekranı Live Activity\n• Kötü günü affeden haftalık hedef\n• Geçmiş ve haftalık istatistik\n• Açık/koyu tema, çevrimdışı çalışır\n• Ücretsiz, Plus isteğe bağlı (yıllık veya ömür boyu)"
+    },
+    {
+      "language": "zh-CN",
+      "title": "番茄钟: Focus Loop",
+      "shortDescription": "为 ADHD 设计的番茄钟——一键专注,每周目标,无需账号",
+      "fullDescription": "Focus Loop 是为 ADHD 人群和知识工作者设计的番茄钟计时器:一键开始深度工作,专注—休息的循环交给应用自动运转。无需账号,无需设置。\n\n循环怎么工作\n点一下,专注计时开始。专注结束自动进入休息,然后进入下一轮。没有繁琐设置的番茄工作法。\n\n为 ADHD 而设计\n找专注应用的人不需要又一个会断掉的打卡。Focus Loop 用每周目标——每周专注 4 天,偶尔糟糕的一天不会清零进度。提前结束照样算数。\n\n学习与工作的计时器\n可以当学习计时器备考,当深度工作计时器写作编程,当专注计时器读书。小组件一键开始,锁屏上就能看到剩余时间。\n\n·一键番茄钟,自动休息\n·桌面小组件 + 锁屏实时活动\n·宽容的每周目标\n·历史记录与每周报告\n·深浅主题,离线可用\n·免费,Plus 可选年付或买断"
+    },
+    {
+      "language": "vi",
+      "title": "Pomodoro Timer: Focus Loop",
+      "shortDescription": "Pomodoro cho ADHD — một chạm vào tập trung, mục tiêu tuần, không cần tài khoản",
+      "fullDescription": "Focus Loop là app pomodoro — hẹn giờ tập trung cho người mắc ADHD và dân văn phòng. Bấm một cái là vào phiên deep work, app tự chạy cả vòng tập trung–nghỉ giải lao. Không tài khoản, không cài đặt.\n\n  VÒNG LẶP HOẠT ĐỘNG SAO\n  Chạm một lần, đồng hồ đếm bắt đầu. Hết giờ tập trung, giờ nghỉ tự chạy rồi phiên mới tiếp tục — đúng chất phương pháp pomodoro mà không phải chỉnh gì.\n\n  CHO NGƯỜI ADHD\n  Người tìm app tập trung cho ADHD không cần thêm một cái streak để gãy. Focus Loop dùng mục tiêu tuần: nhắm 4 ngày tập trung/tuần, một ngày xấu không xoá tiến bộ. Dừng sớm vẫn được tính. Rung và âm thanh nhẹ báo ranh giới giữa tập trung và nghỉ.\n\n  ĐẾM GIỜ HỌC, DEEP WORK\n  Dùng như đồng hồ đếm giờ học, timer deep work khi viết hay code, hay timer tập trung khi đọc sách. Bắt đầu phiên từ widget, giữ đồng hồ hiện trên màn hình khoá.\n\n  TIẾN BỘ THẬT, KHÔNG STREAK SHAME\n  Xem tuần: số ngày tập trung, số phiên, tổng giờ — con số thật để chia sẻ.\n\n  • Pomodoro một chạm, tự động nghỉ\n  • Widget màn hình chính + màn hình khoá\n  • Mục tiêu tập trung tuần\n  • Lịch sử phiên + thống kê tuần\n  • Theme sáng/tối, hoạt động offline\n  • Miễn phí, Plus nâng cấp thêm theme và thống kê"
+    },
+    {
+      "language": "zh-TW",
+      "title": "番茄鐘: Focus Loop",
+      "shortDescription": "為 ADHD 設計的番茄鐘——一鍵專注,每週目標,無需帳號",
+      "fullDescription": "Focus Loop 是為 ADHD 族群與知識工作者設計的番茄鐘計時器:一鍵開始深度工作,專注—休息的循環交給 App 自動運轉。無需帳號,無需設定。\n\n循環怎麼運作\n按一下,專注計時開始。專注結束自動進入休息,再進入下一輪。沒有繁瑣設定的番茄工作法。\n\n為 ADHD 而設計\n找專注 App 的人不需要又一個會斷掉的連續紀錄。Focus Loop 用每週目標——每週專注 4 天,偶爾糟糕的一天不會歸零進度。提前結束照樣算數。\n\n學習與工作的計時器\n可當學習計時器備考、深度工作計時器寫作寫程式、專注計時器閱讀。小工具一鍵開始,鎖定畫面就能看到剩餘時間。\n\n·一鍵番茄鐘,自動休息\n·桌面小工具 + 鎖定畫面即時動態\n·寬容的每週目標\n·歷史紀錄與每週報告\n·深淺主題,離線可用\n·免費,Plus 可選年付或買斷"
+    }
+  ],
+  "tracks": {
+    "versionCodes": [
+      "8"
+    ],
+    "status": [
+      "completed"
+    ],
+    "releases": [
+      {
+        "versionCodes": [
+          "8"
+        ],
+        "status": "completed",
+        "releaseNotesLanguageCount": 20,
+        "releaseNotesLanguages": [
+          "ar",
+          "ja-JP",
+          "es-419",
+          "es-ES",
+          "fr-FR",
+          "en-US",
+          "it-IT",
+          "hi-IN",
+          "de-DE",
+          "id",
+          "ko-KR",
+          "zh-TW",
+          "pl-PL",
+          "vi",
+          "pt-BR",
+          "tr-TR",
+          "ru-RU",
+          "th",
+          "zh-CN",
+          "nl-NL"
+        ]
+      }
+    ],
+    "releaseNotesLanguageCount": 20,
+    "releaseNotesLanguages": [
+      "ar",
+      "ja-JP",
+      "es-419",
+      "es-ES",
+      "fr-FR",
+      "en-US",
+      "it-IT",
+      "hi-IN",
+      "de-DE",
+      "id",
+      "ko-KR",
+      "zh-TW",
+      "pl-PL",
+      "vi",
+      "pt-BR",
+      "tr-TR",
+      "ru-RU",
+      "th",
+      "zh-CN",
+      "nl-NL"
+    ]
+  },
+  "images": [
+    {
+      "locale": "en-US",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "fr-FR",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "es-419",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "ar",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "es-ES",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "de-DE",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "hi-IN",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "it-IT",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "id",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "ja-JP",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "ko-KR",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "nl-NL",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "pl-PL",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "pt-BR",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "ru-RU",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "th",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "tr-TR",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "zh-CN",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "vi",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    },
+    {
+      "locale": "zh-TW",
+      "phoneScreenshots": 6,
+      "featureGraphic": 1,
+      "icon": 1
+    }
+  ],
+  "subscriptions": [
+    {
+      "productId": "com.appsindie.focusloop.plus.yearly",
+      "basePlans": [
+        {
+          "basePlanId": "yearly",
+          "state": "ACTIVE",
+          "offers": []
+        }
+      ]
+    }
+  ],
+  "offers": [
+    {
+      "productId": "com.appsindie.focusloop.plus.yearly",
+      "basePlanId": "yearly",
+      "offers": []
+    }
+  ],
+  "oneTimeProducts": [
+    {
+      "productId": "com.appsindie.focusloop.plus.lifetime",
+      "purchaseOptions": [
+        {
+          "purchaseOptionId": "buy",
+          "state": "ACTIVE"
+        }
+      ]
+    }
+  ],
+  "edit": {
+    "created": true,
+    "cleanup": {
+      "deleted": true,
+      "status": 204
+    }
+  }
+}

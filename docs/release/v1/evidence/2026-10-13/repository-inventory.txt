@@ -1,0 +1,18 @@
+UTC timestamp: 2026-10-13T07:56:38Z
+Exact command(s):
+- `find docs/security docs/qa -maxdepth 1 -type f -print | sort`
+- `test -f docs/release/RUNBOOK_mobile.md`
+- `test -f docs/release/SLO_AND_ALERTING.md`
+
+`docs/security/`:
+- `docs/security/ads-integration-security-review.md`
+- `docs/security/v1-secrets-scan.txt`
+
+`docs/qa/`:
+- `docs/qa/LIVE_E2E_INDEX.md`
+- `docs/qa/README.md`
+- `docs/qa/v1-e2e-test-plan.md`
+- `docs/qa/v1-e2e-test-report.md`
+
+- `docs/release/RUNBOOK_mobile.md`: exists.
+- `docs/release/SLO_AND_ALERTING.md`: exists.

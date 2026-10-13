@@ -1,0 +1,24 @@
+UTC timestamp: 2026-10-13T07:56:38Z
+Exact command(s):
+- `rg -n -i '\bUMP\b|AdsConsent|requestInfoUpdate|showForm' apps/mobile/node_modules/@appsindie/react-native-ads/src apps/mobile/src`
+- `rg -n -i 'maxAdContentRating|tagForChildDirectedTreatment|tagForUnderAgeOfConsent' apps/mobile/node_modules/@appsindie/react-native-ads/src apps/mobile/src`
+- `rg -n -i 'ATT|tracking.*(prompt|permission)|app tracking|deny|denied|not authorized' .maestro qa`
+- `find .maestro qa -type f \( -name '*.yaml' -o -name '*.yml' \) -print`
+- `nl -ba` on the source files cited below
+
+Code facts:
+- No matches for `UMP`, `AdsConsent`, `requestInfoUpdate`, or `showForm` in the searched ads package source or app source.
+- No matches for `maxAdContentRating`, `tagForChildDirectedTreatment`, or `tagForUnderAgeOfConsent` in the same source paths.
+- `apps/mobile/node_modules/@appsindie/react-native-ads/src/hooks/useAdsModule.tsx:20` initializes `allowTracking` as `true` on Android and `null` on iOS. Lines 22–29 call `setRequestConfiguration()` and `mobileAds().initialize()` in a mount effect.
+- `apps/mobile/src/features/ads/AdsProvider.tsx:12–17` schedules `requestPermission()` after 1,000 ms.
+- `apps/mobile/node_modules/@appsindie/react-native-ads/src/hooks/useAdsApi.tsx:25–35` returns immediately when `allowTracking !== null`; otherwise it reads ATT status, requests ATT if status is `UNDETERMINED`, and sets `allowTracking` from `permission.granted`.
+- `apps/mobile/node_modules/@appsindie/react-native-ads/src/components/Banner.tsx:11–25` mounts `BannerAd` only when `allowTracking !== null`, a banner ID is set, the ad has not errored, and ads have not been removed.
+- `apps/mobile/src/features/ads/HomeBanner.tsx:18–24` renders the package `Banner` when entitlement loading is complete. `apps/mobile/App.tsx:105–111, 404–413, 431–459` wraps the app in `AdsProvider` and places the banner on the Home route.
+- Source-flow inference (not a device-run observation): on Android, the initial `allowTracking=true` opens the banner gate without an ATT result; the delayed `requestPermission()` call then returns early. No UMP gate is present in the searched code. On iOS, the banner gate waits until the ATT status sets `allowTracking`, while Google Mobile Ads SDK initialization runs earlier in the provider mount effect.
+- The app settings copy at `apps/mobile/src/features/settings/SettingsScreen.tsx:658–670` says turning off “Allow ad tracking” asks AdMob for non-personalised ads only; the switch calls `setAllowTracking`.
+- Interstitial creation in `useAdsApi.tsx:37–50` is gated on `allowTracking !== null`. `apps/mobile/src/features/ads/useInterstitialAd.ts:12–16` also calls `load()` only when `allowTracking !== null`; no app call site for this hook or `showFullscreenAds` was found by the source search.
+
+ATT/E2E:
+- YAML flow files found: `.maestro/store/flow1.yaml` through `.maestro/store/flow14.yaml`; no YAML flow files were found under `qa/`.
+- No ATT prompt or ATT-denial assertions were found by the search. The only match was `.maestro/store/flow1.yaml:3`: `# ATT already answered on this install; app sits on FirstLaunch.`
+- `docs/qa/LIVE_E2E_INDEX.md` exists.
