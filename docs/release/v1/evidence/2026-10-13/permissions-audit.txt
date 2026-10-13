@@ -1,0 +1,61 @@
+UTC timestamp: 2026-10-13T07:56:38Z
+Exact command(s):
+- `BundleToolMain 1.18.1 dump manifest --bundle=apps/mobile/build-vc8.aab` (invoked from the cached Java classpath)
+- `npm run verify:permissions` (working directory: `apps/mobile`)
+
+AAB: `apps/mobile/build-vc8.aab` (72,802,628 bytes)
+
+`uses-permission` entries read from the AAB base manifest (16):
+- `android.permission.ACCESS_ADSERVICES_AD_ID`
+- `android.permission.ACCESS_ADSERVICES_ATTRIBUTION`
+- `android.permission.ACCESS_ADSERVICES_TOPICS`
+- `android.permission.ACCESS_NETWORK_STATE`
+- `android.permission.FOREGROUND_SERVICE`
+- `android.permission.INTERNET`
+- `android.permission.MODIFY_AUDIO_SETTINGS`
+- `android.permission.POST_NOTIFICATIONS`
+- `android.permission.RECEIVE_BOOT_COMPLETED`
+- `android.permission.VIBRATE`
+- `android.permission.WAKE_LOCK`
+- `com.android.vending.BILLING`
+- `com.appsindie.focusloop.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`
+- `com.google.android.c2dm.permission.RECEIVE`
+- `com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE`
+- `com.google.android.gms.permission.AD_ID`
+
+`apps/mobile/android-permissions.json` declares these 8 permissions:
+- `android.permission.ACCESS_NETWORK_STATE`
+- `android.permission.INTERNET`
+- `android.permission.MODIFY_AUDIO_SETTINGS`
+- `android.permission.POST_NOTIFICATIONS`
+- `android.permission.RECEIVE_BOOT_COMPLETED`
+- `android.permission.VIBRATE`
+- `android.permission.WAKE_LOCK`
+- `com.android.vending.BILLING`
+
+AAB permissions absent from the allowlist (8):
+- `android.permission.ACCESS_ADSERVICES_AD_ID`
+- `android.permission.ACCESS_ADSERVICES_ATTRIBUTION`
+- `android.permission.ACCESS_ADSERVICES_TOPICS`
+- `android.permission.FOREGROUND_SERVICE`
+- `com.appsindie.focusloop.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION`
+- `com.google.android.c2dm.permission.RECEIVE`
+- `com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE`
+- `com.google.android.gms.permission.AD_ID`
+
+Allowlist permissions absent from the AAB: none.
+
+Permission-check output:
+```text
+> mobile@1.0.0 verify:permissions
+> node scripts/check-android-permissions.mjs
+
+Warning: Root-level "expo" object found. Ignoring extra key in Expo config: "react-native-google-mobile-ads"
+Learn more: https://expo.fyi/root-expo-object
+[expo-iap] Config values: horizonAppId=undefined, pinnedStore=auto, amazonAppstoreKey=none, vega=auto, onside=false
+[expo-iap] Using OpenIAP from CocoaPods
+› Using react-native@0.86.2 instead of recommended react-native@0.86.0.
+expo-iap: No store pin; Gradle picks the store from the task flavor or the connected debug device
+android: userInterfaceStyle: Install expo-system-ui in your project to enable this feature.
+android-permissions: 8 permission(s) audited OK.
+```
