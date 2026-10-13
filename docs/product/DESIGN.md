@@ -202,9 +202,9 @@ Selected-state styling: solid focus fill is for compact chips/segments only; car
 ### Tablet (T01–T06)
 
 - 48 padding. Home and Week/History are two columns; Settings is master–detail (sections left, detail right).
-- Focus landscape keeps the disc left with intention, time, strip, parked thoughts and controls right. Phone Focus
-  uses a 280px disc (Break uses 220px); tablet discs use the largest square that fits the measured time area after
-  the caption, and Numbers digits scale with that same area.
+- Focus landscape keeps the timer (disc or Numbers digits) left, with intention, strip, parked thoughts and controls
+  right. Phone Focus uses a 280px disc (Break uses 220px); tablet discs use the largest square that fits the measured
+  time area after the caption, and Numbers digits scale with that same area.
 - Banner ad on tablet is 320 × 50 in the right column in landscape only; portrait tablets pin it to the bottom like phones, free tier only.
 
 ## 5. Ads and Plus

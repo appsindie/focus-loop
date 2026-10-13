@@ -297,7 +297,6 @@ export function FocusScreen({
           >
             {headerBlock}
             {intentionBlock}
-            {displayMode === "numbers" ? timeBlock : null}
             {stripBlock}
             {parkedPanel}
             {controlsBlock}

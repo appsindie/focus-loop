@@ -215,6 +215,13 @@ describe("FocusScreen (T02 tablet landscape)", () => {
     restore();
   });
 
+  it("renders tablet landscape Numbers timer only in the left measured area", async () => {
+    const restore = asTablet();
+    await render(<FocusScreen {...makeProps()} />);
+    expect(screen.getAllByText("10")).toHaveLength(1);
+    restore();
+  });
+
   it("sizes the portrait tablet disc to the measured area width", async () => {
     const restore = asTablet(false);
     await render(<FocusScreen {...makeProps()} displayMode="disc" />);
