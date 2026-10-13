@@ -65,7 +65,7 @@ function buildLoopSchedule(plan: readonly LoopStep[], focusNumber: number): Loop
 
 // P04 / P05. P05 = first day of the ISO week with zero sessions met — "A new week."
 // Never shows zeros as failure. T01: same screen as two columns — loop left,
-// day stats + parked + banner right.
+// day stats + parked right.
 export function HomeScreen({
   colors,
   now,
@@ -85,7 +85,6 @@ export function HomeScreen({
   onStart,
   onOpenSettings,
   onOpenWeek,
-  bannerSlot,
 }: {
   colors: Palette;
   now: Date;
@@ -105,7 +104,6 @@ export function HomeScreen({
   onStart: () => void;
   onOpenSettings: () => void;
   onOpenWeek: () => void;
-  bannerSlot?: React.ReactNode;
 }) {
   const isTablet = useIsTablet();
   const firstFocus = plan.find((s) => s.kind === "focus");
@@ -176,6 +174,7 @@ export function HomeScreen({
 
   return (
     <SafeAreaView
+      testID="home-root"
       style={[styles.root, { backgroundColor: colors.bg }, isTablet && { padding: TABLET_PADDING }]}
     >
       <KeyboardAvoidingView
@@ -212,8 +211,8 @@ export function HomeScreen({
 
         {isTablet ? (
           // T01: left column = loop state + intention + rest-of-loop + Start;
-          // right column = today/week stats, parked thoughts, banner slot.
-          <View style={styles.columns}>
+          // right column = today/week stats and parked thoughts.
+          <View testID="home-columns" style={styles.columns}>
             <View style={styles.colMain}>
               {hero}
               {intentionField}
@@ -235,7 +234,7 @@ export function HomeScreen({
               <View style={styles.spacer} />
               {startButton}
             </View>
-            <View style={styles.colSide}>
+            <View testID="home-side-column" style={styles.colSide}>
               <View style={[styles.statsCard, { backgroundColor: colors.surface }]}>
                 <Text style={[styles.statsLine, { color: colors.ink2 }]}>
                   {t("Today {count} focus · {minutes} min", {
@@ -272,7 +271,6 @@ export function HomeScreen({
                 </View>
               ) : null}
               <View style={styles.spacer} />
-              {bannerSlot}
             </View>
           </View>
         ) : (

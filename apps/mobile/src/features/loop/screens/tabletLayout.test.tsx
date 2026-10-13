@@ -1,11 +1,13 @@
 // T01–T06 (DESIGN.md §4): the tablet variants of the same screens — the
 // layout hooks are mocked off globally in jest-setup; each test spies them on.
 import { describe, expect, it, jest } from "@jest/globals";
-import { fireEvent, render, screen } from "@testing-library/react-native";
-import { StyleSheet, View, type StyleProp, type TextStyle, type ViewStyle } from "react-native";
+import { fireEvent, render, screen, within } from "@testing-library/react-native";
+import { StyleSheet, type StyleProp, type TextStyle, type ViewStyle } from "react-native";
+import { SafeAreaProvider, type Metrics } from "react-native-safe-area-context";
 import * as layout from "../../../shared/layout";
-import { homeBannerPlacement } from "../../../shared/layout";
 import { palette } from "../../../shared/theme";
+import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
+import { HomeBanner } from "../../ads/HomeBanner";
 import { HomeScreen } from "./HomeScreen";
 import { WeekScreen } from "./WeekScreen";
 import { FocusScreen } from "./FocusScreen";
@@ -16,6 +18,20 @@ import { WeekProgress } from "../weeklyGoal";
 import { FocusSession } from "../SessionLog";
 import { LoopStep } from "../loopPlan";
 import { ParkedThought } from "../parkedThoughts";
+
+jest.mock("@appsindie/react-native-ads", () => ({
+  Banner: () => null,
+}));
+
+jest.mock("../../ads/AdsProvider", () => ({
+  useAdsConsent: () => ({
+    adsReady: true,
+    canRequestAds: true,
+    privacyOptionsRequired: false,
+    resolved: true,
+    showPrivacyOptions: async () => {},
+  }),
+}));
 
 const TABLET_STEPS: LoopStep[] = [
   { kind: "focus", roundIndex: 1, durationSeconds: 1500 },
@@ -55,6 +71,16 @@ const SESSIONS: FocusSession[] = [
 const PARKED: ParkedThought[] = [
   { id: "p1", text: "Book the dentist", createdAt: new Date().toISOString(), usedAt: null },
 ];
+
+const HOME_METRICS: Metrics = {
+  insets: { top: 0, right: 0, bottom: 34, left: 0 },
+  frame: { x: 0, y: 0, width: 1280, height: 800 },
+};
+
+const HOME_METRICS_WITHOUT_BOTTOM_INSET: Metrics = {
+  ...HOME_METRICS,
+  insets: { ...HOME_METRICS.insets, bottom: 0 },
+};
 
 function asTablet(isLandscape = true) {
   const t = jest.spyOn(layout, "useIsTablet").mockReturnValue(true);
@@ -115,8 +141,31 @@ describe("HomeScreen (T01 tablet)", () => {
       onStart: jest.fn(),
       onOpenSettings: jest.fn(),
       onOpenWeek: jest.fn(),
-      bannerSlot: undefined,
     };
+  }
+
+  async function renderHomeWithBanner(
+    props: ReturnType<typeof makeProps>,
+    metrics: Metrics = HOME_METRICS,
+  ) {
+    return render(
+      <SafeAreaProvider initialMetrics={metrics}>
+        <>
+          <HomeScreen {...props} />
+          <SafeAreaView
+            testID="home-banner-dock"
+            edges={["bottom"]}
+            style={{ backgroundColor: palette.light.bg }}
+          >
+            <HomeBanner
+              entitlementLoaded={true}
+              hasAdsRemoval={false}
+              backgroundColor={palette.light.bg}
+            />
+          </SafeAreaView>
+        </>
+      </SafeAreaProvider>,
+    );
   }
 
   it("lays out the two columns — loop left, stats/parked right", async () => {
@@ -135,16 +184,45 @@ describe("HomeScreen (T01 tablet)", () => {
   });
 
   it("phone keeps the single-column home (no schedule list)", async () => {
-    const { queryByText } = await render(<HomeScreen {...makeProps()} />);
+    const restore = asPhone();
+    const { getAllByTestId, getByTestId, queryByText } = await renderHomeWithBanner(makeProps());
     expect(queryByText("REST OF TODAY’S LOOP")).toBeNull();
+    expect(getAllByTestId("home-banner")).toHaveLength(1);
+    expect(within(getByTestId("home-banner-dock")).getByTestId("home-banner")).toBeTruthy();
+    restore();
   });
 
-  it("does not render a banner in the portrait tablet columns", async () => {
+  it("keeps the portrait tablet banner below Home, outside its columns", async () => {
     const restore = asTablet(false);
-    const bannerPlacement = homeBannerPlacement(true, false);
-    const bannerSlot = bannerPlacement === "column" ? <View testID="home-banner" /> : undefined;
-    const { queryByTestId } = await render(<HomeScreen {...makeProps()} bannerSlot={bannerSlot} />);
-    expect(queryByTestId("home-banner")).toBeNull();
+    const { getAllByTestId, getByTestId } = await renderHomeWithBanner(makeProps());
+    expect(getAllByTestId("home-banner")).toHaveLength(1);
+    expect(within(getByTestId("home-side-column")).queryByTestId("home-banner")).toBeNull();
+    expect(within(getByTestId("home-banner-dock")).getByTestId("home-banner")).toBeTruthy();
+    restore();
+  });
+
+  it("pins the landscape tablet banner below Home, outside the columns", async () => {
+    const restore = asTablet(true);
+    const { getAllByTestId, getByTestId, unmount } = await renderHomeWithBanner(makeProps());
+    expect(getAllByTestId("home-banner")).toHaveLength(1);
+    const root = getByTestId("home-root");
+    const rootStyle = StyleSheet.flatten(root.props["style"] as StyleProp<ViewStyle>);
+    const bannerDock = getByTestId("home-banner-dock");
+    const bannerDockStyle = StyleSheet.flatten(bannerDock.props["style"] as StyleProp<ViewStyle>);
+    expect(bannerDockStyle.paddingBottom).toBe(HOME_METRICS.insets.bottom);
+    expect(within(root).queryByTestId("home-banner")).toBeNull();
+    expect(within(getByTestId("home-side-column")).queryByTestId("home-banner")).toBeNull();
+    expect(within(bannerDock).getByTestId("home-banner")).toBeTruthy();
+    const paddingWithInset = Number(rootStyle.paddingBottom);
+    await unmount();
+
+    const withoutInset = await renderHomeWithBanner(makeProps(), HOME_METRICS_WITHOUT_BOTTOM_INSET);
+    const rootStyleWithoutInset = StyleSheet.flatten(
+      withoutInset.getByTestId("home-root").props["style"] as StyleProp<ViewStyle>,
+    );
+    expect(paddingWithInset - Number(rootStyleWithoutInset.paddingBottom)).toBe(
+      HOME_METRICS.insets.bottom,
+    );
     restore();
   });
 });

@@ -77,7 +77,8 @@ Selected-state styling: solid focus fill is for compact chips/segments only; car
   thought with a "use this" action, today and week summary, primary Start button with duration.
 - Intention is optional; empty is fine. Placeholder: "What will you work on?"
 - P05 (first day of a week): headline "A new week.", goal strip with any-N-days copy. Never shows zeros as failure.
-- Banner ad 320 × 50 at the very bottom, free tier only.
+- Anchored adaptive banner, full width and bottom-pinned on every device/orientation, free tier only; it spans the
+  device width, so it cannot sit in a column.
 
 ### P06 / P07 Focus (Disc / Numbers)
 
@@ -205,7 +206,8 @@ Selected-state styling: solid focus fill is for compact chips/segments only; car
 - Focus landscape keeps the timer (disc or Numbers digits) left, with intention, strip, parked thoughts and controls
   right. Phone Focus uses a 280px disc (Break uses 220px); tablet discs use the largest square that fits the measured
   time area after the caption, and Numbers digits scale with that same area.
-- Banner ad on tablet is 320 × 50 in the right column in landscape only; portrait tablets pin it to the bottom like phones, free tier only.
+- The free-tier anchored adaptive Home banner is full width and bottom-pinned on every device/orientation; it spans
+  the device width, so it cannot sit in a column.
 
 ## 5. Ads and Plus
 
