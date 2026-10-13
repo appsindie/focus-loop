@@ -41,8 +41,8 @@ Every open item has default **block**; Devin implements the code/asset items, th
 | EX-android15-taskbar-nav-icons | Android 15 three-button Taskbar icon contrast                                                     | Android system bars                      | justin.nguyen@appsindie.com | 2026-10-20 | block             |
 | EX-privacy-contact-email       | Privacy page contact email — **resolved 2026-10-13 (false positive)**                             | Legal — Privacy Policy                   | justin.nguyen@appsindie.com | —          | done              |
 | EX-asc-iap-metadata            | ASC IAPs MISSING_METADATA                                                                         | Pass A 2.1, Pass B IAP                   | justin.nguyen@appsindie.com | 2026-10-17 | block             |
-| EX-asc-version-setup           | ASC 1.0: no category, no build, es-MX screenshots                                                 | Pass B ASC                               | justin.nguyen@appsindie.com | 2026-10-17 | block             |
-| EX-tablet-screenshots          | No iPad 13" / Android tablet screenshot sets                                                      | Store assets                             | justin.nguyen@appsindie.com | 2026-10-17 | block             |
+| EX-asc-version-setup           | ASC 1.0: no category or build; es-MX screenshots verified                                         | Pass B ASC                               | justin.nguyen@appsindie.com | 2026-10-17 | block             |
+| EX-tablet-screenshots          | iPad 13" / Android tablet screenshot sets complete — resolved 2026-10-13                          | Store assets + readback evidence         | justin.nguyen@appsindie.com | —          | done              |
 | EX-tablet-e2e                  | Tablet layouts T01–T06 not verified on tablets                                                    | Spec completeness, E2E coverage          | justin.nguyen@appsindie.com | 2026-10-17 | block             |
 | EX-owasp-checklist             | No OWASP Mobile Top 10 disposition; review predates prod AdMob IDs                                | OWASP coverage, Findings by severity     | justin.nguyen@appsindie.com | 2026-10-17 | block             |
 | EX-dependency-triage           | 28 outdated + npm audit 1 critical / 67 high untriaged                                            | Dependency freshness                     | justin.nguyen@appsindie.com | 2026-10-17 | block             |
@@ -310,23 +310,13 @@ Every open item has default **block**; Devin implements the code/asset items, th
 - **Deadline**: 2026-10-17
 - **Status**: open
 
-### EX-asc-version-setup. ASC 1.0: primary category null, no build attached, es-MX without screenshots
+### EX-asc-version-setup. ASC 1.0: primary category null, no build attached
 
-- **Situation**: ASC read-back for version 1.0 (`PREPARE_FOR_SUBMISSION`): primary category is null, no build is attached, and the es-MX localization has no screenshot set (19/20).
-- **Options**: A — sponsor sets Productivity and attaches b22 when it lands; Devin uploads the es set to es-MX. B — attach b21 now (lacks the UMP / background-mode fixes).
+- **Situation**: ASC read-back for version 1.0 (`PREPARE_FOR_SUBMISSION`): primary category is null and no build is attached. The es-MX screenshot set was uploaded and verified on 2026-10-13 (`evidence/2026-10-13/store-screenshots-readback.json`).
+- **Options**: A — sponsor sets Productivity and attaches b22 when it lands. B — attach b21 now (lacks the UMP / background-mode fixes).
 - **Recommendation**: A.
 - **Default if you say nothing**: block Gate 3.
-- **Owner**: justin.nguyen@appsindie.com — sponsor (category, build); Devin (es-MX screenshots)
-- **Deadline**: 2026-10-17
-- **Status**: open
-
-### EX-tablet-screenshots. No iPad 13" / Android tablet screenshot sets although supportsTablet=true
-
-- **Situation**: `app.json` has `ios.supportsTablet: true` and orientation `default`, and the spec has tablet layouts T01–T06, but only phone sets were uploaded (`STORE_ASSETS.md` wrongly said iPhone-only). Apple requires 13" iPad screenshots for an iPad-capable app; Play shows a tablet listing with no images.
-- **Options**: A — capture iPad 13" and Android 7"/10" sets for all 19 locales from b22/vc9 and upload to both stores. B — set `supportsTablet: false` and drop tablet support for v1.
-- **Recommendation**: A (tablet layouts are already built and specified).
-- **Default if you say nothing**: block Gate 3.
-- **Owner**: justin.nguyen@appsindie.com — Devin produces + uploads, sponsor reviews
+- **Owner**: justin.nguyen@appsindie.com — sponsor (category, build)
 - **Deadline**: 2026-10-17
 - **Status**: open
 
@@ -375,3 +365,9 @@ Every open item has default **block**; Devin implements the code/asset items, th
 ### EX-AI-REVIEW-TIMEOUT. Claude review returned no verdict on PR #16
 
 - **Status**: resolved 2026-10-05 — PR #16 was human-reviewed and merged (merge commit `67769eb`); later round reviews returned verdicts. Not a Gate 3 item, carries no default, removed from the summary table.
+
+### EX-tablet-screenshots. iPad 13" and Android tablet screenshot sets
+
+- **Resolution**: Replaced the iPhone 6.9" set and uploaded iPad 13", Play phone, 7-inch, and 10-inch screenshot sets for all required locales on 2026-10-13; confirmed counts, order, delivery state, dimensions, and downloaded image hashes.
+- **Evidence**: `evidence/2026-10-13/store-screenshots-readback.json`
+- **Status**: resolved 2026-10-13
