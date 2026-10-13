@@ -4,7 +4,7 @@ import * as WebBrowser from "expo-web-browser";
 import { SafeAreaView } from "../../../shared/ui/SafeAreaView";
 import { t } from "../../../i18n";
 import { Palette, typography } from "../../../shared/theme";
-import { selectedStyle, selectedTextColor } from "../../../shared/ui/selectedStyle";
+import { selectedCardStyle } from "../../../shared/ui/selectedStyle";
 import { TABLET_PADDING, useIsTablet } from "../../../shared/layout";
 import { PrimaryButton, TextButton } from "../../../shared/ui/Buttons";
 import { trackEvent } from "../../analytics/events";
@@ -150,39 +150,36 @@ export function PaywallScreen({
               return (
                 <Pressable
                   key={product.plan}
-                  accessibilityRole="button"
+                  accessibilityRole="radio"
                   accessibilityLabel={`${product.title} ${product.priceText}`}
-                  accessibilityState={{ selected }}
+                  accessibilityState={{ checked: selected }}
                   onPress={() => setPlan(product.plan)}
                   style={({ pressed }) => [
                     styles.planCard,
-                    {
-                      backgroundColor: colors.surface,
-                    },
-                    selectedStyle(colors, selected),
+                    selectedCardStyle(colors, selected),
                     pressed && { opacity: 0.55 },
                   ]}
                 >
-                  <Text
-                    style={[styles.planName, { color: selectedTextColor(colors, selected) }]}
-                    allowFontScaling
-                  >
-                    {product.plan === "yearly" ? t("Yearly") : t("Lifetime")}
-                  </Text>
-                  <Text
-                    style={[styles.planPrice, { color: selectedTextColor(colors, selected) }]}
-                    allowFontScaling
-                  >
-                    {product.priceText}
-                  </Text>
-                  {product.plan === "yearly" ? (
-                    <Text
-                      style={[styles.planNote, { color: selectedTextColor(colors, selected) }]}
-                      allowFontScaling
-                    >
-                      {t("7-day free trial")}
+                  <View style={styles.planDetails}>
+                    <Text style={[styles.planName, { color: colors.ink }]} allowFontScaling>
+                      {product.plan === "yearly" ? t("Yearly") : t("Lifetime")}
                     </Text>
-                  ) : null}
+                    <Text style={[styles.planPrice, { color: colors.ink }]} allowFontScaling>
+                      {product.priceText}
+                    </Text>
+                    {product.plan === "yearly" ? (
+                      <Text style={[styles.planNote, { color: colors.muted }]} allowFontScaling>
+                        {t("7-day free trial")}
+                      </Text>
+                    ) : null}
+                  </View>
+                  <View
+                    style={[styles.radio, { borderColor: selected ? colors.focus : colors.rule }]}
+                  >
+                    {selected ? (
+                      <View style={[styles.radioDot, { backgroundColor: colors.focus }]} />
+                    ) : null}
+                  </View>
                 </Pressable>
               );
             })}
@@ -248,11 +245,23 @@ const styles = StyleSheet.create({
   errorBox: { alignItems: "center", gap: 4 },
   plans: { gap: 12 },
   planCard: {
-    borderWidth: 2,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
     borderRadius: 16,
     paddingVertical: 14,
     paddingHorizontal: 18,
   },
+  planDetails: { flex: 1 },
+  radio: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    borderWidth: 2,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  radioDot: { width: 10, height: 10, borderRadius: 5 },
   busySlot: { height: 64, alignItems: "center", justifyContent: "center" },
   planName: { ...typography.title },
   planPrice: { ...typography.body, marginTop: 2 },

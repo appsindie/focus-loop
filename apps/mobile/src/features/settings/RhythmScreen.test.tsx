@@ -1,7 +1,7 @@
 // P21 tests: the three presets + custom row, save-immediately writes
 // (J10-R3), and the fine-tune steppers which flip the preset to "custom".
 import { describe, expect, it, jest } from "@jest/globals";
-import { fireEvent, render } from "@testing-library/react-native";
+import { fireEvent, render, within } from "@testing-library/react-native";
 import { palette } from "../../shared/theme";
 import { DEFAULT_SETTINGS, type Settings } from "../settings/SettingsStore";
 import { RhythmScreen } from "./RhythmScreen";
@@ -58,5 +58,13 @@ describe("RhythmScreen (P21)", () => {
   it("shows the loop summary line", async () => {
     const { getByText } = await renderScreen();
     getByText(/min of focus · .*min total/);
+  });
+
+  it("keeps the header fixed while fine-tuning scrolls", async () => {
+    const { getByTestId } = await renderScreen();
+    const scroll = within(getByTestId("rhythm-scroll"));
+
+    expect(scroll.getByText("Fine-tune")).toBeTruthy();
+    expect(scroll.queryByText("Rhythm")).toBeNull();
   });
 });

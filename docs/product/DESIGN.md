@@ -49,6 +49,8 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
 | Sheet            | Bottom sheet, radius 24 top, `surface`, over `scrim`. Primary action first (top), then secondary, then text action.                     |
 | Toast            | Inverted surface, 4 s, polite live region. Used for rewarded-ad failure.                                                                |
 
+Selected-state styling: solid focus fill is for compact chips/segments only; cards and rows use the outline style (`selectedCardStyle`).
+
 ## 4. Screens
 
 ### P01 Splash
@@ -130,6 +132,7 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
 
 - Close (×) always visible top right. Five benefits, plan picker (Yearly with 7-day trial, Lifetime), primary
   "Start free trial", trial terms, Restore / Terms / Privacy links.
+- Plan picker uses outline cards (2px focus border and a radio when selected, surface fill); the primary CTA is the only filled element.
 - Prices come from the store; never hard-code.
 
 ### P15 Themes & sounds
@@ -175,6 +178,7 @@ Use `docs/brand/design/tokens.json`. Do not hard-code hex values in components; 
 
 - Rhythm presets: Classic 25/5×4, Gentle start 15/5, Deep work 50/10×3, Custom. Steppers for focus, break, long
   break, rounds; the strip and "One loop = …" update live.
+- Rhythm keeps a fixed header while presets and fine-tuning content scroll below it.
 - Reminders: list of times with weekday chips and a toggle each; "Add a reminder"; optional one gentle evening note
   on goal days, off by default.
 

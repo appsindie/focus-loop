@@ -35,7 +35,7 @@
     "session_url": "https://claude.ai/code/cse_01BHxN2AwUQew8dm3dZsra1o",
     "verdict": "APPROVE"
   },
-  "next_action": "vc9 (internal, COMPLETED) + b22 (TestFlight, processing) built from PR #26 098168d; next: tablet + es-MX screenshot sets, ATT E2E on b22, then sponsor console forms (STORE_QUESTIONNAIRE.md) and Gate 3",
+  "next_action": "Android UI polish (Rhythm scroll, Appearance width, Paywall outline cards) on devin/1791884049-android-ui-polish → Android emulator verify → vc10 then b23",
   "open_exceptions": [
     {
       "blocking": true,

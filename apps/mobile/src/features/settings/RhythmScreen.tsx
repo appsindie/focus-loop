@@ -1,5 +1,6 @@
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "../../shared/ui/SafeAreaView";
+import { selectedCardStyle } from "../../shared/ui/selectedStyle";
 import { t } from "../../i18n";
 import { Palette, radii, spacing, typography } from "../../shared/theme";
 import { TABLET_PADDING, useIsTablet } from "../../shared/layout";
@@ -124,112 +125,114 @@ export function RhythmScreen({ colors, settings, onChange, onBack }: RhythmScree
         <View style={styles.backButton} />
       </View>
 
-      {PRESET_ORDER.map((id) => {
-        const selected = settings.rhythmPresetId === id;
-        return (
-          <Pressable
-            key={id}
-            onPress={() => pickPreset(id)}
-            accessibilityRole="button"
-            accessibilityLabel={t("Rhythm preset {name}", {
-              name: t(RHYTHM_PRESET_NAMES[id]),
-            })}
-            accessibilityState={{ selected }}
-            style={({ pressed }) => [
-              styles.presetRow,
-              {
-                backgroundColor: colors.surface,
-                borderColor: selected ? colors.focus : colors.rule,
-              },
-              pressed && { opacity: 0.55 },
-            ]}
-          >
-            <Text style={[styles.presetName, { color: colors.ink }]} allowFontScaling>
-              {t(RHYTHM_PRESET_NAMES[id])}
-            </Text>
-            <Text style={[styles.presetSub, { color: colors.muted }]} allowFontScaling>
-              {PRESET_SUB[id]()}
-            </Text>
-          </Pressable>
-        );
-      })}
-      <Pressable
-        onPress={() => pickPreset("custom")}
-        accessibilityRole="button"
-        accessibilityLabel={t("Rhythm preset {name}", { name: t("Custom") })}
-        accessibilityState={{ selected: settings.rhythmPresetId === "custom" }}
-        style={({ pressed }) => [
-          styles.presetRow,
-          {
-            backgroundColor: colors.surface,
-            borderColor: settings.rhythmPresetId === "custom" ? colors.focus : colors.rule,
-          },
-          pressed && { opacity: 0.55 },
-        ]}
+      <ScrollView
+        testID="rhythm-scroll"
+        style={styles.scroll}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ paddingBottom: spacing.lg }}
       >
-        <Text style={[styles.presetName, { color: colors.ink }]} allowFontScaling>
-          {t("Custom")}
-        </Text>
-        <Text style={[styles.presetSub, { color: colors.muted }]} allowFontScaling>
-          {t("Your own focus, breaks and rounds")}
-        </Text>
-      </Pressable>
+        {PRESET_ORDER.map((id) => {
+          const selected = settings.rhythmPresetId === id;
+          return (
+            <Pressable
+              key={id}
+              onPress={() => pickPreset(id)}
+              accessibilityRole="button"
+              accessibilityLabel={t("Rhythm preset {name}", {
+                name: t(RHYTHM_PRESET_NAMES[id]),
+              })}
+              accessibilityState={{ selected }}
+              style={({ pressed }) => [
+                styles.presetRow,
+                selectedCardStyle(colors, selected),
+                pressed && { opacity: 0.55 },
+              ]}
+            >
+              <Text style={[styles.presetName, { color: colors.ink }]} allowFontScaling>
+                {t(RHYTHM_PRESET_NAMES[id])}
+              </Text>
+              <Text style={[styles.presetSub, { color: colors.muted }]} allowFontScaling>
+                {PRESET_SUB[id]()}
+              </Text>
+            </Pressable>
+          );
+        })}
+        <Pressable
+          onPress={() => pickPreset("custom")}
+          accessibilityRole="button"
+          accessibilityLabel={t("Rhythm preset {name}", { name: t("Custom") })}
+          accessibilityState={{ selected: settings.rhythmPresetId === "custom" }}
+          style={({ pressed }) => [
+            styles.presetRow,
+            selectedCardStyle(colors, settings.rhythmPresetId === "custom"),
+            pressed && { opacity: 0.55 },
+          ]}
+        >
+          <Text style={[styles.presetName, { color: colors.ink }]} allowFontScaling>
+            {t("Custom")}
+          </Text>
+          <Text style={[styles.presetSub, { color: colors.muted }]} allowFontScaling>
+            {t("Your own focus, breaks and rounds")}
+          </Text>
+        </Pressable>
 
-      <View
-        style={[styles.fineTune, { backgroundColor: colors.surface, borderColor: colors.rule }]}
-        accessibilityLabel={t("Fine-tune rhythm")}
-      >
-        <Text style={[styles.fineTuneTitle, { color: colors.ink }]} allowFontScaling>
-          {t("Fine-tune")}
-        </Text>
-        <StepperRow
-          colors={colors}
-          label={t("Focus")}
-          unit={t("min")}
-          value={rhythm.focusMinutes}
-          min={RHYTHM_BOUNDS.focusMinutes.min}
-          max={RHYTHM_BOUNDS.focusMinutes.max}
-          onChange={(focusMinutes) => editCustom({ focusMinutes })}
-        />
-        <StepperRow
-          colors={colors}
-          label={t("Break")}
-          unit={t("min")}
-          value={rhythm.breakMinutes}
-          min={RHYTHM_BOUNDS.breakMinutes.min}
-          max={RHYTHM_BOUNDS.breakMinutes.max}
-          onChange={(breakMinutes) => editCustom({ breakMinutes })}
-        />
-        <StepperRow
-          colors={colors}
-          label={t("Long break")}
-          unit={t("min")}
-          value={rhythm.longBreakMinutes}
-          min={RHYTHM_BOUNDS.longBreakMinutes.min}
-          max={RHYTHM_BOUNDS.longBreakMinutes.max}
-          onChange={(longBreakMinutes) => editCustom({ longBreakMinutes })}
-        />
-        <StepperRow
-          colors={colors}
-          label={t("Rounds per loop")}
-          unit=""
-          value={rhythm.rounds}
-          min={RHYTHM_BOUNDS.rounds.min}
-          max={RHYTHM_BOUNDS.rounds.max}
-          onChange={(rounds) => editCustom({ rounds })}
-        />
-        <LoopStrip colors={colors} steps={buildLoopPlan(rhythm)} currentIndex={-1} />
-        <Text style={[styles.loopSummary, { color: colors.ink }]} allowFontScaling>
-          {loopSummary(rhythm)} · {t("{focusMin} min of focus", { focusMin: totalFocusMinutes })} ·{" "}
-          {t("{total} min total", { total: loopMinutes })}
-        </Text>
-      </View>
+        <View
+          style={[styles.fineTune, { backgroundColor: colors.surface, borderColor: colors.rule }]}
+          accessibilityLabel={t("Fine-tune rhythm")}
+        >
+          <Text style={[styles.fineTuneTitle, { color: colors.ink }]} allowFontScaling>
+            {t("Fine-tune")}
+          </Text>
+          <StepperRow
+            colors={colors}
+            label={t("Focus")}
+            unit={t("min")}
+            value={rhythm.focusMinutes}
+            min={RHYTHM_BOUNDS.focusMinutes.min}
+            max={RHYTHM_BOUNDS.focusMinutes.max}
+            onChange={(focusMinutes) => editCustom({ focusMinutes })}
+          />
+          <StepperRow
+            colors={colors}
+            label={t("Break")}
+            unit={t("min")}
+            value={rhythm.breakMinutes}
+            min={RHYTHM_BOUNDS.breakMinutes.min}
+            max={RHYTHM_BOUNDS.breakMinutes.max}
+            onChange={(breakMinutes) => editCustom({ breakMinutes })}
+          />
+          <StepperRow
+            colors={colors}
+            label={t("Long break")}
+            unit={t("min")}
+            value={rhythm.longBreakMinutes}
+            min={RHYTHM_BOUNDS.longBreakMinutes.min}
+            max={RHYTHM_BOUNDS.longBreakMinutes.max}
+            onChange={(longBreakMinutes) => editCustom({ longBreakMinutes })}
+          />
+          <StepperRow
+            colors={colors}
+            label={t("Rounds per loop")}
+            unit=""
+            value={rhythm.rounds}
+            min={RHYTHM_BOUNDS.rounds.min}
+            max={RHYTHM_BOUNDS.rounds.max}
+            onChange={(rounds) => editCustom({ rounds })}
+          />
+          <LoopStrip colors={colors} steps={buildLoopPlan(rhythm)} currentIndex={-1} />
+          <Text style={[styles.loopSummary, { color: colors.ink }]} allowFontScaling>
+            {loopSummary(rhythm)} · {t("{focusMin} min of focus", { focusMin: totalFocusMinutes })}{" "}
+            · {t("{total} min total", { total: loopMinutes })}
+          </Text>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, paddingHorizontal: spacing.lg },
+  scroll: { flex: 1 },
   header: {
     flexDirection: "row",
     alignItems: "center",

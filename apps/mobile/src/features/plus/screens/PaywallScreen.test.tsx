@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react-native";
 import { describe, expect, it, jest } from "@jest/globals";
+import { StyleSheet, type StyleProp, type TextStyle, type ViewStyle } from "react-native";
 import { palette } from "../../../shared/theme";
 import { PaywallScreen } from "./PaywallScreen";
 import type { StoreProduct } from "../iapPort";
@@ -53,5 +54,30 @@ describe("PaywallScreen (P14)", () => {
     expect(mockLoadProducts).toHaveBeenCalledTimes(1);
     expect(screen.getByText("$19.99")).toBeTruthy();
     expect(screen.getByText("$49.99")).toBeTruthy();
+  });
+
+  it("shows the selected plan as an accessible outline card", async () => {
+    await render(
+      <PaywallScreen
+        colors={palette.light}
+        onClose={() => {}}
+        onPurchased={() => {}}
+        onRestored={() => {}}
+      />,
+    );
+    await waitFor(() => expect(screen.getByText("Start free trial")).toBeTruthy());
+
+    const card = screen.getByLabelText("Plus Yearly $19.99");
+    const state = card.props["accessibilityState"] as { checked?: boolean };
+    const flattened = StyleSheet.flatten(card.props["style"] as StyleProp<ViewStyle>);
+    const planName = screen.getByText("Yearly", { exact: true });
+
+    expect(card.props["accessibilityRole"]).toBe("radio");
+    expect(state.checked).toBe(true);
+    expect(flattened.backgroundColor).toBe(palette.light.surface);
+    expect(flattened.backgroundColor).not.toBe(palette.light.focus);
+    expect(StyleSheet.flatten(planName.props["style"] as StyleProp<TextStyle>).color).toBe(
+      palette.light.ink,
+    );
   });
 });
