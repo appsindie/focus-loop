@@ -32,7 +32,8 @@
     "fired_at": "2026-10-16T09:30:00Z",
     "routine": "code-review",
     "session_url": "https://claude.ai/code/cse_016KmJPmoeov8CuvU7VBR29m",
-    "verdict": "pending"
+    "verdict": "pending",
+    "round_count": 1
   },
   "next_action": "Merge PR #29 (release/v1 -> main corpus drop), then delete release/v1 branch.",
   "open_exceptions": [
