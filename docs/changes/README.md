@@ -4,6 +4,6 @@ Per-slice notes only when something is worth keeping that does not belong in a l
 
 Requirements, design and QA are **not** stored here: they live in `docs/product/`, `docs/architecture/` and `docs/qa/`, updated in the same PR as the change. Canonical blank templates live in skill assets:
 
-- SRS: `.agents/skills/requirements-engineering/assets/spec.md`
-- LLD: `.agents/skills/solution-architecture-and-adr/assets/lld.md`
-- QA plan: `.agents/skills/qa-test-automation-maestro-detox/assets/qa-plan.md`
+- SRS: `appsindie/devin-skills` → `.agents/skills/product-shaping/assets/spec.md`
+- LLD: `appsindie/devin-skills` → `.agents/skills/architecture/assets/lld.md`
+- QA plan: `appsindie/devin-skills` → `.agents/skills/qa/assets/qa-plan.md`

@@ -48,4 +48,4 @@ Store the `read:packages` PAT as the `GITHUB_PACKAGES_READ_TOKEN` secret and exp
 ## Publishing a library
 
 Never `npm publish` from a laptop. Bump the version on the default branch, tag `vX.Y.Z`, and let `.github/workflows/publish.yml` build, test, verify peer deps, and publish. See
-`.agents/skills/internal-frontend-react-and-react-native-libraries/assets/registry-and-migration.md` -> "Maintainer mode".
+`appsindie/devin-skills` → `.agents/skills/engineering/assets/registry-and-migration.md` -> "Maintainer mode".

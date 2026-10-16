@@ -25,4 +25,4 @@ A no-account, ad-light Pomodoro and focus timer for iOS + Android (React Native 
 
 This repo is bootstrapped from `appsindie/ai-repo-template` and follows the AppsIndie AI Software Factory process. Canonical skills and knowledge live in `appsindie/devin-skills`.
 
-Phase playbooks are in `.agents/playbooks/`.
+Phase playbooks resolve from `appsindie/devin-skills` (`.agents/playbooks/`).
