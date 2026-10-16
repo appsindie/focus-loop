@@ -3,9 +3,10 @@
 Machine policy for this repository only.
 
 Global AppsIndie policy is **not duplicated here**. It lives in `appsindie/devin-skills`
-(`.agents/knowledge/`, `.agents/playbooks/`, `.agents/skills/`) and is copied into a
-product repository at bootstrap. When a copy and the canonical corpus disagree, the
-canonical corpus wins — re-sync rather than editing the copy.
+(`rules/`, `.agents/playbooks/`, `.agents/skills/`, `agents/` reviewer routines) and
+resolves canonically from the plugin at session time — nothing is vendored into this
+repo. When a repo override and the canonical corpus disagree, the repo override wins
+for this repository; fix general problems in the plugin, never in a copy.
 
 ## Before acting on anything
 
@@ -57,11 +58,17 @@ See the knowledge note **AppsIndie Factory State Contract**.
   rule known to be wrong is a defect.
 - **Every PR:** lint, typecheck and tests green before firing review; living docs
   current; `FACTORY_STATE.json` current.
-- **Template path convention:** references in a `SKILL.md` use repo-root canonical paths
-  (e.g. `.agents/skills/<skill>/assets/...`).
+- **Template path convention:** generic skill templates resolve from `appsindie/devin-skills`
+  (`.agents/skills/<skill>/assets/...` there); only repo-specific assets live in this
+  repo's `.agents/skills/`.
 
-## Extension Policy (template-specific, optional)
+## Focus Loop-specific overrides
 
-Add project-specific constraints below this line when this file is copied into a product
-repository. Repo-specific skills (e.g. `testing-<product>-backend`) go in
-`.agents/skills/` here — never back into the canonical corpus.
+- `.agents/skills/testing-focus-loop-web/SKILL.md` — Expo web-preview E2E notes.
+- Reviewer routine prompts resolve canonically from `appsindie/devin-skills` (`agents/`).
+
+## Extension Policy (project-specific, optional)
+
+Add project-specific constraints below this line. Repo-specific skills
+(e.g. `testing-<product>-backend`) go in `.agents/skills/` here — never back into the
+canonical corpus.

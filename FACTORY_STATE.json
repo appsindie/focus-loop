@@ -29,13 +29,13 @@
   },
   "hold": false,
   "last_review": {
-    "fired_at": "2026-10-13T09:20:00Z",
-    "round_count": 2,
+    "fired_at": "2026-10-16T09:30:00Z",
+    "round_count": 1,
     "routine": "code-review",
-    "session_url": "https://claude.ai/code/cse_01BHxN2AwUQew8dm3dZsra1o",
-    "verdict": "APPROVE"
+    "session_url": "https://claude.ai/code/cse_016KmJPmoeov8CuvU7VBR29m",
+    "verdict": "pending"
   },
-  "next_action": "Android UI polish (Rhythm scroll, Appearance width, Paywall outline cards) on devin/1791884049-android-ui-polish → Android emulator verify → vc10 then b23",
+  "next_action": "Merge PR #29 (release/v1 -> main corpus drop), then delete release/v1 branch.",
   "open_exceptions": [
     {
       "blocking": true,

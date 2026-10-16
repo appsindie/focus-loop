@@ -20,6 +20,6 @@ There is no separate go-live checklist. Readiness is machine-checked by the
 `production-readiness` skill, and what reaches the human is the exception report: a
 verdict plus only the decisions they must make.
 
-Templates: `.agents/skills/release/assets/release-notes.md`,
+Templates (in `appsindie/devin-skills`): `.agents/skills/release/assets/release-notes.md`,
 `.agents/skills/production-readiness/assets/*`,
 `.agents/skills/go-to-market/assets/app-store-pack.md`.
