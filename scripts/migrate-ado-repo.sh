@@ -17,7 +17,27 @@ WORK_DIR="${WORK_DIR:-$PWD/migration-work}"
 
 repo="${1:?usage: migrate-ado-repo.sh <ado-repo-name> [library|app|backend]}"
 kind="${2:-library}"
+case "$kind" in
+  library|app|backend) ;;
+  *) echo "unknown kind: $kind" >&2; exit 1 ;;
+esac
 : "${AZURE_DEVOPS_PAT:?AZURE_DEVOPS_PAT must be set (Code: Read)}"
+
+# Every kind consumes consumer/library assets from a devin-skills checkout
+# (npmrc examples, publish workflow) — fail before any cloning or copying.
+DEVIN_SKILLS_DIR="${DEVIN_SKILLS_DIR:-}"
+lib_assets="${DEVIN_SKILLS_DIR}/.agents/skills/engineering/assets/github"
+if [ ! -d "$lib_assets" ]; then
+  echo "clone appsindie/devin-skills and set DEVIN_SKILLS_DIR to it" >&2
+  exit 1
+fi
+
+# The template's .agents/ must be the repo-scoped skeleton — seeding a vendored
+# corpus would shadow the canonical devin-skills rules on the migrated repo.
+if find "$TEMPLATE_DIR/.agents/knowledge" -name '*.md' ! -name 'README.md' 2>/dev/null | grep -q .; then
+  echo "TEMPLATE_DIR/.agents vendors a governance corpus; expected skeleton only" >&2
+  exit 1
+fi
 
 mkdir -p "$WORK_DIR"
 cd "$WORK_DIR"
@@ -54,12 +74,6 @@ cp "$TEMPLATE_DIR/docs/changes/README.md" docs/changes/README.md
 cp "$TEMPLATE_DIR/docs/operations/DEVIN_SOFTWARE_FACTORY.md" \
    "$TEMPLATE_DIR/docs/operations/DEVELOPER_SETUP.md" docs/operations/
 
-DEVIN_SKILLS_DIR="${DEVIN_SKILLS_DIR:-}"
-lib_assets="${DEVIN_SKILLS_DIR}/.agents/skills/engineering/assets/github"
-if [ ! -d "$lib_assets" ]; then
-  echo "clone appsindie/devin-skills and set DEVIN_SKILLS_DIR to it" >&2
-  exit 1
-fi
 case "$kind" in
   library)
     cp "$lib_assets/publish-github-packages.yml" .github/workflows/publish.yml
